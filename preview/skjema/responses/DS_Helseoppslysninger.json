@@ -1,0 +1,1237 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "id": "9a0f9ad4-2758-463a-bcf7-acd55486efa5",
+  "meta": { "versionId": "1" },
+  "questionnaire": "Questionnaire/223",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "highlight",
+      "text": "Vi ber deg fylle ut og sende inn dette skjemaet før timen på sykehuset. For at vi skal kunne gi deg best mulig behandling trenger vi informasjon om din helsetilstand. Hvis helsetilstanden din endrer seg før avtalen hos oss, slik at opplysningene ikke lenger er riktige, ber vi om at du sender inn skjemaet på nytt. Skjemaet vil først bli lest i forbindelse med din timeavtale, ikke med en gang du sender det inn. Skjemaet blir ikke besvart."
+    },
+    {
+      "linkId": "sot-1",
+      "text": "Du kan fylle ut skjemaet på vegne av personer over 16 år som har gitt deg fullmakt til å representere dem på Helsenorge."
+    },
+    {
+      "linkId": "sot-2",
+      "text": "Helse Sør-Øst er ansvarlig for innholdet i skjemaet.\r\n\r\nSykehuset du sender skjemaet til er dataansvarlig for personopplysningene oppgitt i skjemaet. \r\n[Les mer om personvern hos mottaker her](https://www.helse-sorost.no/informasjonssikkerhet-og-personvern/personvernerklering)"
+    },
+    {
+      "linkId": "sot-3",
+      "text": "**Hva skjer med skjemaet du sender inn?**\r\n\r\nSkjemaet sendes automatisk til din pasientjournal, og det er bare de som skal gi deg helsehjelp som har tilgang til det. \r\n\r\nSkjemaet om helseopplysninger er ikke et verktøy for å få kontakt med sykehuset. Skjemaet vil først bli lest i forbindelse med din timeavtale, ikke med en gang du sender det inn.\r\n\r\nDu får ikke svar på dette skjemaet. Dersom du har informasjon som haster, ta kontakt med sykehuset på telefon.\r\n\r\nOpplysningene om din helsetilstand er gyldig inntil 3 måneder. Skjer det endringer i perioden kan du fylle ut nytt skjema eller kontakte sykehuset\r\n\r\n**Dersom du trenger helsehjelp før din time, ta kontakt med din fastlege eller legevakten på telefon 116 117**"
+    },
+    { "linkId": "6b5b6350-2885-4ea1-8b78-21eec7079af7", "text": "Dato", "answer": [{ "valueDate": "2024-10-31" }] },
+    {
+      "linkId": "2",
+      "text": "Mottaker",
+      "item": [
+        { "linkId": "2.1", "text": "Om det er på vegne av eller ei. True er på vegne av", "answer": [{ "valueBoolean": false }] },
+        { "linkId": "2.2", "text": "Kjønn", "answer": [{ "valueString": "Mann" }] },
+        {
+          "linkId": "33a69e13-1594-4c4d-8b10-0eff240cdb84",
+          "text": "Velg sykehuset du skal behandles ved. Dette står i innkallingsbrevet.",
+          "answer": [{ "item": [{ "linkId": "7570ab14-56cc-4a22-80aa-830e3e1335b4" }] }]
+        }
+      ]
+    },
+    {
+      "linkId": "4",
+      "text": "Personopplysninger og pårørende",
+      "item": [
+        {
+          "linkId": "4.1",
+          "text": "Personopplysninger",
+          "item": [
+            { "linkId": "4.1.1", "text": "Navn", "answer": [{ "valueString": "Snill Gullmynt" }] },
+            { "linkId": "4.1.2", "text": "Fødselsnummer (11 siffer)", "answer": [{ "valueString": "30819097751" }] },
+            { "linkId": "4.1.3", "text": "Alder", "answer": [{ "valueInteger": 34 }] },
+            { "linkId": "4.1.4", "text": "Mobiltelefonnummer", "answer": [{ "valueString": "+4792655665" }] },
+            { "linkId": "4.1.5", "text": "Eventuelt annet telefonnummer vi kan nå deg på" }
+          ]
+        },
+        {
+          "linkId": "4.2",
+          "text": "Opplysninger om den som fyller ut skjemaet",
+          "item": [
+            { "linkId": "4.2.1", "text": "Navn" },
+            { "linkId": "4.2.2", "text": "Fødselsnummer (11 siffer)" },
+            { "linkId": "c3004568-7b61-4850-8261-fd0e30dccee5", "text": "Mobiltelefonnummer" },
+            { "linkId": "5459eea9-910e-4336-8a7b-0d541e62697d", "text": "Eventuelt annet telefonnummer vi kan nå deg på" }
+          ]
+        },
+        { "linkId": "4565e825-1071-430b-fe4c-b02d43118b42", "text": "### Ønsker du å registere flere pårørende?" },
+        {
+          "linkId": "4.3",
+          "text": "Hovedpårørende",
+          "item": [
+            {
+              "linkId": "4.3.1",
+              "text": "Pårørende er en person over 18 år som sykehuset kan informere om din helsetilstand, hvis det blir behov for det."
+            },
+            { "linkId": "4.3.2", "text": "Navn på hovedpårørende" },
+            { "linkId": "4.3.3", "text": "Fødselsdato hovedpårørende" },
+            { "linkId": "4.3.4", "text": "Telefonnummer hovedpårørende" },
+            { "linkId": "4.3.5", "text": "Relasjon" },
+            { "linkId": "feeec8ff-90c1-4c52-be84-5b881c217b28", "text": "Relasjon" }
+          ]
+        },
+        {
+          "linkId": "462c44b4-a446-4d6e-af38-9a4f1ebdbc58",
+          "text": "Pårørende",
+          "item": [
+            {
+              "linkId": "8261a08b-49b5-4004-8bb0-f8d00ed09587",
+              "text": "Pårørende er en person over 18 år som sykehuset kan informere om din helsetilstand, hvis det blir behov for det."
+            },
+            { "linkId": "654ffa64-44d7-4aba-c0a6-171a073aeff2", "text": "Navn pårørende", "answer": [{ "valueString": "abc" }] },
+            {
+              "linkId": "8cdc55b7-f624-46f5-8e7d-e15785b16a7d",
+              "text": "Fødselsdato pårørende",
+              "answer": [{ "valueDate": "2024-10-10" }]
+            },
+            {
+              "linkId": "3f7b5f98-1dd3-405e-8d6d-0d3dbc44c095",
+              "text": "Telefonnummer pårørende",
+              "answer": [{ "valueString": "13123123" }]
+            },
+            {
+              "linkId": "f45d5299-9e73-489c-8e3a-471946635ee6",
+              "text": "Relasjon",
+              "answer": [{ "valueCoding": { "system": "http://ehelse.no/Relasjon", "code": "MO", "display": "Mor" } }]
+            },
+            { "linkId": "51ae10be-5f2b-4552-8087-fb5e21f06322", "text": "Relasjon" }
+          ]
+        },
+        {
+          "linkId": "4.4",
+          "text": "Barn i familien",
+          "item": [
+            { "linkId": "4.4.1", "text": "Har du eneansvar for barn under 18 år eller andre med spesielle omsorgsbehov?" },
+            {
+              "linkId": "4.4.2",
+              "text": "Barn og unge påvirkes når noen i familien er syke og trenger å forstå hva som skjer. Det kan være at du selv er pasient, pårørende eller at du er forelder til syke barn med søsken. Vi på sykehuset skal bidra til at barn og unge i din familie blir godt ivaretatt. Sykehuset forplikter seg derved å spørre om du har pårørende (barn eller søsken) som er under 18 år, slik at disse kan bli ivaretatt."
+            }
+          ]
+        },
+        {
+          "linkId": "4.5",
+          "text": "Arbeidsgiver",
+          "item": [
+            {
+              "linkId": "4.5.1",
+              "text": "Har du en eller flere arbeidsgivere?",
+              "answer": [
+                {
+                  "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+                  "item": [
+                    {
+                      "linkId": "4.5.1.1",
+                      "text": "Arbeidsgiver",
+                      "item": [
+                        { "linkId": "4.5.1.1.1", "text": "Arbeidsgivers navn", "answer": [{ "valueString": "abc" }] },
+                        { "linkId": "4.5.1.1.2", "text": "Yrke/stilling", "answer": [{ "valueString": "abc" }] },
+                        {
+                          "linkId": "4.5.1.1.3",
+                          "text": "Stillingsprosent",
+                          "answer": [
+                            { "valueQuantity": { "value": 50, "unit": "prosent", "system": "http://unitsofmeasure.org", "code": "%" } }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "5",
+      "text": "Helse",
+      "item": [
+        { "linkId": "5.99", "text": "Har du, eller har du hatt, noen av sykdommene under?" },
+        {
+          "linkId": "3c855cc8-1c92-4399-fbeb-c47d1f7f60c8",
+          "text": "Hjerte-karsykdom",
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [
+                { "linkId": "557a7ca1-9118-4a1a-82c7-e0cf8effc295" },
+                {
+                  "linkId": "c0a1c440-dfa4-4308-8248-fbff575a5d9a",
+                  "text": "Hvilken sykdom?",
+                  "answer": [
+                    {
+                      "item": [
+                        { "linkId": "93f6cd88-6f54-47a6-9a1f-4c4c791c6949", "text": "Annen hjerte- og karsykdom" },
+                        {
+                          "linkId": "2c0f5806-6277-4f30-897c-155f84d04457",
+                          "text": "Utblokking av kransårene i hjertet (PCI)?",
+                          "answer": [
+                            {
+                              "item": [
+                                {
+                                  "linkId": "d552119f-c574-4267-8781-ab29fbaeb356",
+                                  "text": "Når og hvor ble du operert?",
+                                  "answer": [{ "item": [{ "linkId": "a17f5d7b-179f-4ecd-de21-b856683dae77" }] }]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "f89e8a48-ee59-46b9-93ee-e4567d0142b0",
+                          "text": "Åpen hjerteoperasjon på hjertets kransårer (bypassoperasjon)?",
+                          "answer": [
+                            {
+                              "item": [
+                                {
+                                  "linkId": "54d16532-67b5-480a-f027-eece66b7d265",
+                                  "text": "Når og hvor ble du operert?",
+                                  "answer": [{ "item": [{ "linkId": "91e1b0cf-3b8a-470d-bbbc-c2266eb6deae" }] }]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "66680c89-c2fc-4edb-8434-5a9cdfc515b4",
+                          "text": "Hjerteklaffoperasjon?",
+                          "answer": [
+                            {
+                              "item": [
+                                {
+                                  "linkId": "daf3c7d9-bfb5-4288-936a-3b0fd8ba11a0",
+                                  "text": "Når og hvor ble du operert?",
+                                  "answer": [{ "item": [{ "linkId": "8f193374-6d60-4410-805d-b39d5d213e6b" }] }]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:9937ba45-16c3-46eb-a15c-f0e2763a47be",
+                        "code": "rytmeforstyrrelse-(atrieflimmer)",
+                        "display": "Rytmeforstyrrelse (atrieflimmer)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "5.1.3",
+                  "text": "Har du pacemaker?",
+                  "answer": [
+                    {
+                      "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+                      "item": [
+                        {
+                          "linkId": "5.1.3.1",
+                          "text": "Om du vet hvilken type pacemaker du har, skriv det under",
+                          "answer": [{ "valueString": "neu" }]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "45dd2dfc-fa5e-45aa-8439-5177ba6451f2",
+          "text": "Høyt blodtrykk (hypertensjon)",
+          "answer": [
+            { "item": [{ "linkId": "ed30475e-45ab-4041-8265-022fbe39ac70", "text": "Er blodtrykket ditt velkontrollert med medisiner?" }] }
+          ]
+        },
+        {
+          "linkId": "69835343-423f-4022-8e60-7e5a93516c1f",
+          "text": "Økt blødningstendens eller bruker du blodfortynnende medisiner",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "8a1d7b4f-32c0-402e-dc4c-617844e9243f",
+                  "text": "Huk av for det som gjelder deg",
+                  "answer": [{ "item": [{ "linkId": "9ca3c11a-1b84-4e53-a792-e234c1090511", "text": "Annen blødningstendens" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "d727a93c-da5a-4636-f99e-f80b83a342fb",
+          "text": "Lungesykdom",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "937d0a30-fe39-4e72-88c2-86d7e26b8c6c",
+                  "text": "Hvilken lungesykdom?",
+                  "answer": [{ "item": [{ "linkId": "3fa933b3-4102-4830-adb8-6ed483818223", "text": "Annen lungesykdom" }] }]
+                },
+                { "linkId": "7110533c-25ac-43e8-99c3-75e3b137d2a3", "text": "Bruker du oksygen hjemme?" }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "870ca577-125a-4d75-8473-70328ea16432",
+          "text": "Søvnapné",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "ee8c92a2-e5ec-4d86-840b-6c50c05a471e",
+                  "text": "Bruker du pustemaske når du sover?",
+                  "answer": [
+                    {
+                      "item": [
+                        {
+                          "linkId": "22394301-8fa5-4281-8324-42e9f524f5a8",
+                          "text": "Ta med deg pustemasken dersom du skal legges inn på sykehuset."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "b188d3ca-677a-4961-864d-951bae2057fa",
+          "text": "Nevrologisk sykdom",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "b58bc134-89a5-49dd-8381-9192bbef3d7d",
+                  "text": "Hvilken nevrologisk sykdom?",
+                  "answer": [{ "item": [{ "linkId": "36898039-9053-405f-ea47-123cfe53b160", "text": "Annen nevrologisk sykdom" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "32d1825b-1593-4f6f-e99e-d8f23d5d12d9",
+          "text": "Nyresykdom",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "f85095a9-80a4-46e5-8911-792b28a58b24",
+                  "text": "Hvilken nyresykdom?",
+                  "answer": [{ "item": [{ "linkId": "a1d1b623-866b-4583-c1c1-648b2482986a", "text": "Annen nyresykdom" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "b13ddc1a-d6f3-4f22-e0b8-3d69b0cf78ee",
+          "text": "Leversykdom",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "645a725a-bb7e-4fcb-9f7c-054c8b3e4348",
+                  "text": "Hvilken leversykdom?",
+                  "answer": [{ "item": [{ "linkId": "e2d44462-fe18-4d3a-d7fa-fd1ceaf2d9a6", "text": "Annen leversykdom" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "347e9839-291a-43d7-c640-7d6480af423a",
+          "text": "Diabetes",
+          "answer": [{ "item": [{ "linkId": "08556ec1-992f-457d-8083-95e5814845ac", "text": "Hvilken type diabetes har du?" }] }]
+        },
+        {
+          "linkId": "32b090b0-3be1-4197-8601-d1142e22079f",
+          "text": "Stoffskiftesykdom",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "4eebac0c-5064-4f70-e18c-113116e201e8",
+                  "text": "Hvilken stoffskiftesykdom?",
+                  "answer": [{ "item": [{ "linkId": "ff6637d7-920b-45b0-fe05-e2e2898faf71", "text": "Annen stoffskiftesykdom" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "2d617e01-0555-499e-8817-9bdfb202bb28",
+          "text": "Leddgikt eller muskel-skjelettsykdom",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "1db1edac-d501-407c-828e-f8a29b59f481",
+                  "text": "Hvilken leddgikt eller muskel-skjelettsykdom",
+                  "answer": [{ "item": [{ "linkId": "f637efdc-9c07-43ce-85bc-85f87854be1d", "text": "Annen muskel/skjelettsykdom" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "9741cd16-73a6-45ba-e193-34e6076cc183",
+          "text": "Mage- eller tarmproblemer",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "667d12e9-6eed-4001-84f3-d7d1e53f7c49",
+                  "text": "Hvilken type mage- eller tarmproblemer?",
+                  "answer": [{ "item": [{ "linkId": "b5d4901b-a78d-432b-b4e2-3d4abb23bf3e", "text": "Annen mage eller tarmproblem" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "7f03eb20-b5b8-4577-f81a-2d725886e389",
+          "text": "Psykisk sykdom",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "13665034-4d28-4e26-d07c-72de808610a8",
+                  "text": "Hvilken psykisk sykdom?",
+                  "answer": [{ "item": [{ "linkId": "3c101c82-e67a-424d-c607-a95d35544680", "text": "Annen psykisk sykdom" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "66b2ae92-8389-4f01-8630-20a67be643ed",
+          "text": "Smittsom sykdom",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "a828079a-0f50-49cc-bd71-2e1e429de4e8",
+                  "text": "Hvilken smittsom sykdom?",
+                  "answer": [{ "item": [{ "linkId": "e0d9a7c7-ef73-4b25-8044-04a26967677c", "text": "Annen smittsom sykdom" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "dbf67538-3da4-4dab-91d3-eed72726dfd9",
+          "text": "Kreft",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "30c3b30e-2d40-4f74-b73f-ab828456c6bc",
+                  "text": "Hvilken type kreft?",
+                  "answer": [
+                    {
+                      "item": [
+                        { "linkId": "ceea7c12-f364-46e4-a3b9-9adb5b46dd92", "text": "Aktiv kreftsykdom" },
+                        { "linkId": "0ad002a4-4c3f-4187-8088-ad05f66fff2a", "text": "Ferdigbehandlet kreftsykdom" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "8fd3f7b0-6404-466f-8784-d11166bd980b",
+          "text": "Annen sykdom",
+          "answer": [{ "item": [{ "linkId": "5.13.1", "text": "Hvilken sykdom?" }] }]
+        },
+        { "linkId": "5.5", "text": "Får du brystsmerter eller blir du tungpustet når du går opp trapper to etasjer i normalt tempo?" },
+        { "linkId": "5.14", "text": "Er du gravid?", "answer": [{ "item": [{ "linkId": "5.14.1", "text": "Forventet termin" }] }] },
+        { "linkId": "5.15", "text": "Ammer du?" }
+      ]
+    },
+    {
+      "linkId": "f171bd82-9774-4810-d09b-e658c70a9072",
+      "text": "Helse",
+      "item": [
+        { "linkId": "f341b3ec-d2da-42f2-995e-93465e494413", "text": "Har du, eller har du hatt, noen av sykdommene under?" },
+        { "linkId": "559583f9-275a-47b4-8412-8cba9972c70e", "text": "Diabetes" },
+        {
+          "linkId": "587d60ed-e59c-49e6-8e53-5813b4c9cbb6",
+          "text": "Nevrologiske sykdommer (for eksempel epilepsi)",
+          "answer": [{ "item": [{ "linkId": "1f11a623-db49-4cea-afd1-330be80f67b3", "text": "Hvilken sykdom?" }] }]
+        },
+        {
+          "linkId": "e5cd2d99-5301-4d5e-8ba5-ac157e12d9a6",
+          "text": "Problemer med fordøyelsen",
+          "answer": [{ "item": [{ "linkId": "759d711d-2018-4112-9d3a-786c7df4c065", "text": "Kan du beskrive kort?" }] }]
+        },
+        {
+          "linkId": "aa63605c-3a85-4927-dab4-793170089a8c",
+          "text": "Lungesykdom (for eksempel astma, cystisk fibrose eller søvnapné)",
+          "answer": [
+            {
+              "item": [
+                { "linkId": "026d4ba8-33f7-47e8-a538-8ff0d4bb7f69", "text": "Hvilken sykdom?" },
+                {
+                  "linkId": "aeee391b-7890-47bf-8ae5-f90216d56cbb",
+                  "text": "Bruker du forstøver, pustemaske eller andre hjelpemidler?",
+                  "answer": [
+                    {
+                      "item": [
+                        { "linkId": "1064a7f5-a086-4a6f-8ca8-e0889dd8a163", "text": "Beskriv" },
+                        {
+                          "linkId": "83b55b8b-bcf4-4f9b-86b7-9cc7eeb13286",
+                          "text": "Hvis du bruker pustemaske må du ta med denne om du skal legges inn på sykehuset."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "8aa5477f-c313-49aa-a1c4-4c928a2618ef",
+          "text": "Medfødte sykdommer (for eksempel hjertefeil)",
+          "answer": [{ "item": [{ "linkId": "c98241d8-dca5-4f8c-9612-6f0f5605ee06", "text": "Hvilken sykdom?" }] }]
+        },
+        {
+          "linkId": "19cee86d-9e1e-445e-8490-b6ddd6773217",
+          "text": "Annen sykdom",
+          "answer": [{ "item": [{ "linkId": "5743a72d-2641-47da-9f8e-bda82d996fdd", "text": "Hvilken sykdom?" }] }]
+        }
+      ]
+    },
+    {
+      "linkId": "55d16c5f-d0e6-4640-893f-764896ab3f0b",
+      "text": "Skal du til gynekologisk avdeling?",
+      "answer": [
+        {
+          "item": [
+            {
+              "linkId": "37cd2a60-1663-4cb0-98b6-e704379a1019",
+              "text": "Har du vært gravid tidligere?",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "ce7e2c56-6f98-47a3-89bd-c204afe75386",
+                      "text": "Har du født ett eller flere barn?",
+                      "answer": [
+                        {
+                          "item": [
+                            { "linkId": "df9b1469-2ffe-4c5a-8fe2-ddd648d9a0f7", "text": "Antall vaginale fødsler og årstall" },
+                            { "linkId": "2cfbb306-d532-4746-ef47-26458bd49278", "text": "Antall keisersnitt og årstall" }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "9a6271f1-4519-4964-9f02-582a89580f55",
+                      "text": "Har du abortert?",
+                      "answer": [
+                        {
+                          "item": [
+                            { "linkId": "92fdc6f7-c125-4739-8363-20be8532430e", "text": "Antall spontanaborter" },
+                            { "linkId": "ea4ccf17-4e32-44dc-94cf-2e30794729bf", "text": "Antall provoserte aborter" },
+                            { "linkId": "d2d59d88-7bb4-4ba7-9168-609b634b8d65", "text": "Antall medisinske aborter" },
+                            { "linkId": "011a1aed-0fdc-49e0-cf95-719430065679", "text": "Antall kirurgiske aborter" }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "f9c7cfb6-f5df-4722-9b09-bb7b1abcb28c",
+                      "text": "Har du hatt svangerskap utenfor livmoren?",
+                      "answer": [
+                        {
+                          "item": [
+                            {
+                              "linkId": "32077b26-cdb1-438f-8762-49367bf2e451",
+                              "text": "Ble du operert relatert til dette?",
+                              "answer": [
+                                {
+                                  "item": [{ "linkId": "16e522ba-9ee0-4030-87e3-6fb2fe5ad49f", "text": "Hva ble gjort under operasjonen?" }]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "552ee1c4-cb95-49ca-8667-6b245a1b6a98",
+              "text": "Er du tidligere behandlet for livmorhalsforandringer?",
+              "answer": [{ "item": [{ "linkId": "1d1aa357-ef7f-4b8f-d5da-b2ed79288609", "text": "Oppgi behandling, årstall og sted" }] }]
+            },
+            { "linkId": "af6614e7-41b0-459a-9592-f2b0a0856d54", "text": "Har du fått vaksine mot HPV (Humant papillomavirus)?" },
+            {
+              "linkId": "c53fbe5b-5ee8-4afd-8f06-6360549bf14c",
+              "text": "Har du menstruasjon?",
+              "answer": [
+                {
+                  "item": [
+                    { "linkId": "3a05b2b4-a1e6-4e2b-8a7f-937b6a73f434", "text": "Angi dato for siste menstruasjon" },
+                    {
+                      "linkId": "0c5bb2e8-10a4-4c60-bef9-44715e207637",
+                      "text": "Har du kommet i overgangsalderen (menopause)?",
+                      "answer": [
+                        { "item": [{ "linkId": "f3374c64-976f-40e9-9286-26719fb63347", "text": "Husker du hvor gammel du var?" }] }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "6e343068-ebd4-4f3b-f2b6-e11a4f81a3ca",
+              "text": "Har du blitt operert i eller via skjeden?",
+              "answer": [{ "item": [{ "linkId": "0c160f75-e8ab-4dba-81e9-380c0feca162", "text": "Oppgi hva slags operasjon og når" }] }]
+            },
+            {
+              "linkId": "2774a6ed-517d-4fe8-eebb-69210f4bcdd2",
+              "text": "Har du blitt operert med kikkhull i magen/buken?",
+              "answer": [{ "item": [{ "linkId": "f64efa24-a94e-4bee-c2cb-5c8553fd76ea", "text": "Oppgi hva slags inngrep og når" }] }]
+            },
+            {
+              "linkId": "5dd664a4-4120-41d6-8fff-79f591037724",
+              "text": "Har du blitt operert med åpen mage/bukoperasjon?",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "b20b79a3-7c55-4b6d-83b4-fb7909597a49",
+                      "text": "Oppgi hva slags inngrep og når, og hvor mange har vært keisersnitt"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "6",
+      "text": "Medisiner og allergier",
+      "item": [
+        {
+          "linkId": "6.1",
+          "text": "Bruker du medisiner? Gjelder også prevensjonsmidler, reseptfrie medisiner, alternative medisiner og naturmedisiner"
+        },
+        {
+          "linkId": "0b923e48-3f69-4205-edb7-dcc9cb531eb4",
+          "text": "Bruker du medisiner? Gjelder også reseptfrie medisiner, alternative medisiner og naturmedisiner"
+        },
+        {
+          "linkId": "47f59e8d-c445-4013-edd4-3792cfd25c61",
+          "text": "Ta med oppdatert medisinliste til timeavtalen. Denne kan du få på apoteket eller hos din fastlege.**_"
+        },
+        {
+          "linkId": "6.2",
+          "text": "Medisin:",
+          "item": [
+            {
+              "linkId": "6.2.1",
+              "text": "Navn på medisin, styrke og type (for eksempel tablett, dråper eller sprøyte)",
+              "answer": [{ "item": [{ "linkId": "6.2.1.1", "text": "For eksempel Paracet 500mg tablett" }] }]
+            },
+            {
+              "linkId": "6.2.2",
+              "text": "Hvor mye tar du av medisinen hver dag?",
+              "answer": [{ "item": [{ "linkId": "6.2.2.1", "text": "For eksempel 2 tabletter 3 ganger om dagen" }] }]
+            },
+            { "linkId": "6.2.4", "text": "Ta med oppdatert medisinliste til timeavtalen. Denne kan du få i apotek eller hos din fastlege." }
+          ]
+        },
+        { "linkId": "6.3", "text": "Er du allergisk mot noen medisiner?" },
+        {
+          "linkId": "6.4",
+          "text": "Medisin du er allergisk mot:",
+          "item": [
+            {
+              "linkId": "6.4.1",
+              "text": "Legemiddelnavn, styrke og form",
+              "answer": [{ "item": [{ "linkId": "6.4.1.1", "text": "For eksempel Paracet 500mg tablett" }] }]
+            },
+            { "linkId": "6.4.2", "text": "Reaksjon" }
+          ]
+        },
+        { "linkId": "6.5", "text": "Er du allergisk mot noen matvarer, pollen, lateks, nikkel eller annet?" },
+        {
+          "linkId": "6.6",
+          "text": "Allergi",
+          "item": [
+            { "linkId": "6.6.1", "text": "Hva er du allergisk mot?" },
+            {
+              "linkId": "6.6.2",
+              "text": "Reaksjon",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "6.6.2.1",
+                      "text": "Mild: lette plager som lett utslett, kløende øyne og rennende nese, \r\nModerat: hoste, tung pust, magesmerter -diare\r\nAlvorlig: alvorlige pusteproblemer og eller blodtrykksfall som krevede akutt legetilsyn eller sykehusinnleggelse (har forskrevet epi-penn)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "6.7",
+          "text": "Har du tidligere reagert på kontrastmiddel i forbindelse med radiologiske undersøkelser?",
+          "answer": [{ "item": [{ "linkId": "6.7.1", "text": "Reaksjon" }] }]
+        }
+      ]
+    },
+    {
+      "linkId": "7",
+      "text": "Mat, livsstil og dagligliv",
+      "item": [
+        {
+          "linkId": "7.1",
+          "text": "Trenger du en spesiell type mat?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "7.1.1",
+                  "text": "Her spør vi for å kartlegge om du ønsker halal, koscher, vegetar, vegankost eller liknende, for å kunne bestille dette til deg på forhånd."
+                },
+                {
+                  "linkId": "7.1.2",
+                  "text": "Velg kost",
+                  "answer": [{ "item": [{ "linkId": "519a5401-08ce-4fc0-8924-7bfff739030a", "text": "Hvilken annen spesialkost?" }] }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "7.6",
+          "text": "Har du problemer med å dusje, kle på deg og utføre daglige gjøremål selv?",
+          "answer": [
+            { "item": [{ "linkId": "7.6.1", "text": "Hva trenger du hjelp til? Bruker du hjelpemidler? Har du en personlig assistent?" }] }
+          ]
+        },
+        {
+          "linkId": "7.7",
+          "text": "Har du problemer med å se, høre eller snakke som vi bør ta hensyn til?",
+          "answer": [{ "item": [{ "linkId": "7.7.1", "text": "Beskriv" }] }]
+        },
+        {
+          "linkId": "7.2",
+          "text": "Hvor ofte røyker du?",
+          "answer": [{ "item": [{ "linkId": "7.2.1", "text": "Har du røkt tidligere?" }] }]
+        },
+        { "linkId": "7.3", "text": "Hvor ofte snuser du?" },
+        {
+          "linkId": "7.4",
+          "text": "Hvor ofte drikker du alkohol?",
+          "answer": [
+            {
+              "item": [
+                { "linkId": "96d44b9b-8849-476e-bb44-ca154d62030f", "text": "Hvor mange enheter daglig?" },
+                { "linkId": "298b7546-ba87-4a02-b9e9-153a749e87fb", "text": "Hvor mange enheter ukentlig?" }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "7.5",
+          "text": "Bruker du andre rusmidler?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "7.5.1",
+                  "text": "Vi spør om dette fordi det kan påvirke hvordan du reagerer på bedøvelse, smertestillende og andre medisiner. Sykehuset melder ikke til politiet om du svarer ja på spørsmål om bruk av ulovlige rusmidler."
+                },
+                { "linkId": "51774493-4380-49f7-b73f-3b54e4dd56f9", "text": "Beskriv type og hyppighet" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "7ff851e8-adb7-425a-82d5-5b89c6024503",
+      "text": "Dagligliv",
+      "item": [
+        {
+          "linkId": "bdd9d2a1-b62b-4493-d459-6632fd9ad474",
+          "text": "Trenger du en spesiell type mat?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "deeeb92d-061a-4b6c-9ec9-d1e7b0aca084",
+                  "text": "Her spør vi for å kartlegge om du ønsker halal, koscher, vegetar, vegankost eller liknende, for å kunne bestille dette til deg på forhånd."
+                },
+                {
+                  "linkId": "f1483959-d334-4c2a-82cb-4707cb95a824",
+                  "text": "Velg kost",
+                  "answer": [
+                    {
+                      "item": [
+                        { "linkId": "0819114f-cfd8-4167-8176-74d320e3fa3c", "text": "Hva slags spesialkost?" },
+                        { "linkId": "c256542a-963f-484a-8c60-9ca4355d8b37", "text": "Hva slags matallergi?" }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "39300f91-31b3-438f-86ee-5620a00306ec",
+          "text": "Har du behov for hjelpemidler?",
+          "answer": [
+            {
+              "item": [
+                { "linkId": "4618d955-3bd0-4bac-fd78-012ebf24ff7d", "text": "Hvilke hjelpemidler?" },
+                { "linkId": "aa5631cb-71e9-4def-8fb8-68bc8e71b2d5" }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "19d904db-6331-440e-8555-135152f8b685",
+          "text": "Går du i barnehage eller på skole?",
+          "answer": [{ "item": [{ "linkId": "3ffb1035-a3af-48c1-8150-c1a24af26081", "text": "Skriv inn navn på barnehage eller skole" }] }]
+        }
+      ]
+    },
+    {
+      "linkId": "8",
+      "text": "Høyde og vekt",
+      "item": [
+        { "linkId": "8.1", "text": "Høyde" },
+        { "linkId": "8.2", "text": "Vekt" },
+        { "linkId": "8.3", "text": "Kroppsmasseindeks" }
+      ]
+    },
+    {
+      "linkId": "732320dd-0b37-41f0-af69-331325e509d6",
+      "text": "Høyde og vekt",
+      "item": [
+        { "linkId": "8.4", "text": "Høyde" },
+        { "linkId": "8.5", "text": "Vekt" },
+        { "linkId": "8.6", "text": "Kroppsmasseindeks" }
+      ]
+    },
+    {
+      "linkId": "9",
+      "text": "Hvis du skal opereres eller undersøkes i narkose eller annen bedøvelse, ber vi om at du svarer på noen ekstra spørsmål."
+    },
+    { "linkId": "10", "text": "Skal du opereres eller undersøkes i narkose eller annen bedøvelse?" },
+    {
+      "linkId": "11",
+      "text": "Før eventuell operasjon eller undersøkelse i narkose eller annen bedøvelse",
+      "item": [
+        {
+          "linkId": "11.1",
+          "text": "Har du vært i narkose tidligere?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "11.1.1",
+                  "text": "Narkose er en bedøvelse (anestesi) som virker i hele kroppen. Du blir smertefri, sover og kroppen blir helt slapp. Vi bruker narkose dersom det av ulike årsaker ikke er mulig å gjennomføre operasjonen med lokalbedøvelse."
+                },
+                { "linkId": "f9b66072-c02b-4370-df0d-52186ebba2d4", "text": "Ved hvilket sykehus/klinikk?" }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "11.2",
+          "text": "Har du eller noen du er i slekt med reagert på narkose eller bedøvelse?",
+          "answer": [
+            {
+              "item": [
+                { "linkId": "11.2.1", "text": "Det å reagere uønsket på narkose eller bedøvelse kan være arvelig" },
+                { "linkId": "11.2.2", "text": "Hvem har reagert, hva slags bedøvelse og hva slags reaksjon?" }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "11.3",
+          "text": "Har du problemer med å bevege kjeve eller nakke, eller med å gape?",
+          "answer": [{ "item": [{ "linkId": "11.3.1", "text": "Beskriv hvordan:" }] }]
+        },
+        {
+          "linkId": "11.5",
+          "text": "Har du tenner som er reparerte eller løse (bro, gebiss, stift, implantater)?",
+          "answer": [
+            {
+              "item": [
+                { "linkId": "11.5.1", "text": "Gjelder ikke fyllinger i egne tenner" },
+                { "linkId": "11.5.2", "text": "Beskriv hva:" }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "5e449598-28c2-4729-9bd0-3f3dc070b0e8",
+          "text": "Har du regulering, løse tenner eller tenner som er reparerte?",
+          "answer": [{ "item": [{ "linkId": "ce011f05-d447-46db-ddad-7f946b5f62b4", "text": "Beskriv hva:" }] }]
+        },
+        {
+          "linkId": "11.4",
+          "text": "Har du problemer med å ligge flatt på ryggen?",
+          "answer": [{ "item": [{ "linkId": "11.4.1", "text": "Beskriv hvorfor:" }] }]
+        },
+        {
+          "linkId": "11.6",
+          "text": "Har du halsbrann, magesår, magekatarr, spiserørsbrokk, sure oppstøt eller lignende?",
+          "answer": [{ "item": [{ "linkId": "b3fdcfca-03fc-4434-c6e2-c07ea7140830", "text": "Beskriv tilstanden:" }] }]
+        },
+        {
+          "linkId": "11.7",
+          "text": "Har du sår eller utslett i huden nær operasjonsstedet?",
+          "answer": [{ "item": [{ "linkId": "616a52a9-1feb-4140-951b-5844a53ae735", "text": "Beskriv tilstanden:" }] }]
+        },
+        {
+          "linkId": "11.8",
+          "text": "Det er anbefalt å ha en voksen person hos seg det første døgnet i hjemmet etter en operasjon. Har du en slik hjelper som kan være sammen med deg det første døgnet etter inngrepet/ undersøkelsen?"
+        }
+      ]
+    },
+    {
+      "linkId": "4c6bfc80-fd33-4889-8a56-194dba31de10",
+      "text": "Spørsmål til timeavtalen",
+      "item": [
+        {
+          "linkId": "06a6ef90-10de-4ec4-9561-a2bca01933e4",
+          "text": "Trenger du tolk?",
+          "answer": [{ "item": [{ "linkId": "41f29e51-d17a-4663-a4b1-5b6c698a12a3", "text": "Hvilket språk?" }] }]
+        },
+        { "linkId": "7e3cfede-16a6-4475-9e06-c14de67c8b0d", "text": "Kan du komme til time på kort varsel?" }
+      ]
+    },
+    {
+      "linkId": "96fe5f6e-e804-4553-8442-d5aaefa0f647",
+      "text": "Hjelp oss å hindre smitte",
+      "item": [
+        {
+          "linkId": "eab51662-f833-40f5-cc83-60c9feb38ee3",
+          "text": "For å gi deg og andre pasienter i sykehuset trygg behandling, må du teste deg for motstandsdyktige (resistente) bakterier dersom du svarer ja på ett eller flere av punktene under."
+        },
+        { "linkId": "930d154a-9248-40d1-bf24-27bc601071ff", "text": "Har du i løpet av de siste 12 måneder:" },
+        {
+          "linkId": "26ae8b51-f73e-4e77-85a3-1dd8f9aeef04",
+          "text": "Vært smittet av eller bodd i samme husstand som en person som har vært smittet av resistente bakterier (MRSA, VRE eller ESBL)?"
+        },
+        {
+          "linkId": "a5b41ecc-c840-4446-b616-fc00ae4b275b",
+          "text": "Arbeidet som helsearbeider eller vært innlagt i sykehus eller annen helseinstitusjon utenfor Norden?"
+        },
+        {
+          "linkId": "9f257d1d-718d-4dc1-859f-a93b596ebd9d",
+          "text": "Fått omfattende undersøkelse, behandling, injeksjoner eller tannbehandling i en helsetjeneste utenfor Norden?"
+        },
+        { "linkId": "6a5ec8b0-8504-48c1-ad19-1d64255dda5e", "text": "Oppholdt deg i flyktningleir eller barnehjem utenfor Norden?" },
+        {
+          "linkId": "130c51fd-3a5a-4ee6-8c0f-b0c155c68fda",
+          "text": "Oppholdt deg sammenhengende i mer enn 6 uker utenfor Norden og du i tillegg har kronisk eksem, sår eller hudinfeksjon?"
+        },
+        {
+          "linkId": "348fcd5a-b8e4-45e5-9494-464027fc9895",
+          "text": "Test deg for resistente bakterier hos fastlegen. Du må teste deg i god tid før oppmøte på sykehuset. Testen er gratis.  Kontakt sykehuset hvis du er usikker på om du trenger å teste deg. Ring oss så fort som mulig hvis du vet at du selv eller noen du bor sammen med, har eller har hatt resistente bakterier."
+        }
+      ]
+    },
+    { "linkId": "12", "text": "Er det noe annet vi bør vite for å kunne gi deg god behandling?" },
+    {
+      "linkId": "cde2bd0b-87bb-4f42-95fb-a790042d30e8",
+      "text": "Er det noe du gruer deg spesielt til, eller noe annet vi bør vite for å kunne gi deg god behandling?"
+    },
+    {
+      "linkId": "13",
+      "text": "Oppsummering",
+      "item": [
+        { "linkId": "13.1", "text": "Dette er en forenklet oppstilling av svarene dine." },
+        { "linkId": "13.4", "text": "Kroppsmasseindeks" },
+        { "linkId": "ac044d09-ffd3-4d3c-832c-502736a8e6ec", "text": "Kroppsmasseindeks" },
+        { "linkId": "037d1c57-dd30-4f5b-86c4-b6bd67b9e9db", "text": "Høyde" },
+        { "linkId": "bedfdd82-e32e-4c17-b4e2-06206b7e1f6e", "text": "Høyde" },
+        { "linkId": "93a9beb9-6268-44ff-8db5-c37219350684", "text": "Vekt" },
+        { "linkId": "51fdcdd0-c423-4851-f1d9-45b100ce9f1c", "text": "Vekt" },
+        { "linkId": "13.5", "text": "Har eneansvar for barn under 18 år eller andre med spesielle behov" },
+        { "linkId": "13.6", "text": "Har en eller flere arbeidsgivere" },
+        { "linkId": "13.7", "text": "Helse" },
+        { "linkId": "8c55bf2b-9218-4bec-fef4-eafed1294ab3", "text": "Hjerte-karsykdom" },
+        { "linkId": "73b9a6ea-1731-46cc-e246-1199cea0ee9c", "text": "Angina pectoris (hjertekrampe)" },
+        { "linkId": "f8507025-77f9-4422-8df9-5c4dc6ad8bf2", "text": "Hjertesvikt" },
+        { "linkId": "ec58449a-4aac-4324-a087-61dea1c628a0", "text": "Rytmeforstyrrelse (atrieflimmer)" },
+        { "linkId": "66a1e193-a258-4f50-811e-bad58be1c5f1", "text": "Klaffefeil" },
+        { "linkId": "30fd0847-7d25-4faf-8c8e-38432ba22eab", "text": "Hjerteoperert" },
+        { "linkId": "a17a112b-86ed-46d3-cc31-29dabd491322", "text": "Annen hjerte- og karsykdom" },
+        { "linkId": "d974caff-4f45-4e10-8225-840a0f455d2e", "text": "Utblokking av kransårene i hjertet (PCI)" },
+        { "linkId": "337fac5f-6de5-4b5b-fc08-2f0b3672d216", "text": "Åpen hjerteoperasjon på hjertets kransårer (bypassoperasjon)" },
+        { "linkId": "7a62decf-92db-4462-d3e3-cb8568c3359b", "text": "Hjerteklaffoperasjon" },
+        { "linkId": "13.9", "text": "Pacemaker" },
+        { "linkId": "a9881c50-d549-4259-8201-8852c30f2ad9", "text": "Høyt blodtrykk (hypertensjon)" },
+        { "linkId": "8f3e95ea-c8b6-4f14-87db-f01f55d779c0", "text": "Blodtrykket er ikke velkontrollert med medisiner" },
+        { "linkId": "4a02a692-d70b-49c7-8363-ae12a4366f66", "text": "Økt blødningstendens eller bruker du blodfortynnende medisiner" },
+        { "linkId": "b9c5fd44-2c8f-4d64-895b-248ddb554657", "text": "Blodfortynnende medisiner" },
+        {
+          "linkId": "898c7443-f55b-4fdf-a09a-dca3f86f363b",
+          "text": "Blødersykdom eller andre koagulasjonsforstyrrelser (forstyrrelser i blodets levringsevne)"
+        },
+        { "linkId": "c116f276-5db3-4eb6-8023-9117b21f86e3", "text": "Annen blødningstendens" },
+        { "linkId": "ddc5779a-2592-42af-8115-2caf945e42b4", "text": "Lungesykdom" },
+        { "linkId": "b6b6fc0a-5cc6-4b31-9a1b-4543457789ab", "text": "Astma" },
+        { "linkId": "769b17eb-2423-4e05-89f2-e9d828378bdd", "text": "KOLS" },
+        { "linkId": "b71875b1-4cc9-43da-9852-f63a7d1178ce", "text": "Lungefibrose" },
+        { "linkId": "325cb6d9-14dd-421f-a228-21f978c9d4a7", "text": "Annen lungesykdom" },
+        { "linkId": "52aeec2b-5bed-4c15-bb41-747ec1c737ab", "text": "Bruker oksygen hjemme" },
+        { "linkId": "16ef29b4-722f-4672-a667-903829f5fd7f", "text": "Søvnapné" },
+        { "linkId": "adf845b7-5a14-49f9-fb98-21743480c183", "text": "Bruker pustemaske ved søvn" },
+        { "linkId": "91b3c298-e982-4755-90cd-3b2945fc9c16", "text": "Nevrologisk sykdom" },
+        { "linkId": "59b0a18e-4a3c-4beb-8d82-6c1f5865d604", "text": "Parkinsons sykdom" },
+        { "linkId": "f664c38e-64ce-4c65-9043-0d8c69c9a061", "text": "Multippel sklerose (MS)" },
+        { "linkId": "c8d866f2-5419-4e13-8e54-12829202076b", "text": "Migrene" },
+        { "linkId": "03170b38-3879-4923-8ed9-aa6e48361662", "text": "Annen nevrologisk sykdom" },
+        { "linkId": "c6bd59ad-ed72-4754-8086-15c8248570f2", "text": "Nyresykdom" },
+        { "linkId": "7adfd5ef-1589-4b33-89be-a55591598b41", "text": "Nyresvikt" },
+        { "linkId": "87942c3b-f1b3-454e-86bc-381010757e50", "text": "Nyrestein" },
+        { "linkId": "f67a5144-9a95-4e1e-8687-2e7192ceca2a", "text": "Annen nyresykdom" },
+        { "linkId": "cfd8dda8-2601-4e8e-81de-e6c5fbbe7f2b", "text": "Leversykdom" },
+        { "linkId": "79aa7409-fcf7-470a-8868-037cddc7be28", "text": "Skrumplever/fettlever" },
+        { "linkId": "0b8bd330-6770-4e53-e10a-6197aa83255a", "text": "Leversvikt" },
+        { "linkId": "d2a4c9b5-de9b-4b96-8a17-e3b8066b3b87", "text": "Annen leversykdom" },
+        { "linkId": "e7430cde-437c-4075-c107-2aec898c49a5", "text": "Diabetes" },
+        { "linkId": "1bbfc7a2-5173-43da-8882-df0ef7985031", "text": "Diabetes type 1" },
+        { "linkId": "a30dcb98-e648-4f9b-d328-6fd9cc58a79d", "text": "Diabetes type 2" },
+        { "linkId": "5b139562-1a56-41e0-a06b-03be70308fc3", "text": "Stoffskiftesykdom" },
+        { "linkId": "13.18", "text": "Høyt stoffskifte (hypertyreose)" },
+        { "linkId": "5010d26b-31a6-4822-8e8d-6870aad786e2", "text": "Lavt stoffskifte (hypotyreose)" },
+        { "linkId": "d858fbd4-97c9-4b3c-80b8-cb5480176325", "text": "Binyrebarksvikt (Addisons sykdom)" },
+        { "linkId": "28b1d055-c6b8-43c3-86b8-6f98425714cb", "text": "Annen stoffskiftesykdom" },
+        { "linkId": "c2c33634-46b0-4155-d2be-ba0fec57576b", "text": "Leddgikt eller muskel-skjelettsykdom" },
+        { "linkId": "9065f990-6d58-4287-9408-9637c380c68c", "text": "Arvelig muskelsykdom" },
+        { "linkId": "ad2621e3-8c67-4b0d-9e62-590850a95cf7", "text": "Leddgikt/RA" },
+        { "linkId": "3bb22f84-bb07-4638-bb9c-902dad1cbc40", "text": "Psoriasisartritt" },
+        { "linkId": "6393d4cc-149e-48dd-84e9-f8c1a1181955", "text": "ME/fibromyalgi" },
+        { "linkId": "af77c0a9-be77-4ccc-ed6a-4aa9fc868d42", "text": "Annen muskel/skjelettsykdom" },
+        { "linkId": "0ff545c9-9e52-40ef-cb8f-a27695e9746b", "text": "Mage- eller tarmproblemer" },
+        { "linkId": "682ec54a-7654-4c96-8cdf-8d5180b0a511", "text": "Irritabel tarmsyndrom (IBS)" },
+        { "linkId": "ecb2692e-b8d5-4390-87f3-81ed0c60de4a", "text": "Ulcerøs kolitt" },
+        { "linkId": "4ae60a3d-31f2-4ce1-8b8c-c0241c28efea", "text": "Crohns sykdom" },
+        { "linkId": "73c02f77-8bd8-4025-8aab-28e78cb1dc9b", "text": "Magesår" },
+        { "linkId": "111ebe41-2be2-4cbc-f0de-b33071db2d3c", "text": "Sure oppstøt/refluks" },
+        { "linkId": "546aa7dd-eb5e-4db0-8e19-a2b861cc8357", "text": "Annen mage eller tarmproblem" },
+        { "linkId": "34bc88ce-0bb1-489e-8ed1-c9a6975c2ddf", "text": "Psykisk sykdom" },
+        { "linkId": "9fc47d45-deac-4bdf-f758-de62988dac48", "text": "Depresjon" },
+        { "linkId": "5296eec7-f2fd-4f93-aafb-927ffff31f57", "text": "Angst" },
+        { "linkId": "386f3ca9-1a6f-43f5-88a3-7511f018b0bc", "text": "ADHD" },
+        { "linkId": "573440bb-8e5f-473e-eb83-41c2f8c8c43d", "text": "Annen psykisk sykdom" },
+        { "linkId": "165d9718-54bd-4e0f-dc9d-c7985a056135", "text": "Smittsom sykdom" },
+        { "linkId": "5b5b99a8-d612-465f-8c12-b8c651e25ff1", "text": "Hepatitt" },
+        { "linkId": "eb687677-c091-48ff-8881-a62bd43e9cc3", "text": "HIV" },
+        { "linkId": "0e9123ec-3de2-4c27-b434-a809ba1d52f6", "text": "MRSA" },
+        { "linkId": "93f75929-a89c-45a0-db92-752af163e665", "text": "VRE" },
+        { "linkId": "7b59b765-f121-4290-878e-ac531b488cf8", "text": "ESBL" },
+        { "linkId": "f999e252-dc2a-4d87-8e94-0af0fb7e8d0e", "text": "Annen smittsom sykdom" },
+        { "linkId": "3b21404c-b765-4235-eda6-2f4edd6849e1", "text": "Kreft" },
+        { "linkId": "3874aa4f-95db-4e0b-8421-beebbc4f8ece", "text": "Aktiv kreftsykdom" },
+        { "linkId": "75dc0226-6e0d-4e7a-8649-ebeb980456c2", "text": "Ferdigbehandlet kreftsykdom" },
+        { "linkId": "13.23", "text": "Annen sykdom" },
+        { "linkId": "11ac8d2f-2c29-4b90-f4ce-9e46c998fbcf", "text": "Annen sykdom er fylt ut" },
+        { "linkId": "5bb3d66e-f98f-4d40-8789-b2785544c7f1", "text": "Trappegang to etasjer i normalt tempo" },
+        { "linkId": "d397abc2-9400-46a3-e863-60746d0fe425", "text": "Brystsmerter ved trappegange" },
+        { "linkId": "55ce80a3-c228-4e6b-f134-f82a6475e6a3", "text": "Tungpustet ved trappegange" },
+        { "linkId": "977b1b72-859c-45d9-87c8-091d25deb4f6", "text": "Kan ikke gå i trapper" },
+        { "linkId": "05580736-dcb9-4d37-8871-06813d8a9b59", "text": "Er gravid" },
+        { "linkId": "7656076f-aa19-44fd-8d01-a1b28341151e", "text": "Ammer" },
+        { "linkId": "eb6e53f7-b920-434c-cf26-6d994b366adc", "text": "Diabetes" },
+        { "linkId": "13.14", "text": "Nevrologiske sykdommer (for eksempel epilepsi)" },
+        { "linkId": "08e3a021-04b0-4e17-8c5b-6e4402f760cb", "text": "Problemer med fordøyelsen" },
+        { "linkId": "13.12", "text": "Lungesykdom (for eksempel astma, cystisk fibrose eller søvnapné)" },
+        { "linkId": "dbf290fe-b113-4887-8d32-5491194fa525", "text": "Bruker forstøver, pustemaske eller andre hjelpemidler" },
+        { "linkId": "acb721eb-1c8b-4124-bb90-96995cba9916", "text": "Medfødte sykdommer (for eksempel hjertefeil)" },
+        { "linkId": "194fda7f-e9e9-48ef-d3cb-bce1f7805ef4", "text": "Annen sykdom" },
+        { "linkId": "639d5cf7-3dd6-43be-863d-e6cd6d859427", "text": "Annen sykdom er fylt ut" },
+        { "linkId": "13.26", "text": "Medisiner og allergier" },
+        { "linkId": "13.27", "text": "Bruker medisiner" },
+        { "linkId": "13.28", "text": "Allergisk mot noen medisiner" },
+        { "linkId": "87d6aca9-dbbd-4cf0-ecec-fa381c250b74", "text": "Allergisk mot noen matvarer, pollen, lateks, nikkel eller annet" },
+        { "linkId": "13.29", "text": "Reaksjon: Mild" },
+        { "linkId": "45d2e6cf-3d86-4ce1-d883-adeab9a45b87", "text": "Reaksjon: Moderat" },
+        { "linkId": "5ca3a218-1c3d-4dab-81ab-63238e1e7051", "text": "Reaksjon: Alvorlig" },
+        { "linkId": "13.30", "text": "Har reagert på røntgenkontrastmidler tidligere" },
+        { "linkId": "13.31", "text": "Mat, livsstil og dagligliv" },
+        { "linkId": "13.32", "text": "Kost: Diabeteskost" },
+        { "linkId": "13.33", "text": "Kost: Glutenfri kost" },
+        { "linkId": "13.34", "text": "Kost: Halal kost" },
+        { "linkId": "13.35", "text": "Kost: Kosher kost" },
+        { "linkId": "13.36", "text": "Kost: Laktosefri kost" },
+        { "linkId": "13.37", "text": "Kost: Melkeproteinfri kost" },
+        { "linkId": "13.38", "text": "Kost: Saltredusert kost" },
+        { "linkId": "13.39", "text": "Kost: Vegan kost" },
+        { "linkId": "13.40", "text": "Kost: Vegetar kost" },
+        { "linkId": "7e044d86-822a-4a17-b487-29f357fc5be3", "text": "Kost: Matallergi" },
+        { "linkId": "13.41", "text": "Kost: Annen spesialkost" },
+        { "linkId": "13.42", "text": "Problemer med å dusje, kle på seg og gjøre daglige gjøremål selv" },
+        { "linkId": "13.43", "text": "Problemer med å se, høre eller snakke" },
+        { "linkId": "13.44", "text": "Røyker daglig" },
+        { "linkId": "13.45", "text": "Røyker ukentlig" },
+        { "linkId": "13.46", "text": "Røkt tidligere" },
+        { "linkId": "13.47", "text": "Snuser daglig" },
+        { "linkId": "13.48", "text": "Snuser ukentlig" },
+        { "linkId": "13.50", "text": "Drikker alkohol ukentlig" },
+        { "linkId": "13.49", "text": "Drikker alkohol daglig" },
+        { "linkId": "13.51", "text": "Rusmidler" },
+        { "linkId": "554bc19f-f862-4633-9a83-57e48ead5b0d", "text": "**Dagligliv**" },
+        { "linkId": "7a7e7b17-546d-412e-81c3-bef6842144c3", "text": "Kost: Diabeteskost" },
+        { "linkId": "70777dd6-43c9-4095-9880-4b6d82becae3", "text": "Kost: Glutenfri kost" },
+        { "linkId": "585a552a-c557-4d04-820a-34bfa9414b5a", "text": "Kost: Halal kost" },
+        { "linkId": "ba32c5ef-1073-4682-eae5-bf15a5501d87", "text": "Kost: Kosher kost" },
+        { "linkId": "d7715b5d-2429-415d-962f-542034533d69", "text": "Kost: Laktosefri kost" },
+        { "linkId": "cf3dad08-a514-437d-aa70-18611da3f4ae", "text": "Kost: Melkeproteinfri kost" },
+        { "linkId": "5427474f-1d7c-439b-be42-51f45c40c28d", "text": "Kost: Saltredusert kost" },
+        { "linkId": "4d1e28a7-0ff0-4d56-fa1a-47aa92790f14", "text": "Kost: Vegan kost" },
+        { "linkId": "4a7d622e-7f41-4be2-8815-bce6994e35bb", "text": "Kost: Matallergi" },
+        { "linkId": "aa239d35-1d02-457a-c6a1-316740d4f7cf", "text": "Kost: Annen spesialkost" },
+        { "linkId": "fd787e51-b70c-4b45-a47f-97cf286df57c", "text": "Behov for hjelpemidler" },
+        { "linkId": "899898f7-414e-41df-8138-80ac2753fc47", "text": "Går i barnehage eller på skole" },
+        { "linkId": "13.52", "text": "Før eventuell operasjon eller undersøkelse i narkose" },
+        { "linkId": "13.53", "text": "Skal opereres eller undersøkes i narkose" },
+        { "linkId": "13.54", "text": "Vært i narkose tidligere" },
+        { "linkId": "13.55", "text": "Ikke vært i narkose tidligere" },
+        {
+          "linkId": "13.56",
+          "text": "Har reagert på narkose eller bedøvelse, eller noen i familien har reagert på narkose eller bedøvelse"
+        },
+        { "linkId": "13.57", "text": "Problemer med å bevege kjeve eller nakke, eller med å gape" },
+        { "linkId": "13.58", "text": "Tenner er reparerte eller løse" },
+        { "linkId": "13.59", "text": "Problemer med å ligge flatt på ryggen" },
+        {
+          "linkId": "33d15647-83cb-4c8a-f203-468a32d37ae9",
+          "text": "Har halsbrann, magesår, magekatarr, spiserørsbrokk, sure oppstøt eller lignende"
+        },
+        { "linkId": "13.61", "text": "Sår eller utslett i huden nær operasjonsstedet" },
+        {
+          "linkId": "4d0fc908-241c-446c-93f3-50de2047e103",
+          "text": "Har ikke en voksen person som kan være sammen med seg det første døgnet etter inngrepet/undersøkelsen."
+        },
+        { "linkId": "c681e268-051f-4886-a85d-2f76dd13ef09", "text": "Skal til gynekologisk avdeling" },
+        { "linkId": "a5a9bf0a-40a3-4641-9cc0-889bcad34d0f", "text": "Har vært gravid tidligere" },
+        { "linkId": "6c7ea88a-6590-4479-825f-8c7493974044", "text": "Har født ett eller flere barn" },
+        { "linkId": "651bc978-62a6-4d90-9715-cfba93b2c17c", "text": "Har abortert" },
+        { "linkId": "cd73c351-c6c1-4e51-f471-89c1b338c2ce", "text": "Har hatt svangerskap utenfor livmoren" },
+        { "linkId": "2faabfff-6fa0-4eb4-96d0-dc16765df8fc", "text": "Ble operert relatert til svangerskap utenfor livmoren" },
+        { "linkId": "565d3dad-ccb6-4512-8362-e13a46779523", "text": "Er tidligere behandlet for livmorhalsforandringer" },
+        { "linkId": "3531f7b2-af05-40ae-b3d3-5c42eb1f6852", "text": "Har fått vaksine mot HPV (Humant papillomavirus)" },
+        { "linkId": "7891a283-2510-4954-8054-356670e42e81", "text": "Har kommet i overgangsalderen (menopause)" },
+        { "linkId": "2609927b-f4d6-44b9-8a82-3755ed2b0c14", "text": "Har blitt operert i eller via skjeden" },
+        { "linkId": "2f68cd30-cbc6-432a-9ef8-db2c99f38695", "text": "Har blitt operert med kikkhull i magen/buken" },
+        { "linkId": "49813b82-f9ed-4ce0-952c-5713386840c6", "text": "Har blitt operert med åpen mage/bukoperasjon" },
+        { "linkId": "e9cc08bd-47a6-49a6-ad1d-f6c4de3bad36", "text": "Spørsmål til timeavtalen" },
+        {
+          "linkId": "bbe875e1-cbed-4ea9-9020-648df1a73e12",
+          "text": "Har vært smittet av eller bodd i samme husstand som en person som har vært smittet av resistente bakterier (MRSA, VRE eller ESBL)"
+        },
+        {
+          "linkId": "69bb7621-8c59-41f3-e5b7-d7f08f6332be",
+          "text": "Har arbeidet som helsearbeider eller vært innlagt i sykehus eller annen helseinstitusion utenfor Norden."
+        },
+        {
+          "linkId": "ad30598f-2d4a-401c-8a4c-fd1afbc13be3",
+          "text": "Har fått omfattende undersøkelse, behandling, injeksjoner eller tannbehandling i en helsetjeneste utenfor Norden"
+        },
+        { "linkId": "4420a865-595f-44ce-c944-4855d72caa1f", "text": "Har oppholdt seg i flyktningleir eller barnehjem utenfor Norden" },
+        {
+          "linkId": "873ab1ec-f815-4a43-a5eb-5ccdc012259c",
+          "text": "Har oppholdt seg sammenhengende i mer enn 6 uker utenfor Norden og har i tillegg kronisk eksem, sår eller hudinfeksjon"
+        },
+        { "linkId": "1517da5f-b516-4f1a-8844-0804bce42d66", "text": "Annet vi bør vite for å kunne gi deg god behandling" },
+        { "linkId": "d21eebda-a649-4a59-8f68-28e30dac6091", "text": "----- Oppsummering slutt -----" }
+      ]
+    },
+    {
+      "linkId": "99",
+      "text": "Innsending",
+      "item": [
+        { "linkId": "99.1", "text": "Helse Sør-Øst" },
+        {
+          "linkId": "99.2",
+          "text": "Skjemaet vil bli sendt til Akershus universitetssykehus HF. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "a959a24a-439d-4296-8d5f-ddc5da6b4c4f",
+          "text": "Skjemaet vil bli sendt til Diakonhjemmet sykehus. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "dbd2de88-ac3c-4230-b43e-235149702c3f",
+          "text": "Skjemaet vil bli sendt til Martina Hansens Hospital. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "99.3",
+          "text": "Skjemaet vil bli sendt til Oslo universitetssykehus HF. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "040a7472-8c34-44fc-9fa9-0923e8c5026b",
+          "text": "Skjemaet vil bli sendt til Sunnaas sykehus HF. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "99.5",
+          "text": "Skjemaet vil bli sendt til Sykehuset i Vestfold HF. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "99.6",
+          "text": "Skjemaet vil bli sendt til Sykehuset Innlandet HF. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "99.7",
+          "text": "Skjemaet vil bli sendt til Sykehuset Telemark HF. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "99.8",
+          "text": "Skjemaet vil bli sendt til Sykehuset Østfold HF. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "99.9",
+          "text": "Skjemaet vil bli sendt til Sørlandet sykehus HF. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "99.10",
+          "text": "Skjemaet vil bli sendt til Vestre Viken HF. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "99.11",
+          "text": "Skjemaet vil bli sendt til Revmatismesykehuset Lillehammer. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        },
+        {
+          "linkId": "99.12",
+          "text": "Skjemaet vil bli sendt til Betanien Hospital Skien. Er ikke dette korrekt, endre mottaker over. Sender du skjemaet til feil sykehus, må du selv kontakte sykehuset for å få det slettet fra din journal. I tillegg må du sende inn skjemaet på nytt, til rett sykehus."
+        }
+      ]
+    }
+  ]
+}
