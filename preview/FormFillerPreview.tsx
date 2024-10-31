@@ -23,10 +23,10 @@ import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
-import { IActionRequester, setSkjemaDefinitionAction } from '@/actions/form';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { configureStore } from '@reduxjs/toolkit';
 import HelpButton from './external-components/HelpButton';
+import { MimeType } from '@/util/attachmentHelper';
 
 type Props = {
   showFormFiller: () => void;
@@ -98,18 +98,8 @@ const fetchValueSetFn = (
     },
   });
 };
-const MimeTypes = {
-  PlainText: 'text/plain',
-  HTML: 'text/html',
-  CSV: 'text/csv',
-  JPG: 'image/jpeg',
-  PNG: 'image/png',
-  GIF: 'image/gif',
-  PDF: 'application/pdf',
-  JSON: 'application/json',
-};
 
-const FormFillerPreview = (props: Props): JSX.Element => {
+const FormFillerPreview = (): JSX.Element => {
   const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
 
   const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
@@ -192,7 +182,7 @@ const FormFillerPreview = (props: Props): JSX.Element => {
                   uploadAttachment={uploadAttachment}
                   onDeleteAttachment={onDeleteAttachment}
                   onOpenAttachment={onOpenAttachment}
-                  attachmentValidTypes={[MimeTypes.PNG, MimeTypes.JPG, MimeTypes.PDF, MimeTypes.PlainText]}
+                  attachmentValidTypes={[MimeType.PNG, MimeType.JPG, MimeType.JPEG, MimeType.PDF, MimeType.PlainText]}
                   attachmentMaxFileSize={1}
                   onRequestHelpButton={(_1, _2, _3, _4, opening) => {
                     return <HelpButton opening={opening} />;

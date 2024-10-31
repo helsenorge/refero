@@ -1,10 +1,12 @@
+import { useState } from 'react';
+
 import { Attachment, QuestionnaireItem } from 'fhir/r4';
-import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
-import FileUpload, { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import FileUpload, { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
 import { validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
@@ -67,9 +69,11 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     linkId,
     pdf,
     children,
+    multiple,
   } = props;
 
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
+  const [disableButton, setDisableButton] = useState(false);
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
@@ -77,7 +81,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
-  const { acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
+  const { acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles, register } = useFileUpload(
     internalRegister,
     [
       (file): true | string => (file ? validateFileType(file, validFileTypes, item, resources?.attachmentError_fileType) : true),
@@ -94,12 +98,18 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const handleUpload = (files: UploadFile[]): void => {
     onUpload(files);
     setAcceptedFiles(prevState => [...prevState, ...files]);
+    if (!multiple) {
+      setDisableButton(true);
+    }
   };
 
   const handleDelete = (fileId: string): void => {
     onDelete(fileId);
     setAcceptedFiles(acceptedFiles.filter(x => x.id !== fileId));
     setRejectedFiles(rejectedFiles.filter(x => x.id !== fileId));
+    if (!multiple) {
+      setDisableButton(false);
+    }
   };
 
   const getAttachmentValue = (): Attachment | Attachment[] | undefined => {
@@ -149,7 +159,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     validate: () => true,
     shouldUnregister: true,
   };
-  const { onChange, ...rest } = internalRegister(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -192,6 +202,9 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}
           onOpenFile={onOpen}
+          shouldUploadMultiple={multiple}
+          disabled={disableButton}
+          //validFileTypes={validFileTypes as MimeTypes[]}
         />
         {customErrorMessage && (
           <NotificationPanel label={customErrorMessage.Title} variant="error">
