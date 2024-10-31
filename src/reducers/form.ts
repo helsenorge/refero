@@ -411,7 +411,10 @@ function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form
 
   if (action.valueAttachment) {
     const attachmentToRemove = action.valueAttachment.url;
-    responseItem.answer = responseItem.answer.filter(el => el && el.valueAttachment && el.valueAttachment.url !== attachmentToRemove);
+    var index = responseItem.answer.findIndex(el => el && el.valueAttachment && el.valueAttachment.url === attachmentToRemove);
+    if (index > -1) {
+      responseItem.answer.splice(index, 1);
+    }
   }
 
   if (responseItem.answer.length === 0) {
