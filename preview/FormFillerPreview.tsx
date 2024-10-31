@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import {
   Attachment,
@@ -27,10 +27,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import HelpButton from './external-components/HelpButton';
 import Button from '@helsenorge/designsystem-react/components/Button';
 import { MimeType } from '@/util/attachmentHelper';
-
-type Props = {
-  showFormFiller: () => void;
-};
+import { setSkjemaDefinitionAction } from '@/index';
 
 const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
