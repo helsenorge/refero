@@ -1,3 +1,7 @@
+## 16.0.0-beta.58
+- attachment fixes
+- added css class to hide buttons in form
+
 ## 16.0.0-beta.57
 - Added validation for digits in Time
 - Bugfix: The time 00:00 got validation error in Time
