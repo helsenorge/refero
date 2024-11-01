@@ -204,7 +204,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           onOpenFile={onOpen}
           shouldUploadMultiple={multiple}
           disabled={disableButton}
-          //validFileTypes={validFileTypes as MimeTypes[]}
+          validFileTypes={validFileTypes as MimeTypes[]}
         />
         {customErrorMessage && (
           <NotificationPanel label={customErrorMessage.Title} variant="error">
