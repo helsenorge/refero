@@ -19,7 +19,8 @@ type Props = {
   resources?: Resources;
   labelId: string;
   testId: string;
-  labelText?: LabelText[];
+  labelTexts?: LabelText[];
+  labelText?: string;
   htmlFor?: string;
   sublabelId?: string;
   sublabelTestId?: string;
@@ -33,6 +34,7 @@ export const ReferoLabel = ({
   item,
   resources,
   labelId,
+  labelTexts,
   labelText,
   htmlFor,
   testId,
@@ -47,7 +49,7 @@ export const ReferoLabel = ({
   const questionnaire = useSelector((state: GlobalState) => getFormDefinition(state))?.Content;
   const { onRenderMarkdown } = useExternalRenderContext();
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const lblText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+  const lblText = labelText ? labelText : getLabelText(item, onRenderMarkdown, questionnaire, resources);
 
   return (
     <>
@@ -56,7 +58,7 @@ export const ReferoLabel = ({
           <Label
             labelId={labelId}
             testId={testId}
-            labelTexts={labelText || []}
+            labelTexts={labelTexts || []}
             htmlFor={htmlFor}
             className={styles.pageReferoLabel}
             afterLabelChildren={afterLabelChildren}

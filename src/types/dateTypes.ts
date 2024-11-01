@@ -4,6 +4,11 @@ export enum DateTimeUnit {
   Minutes = 'minutes',
 }
 
+export enum TimeUnit {
+  Hours = 'hours',
+  Minutes = 'minutes',
+}
+
 export enum DatePickerFormat {
   HH = 'HH',
   mm = 'mm',

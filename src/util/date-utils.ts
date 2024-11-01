@@ -14,7 +14,7 @@ import {
 } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { DateFormat, DatePickerFormat, DateTimeUnit, TimeValues } from '../types/dateTypes';
+import { DateFormat, DatePickerFormat, DateTimeUnit, TimeUnit, TimeValues } from '../types/dateTypes';
 
 import { safeParseJSON } from './date-fns-utils';
 import { Resources } from './resources';
@@ -276,15 +276,31 @@ export const validateMaxDate = (
   return true;
 };
 
+export const validateTimeDigits = (
+  timeToValidate: string | undefined,
+  timeUnit: TimeUnit,
+  resources: Resources | undefined
+): true | string => {
+  if (timeToValidate && timeToValidate.length > 2) {
+    if (timeUnit === TimeUnit.Hours) {
+      return resources?.timeError_hours_digits || '';
+    }
+    if (timeUnit === TimeUnit.Minutes) {
+      return resources?.timeError_minutes_digits || '';
+    }
+  }
+  return true;
+};
+
 export const validateHours = (hours: number | undefined, resources: Resources | undefined): true | string => {
-  if (!hours || (hours && (hours < 0 || hours >= 24))) {
+  if (hours === undefined || hours === null || (hours && (hours < 0 || hours >= 24))) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
 
 export const validateMinutes = (minutes: number | undefined, resources: Resources | undefined): true | string => {
-  if (!minutes || (minutes && (minutes < 0 || minutes >= 60))) {
+  if (minutes === undefined || minutes === null || (minutes && (minutes < 0 || minutes >= 60))) {
     return resources?.dateError_time_invalid || '';
   }
   return true;

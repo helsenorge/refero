@@ -316,6 +316,8 @@ export const getResources = (language: string): Resources => {
     attachmentError_fileSize: 'Filstørrelse må være mindre enn {0}MB',
     attachmentError_fileType: 'Tillatte filtyper er:',
     dateError_invalid: 'Ugyldig dato',
+    timeError_hours_digits: 'Felt for timer tillater kun 2 tegn',
+    timeError_minutes_digits: 'Felt for minutter tillater kun 2 tegn',
     dateError_time_invalid: 'Ugyldig klokkeslett',
     dateFormat_ddmmyyyy: '(dd.mm.åååå)',
     dateLabel_january: 'Januar',
