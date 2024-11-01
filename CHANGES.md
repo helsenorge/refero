@@ -1,4 +1,11 @@
 ## 16.0.0-beta.55
+- Bugfix: Content not being displayed when Qr is updated from outside
+- Bugfix: Attachemnt files not being removed when item is removed
+- Bugfix: Boolean now has normal text style
+- Better debuging with preview mode. Added posibility to update qr from GUI
+- Skip Attachemnt test, attachment is still WIP
+
+## 16.0.0-beta.55
 - Bugfix: Backspace deleted the entire datestring in DateDay and DateTime
 - Bugfix: FormButtons placement
 

@@ -11,7 +11,12 @@ import { submitForm } from '@test/selectors';
 import { ExtensionConstants } from '@/index';
 import { MimeType } from '@/util/attachmentHelper';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
-import { validateFileSize, validateFileType, validateNumberOfFiles, validateTotalFileSize } from '@helsenorge/file-upload/components/file-upload/validate-utils';
+import {
+  validateFileSize,
+  validateFileType,
+  validateNumberOfFiles,
+  validateTotalFileSize,
+} from '@helsenorge/file-upload/components/file-upload/validate-utils';
 import React from 'react';
 import FileUpload, { MimeTypes, Props } from '@helsenorge/file-upload/components/file-upload';
 import { FieldValues, useForm } from 'react-hook-form';
@@ -288,7 +293,7 @@ function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps>
   const attahchmentProps: Partial<ReferoProps> = {
     attachmentErrorMessage: undefined,
     attachmentMaxFileSize: 20,
-    attachmentValidTypes: [MimeType.JPG, MimeType.PNG, MimeType.PDF, MimeType.PlainText],  
+    attachmentValidTypes: [MimeType.JPG, MimeType.PNG, MimeType.PDF, MimeType.PlainText],
     onRequestAttachmentLink: vi.fn(),
     onOpenAttachment: vi.fn(),
     onDeleteAttachment: vi.fn(),
