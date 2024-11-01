@@ -20,6 +20,7 @@ import {
   validateMaxTime,
   validateMinTime,
   validateMinutes,
+  validateTimeDigits,
 } from '@/util/date-utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { QuestionnaireItem } from 'fhir/r4';
@@ -30,6 +31,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage, isNumber } from '@/components/validation/rules';
+import { TimeUnit } from '@/types/dateTypes';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -118,6 +120,9 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
       message: resources?.formRequiredErrorMessage || '',
     },
     validate: {
+      validDigits: value => {
+        return value ? validateTimeDigits(value, TimeUnit.Hours, resources) : true;
+      },
       validHours: value => {
         const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
         return value && minutesValue ? validateHours(Number(value), resources) : true;
@@ -140,6 +145,9 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
       message: resources?.formRequiredErrorMessage || '',
     },
     validate: {
+      validDigits: value => {
+        return value ? validateTimeDigits(value, TimeUnit.Minutes, resources) : true;
+      },
       validMinutes: value => {
         const hoursValue = getValues(idWithLinkIdAndItemIndex + '-hours');
         return value && hoursValue ? validateMinutes(Number(value), resources) : true;

@@ -424,6 +424,14 @@ export interface Resources {
    */
   dateError_invalid?: string;
   /**
+   * Felt for timer tillater kun 2 tegn
+   */
+  timeError_hours_digits?: string;
+  /**
+   * Felt for minutter tillater kun 2 tegn
+   */
+  timeError_minutes_digits?: string;
+  /**
    * Ugyldig klokkeslett
    */
   dateError_time_invalid?: string;

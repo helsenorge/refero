@@ -6,19 +6,18 @@ import styles from '../common-styles.module.css';
 import { EnhetType, OrgenhetHierarki } from '@/types/orgenhetHierarki';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { getId, isReadOnly } from '@/util';
 
-import SafeText from '../../referoLabel/SafeText';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { ReadOnly } from '../read-only/readOnly';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 export type ReceiverComponentProps = QuestionnaireComponentItemProps & {
   item?: QuestionnaireItem;
@@ -174,11 +173,22 @@ const ReceiverComponent = ({
     return '';
   };
 
+  const doesValueExistInReceiverArray = (searchData: Array<OrgenhetHierarki>, searchPath: Array<number>, valueToFind: string): boolean => {
+    const receiverNodes = searchPath.map((_x, index) => {
+      return findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
+    });
+    const match = receiverNodes.find(node => node?.OrgenhetId === Number(valueToFind));
+    return match ? true : false;
+  };
+
   const createSelect = (treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element => {
     const fieldState = getFieldState(`${idWithLinkIdAndItemIndex}-${selectKey}`, formState);
     const { error } = fieldState;
 
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
+    const defaultOption = new Option(resources?.selectDefaultPlaceholder, '');
+    selectOptions.unshift(defaultOption);
+
     const label = getLabelText(treeNodes[0].EnhetType) || '';
     const value = selectedPath[level] ? selectedPath[level].toString() : '';
     const errorMessage = getErrorMessage(item, error);
@@ -193,8 +203,17 @@ const ReceiverComponent = ({
 
     const validationRules: RegisterOptions<FieldValues, string> | undefined = {
       required: required({ item, resources, message: resources?.adresseKomponent_feilmelding }),
-      validate: (): true | string =>
-        getReceiverName(receiverTreeNodes, selectedPath) ? true : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
+      validate: {
+        validReceiverName: value => {
+          if (value) {
+            return doesValueExistInReceiverArray(receiverTreeNodes, selectedPath, value)
+              ? true
+              : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng';
+          } else {
+            return true;
+          }
+        },
+      },
       shouldUnregister: true,
     };
     const { onChange, ...rest } = register(
@@ -219,6 +238,15 @@ const ReceiverComponent = ({
     }
     return (
       <FormGroup error={errorMessage} errorWrapperClassName={styles.paddingBottom}>
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={`${getId(id)}-${selectKey}`}
+          labelId={`${getId(id)}-label`}
+          testId={`${getId(id)}-label-test`}
+          sublabelId={`${getId(id)}-sublabel`}
+          labelText={label}
+        />
         <Select
           {...rest}
           key={`${selectKey}-${level}`}
@@ -226,14 +254,9 @@ const ReceiverComponent = ({
             handleSelectChange(e);
             onChange(e);
           }}
-          value={value}
+          value={value ?? selectOptions[0].value}
           testId={`${getId(id)}-${selectKey}`}
           selectId={`${getId(id)}-${selectKey}`}
-          label={
-            <Label labelTexts={[]}>
-              <SafeText text={label} />
-            </Label>
-          }
           className="page_refero__input"
         >
           {selectOptions.map(option => {
