@@ -1,4 +1,11 @@
-## 16.0.0-beta.55
+## 16.0.0-beta.57
+- Added validation for digits in Time
+- Bugfix: The time 00:00 got validation error in Time
+- Added ReferoLabel in Receiver
+- Display default text in Receiver
+- Bugfix: Validation in Receiver acted crazy
+
+## 16.0.0-beta.56
 - Bugfix: Content not being displayed when Qr is updated from outside
 - Bugfix: Attachemnt files not being removed when item is removed
 - Bugfix: Boolean now has normal text style
