@@ -1,3 +1,5 @@
+import { parse, parseISO } from 'date-fns';
+
 export enum DateTimeUnit {
   Date = 'date',
   Hours = 'hours',
@@ -28,3 +30,6 @@ export interface TimeValues {
   hours: string;
   minutes: string;
 }
+
+export const defaultMinDate = parseISO('1994-01-31');
+export const defaultMaxDate = parseISO('2024-12-31');
