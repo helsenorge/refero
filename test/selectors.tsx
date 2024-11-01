@@ -15,6 +15,12 @@ export async function repeatNTimes(input: string, n: number, labelText: Matcher)
     await clickButtonTimes(/-repeat-button/i, 1);
   }
 }
+export async function repeatGroupNTimes(input: string, n: number, labelText: Matcher, startIndex = 0): Promise<void> {
+  for (let i = startIndex; i < n; i++) {
+    await userEvent.type(screen.queryAllByLabelText(labelText)[i], input);
+    await userEvent.click(screen.queryAllByTestId(/-repeat-button/i)[i + 1]);
+  }
+}
 export async function selectDropdownOptionByName(
   dropdownId: Matcher,
   optionName: string | RegExp | ((accessibleName: string, element: Element) => boolean) | undefined

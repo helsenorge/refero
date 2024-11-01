@@ -18,20 +18,20 @@ const resources = {
 describe('Date year', () => {
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
-      const { queryByText } = createWrapper(q, { pdf: true });
-      expect(queryByText('Ikke besvart')).toBeInTheDocument();
+      createWrapper(q, { pdf: true });
+      expect(screen.queryByText('Ikke besvart')).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
-      const { queryByText } = createWrapper(questionnaire);
-      expect(queryByText('Ikke besvart')).toBeInTheDocument();
+      createWrapper(questionnaire);
+      expect(screen.queryByText('Ikke besvart')).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', () => {
-      const { queryByText } = createWrapper(q);
-      expect(queryByText('Ikke besvart')).not.toBeInTheDocument();
+      createWrapper(q);
+      expect(screen.queryByText('Ikke besvart')).not.toBeInTheDocument();
     });
   });
   describe('initialvalue', () => {
@@ -43,9 +43,9 @@ describe('Date year', () => {
           repeats: false,
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      createWrapper(questionnaire);
 
-      expect(getByLabelText(/Dato/i)).toHaveValue(null);
+      expect(screen.getByLabelText(/Dato/i)).toHaveValue(null);
     });
 
     it('Initial value should be set', async () => {

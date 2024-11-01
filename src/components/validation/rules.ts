@@ -18,7 +18,15 @@ type ValidationRuleInput = {
 type ValidationRuleReturnValue<T extends ValidationValue = ValidationValue> = string | ValidationRule<T> | undefined;
 
 export const isNumber = (input: unknown): input is number => {
-  return typeof input === 'number' && Number.isFinite(input);
+  if (typeof input === 'number' && Number.isFinite(input)) {
+    return true;
+  }
+
+  if (typeof input === 'string' && input.trim() !== '' && !isNaN(Number(input))) {
+    return true;
+  }
+
+  return false;
 };
 
 export const getErrorMessage = (item: QuestionnaireItem | undefined, error: FieldError | undefined): string | undefined => {

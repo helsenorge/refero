@@ -1,6 +1,7 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "id": "122e17a7-e34d-4886-99dc-cdfe5684e044",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -59,18 +60,18 @@
       }
     }
   ],
-  "id": "122e17a7-e34d-4886-99dc-cdfe5684e044",
   "item": [
     {
       "linkId": "bb872176-bda2-44ee-879c-1600f745abd7",
       "type": "group",
       "text": "REPEATEABLE GROUP",
+      "required": false,
+      "repeats": true,
       "item": [
         {
           "linkId": "a511b461-8271-4f11-fc6e-1e0d0247f48c",
           "type": "integer",
           "text": "REPEATABLE INT",
-          "required": true,
           "repeats": true,
           "extension": [
             {
@@ -87,9 +88,7 @@
             }
           ]
         }
-      ],
-      "required": false,
-      "repeats": true
+      ]
     }
   ]
 }

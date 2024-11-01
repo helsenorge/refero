@@ -199,7 +199,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
             {...restHours}
             inputId={`${getId(id)}-datetime-hours`}
             testId={`time-1`}
-            defaultValue={isNumber(hours) ? Number(hours) : 0}
+            value={isNumber(hours) ? Number(hours) : undefined}
             timeUnit="hours"
             onChange={e => {
               handleHoursChange(e.target.value);
@@ -210,7 +210,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
           <DateTime
             {...restMinutes}
             testId={`time-2`}
-            defaultValue={isNumber(minutes) ? Number(minutes) : 0}
+            value={isNumber(minutes) ? Number(minutes) : undefined}
             timeUnit="minutes"
             onChange={e => {
               handleMinutesChange(e.target.value);
