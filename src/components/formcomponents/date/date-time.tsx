@@ -7,7 +7,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { format, isValid } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
-import { DateFormat, DateTimeUnit } from '../../../types/dateTypes';
+import { DateFormat, DateTimeUnit, TimeUnit } from '../../../types/dateTypes';
 
 import { newDateTimeValueAsync } from '../../../actions/newValue';
 import { GlobalState, useAppDispatch } from '../../../reducers';
@@ -22,6 +22,7 @@ import {
   validateMinutes,
   parseStringToDate,
   getPDFValueForDate,
+  validateTimeDigits,
 } from '../../../util/date-utils';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
@@ -173,6 +174,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
       message: resources?.formRequiredErrorMessage || '',
     },
     validate: {
+      validDigits: value => {
+        return value ? validateTimeDigits(value, TimeUnit.Hours, resources) : true;
+      },
       validHours: value => {
         return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources) : true;
       },
@@ -186,6 +190,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
       message: resources?.formRequiredErrorMessage || '',
     },
     validate: {
+      validDigits: value => {
+        return value ? validateTimeDigits(value, TimeUnit.Minutes, resources) : true;
+      },
       validMinutes: value => {
         return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources) : true;
       },
