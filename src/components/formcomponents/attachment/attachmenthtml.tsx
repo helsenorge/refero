@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { Attachment, QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
@@ -22,6 +20,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { ReadOnly } from '../read-only/readOnly';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
+import { useAttachmentSync } from './useAttachmentSync';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -73,15 +72,18 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   } = props;
 
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
-  const [disableButton, setDisableButton] = useState(false);
+
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
   const answer = useGetAnswer(linkId, path);
-  const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
-  const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
-  const deleteText = resources ? resources.deleteAttachmentText : undefined;
-  const { acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles, register } = useFileUpload(
+  const {
+    setAcceptedFiles,
+    setRejectedFiles,
+    register,
+    acceptedFiles: extAccepted,
+    rejectedFiles: extRejected,
+  } = useFileUpload(
     internalRegister,
     [
       (file): true | string => (file ? validateFileType(file, validFileTypes, item, resources?.attachmentError_fileType) : true),
@@ -94,23 +96,19 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
         files.length && maxFiles ? validateMaxFiles(files, maxFiles, item, resources?.attachmentError_maxFiles) : true,
     ]
   );
-
-  const handleUpload = (files: UploadFile[]): void => {
-    onUpload(files);
-    setAcceptedFiles(prevState => [...prevState, ...files]);
-    if (!multiple) {
-      setDisableButton(true);
-    }
-  };
-
-  const handleDelete = (fileId: string): void => {
-    onDelete(fileId);
-    setAcceptedFiles(acceptedFiles.filter(x => x.id !== fileId));
-    setRejectedFiles(rejectedFiles.filter(x => x.id !== fileId));
-    if (!multiple) {
-      setDisableButton(false);
-    }
-  };
+  const { acceptedFiles, rejectedFiles, handleDelete, handleUpload, disableButton } = useAttachmentSync({
+    multiple,
+    onUpload,
+    onDelete,
+    answer,
+    rejectedFiles: extRejected,
+    acceptedFiles: extAccepted,
+    setAcceptedFiles,
+    setRejectedFiles,
+  });
+  const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
+  const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
+  const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
   const getAttachmentValue = (): Attachment | Attachment[] | undefined => {
     if (Array.isArray(answer)) {
