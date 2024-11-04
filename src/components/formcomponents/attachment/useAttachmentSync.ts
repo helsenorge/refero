@@ -19,6 +19,7 @@ type UseAttachmentSyncReturn = {
   disableButton: boolean;
   handleUpload: (files: UploadFile[]) => void;
   handleDelete: (fileId: string) => void;
+  value: Attachment[];
 };
 
 export const useAttachmentSync = ({
@@ -54,7 +55,6 @@ export const useAttachmentSync = ({
     }
   };
 
-  // Function to extract attachments from answer
   const getAttachmentsFromAnswer = (): Attachment[] => {
     if (Array.isArray(answer)) {
       return answer.map(ans => ans.valueAttachment).filter((attachment): attachment is Attachment => attachment !== undefined);
@@ -113,5 +113,6 @@ export const useAttachmentSync = ({
     disableButton,
     handleUpload,
     handleDelete,
+    value: getAttachmentsFromAnswer(),
   };
 };

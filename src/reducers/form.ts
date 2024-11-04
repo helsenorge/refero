@@ -404,6 +404,7 @@ function processRemoveCodingStringValueAction(action: NewValuePayload, state: Fo
 }
 
 function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form): Form {
+  console.log('action', action);
   const responseItem = getResponseItemWithPath(action.itemPath || [], state.FormData);
   if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
     return state;
@@ -411,7 +412,7 @@ function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form
 
   if (action.valueAttachment) {
     const attachmentToRemove = action.valueAttachment.title;
-    var index = responseItem.answer.findIndex(el => el && el.valueAttachment && el.valueAttachment.title === attachmentToRemove);
+    const index = responseItem.answer.findIndex(el => el && el.valueAttachment && el.valueAttachment.title === attachmentToRemove);
     if (index > -1) {
       responseItem.answer.splice(index, 1);
     }

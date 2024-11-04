@@ -1,4 +1,4 @@
-import { Attachment, QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -7,7 +7,12 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import FileUpload, { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
-import { validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
+import { getCustomValidationText } from './attachment-validation';
+import {
+  validateNumberOfFiles,
+  validateFileType,
+  validateTotalFileSize,
+} from '@helsenorge/file-upload/components/file-upload/validate-utils';
 import { getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
 import { VALID_FILE_TYPES } from '@/constants';
 import { getId, isReadOnly } from '@/util';
@@ -39,7 +44,7 @@ type Props = QuestionnaireComponentItemProps & {
   minFiles?: number;
   item?: QuestionnaireItem;
   attachmentMaxFileSize?: number;
-  attachmentValidTypes?: Array<string>;
+  attachmentValidTypes?: MimeTypes[];
   idWithLinkIdAndItemIndex: string;
   customErrorMessage: TextMessage | undefined;
 };
@@ -77,6 +82,17 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
 
   const answer = useGetAnswer(linkId, path);
+  const numberOfFilesMessage = getCustomValidationText(
+    item,
+    (minFiles && !maxFiles && resources?.attachmentError_minFiles) ||
+      (maxFiles && !minFiles && resources?.attachmentError_maxFiles) ||
+      (maxFiles && minFiles && resources?.attachmentError_minFiles) ||
+      undefined
+  );
+  const validationFileTypesMessage = getCustomValidationText(item, resources?.attachmentError_fileType);
+  const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
+  const validFileTypes: MimeTypes[] = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
+
   const {
     setAcceptedFiles,
     setRejectedFiles,
@@ -85,18 +101,13 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     rejectedFiles: extRejected,
   } = useFileUpload(
     internalRegister,
+    [validateFileType(validFileTypes, validationFileTypesMessage)],
     [
-      (file): true | string => (file ? validateFileType(file, validFileTypes, item, resources?.attachmentError_fileType) : true),
-      (file): true | string => (file ? validateFileSize(file, getMaxValueBytes, item, resources?.attachmentError_fileSize) : true),
-    ],
-    [
-      (files): true | string =>
-        files.length && minFiles ? validateMinFiles(files, minFiles, item, resources?.attachmentError_minFiles) : true,
-      (files): true | string =>
-        files.length && maxFiles ? validateMaxFiles(files, maxFiles, item, resources?.attachmentError_maxFiles) : true,
+      validateNumberOfFiles(minFiles ?? 0, maxFiles ?? 0, numberOfFilesMessage),
+      validateTotalFileSize(0, getMaxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize)),
     ]
   );
-  const { acceptedFiles, rejectedFiles, handleDelete, handleUpload, disableButton } = useAttachmentSync({
+  const { acceptedFiles, rejectedFiles, handleDelete, handleUpload, disableButton, value } = useAttachmentSync({
     multiple,
     onUpload,
     onDelete,
@@ -106,36 +117,16 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     setAcceptedFiles,
     setRejectedFiles,
   });
-  const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
-  const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
-  const getAttachmentValue = (): Attachment | Attachment[] | undefined => {
-    if (Array.isArray(answer)) {
-      return answer.map(v => v.valueAttachment).filter((attachment): attachment is Attachment => attachment !== undefined);
-    } else if (answer && answer.valueAttachment) {
-      return answer.valueAttachment;
-    }
-    return undefined;
-  };
-
-  const attachmentValue = getAttachmentValue();
-
   const getAttachmentValueForPdf = (): UploadedFile[] | undefined => {
-    if (Array.isArray(attachmentValue)) {
-      return attachmentValue.map(attachment => {
+    if (Array.isArray(value)) {
+      return value.map(attachment => {
         return {
           id: attachment.url ?? '-1',
           name: attachment.title || '',
         };
       });
-    } else if (attachmentValue && attachmentValue.url) {
-      return [
-        {
-          id: attachmentValue.url,
-          name: attachmentValue.title || '',
-        },
-      ];
     }
 
     return undefined;
@@ -166,7 +157,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
         item={item}
-        value={attachmentValue}
+        value={value}
         pdfValue={getPdfValue()}
         errors={error}
       >
@@ -190,9 +181,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           {...rest}
           wrapperTestId={`${getId(id)}-attachment`}
           inputId={id}
-          onChange={e => {
-            onChange(e);
-          }}
+          onChange={onChange}
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}
