@@ -26,6 +26,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useAttachmentSync } from './useAttachmentSync';
+import { useEffect } from 'react';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -74,6 +75,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     pdf,
     children,
     multiple,
+    onRequestAttachmentLink,
   } = props;
 
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
@@ -116,25 +118,34 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     acceptedFiles: extAccepted,
     setAcceptedFiles,
     setRejectedFiles,
+    item,
   });
+
+  useEffect(() => {
+    if (onRequestAttachmentLink && acceptedFiles.length > 0) {
+      for (const file of acceptedFiles) {
+        onRequestAttachmentLink(file.id);
+      }
+    }
+  }, [acceptedFiles, onRequestAttachmentLink]);
+
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
-  const getAttachmentValueForPdf = (): UploadedFile[] | undefined => {
-    if (Array.isArray(value)) {
-      return value.map(attachment => {
-        return {
-          id: attachment.url ?? '-1',
-          name: attachment.title || '',
-        };
-      });
-    }
-
-    return undefined;
-  };
-
   const getPdfValue = (): string => {
+    const getAttachmentValueForPdf = (): UploadedFile[] | undefined => {
+      if (Array.isArray(value)) {
+        return value.map(attachment => {
+          return {
+            id: attachment.url ?? '-1',
+            name: attachment.title || '',
+          };
+        });
+      }
+
+      return undefined;
+    };
     const attachmentValueForPdf = getAttachmentValueForPdf();
-    if (attachmentValueForPdf) {
+    if (attachmentValueForPdf && attachmentValueForPdf.length > 0) {
       return attachmentValueForPdf.map(v => v.name).join(', ');
     } else if (resources) {
       return resources.ikkeBesvart;

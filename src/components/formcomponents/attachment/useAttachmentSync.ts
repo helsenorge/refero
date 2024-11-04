@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Attachment, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import { getMaxOccursExtensionValue } from '@/util/extension';
 
 type UseAttachmentSyncParams = {
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined;
@@ -11,6 +12,7 @@ type UseAttachmentSyncParams = {
   setRejectedFiles: React.Dispatch<React.SetStateAction<UploadFile[]>>;
   acceptedFiles: UploadFile[];
   rejectedFiles: UploadFile[];
+  item?: QuestionnaireItem;
 };
 
 type UseAttachmentSyncReturn = {
@@ -31,6 +33,7 @@ export const useAttachmentSync = ({
   setRejectedFiles,
   acceptedFiles,
   rejectedFiles,
+  item,
 }: UseAttachmentSyncParams): UseAttachmentSyncReturn => {
   const [disableButton, setDisableButton] = useState(false);
 
@@ -40,9 +43,6 @@ export const useAttachmentSync = ({
     internalUpdateRef.current = true;
     onUpload(files);
     setAcceptedFiles(prevState => [...prevState, ...files]);
-    if (!multiple) {
-      setDisableButton(true);
-    }
   };
 
   const handleDelete = (fileId: string): void => {
@@ -50,9 +50,6 @@ export const useAttachmentSync = ({
     onDelete(fileId);
     setAcceptedFiles(prevState => prevState.filter(x => x.id !== fileId));
     setRejectedFiles(prevState => prevState.filter(x => x.id !== fileId));
-    if (!multiple) {
-      setDisableButton(false);
-    }
   };
 
   const getAttachmentsFromAnswer = (): Attachment[] => {
@@ -63,6 +60,16 @@ export const useAttachmentSync = ({
     }
     return [];
   };
+  useEffect(() => {
+    const max = getMaxOccursExtensionValue(item);
+    if (max === undefined && acceptedFiles.length > 0) {
+      setDisableButton(true);
+    } else if (max !== undefined && acceptedFiles.length > max) {
+      setDisableButton(true);
+    } else {
+      setDisableButton(false);
+    }
+  }, [acceptedFiles]);
 
   useEffect(() => {
     if (internalUpdateRef.current) {
@@ -94,15 +101,9 @@ export const useAttachmentSync = ({
         });
         setAcceptedFiles(files);
         setRejectedFiles([]);
-        if (!multiple) {
-          setDisableButton(files.length > 0);
-        }
       } else {
         setAcceptedFiles([]);
         setRejectedFiles([]);
-        if (!multiple) {
-          setDisableButton(false);
-        }
       }
     }
   }, [answer, multiple]);

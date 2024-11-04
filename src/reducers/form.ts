@@ -404,15 +404,13 @@ function processRemoveCodingStringValueAction(action: NewValuePayload, state: Fo
 }
 
 function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form): Form {
-  console.log('action', action);
   const responseItem = getResponseItemWithPath(action.itemPath || [], state.FormData);
   if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
     return state;
   }
 
   if (action.valueAttachment) {
-    const attachmentToRemove = action.valueAttachment.title;
-    const index = responseItem.answer.findIndex(el => el && el.valueAttachment && el.valueAttachment.title === attachmentToRemove);
+    const index = responseItem.answer.findIndex(el => el && el.valueAttachment && el.valueAttachment.id === action.valueAttachment?.id);
     if (index > -1) {
       responseItem.answer.splice(index, 1);
     }
@@ -503,6 +501,7 @@ function processNewValueAction(payload: NewValuePayload, state: Form): Form {
     hasAnswer = true;
 
     const attachment: Attachment = {
+      id: payload.valueAttachment.id,
       url: payload.valueAttachment.url,
       title: payload.valueAttachment.title,
       data: payload.valueAttachment.data,

@@ -66,7 +66,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           const attachment: Attachment = { title: fileId };
           if (path)
             dispatch(removeAttachmentAsync(path, attachment, item))?.then(
-              newState => onAnswerChange && onAnswerChange(newState, item, { valueAttachment: attachment })
+              newState => onAnswerChange && onAnswerChange(newState, item, { valueAttachment: { id: fileId } })
             );
         }
       };
