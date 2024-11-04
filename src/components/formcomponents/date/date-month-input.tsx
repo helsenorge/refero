@@ -196,8 +196,9 @@ export const DateYearMonthInput = ({
             handleYearChange(e.target.value, monthValue);
             onChangeYear(e);
           }}
-          width={10}
+          width={5}
           value={year}
+          label={resources?.dateLabel_year}
         />
         <Select
           {...restMonth}
@@ -210,6 +211,7 @@ export const DateYearMonthInput = ({
             onChangeMonth(e);
           }}
           value={month ?? monthOptions[0].optionValue}
+          label={resources?.dateLabel_month}
         >
           {monthOptions.map(option => (
             <option key={option.optionValue} value={option.optionValue}>
