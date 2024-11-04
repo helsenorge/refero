@@ -7,7 +7,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { newIntegerValueAsync } from '@/actions/newValue';
 import { GlobalState, useAppDispatch } from '@/reducers';
-import { getMaxValueExtensionValue, getPlaceholder } from '@/util/extension';
+import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -76,6 +76,7 @@ const Integer = (props: Props): JSX.Element | null => {
 
   const value = getValue();
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
+  const baseIncrementValue = getMinValueExtensionValue(item);
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
   const errorMessage = getErrorMessage(item, error);
 
@@ -127,6 +128,7 @@ const Integer = (props: Props): JSX.Element | null => {
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
           width={width}
+          baseIncrementValue={baseIncrementValue}
         />
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
         <RenderRepeatButton path={path} item={item} index={index} />
