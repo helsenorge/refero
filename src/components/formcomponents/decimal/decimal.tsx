@@ -19,7 +19,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { decimalPattern, getErrorMessage, maxValue, minValue, required } from '@/components/validation/rules';
+import { decimalPattern, getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
@@ -87,7 +87,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   const value = getValue(item, answer);
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const baseIncrementValue = getMinValueExtensionValue(item);
-  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
+  const width = getInputWidth(maxCharacters);
   const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
