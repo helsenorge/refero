@@ -8,7 +8,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
-import { getFullMomentDate } from '@helsenorge/date-time/components/date-time-picker/date-time-picker-utils';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import Validation from '@helsenorge/form/components/form/validation';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
@@ -108,11 +107,32 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
+  getFullMomentDate = (date: Moment | undefined, time: string | undefined): Moment | undefined => {
+    if (!date || !time) return undefined;
+    
+    const timeParts = time.split(':');
+    if (timeParts.length !== 2) return undefined;
+    
+    const [hour, minute] = timeParts.map(num => num.trim());
+    const hourNum = parseInt(hour, 10);
+    const minuteNum = parseInt(minute, 10);
+    
+    if (isNaN(hourNum) || isNaN(minuteNum) || hourNum < 0 || hourNum > 23 || minuteNum < 0 || minuteNum > 59) {
+        return undefined;
+    }
+
+    return moment(date).set({
+        hour: hourNum, 
+        minute: minuteNum
+    });
+};
+
   dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
     const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = this.props;
-    const momentDate = getFullMomentDate(date, time);
+    const momentDate = this.getFullMomentDate(date, time);
     const dateTimeString = momentDate ? momentDate.locale('nb').utc().format(Constants.DATE_TIME_FORMAT) : '';
     const existingAnswer = answer?.valueDateTime || '';
+
     if (dispatch && existingAnswer !== dateTimeString) {
       dispatch(newDateTimeValueAsync(this.props.path, dateTimeString, this.props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
