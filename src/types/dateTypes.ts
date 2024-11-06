@@ -1,4 +1,4 @@
-import { parse, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 
 export enum DateTimeUnit {
   Date = 'date',
