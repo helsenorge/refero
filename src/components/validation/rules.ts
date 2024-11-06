@@ -124,3 +124,7 @@ type ValidateInput = {
 export const scriptInjection = ({ value, resources, shouldValidate }: ValidateInput): string | true | undefined => {
   return shouldValidate ? scriptInjectionValidation(value, resources) : undefined;
 };
+
+export const getInputWidth = (maxCharacters: number | undefined): number => {
+  return maxCharacters ? maxCharacters + 2 : 20;
+};

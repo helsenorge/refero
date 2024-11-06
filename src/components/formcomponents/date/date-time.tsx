@@ -7,7 +7,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { format, isValid } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
-import { DateFormat, DateTimeUnit, TimeUnit } from '../../../types/dateTypes';
+import { DateFormat, DateTimeUnit, defaultMaxDate, defaultMinDate, TimeUnit } from '../../../types/dateTypes';
 
 import { newDateTimeValueAsync } from '../../../actions/newValue';
 import { GlobalState, useAppDispatch } from '../../../reducers';
@@ -252,8 +252,8 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             dateButtonAriaLabel="Open datepicker"
             dateFormat={'dd.MM.yyyy'}
             dateValue={isValid(dateValue) ? dateValue : undefined}
-            minDate={minDateTime}
-            maxDate={maxDateTime}
+            minDate={minDateTime ?? defaultMinDate}
+            maxDate={maxDateTime ?? defaultMaxDate}
             onChange={(e, newDate) => {
               handleDateChange(newDate);
               onChangeDate(e);
