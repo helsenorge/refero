@@ -410,8 +410,7 @@ function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form
   }
 
   if (action.valueAttachment) {
-    const attachmentToRemove = action.valueAttachment.url;
-    var index = responseItem.answer.findIndex(el => el && el.valueAttachment && el.valueAttachment.url === attachmentToRemove);
+    const index = responseItem.answer.findIndex(el => el && el.valueAttachment && el.valueAttachment.id === action.valueAttachment?.id);
     if (index > -1) {
       responseItem.answer.splice(index, 1);
     }
@@ -502,6 +501,7 @@ function processNewValueAction(payload: NewValuePayload, state: Form): Form {
     hasAnswer = true;
 
     const attachment: Attachment = {
+      id: payload.valueAttachment.id,
       url: payload.valueAttachment.url,
       title: payload.valueAttachment.title,
       data: payload.valueAttachment.data,

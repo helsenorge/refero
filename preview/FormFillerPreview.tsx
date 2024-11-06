@@ -21,13 +21,14 @@ import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
-import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
+import { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { configureStore } from '@reduxjs/toolkit';
 import HelpButton from './external-components/HelpButton';
 import Button from '@helsenorge/designsystem-react/components/Button';
 import { MimeType } from '@/util/attachmentHelper';
-import { setSkjemaDefinitionAction } from '@/index';
+import { getId, setSkjemaDefinitionAction, TextMessage } from '@/index';
+import { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
 
 const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
@@ -156,8 +157,29 @@ const FormFillerPreview = (): JSX.Element => {
     // eslint-disable-next-line no-console
     console.log(JSON.stringify(questionnaireResponse));
   };
-  const uploadAttachment = (file: File[], onSuccess: (attachment: Attachment) => void): void => {
-    onSuccess({ data: file[0].name, contentType: file[0].type, url: 'url' });
+  const uploadAttachment = (
+    file: File[],
+    onSuccess: (attachment: Attachment) => void,
+    onError: (errormessage: TextMessage | null) => void
+  ): void => {
+    const reader = new FileReader();
+    reader.onload = (): void => {
+      const dataString = reader.result?.toString() || '';
+
+      const attachment: Attachment = {
+        id: getId(),
+        title: file[0].name,
+        url: `${getId()}-generated`,
+        data: dataString.substring(dataString.indexOf(',') + 1),
+        contentType: file[0].type,
+      };
+
+      onSuccess(attachment);
+    };
+    reader.onerror = (): void => {
+      onError({ Title: 'ERROR TITLE', Body: 'ERROR BODY' });
+    };
+    reader.readAsDataURL(file[0]);
   };
   //@ts-expect-error error
   const onDeleteAttachment = (fileId: string, onSuccess: () => void): void => {
@@ -218,7 +240,6 @@ const FormFillerPreview = (): JSX.Element => {
                     setQuestionnaireResponse(questionnaireResponse);
                     setShowResponse(true);
                   }}
-                  // eslint-disable-next-line no-console
                   onSubmit={handleSubmit}
                   authorized={true}
                   resources={getResources('')}

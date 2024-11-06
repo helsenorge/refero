@@ -1,11 +1,13 @@
+import { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
+
 export const MimeType = {
-  PlainText: 'text/plain',
-  HTML: 'text/html',
-  CSV: 'text/csv',
-  JPEG: 'image/jpeg',
-  JPG: 'image/jpg',
-  PNG: 'image/png',
-  GIF: 'image/gif',
-  PDF: 'application/pdf',
-  JSON: 'application/json',
+  PlainText: 'text/plain' as MimeTypes,
+  HTML: 'text/html' as MimeTypes,
+  CSV: 'text/csv' as MimeTypes,
+  JPEG: 'image/jpeg' as MimeTypes,
+  JPG: 'image/jpg' as MimeTypes,
+  PNG: 'image/png' as MimeTypes,
+  GIF: 'image/gif' as MimeTypes,
+  PDF: 'application/pdf' as MimeTypes,
+  JSON: 'application/json' as MimeTypes,
 };
