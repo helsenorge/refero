@@ -1,3 +1,9 @@
+## 16.0.0-beta.60
+- Bugfix: No year and month pickers in DatePicker (added default min/max)
+- UU-bugfix: Added label for YearMonth field
+- Added baseIncrementValue to Input fields of type number
+- Display Icon in savebutton based on size
+
 ## 16.0.0-beta.59
 - changed validation to HN validatio functions
 - Fixed update value of files from external source
