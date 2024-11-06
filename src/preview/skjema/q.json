@@ -4,7 +4,9 @@
   "status": "draft",
   "publisher": "NHN",
   "meta": {
-    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "profile": [
+      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
+    ],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
@@ -25,7 +27,9 @@
       "name": "http://www.nhn.no"
     }
   ],
-  "subjectType": ["Patient"],
+  "subjectType": [
+    "Patient"
+  ],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
@@ -59,174 +63,12 @@
       }
     }
   ],
-  "id": "6dab9880-606c-485d-8d3f-833776241b03",
+  "id": "d15abd49-9963-4aaf-edf5-6e04a05eb1aa",
   "item": [
     {
-      "linkId": "78e9ca61-32ae-41ba-8c82-3e2a51cd5107",
-      "type": "group",
-      "text": "SLIDERS",
-      "item": [
-        {
-          "linkId": "f9f516b8-3218-4b2c-89ce-be49b0ac0d5f",
-          "type": "choice",
-          "text": "SLIDER 1 TITLE (DISPLAY) VALUES",
-          "code": [
-            {
-              "code": "label",
-              "display": "Display value",
-              "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
-            },
-            {
-              "code": "LabelLeft",
-              "display": "MAX",
-              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
-            },
-            {
-              "code": "LabelRight",
-              "display": "MIN",
-              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
-            }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "ae04df63-a39f-4a4e-8299-a371db3f2241",
-                "code": "value",
-                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
-                "display": "title",
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                    "valueDecimal": 1
-                  }
-                ]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "05d6749a-bbba-4614-8797-fb0f6160cb37",
-                "code": "value-2",
-                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
-                "display": "titleTWO",
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                    "valueDecimal": 2
-                  }
-                ]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "d1a9f779-2e94-4040-8032-1f7ff6bf8557",
-                "code": "title-3",
-                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
-                "display": "titleTHREE",
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                    "valueDecimal": 3.5
-                  }
-                ]
-              }
-            }
-          ],
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "slider"
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "7cb31fe5-74d0-49b9-c917-f663fa408690",
-          "type": "choice",
-          "text": "SLIDER 1 DECIMAL (ORDINAL) VALUES",
-          "code": [
-            {
-              "code": "ordnialValue",
-              "display": "Display value",
-              "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
-            },
-            {
-              "code": "LabelLeft",
-              "display": "MAX",
-              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
-            },
-            {
-              "code": "LabelRight",
-              "display": "MIN",
-              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
-            }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "ae04df63-a39f-4a4e-8299-a371db3f2241",
-                "code": "value",
-                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
-                "display": "title",
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                    "valueDecimal": 1
-                  }
-                ]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "05d6749a-bbba-4614-8797-fb0f6160cb37",
-                "code": "value-2",
-                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
-                "display": "title 2",
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                    "valueDecimal": 2
-                  }
-                ]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "d1a9f779-2e94-4040-8032-1f7ff6bf8557",
-                "code": "title-3",
-                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
-                "display": "title 3",
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                    "valueDecimal": 3.5
-                  }
-                ]
-              }
-            }
-          ],
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "slider"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ],
+      "linkId": "397f53de-3708-4ce2-8c22-58560fbbadeb",
+      "type": "dateTime",
+      "text": "Date Time",
       "required": false
     }
   ]
