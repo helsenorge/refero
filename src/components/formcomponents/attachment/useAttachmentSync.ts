@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { getMaxOccursExtensionValue } from '@/util/extension';
+import { getAttachmentsFromAnswer } from './helpers';
 
 type UseAttachmentSyncParams = {
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined;
@@ -52,14 +53,6 @@ export const useAttachmentSync = ({
     setRejectedFiles(prevState => prevState.filter(x => x.id !== fileId));
   };
 
-  const getAttachmentsFromAnswer = (): Attachment[] => {
-    if (Array.isArray(answer)) {
-      return answer.map(ans => ans.valueAttachment).filter((attachment): attachment is Attachment => attachment !== undefined);
-    } else if (answer && answer.valueAttachment) {
-      return [answer.valueAttachment];
-    }
-    return [];
-  };
   useEffect(() => {
     const max = getMaxOccursExtensionValue(item);
     if (max === undefined && acceptedFiles.length > 0) {
@@ -75,7 +68,7 @@ export const useAttachmentSync = ({
     if (internalUpdateRef.current) {
       internalUpdateRef.current = false;
     } else {
-      const attachments = getAttachmentsFromAnswer();
+      const attachments = getAttachmentsFromAnswer(answer);
       if (attachments.length > 0) {
         const files: UploadFile[] = attachments.map(attachment => {
           let fileBits: BlobPart[] = [];

@@ -122,11 +122,11 @@ export const Text = (props: Props): JSX.Element | null => {
 
         <Textarea
           {...rest}
-          defaultValue={value}
           onChange={(e): void => {
             onTextAreaChange(e);
             onChange(e);
           }}
+          value={value}
           textareaId={getId(id)}
           maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
           placeholder={getPlaceholder(item)}

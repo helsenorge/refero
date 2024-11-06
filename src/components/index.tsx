@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { act, useEffect } from 'react';
 //test
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
 
@@ -10,7 +10,7 @@ import RenderForm from './renderForm';
 import StepView from './stepView';
 
 import { GlobalState, useAppDispatch } from '@/reducers';
-import { getFormDefinition, getFormData } from '@/reducers/form';
+import { getFormDefinition, getFormData, actions } from '@/reducers/form';
 import { FormDefinition, FormData } from '@/reducers/form';
 
 import { getPresentationButtonsExtension } from '@/util/extension';
@@ -22,6 +22,7 @@ import { setSkjemaDefinitionAction } from '@/actions/form';
 import { AttachmentProvider } from '@/context/AttachmentContext';
 import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
+import { createFormValues } from '@/validation/createFormValues';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
   const {
@@ -61,6 +62,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     shouldFocusError: false,
     mode: 'onBlur',
     criteriaMode: 'all',
+
     ...(useFormProps !== undefined && { ...useFormProps }),
 
     // resolver: async (data, context, options) => {
@@ -82,6 +84,15 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
       );
     }
   }, [props.language, props.syncQuestionnaireResponse]);
+  useEffect(() => {
+    // console.log('Values', methods.getValues());
+    // console.log(formData?.isExternalUpdate);
+    if (formData?.isExternalUpdate && questionnaire && formData.Content) {
+      // console.log('formValues', formValues);
+      methods.reset(createFormValues(questionnaire.item, formData.Content));
+      dispatch(actions.setIsExternalUpdateAction(false));
+    }
+  }, [questionnaire, formData?.isExternalUpdate]);
 
   const externalRenderProps = {
     onRequestHelpElement,
