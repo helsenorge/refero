@@ -70,6 +70,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     //   return zodResolver(schema)(data, context, options);
     // },
   });
+  console.log('methods', methods.getValues());
   React.useEffect(() => {
     if (props.questionnaire) {
       dispatch(

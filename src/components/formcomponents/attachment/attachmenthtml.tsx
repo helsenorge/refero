@@ -71,7 +71,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     idWithLinkIdAndItemIndex,
     customErrorMessage,
     path,
-    linkId,
     pdf,
     children,
     multiple,
@@ -83,7 +82,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
-  const answer = useGetAnswer(linkId, path);
   const numberOfFilesMessage = getCustomValidationText(
     item,
     (minFiles && !maxFiles && resources?.attachmentError_minFiles) ||
@@ -109,11 +107,11 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
       validateTotalFileSize(0, getMaxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize)),
     ]
   );
+
   const { acceptedFiles, rejectedFiles, handleDelete, handleUpload, disableButton, value } = useAttachmentSync({
-    multiple,
     onUpload,
+    path,
     onDelete,
-    answer,
     rejectedFiles: extRejected,
     acceptedFiles: extAccepted,
     setAcceptedFiles,

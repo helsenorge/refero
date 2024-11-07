@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export const useResetFormField = <T>(id: string, defaultValue?: T): void => {
-  const { resetField } = useFormContext();
+  const { setValue } = useFormContext();
   const isExternal = useAppSelector(state => state.refero.form.FormData.isExternalUpdate);
   const [isExternalUpdateLocal, setIsExternalUpdateLocal] = useState(false);
 
@@ -12,10 +12,10 @@ export const useResetFormField = <T>(id: string, defaultValue?: T): void => {
       return;
     }
     if (!isExternalUpdateLocal && isExternal) {
-      resetField(id, { defaultValue, keepDirty: true, keepError: true, keepTouched: true });
+      setValue(id, defaultValue);
       setIsExternalUpdateLocal(true);
     } else if (!isExternal) {
       setIsExternalUpdateLocal(false);
     }
-  }, [isExternal, isExternalUpdateLocal, resetField, defaultValue]);
+  }, [isExternal, isExternalUpdateLocal, setValue, defaultValue]);
 };

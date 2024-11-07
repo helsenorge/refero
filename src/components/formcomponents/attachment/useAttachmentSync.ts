@@ -3,11 +3,11 @@ import { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { getMaxOccursExtensionValue } from '@/util/extension';
 import { getAttachmentsFromAnswer } from './helpers';
-import { useResetFormField } from '@/hooks/useResetFormField';
+import { useFormContext } from 'react-hook-form';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { Path } from '@/util/refero-core';
 
 type UseAttachmentSyncParams = {
-  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined;
-  multiple: boolean | undefined;
   onUpload: (files: UploadFile[]) => void;
   onDelete: (fileId: string) => void;
   setAcceptedFiles: React.Dispatch<React.SetStateAction<UploadFile[]>>;
@@ -16,6 +16,7 @@ type UseAttachmentSyncParams = {
   rejectedFiles: UploadFile[];
   item?: QuestionnaireItem;
   idWithLinkIdAndItemIndex: string;
+  path?: Path[];
 };
 
 type UseAttachmentSyncReturn = {
@@ -28,19 +29,19 @@ type UseAttachmentSyncReturn = {
 };
 
 export const useAttachmentSync = ({
-  multiple,
   onUpload,
   onDelete,
-  answer,
   setAcceptedFiles,
   setRejectedFiles,
   acceptedFiles,
   rejectedFiles,
   item,
   idWithLinkIdAndItemIndex,
+  path,
 }: UseAttachmentSyncParams): UseAttachmentSyncReturn => {
+  const answer = useGetAnswer(item?.linkId, path);
   const [disableButton, setDisableButton] = useState(false);
-  useResetFormField(idWithLinkIdAndItemIndex, acceptedFiles);
+  const { setValue } = useFormContext();
   const internalUpdateRef = useRef(false);
 
   const handleUpload = (files: UploadFile[]): void => {
@@ -66,7 +67,7 @@ export const useAttachmentSync = ({
       setDisableButton(false);
     }
   }, [acceptedFiles]);
-
+  console.log('answer', answer);
   useEffect(() => {
     if (internalUpdateRef.current) {
       internalUpdateRef.current = false;
@@ -95,14 +96,16 @@ export const useAttachmentSync = ({
 
           return file;
         });
+        setValue(idWithLinkIdAndItemIndex, files);
         setAcceptedFiles(files);
         setRejectedFiles([]);
       } else {
+        setValue(idWithLinkIdAndItemIndex, []);
         setAcceptedFiles([]);
         setRejectedFiles([]);
       }
     }
-  }, [answer, multiple]);
+  }, [answer]);
 
   return {
     acceptedFiles,
