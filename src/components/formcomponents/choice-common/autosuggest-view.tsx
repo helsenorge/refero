@@ -28,6 +28,7 @@ import { GlobalState } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -70,6 +71,8 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasLoadError, setHasLoadError] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  useResetFormField(idWithLinkIdAndItemIndex, inputValue);
+
   useEffect(() => {
     if (initialInputValue) setInputValue(initialInputValue);
   }, [initialInputValue]);

@@ -128,14 +128,17 @@ const extractAnswerValueWithFHIRPath = async (
 
   // Evaluate the expression
   const answers = await evaluate<any>(responseItem, valueExpression);
-  const values = answers;
-
+  if (responseItem.linkId === '10.12') {
+    // console.log('answers', answers);
+    // console.log('itemType', itemType);
+    // console.log('itemControls', itemControls);
+  }
   // Now handle based on itemType
   switch (itemType) {
     case ItemType.DATE: {
       // Handle date values
-      const dateValue = values[0];
-      console.log('DATE', JSON.stringify(values));
+      const dateValue = answers[0];
+      console.log('DATE', JSON.stringify(answers));
 
       if (itemControls && itemControls.some(control => control.code === ItemControlConstants.YEARMONTH)) {
         if (dateValue) {
@@ -151,9 +154,9 @@ const extractAnswerValueWithFHIRPath = async (
       break;
     }
     case ItemType.DATETIME: {
-      const dateTimeValue = values[0];
+      const dateTimeValue = answers[0];
       if (dateTimeValue) {
-        console.log('DATETIME', JSON.stringify(values));
+        console.log('DATETIME', JSON.stringify(answers));
 
         const date = new Date(dateTimeValue);
         return {
@@ -165,9 +168,9 @@ const extractAnswerValueWithFHIRPath = async (
       break;
     }
     case ItemType.TIME: {
-      const timeValue = values[0];
+      const timeValue = answers[0];
       if (timeValue) {
-        console.log('TIME', JSON.stringify(values));
+        console.log('TIME', JSON.stringify(answers));
 
         const [hours, minutes] = timeValue.split(':');
         return {
@@ -178,9 +181,9 @@ const extractAnswerValueWithFHIRPath = async (
       break;
     }
     case ItemType.ATTATCHMENT: {
-      if (values && values.length > 0) {
-        const attachmentValues = values as Attachment[];
-        console.log('ATTATCHMENT', JSON.stringify(values));
+      if (answers && answers.length > 0) {
+        const attachmentValues = answers as Attachment[];
+        console.log('ATTATCHMENT', JSON.stringify(answers));
 
         return {
           [key]: attachmentValues.length === 1 ? attachmentValues[0].title : '',
@@ -189,17 +192,17 @@ const extractAnswerValueWithFHIRPath = async (
       break;
     }
     case ItemType.CHOICE || ItemType.OPENCHOICE: {
-      const codingValues = values as Coding[];
+      const codingValues = answers as Coding[];
       console.log('CHOICE', JSON.stringify(codingValues[0].code));
 
       return {
-        [key]: codingValues.length === 1 ? codingValues[0].code : codingValues,
+        [key]: codingValues.length === 1 ? codingValues[0].code : codingValues.map((c: Coding) => c.code),
       };
     }
     case ItemType.QUANTITY: {
-      console.log('QUANTITY', JSON.stringify(values));
+      console.log('QUANTITY', JSON.stringify(answers));
 
-      return { [key]: values.length === 1 ? values[0].value : null };
+      return { [key]: answers.length === 1 ? answers[0].value : null };
     }
     default: {
       if (
@@ -217,10 +220,10 @@ const extractAnswerValueWithFHIRPath = async (
       // console.log('responseItem', JSON.stringify(responseItem));
       // console.log('valueExpression', valueExpression);
       // console.log('values', JSON.stringify(values));
-      if (values && values.length > 0) {
-        console.log('DEFAULT', JSON.stringify(values));
+      if (answers && answers.length > 0) {
+        // console.log('DEFAULT', JSON.stringify(answers));
         return {
-          [key]: values.length === 1 ? values[0] : values,
+          [key]: answers.length === 1 ? answers[0] : answers,
         };
       }
       break;

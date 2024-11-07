@@ -28,6 +28,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
@@ -42,6 +43,9 @@ export const Text = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
   const dispatch = useAppDispatch();
   const answer = useGetAnswer(linkId, path);
+  const value = getStringValue(answer);
+
+  useResetFormField(idWithLinkIdAndItemIndex, value);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch && path && item) {
@@ -78,7 +82,6 @@ export const Text = (props: Props): JSX.Element | null => {
     );
   }
 
-  const value = getStringValue(answer);
   const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {

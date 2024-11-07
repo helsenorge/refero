@@ -35,6 +35,7 @@ import { DateFormat } from '@/types/dateTypes';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage } from '@/components/validation/rules';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -85,6 +86,8 @@ export const DateYearMonthInput = ({
   const year: string | undefined = getYearAndMonth()?.year.toString() || '';
   const month: string | undefined | null = getYearAndMonth()?.month || '';
   const pdfValue = getPDFValueForDate(dateValue, resources?.ikkeBesvart, DateFormat.yyyyMM, DateFormat.MMMMyyyy);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-yearmonth-month`, month);
 
   useEffect(() => {
     setValue(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);

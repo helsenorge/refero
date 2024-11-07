@@ -87,7 +87,6 @@ const formSlice = createSlice({
   initialState,
   reducers: {
     setIsExternalUpdateAction(state, action: PayloadAction<boolean>) {
-      console.log('payload', action.payload);
       state.FormData.isExternalUpdate = action.payload;
     },
   },

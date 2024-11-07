@@ -3,6 +3,7 @@ import { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { getMaxOccursExtensionValue } from '@/util/extension';
 import { getAttachmentsFromAnswer } from './helpers';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 type UseAttachmentSyncParams = {
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined;
@@ -14,6 +15,7 @@ type UseAttachmentSyncParams = {
   acceptedFiles: UploadFile[];
   rejectedFiles: UploadFile[];
   item?: QuestionnaireItem;
+  idWithLinkIdAndItemIndex: string;
 };
 
 type UseAttachmentSyncReturn = {
@@ -35,9 +37,10 @@ export const useAttachmentSync = ({
   acceptedFiles,
   rejectedFiles,
   item,
+  idWithLinkIdAndItemIndex,
 }: UseAttachmentSyncParams): UseAttachmentSyncReturn => {
   const [disableButton, setDisableButton] = useState(false);
-
+  useResetFormField(idWithLinkIdAndItemIndex, acceptedFiles);
   const internalUpdateRef = useRef(false);
 
   const handleUpload = (files: UploadFile[]): void => {

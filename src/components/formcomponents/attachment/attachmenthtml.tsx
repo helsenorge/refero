@@ -119,6 +119,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     setAcceptedFiles,
     setRejectedFiles,
     item,
+    idWithLinkIdAndItemIndex,
   });
 
   useEffect(() => {

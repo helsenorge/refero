@@ -24,6 +24,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -55,6 +56,9 @@ const Decimal = (props: Props): JSX.Element | null => {
       return '';
     }
   };
+  const value = getValue(item, answer);
+
+  useResetFormField(idWithLinkIdAndItemIndex, value);
 
   const getPDFValue = (): string | number => {
     const value = getValue(item, answer);
@@ -84,7 +88,6 @@ const Decimal = (props: Props): JSX.Element | null => {
     }
   };
 
-  const value = getValue(item, answer);
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
   const errorMessage = getErrorMessage(item, error);

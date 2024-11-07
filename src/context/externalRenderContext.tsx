@@ -1,3 +1,5 @@
+import { useAppDispatch, useAppSelector } from '@/reducers';
+import { actions } from '@/reducers/form';
 import { AutoSuggestProps } from '@/types/autoSuggestProps';
 import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 import { IActionRequester } from '@/util/actionRequester';
@@ -97,6 +99,19 @@ export const ExternalRenderProvider = ({
   validateScriptInjection,
   onChange,
 }: ExternalRenderProviderProps): JSX.Element => {
+  const dispatch = useAppDispatch();
+  const isExternalUpdate = useAppSelector(state => state.refero.form.FormData.isExternalUpdate);
+  const handleOnChange = (
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer,
+    actionRequester: IActionRequester,
+    questionnaireInspector: IQuestionnaireInspector
+  ): void => {
+    if (isExternalUpdate) {
+      dispatch(dispatch(actions.setIsExternalUpdateAction(false)));
+    }
+    onChange?.(item, answer, actionRequester, questionnaireInspector);
+  };
   const contextValue = useMemo(
     () => ({
       onRequestHelpElement,
@@ -110,7 +125,7 @@ export const ExternalRenderProvider = ({
       resources,
       autoSuggestProps,
       validateScriptInjection,
-      globalOnChange: onChange,
+      globalOnChange: handleOnChange,
     }),
     [
       onRequestHelpElement,
@@ -124,7 +139,7 @@ export const ExternalRenderProvider = ({
       resources,
       autoSuggestProps,
       validateScriptInjection,
-      onChange,
+      handleOnChange,
     ]
   );
 

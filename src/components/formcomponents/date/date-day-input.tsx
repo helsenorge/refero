@@ -32,6 +32,7 @@ import { DateFormat } from '@/types/dateTypes';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage } from '@/components/validation/rules';
 import { useEffect, useState } from 'react';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -83,6 +84,7 @@ export const DateDayInput = ({
   const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
   const [dateValue, setDateValue] = useState(dateAnswerValueParsed);
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMdd, DateFormat.dMMyyyy);
+  useResetFormField(idWithLinkIdAndItemIndex, dateAnswerValue);
 
   useEffect(() => {
     if (isValid(dateAnswerValueParsed)) {
