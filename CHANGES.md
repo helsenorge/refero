@@ -195,6 +195,12 @@
 
 - Rework of refero with new components
 - removed old components and added new from @helsenorge designsystem
+## 15.0.11
+
+---
+
+- Fixed bug in DateTime that added unwanted zero
+
 ## 15.0.10
 
 ---
