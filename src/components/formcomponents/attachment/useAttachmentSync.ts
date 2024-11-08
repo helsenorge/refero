@@ -67,7 +67,6 @@ export const useAttachmentSync = ({
       setDisableButton(false);
     }
   }, [acceptedFiles]);
-  console.log('answer', answer);
   useEffect(() => {
     if (internalUpdateRef.current) {
       internalUpdateRef.current = false;

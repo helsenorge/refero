@@ -255,7 +255,7 @@ const FormFillerPreview = (): JSX.Element => {
                   onDeleteAttachment={onDeleteAttachment}
                   onOpenAttachment={onOpenAttachment}
                   attachmentValidTypes={[MimeType.PNG, MimeType.JPG, MimeType.JPEG, MimeType.PDF, MimeType.PlainText]}
-                  attachmentMaxFileSize={1}
+                  attachmentMaxFileSize={10000000}
                   onRequestHelpButton={(_1, _2, _3, _4, opening) => {
                     return <HelpButton opening={opening} />;
                   }}
