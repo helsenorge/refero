@@ -28,7 +28,7 @@ import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { ReadOnly } from '../read-only/readOnly';
-import { DateFormat } from '@/types/dateTypes';
+import { DateFormat, defaultMaxDate, defaultMinDate } from '@/types/dateTypes';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage } from '@/components/validation/rules';
 import { useEffect, useState } from 'react';
@@ -173,8 +173,8 @@ export const DateDayInput = ({
         autoComplete=""
         dateButtonAriaLabel="Open datepicker"
         dateFormat={'dd.MM.yyyy'}
-        minDate={minDateTime}
-        maxDate={maxDateTime}
+        minDate={minDateTime ?? defaultMinDate}
+        maxDate={maxDateTime ?? defaultMaxDate}
         onChange={(e, newDate) => {
           handleChange(newDate);
           onChange(e);

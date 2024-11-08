@@ -6,7 +6,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import styles from './quantity.module.css';
 import { newQuantityValueAsync } from '@/actions/newValue';
 import { GlobalState, useAppDispatch } from '@/reducers';
-import { getMaxValueExtensionValue, getPlaceholder, getQuestionnaireUnitExtensionValue } from '@/util/extension';
+import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -16,7 +16,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { decimalPattern, getErrorMessage, maxValue, minValue, required } from '@/components/validation/rules';
+import { decimalPattern, getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
@@ -98,9 +98,9 @@ const Quantity = (props: Props): JSX.Element | null => {
   };
 
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
-  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
+  const baseIncrementValue = getMinValueExtensionValue(item);
+  const width = getInputWidth(maxCharacters);
   const errorMessage = getErrorMessage(item, error);
-
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     max: maxValue({ item, resources }),
@@ -152,6 +152,7 @@ const Quantity = (props: Props): JSX.Element | null => {
               handleChange(e);
             }}
             width={width}
+            baseIncrementValue={baseIncrementValue}
           />
           <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
         </div>

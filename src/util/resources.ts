@@ -487,4 +487,12 @@ export interface Resources {
    * Desember
    */
   dateLabel_december?: string;
+  /**
+   * År
+   */
+  dateLabel_year?: string;
+  /**
+   * Måned
+   */
+  dateLabel_month?: string;
 }
