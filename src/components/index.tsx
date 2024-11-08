@@ -59,7 +59,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,
-    mode: 'onBlur',
+    mode: 'onChange',
     criteriaMode: 'all',
     ...(useFormProps !== undefined && { ...useFormProps }),
 
