@@ -56,7 +56,7 @@ export function syncQuestionnaireResponse(q: Questionnaire, qr: QuestionnaireRes
     }
   }
 
-  newQr.item = qrItemCopy; // Assign to the copy
+  newQr.item = qrItemCopy;
   return newQr;
 }
 

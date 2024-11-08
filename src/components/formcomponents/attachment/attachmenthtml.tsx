@@ -20,7 +20,6 @@ import { Resources } from '@/util/resources';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { TextMessage } from '@/types/text-message';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReadOnly } from '../read-only/readOnly';
 import { getErrorMessage, required } from '@/components/validation/rules';
@@ -71,7 +70,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     idWithLinkIdAndItemIndex,
     customErrorMessage,
     path,
-    linkId,
     pdf,
     children,
     multiple,
@@ -83,7 +81,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
-  const answer = useGetAnswer(linkId, path);
   const numberOfFilesMessage = getCustomValidationText(
     item,
     (minFiles && !maxFiles && resources?.attachmentError_minFiles) ||
@@ -92,7 +89,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
       undefined
   );
   const validationFileTypesMessage = getCustomValidationText(item, resources?.attachmentError_fileType);
-  const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
+  const maxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const validFileTypes: MimeTypes[] = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
 
   const {
@@ -105,20 +102,21 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     internalRegister,
     [validateFileType(validFileTypes, validationFileTypesMessage)],
     [
-      validateNumberOfFiles(minFiles ?? 0, maxFiles ?? 0, numberOfFilesMessage),
-      validateTotalFileSize(0, getMaxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize)),
+      validateNumberOfFiles(minFiles ?? 0, maxFiles ?? 20, numberOfFilesMessage || 'Number of files'),
+      validateTotalFileSize(0, maxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize || 'tiotal file size')),
     ]
   );
+
   const { acceptedFiles, rejectedFiles, handleDelete, handleUpload, disableButton, value } = useAttachmentSync({
-    multiple,
     onUpload,
+    path,
     onDelete,
-    answer,
     rejectedFiles: extRejected,
     acceptedFiles: extAccepted,
     setAcceptedFiles,
     setRejectedFiles,
     item,
+    idWithLinkIdAndItemIndex,
   });
 
   useEffect(() => {
@@ -159,8 +157,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     validate: () => true,
     shouldUnregister: true,
   };
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
-
   if (pdf || isReadOnly(item)) {
     return (
       <ReadOnly
@@ -189,10 +185,9 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           attachmentLabel={resources?.supportedFileFormats}
         />
         <FileUpload
-          {...rest}
+          {...register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined)}
           wrapperTestId={`${getId(id)}-attachment`}
           inputId={id}
-          onChange={onChange}
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}

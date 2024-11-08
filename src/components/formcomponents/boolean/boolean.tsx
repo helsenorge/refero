@@ -25,6 +25,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -59,6 +60,9 @@ const Boolean = (props: Props): JSX.Element | null => {
     }
     return item.initial[0].valueBoolean;
   };
+  const value = getValue();
+
+  useResetFormField(props.idWithLinkIdAndItemIndex, value);
 
   const handleChange = (): void => {
     const newValue = !getValue();
@@ -74,7 +78,6 @@ const Boolean = (props: Props): JSX.Element | null => {
 
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
-  const value = getValue();
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),

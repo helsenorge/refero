@@ -18,6 +18,7 @@ import { initialize } from '@/util/date-fns-utils';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage } from '@/components/validation/rules';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
@@ -55,7 +56,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
   };
 
   const yearValue: string | undefined = getYearValue(answer);
-
+  useResetFormField(`${idWithLinkIdAndItemIndex}`, yearValue);
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),

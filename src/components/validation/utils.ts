@@ -157,7 +157,7 @@ function findItemRecursive(
   return null;
 }
 function specialDatePart(inpStr: string): string | null {
-  const dateParts = ['-date', '-hours', '-minutes', '-yearmonth-year', '-yearmonth-month'];
+  const dateParts = ['-date', '-hours', '-minutes', '-yearmonth-year', '-yearmonth-month', '-generated'];
   for (const term of dateParts) {
     const index = inpStr.indexOf(term);
     if (index !== -1) {

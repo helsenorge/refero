@@ -23,6 +23,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 const Integer = (props: Props): JSX.Element | null => {
@@ -62,6 +63,9 @@ const Integer = (props: Props): JSX.Element | null => {
     }
     return value;
   };
+  const value = getValue();
+
+  useResetFormField(idWithLinkIdAndItemIndex, value);
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
@@ -74,7 +78,6 @@ const Integer = (props: Props): JSX.Element | null => {
     }
   };
 
-  const value = getValue();
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const baseIncrementValue = getMinValueExtensionValue(item);
   const width = getInputWidth(maxCharacters);

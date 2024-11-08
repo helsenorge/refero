@@ -24,6 +24,7 @@ import { QuestionnaireItem } from 'fhir/r4';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -39,7 +40,8 @@ export const String = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
   const dispatch = useAppDispatch();
   const answer = useGetAnswer(linkId, path);
-
+  const value = getStringValue(answer);
+  useResetFormField(idWithLinkIdAndItemIndex, value);
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const value = event.target.value;
     if (dispatch && path && item) {
@@ -61,7 +63,6 @@ export const String = (props: Props): JSX.Element | null => {
   //   debouncedHandleChange(event);
   // };
 
-  const value = getStringValue(answer);
   const maxCharacters = getMaxLength(item);
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
   const errorMessage = getErrorMessage(item, error);

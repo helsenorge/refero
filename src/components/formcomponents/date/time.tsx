@@ -32,6 +32,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage, isNumber } from '@/components/validation/rules';
 import { TimeUnit } from '@/types/dateTypes';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -49,7 +50,8 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
   const hoursAndMinutesFromAnswer = extractHoursAndMinutesFromAnswer(answer, item);
   const hours = hoursAndMinutesFromAnswer?.hours;
   const minutes = hoursAndMinutesFromAnswer?.minutes;
-
+  useResetFormField(`${idWithLinkIdAndItemIndex}-hours`, hours);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-minutes`, minutes);
   const getTimeValueFromAnswer = (): string | undefined => {
     if (!answer) return undefined;
 

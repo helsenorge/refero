@@ -32,7 +32,7 @@ export const createIntitialFormValues = (items?: QuestionnaireItem[]): DefaultVa
   return initialValues;
 };
 
-const getInitialFormValueForItemtype = (key: string, item: QuestionnaireItem): DefaultValues | undefined => {
+export const getInitialFormValueForItemtype = (key: string, item: QuestionnaireItem): DefaultValues | undefined => {
   if (excludedTypes.includes(item.type)) return;
   const encodedKey = encodeString(key);
   const itemControls = getItemControlExtensionValue(item);

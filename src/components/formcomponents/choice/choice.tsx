@@ -28,6 +28,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
 import { isDataReceiver } from '@/util';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
@@ -192,7 +193,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);
   const value = useMemo(() => getValue(), [getAnswerValue, getInitialValue]);
-
+  useResetFormField(props.idWithLinkIdAndItemIndex, value);
   const shouldRenderAutosuggest = useMemo(
     () => hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE,
     [item, itemControlValue]
