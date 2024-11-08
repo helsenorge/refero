@@ -7,7 +7,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { newIntegerValueAsync } from '@/actions/newValue';
 import { GlobalState, useAppDispatch } from '@/reducers';
-import { getMaxValueExtensionValue, getPlaceholder } from '@/util/extension';
+import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -17,12 +17,13 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { getErrorMessage, maxValue, minValue, required } from '@/components/validation/rules';
+import { getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 const Integer = (props: Props): JSX.Element | null => {
@@ -62,6 +63,9 @@ const Integer = (props: Props): JSX.Element | null => {
     }
     return value;
   };
+  const value = getValue();
+
+  useResetFormField(idWithLinkIdAndItemIndex, value);
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
@@ -74,9 +78,9 @@ const Integer = (props: Props): JSX.Element | null => {
     }
   };
 
-  const value = getValue();
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
-  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
+  const baseIncrementValue = getMinValueExtensionValue(item);
+  const width = getInputWidth(maxCharacters);
   const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
@@ -127,6 +131,7 @@ const Integer = (props: Props): JSX.Element | null => {
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
           width={width}
+          baseIncrementValue={baseIncrementValue}
         />
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
         <RenderRepeatButton path={path} item={item} index={index} />

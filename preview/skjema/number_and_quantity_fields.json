@@ -1,0 +1,259 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "00ee7468-e5ba-4da8-fae4-3a4825d8dd02",
+  "item": [
+    {
+      "linkId": "e4759166-318a-4c20-9d66-ab7d98ccdc38",
+      "type": "group",
+      "text": "Number fields",
+      "item": [
+        {
+          "linkId": "dcec1509-e0ad-4510-8a9e-96d1f8bb6d92",
+          "type": "integer",
+          "text": "Number",
+          "required": false
+        },
+        {
+          "linkId": "e8c801da-518d-426d-85f1-c25ec794cd83",
+          "type": "decimal",
+          "text": "Number with decimals",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+              "valueInteger": 2
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "f41e245d-6ae4-464f-9a07-1d688b8a303f",
+          "type": "integer",
+          "text": "Number with minMax",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 5
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Tallet må være mellom 5 og 10!"
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "b773e354-8a0b-46c6-e701-5bcd24e8c2ac",
+          "type": "decimal",
+          "text": "Number with decimals and minMax",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 5
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Tallet må være mellom 5 og 10!"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+              "valueInteger": 2
+            }
+          ],
+          "required": false
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "b28ab111-7c3e-4f1b-af5b-6a2d40d55251",
+      "type": "group",
+      "text": "Quantity fields",
+      "item": [
+        {
+          "linkId": "8d3f827a-eb8a-4c55-9ac7-8db3109c2dbb",
+          "type": "quantity",
+          "text": "Quantity no unit",
+          "required": false
+        },
+        {
+          "linkId": "5f88ef53-cdd9-4b2c-85c8-b9c8f092283c",
+          "type": "quantity",
+          "text": "Quantity centimeter",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "cm",
+                "display": "centimeter",
+                "system": "http://unitsofmeasure.org"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "c375ecab-e085-4742-f106-7f255b0a7142",
+          "type": "quantity",
+          "text": "Quantity kilo",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "kg",
+                "display": "kilo",
+                "system": "http://unitsofmeasure.org"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "18daaeec-24ac-41ff-8cfe-ddaaaa61504f",
+          "type": "quantity",
+          "text": "Quantity year",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "a",
+                "display": "year",
+                "system": "http://unitsofmeasure.org"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "14b6bdd0-5078-4c25-d928-f0ff8d4c1832",
+          "type": "quantity",
+          "text": "Quantity month",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "mo",
+                "display": "month",
+                "system": "http://unitsofmeasure.org"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "45092b58-6368-48e3-bb93-7462ef327f52",
+          "type": "quantity",
+          "text": "Quantity day",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "d",
+                "display": "day",
+                "system": "http://unitsofmeasure.org"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "dc6fcafc-1b6e-41c8-8bee-4f1c19fa9167",
+          "type": "quantity",
+          "text": "Quantity custom",
+          "required": false
+        },
+        {
+          "linkId": "8c6bcdf4-81bd-4651-890e-00a949942174",
+          "type": "quantity",
+          "text": "Quantity with minMax",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+              "valueInteger": 2
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 5
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Tallet må være mellom 5 og 10!"
+            }
+          ]
+        }
+      ],
+      "required": false
+    }
+  ]
+}

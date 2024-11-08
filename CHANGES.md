@@ -1,5 +1,18 @@
 ## 16.0.0-beta.61
 - Added check for changes to values and update react-hook-form validaton
+## 16.0.0-beta.60
+- Bugfix: No year and month pickers in DatePicker (added default min/max)
+- UU-bugfix: Added label for YearMonth field
+- Added baseIncrementValue to Input fields of type number
+- Display Icon in savebutton based on size
+
+## 16.0.0-beta.59
+- changed validation to HN validatio functions
+- Fixed update value of files from external source
+
+## 16.0.0-beta.58
+- attachment fixes
+- added css class to hide buttons in form
 
 ## 16.0.0-beta.57
 - Added validation for digits in Time

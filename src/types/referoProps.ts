@@ -9,6 +9,7 @@ import { Store } from 'redux';
 import {} from '@/actions/newValue';
 import { TextMessage } from './text-message';
 import { UseFormProps } from 'react-hook-form';
+import { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
 
 export interface ReferoProps {
   /**
@@ -27,7 +28,7 @@ export interface ReferoProps {
   promptLoginMessage?: () => void;
   attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
-  attachmentValidTypes?: string[];
+  attachmentValidTypes?: MimeTypes[];
   onRequestAttachmentLink?: (fileId: string) => string;
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void; //TODO: add to context

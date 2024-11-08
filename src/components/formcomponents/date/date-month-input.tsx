@@ -35,6 +35,7 @@ import { DateFormat } from '@/types/dateTypes';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage } from '@/components/validation/rules';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -85,6 +86,8 @@ export const DateYearMonthInput = ({
   const year: string | undefined = getYearAndMonth()?.year.toString() || '';
   const month: string | undefined | null = getYearAndMonth()?.month || '';
   const pdfValue = getPDFValueForDate(dateValue, resources?.ikkeBesvart, DateFormat.yyyyMM, DateFormat.MMMMyyyy);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-yearmonth-month`, month);
 
   useEffect(() => {
     setValue(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
@@ -196,8 +199,9 @@ export const DateYearMonthInput = ({
             handleYearChange(e.target.value, monthValue);
             onChangeYear(e);
           }}
-          width={10}
+          width={5}
           value={year}
+          label={resources?.dateLabel_year}
         />
         <Select
           {...restMonth}
@@ -210,6 +214,7 @@ export const DateYearMonthInput = ({
             onChangeMonth(e);
           }}
           value={month ?? monthOptions[0].optionValue}
+          label={resources?.dateLabel_month}
         >
           {monthOptions.map(option => (
             <option key={option.optionValue} value={option.optionValue}>

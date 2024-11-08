@@ -15,19 +15,20 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/q.json';
+import skjema from './skjema/number_and_quantity_fields.json';
 import qr from './skjema/responses/qr.json';
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
-import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
+import { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { configureStore } from '@reduxjs/toolkit';
 import HelpButton from './external-components/HelpButton';
 import Button from '@helsenorge/designsystem-react/components/Button';
 import { MimeType } from '@/util/attachmentHelper';
-import { setSkjemaDefinitionAction } from '@/index';
+import { getId, setSkjemaDefinitionAction, TextMessage } from '@/index';
+import { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
 
 const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
@@ -156,8 +157,29 @@ const FormFillerPreview = (): JSX.Element => {
     // eslint-disable-next-line no-console
     console.log(JSON.stringify(questionnaireResponse));
   };
-  const uploadAttachment = (file: File[], onSuccess: (attachment: Attachment) => void): void => {
-    onSuccess({ title: file[0].name, contentType: file[0].type, url: generateUUID() });
+  const uploadAttachment = (
+    file: File[],
+    onSuccess: (attachment: Attachment) => void,
+    onError: (errormessage: TextMessage | null) => void
+  ): void => {
+    const reader = new FileReader();
+    reader.onload = (): void => {
+      const dataString = reader.result?.toString() || '';
+
+      const attachment: Attachment = {
+        id: getId(),
+        title: file[0].name,
+        url: `${getId()}-generated`,
+        data: dataString.substring(dataString.indexOf(',') + 1),
+        contentType: file[0].type,
+      };
+
+      onSuccess(attachment);
+    };
+    reader.onerror = (): void => {
+      onError({ Title: 'ERROR TITLE', Body: 'ERROR BODY' });
+    };
+    reader.readAsDataURL(file[0]);
   };
   //@ts-expect-error error
   const onDeleteAttachment = (fileId: string, onSuccess: () => void): void => {
@@ -194,22 +216,6 @@ const FormFillerPreview = (): JSX.Element => {
     );
   };
 
-  function generateUUID() { // Public Domain/MIT
-    var d = new Date().getTime();//Timestamp
-    var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16;//random number between 0 and 16
-        if(d > 0){//Use timestamp until depleted
-            r = (d + r)%16 | 0;
-            d = Math.floor(d/16);
-        } else {//Use microseconds since page-load if supported
-            r = (d2 + r)%16 | 0;
-            d2 = Math.floor(d2/16);
-        }
-        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-}
-
   if (!questionnaire) return <div>{'loading...'}</div>;
   return (
     <Provider store={store}>
@@ -234,7 +240,6 @@ const FormFillerPreview = (): JSX.Element => {
                     setQuestionnaireResponse(questionnaireResponse);
                     setShowResponse(true);
                   }}
-                  // eslint-disable-next-line no-console
                   onSubmit={handleSubmit}
                   authorized={true}
                   resources={getResources('')}
@@ -250,7 +255,7 @@ const FormFillerPreview = (): JSX.Element => {
                   onDeleteAttachment={onDeleteAttachment}
                   onOpenAttachment={onOpenAttachment}
                   attachmentValidTypes={[MimeType.PNG, MimeType.JPG, MimeType.JPEG, MimeType.PDF, MimeType.PlainText]}
-                  attachmentMaxFileSize={1}
+                  attachmentMaxFileSize={10000000}
                   onRequestHelpButton={(_1, _2, _3, _4, opening) => {
                     return <HelpButton opening={opening} />;
                   }}

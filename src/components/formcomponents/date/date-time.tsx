@@ -7,7 +7,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { format, isValid } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
-import { DateFormat, DateTimeUnit, TimeUnit } from '../../../types/dateTypes';
+import { DateFormat, DateTimeUnit, defaultMaxDate, defaultMinDate, TimeUnit } from '../../../types/dateTypes';
 
 import { newDateTimeValueAsync } from '../../../actions/newValue';
 import { GlobalState, useAppDispatch } from '../../../reducers';
@@ -39,6 +39,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage, isNumber } from '@/components/validation/rules';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -86,6 +87,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const hours = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Hours);
   const minutes = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Minutes);
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-date`, dateAnswerValue);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-hours`, hours);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-minutes`, minutes);
 
   useEffect(() => {
     if (isValid(dateAnswerValueParsed)) {
@@ -252,8 +256,8 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             dateButtonAriaLabel="Open datepicker"
             dateFormat={'dd.MM.yyyy'}
             dateValue={isValid(dateValue) ? dateValue : undefined}
-            minDate={minDateTime}
-            maxDate={maxDateTime}
+            minDate={minDateTime ?? defaultMinDate}
+            maxDate={maxDateTime ?? defaultMaxDate}
             onChange={(e, newDate) => {
               handleDateChange(newDate);
               onChangeDate(e);

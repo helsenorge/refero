@@ -31,6 +31,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
@@ -84,6 +85,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   }, [answer, item]);
 
   const value = useMemo(() => getValue(), [getValue]);
+  useResetFormField(props.idWithLinkIdAndItemIndex, value);
 
   const getPDFValue = useCallback((): string => {
     if (isDataReceiver(item) && Array.isArray(answer)) {

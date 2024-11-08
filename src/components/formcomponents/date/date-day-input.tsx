@@ -28,10 +28,11 @@ import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { ReadOnly } from '../read-only/readOnly';
-import { DateFormat } from '@/types/dateTypes';
+import { DateFormat, defaultMaxDate, defaultMinDate } from '@/types/dateTypes';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage } from '@/components/validation/rules';
 import { useEffect, useState } from 'react';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -83,6 +84,7 @@ export const DateDayInput = ({
   const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
   const [dateValue, setDateValue] = useState(dateAnswerValueParsed);
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMdd, DateFormat.dMMyyyy);
+  useResetFormField(idWithLinkIdAndItemIndex, dateAnswerValue);
 
   useEffect(() => {
     if (isValid(dateAnswerValueParsed)) {
@@ -171,8 +173,8 @@ export const DateDayInput = ({
         autoComplete=""
         dateButtonAriaLabel="Open datepicker"
         dateFormat={'dd.MM.yyyy'}
-        minDate={minDateTime}
-        maxDate={maxDateTime}
+        minDate={minDateTime ?? defaultMinDate}
+        maxDate={maxDateTime ?? defaultMaxDate}
         onChange={(e, newDate) => {
           handleChange(newDate);
           onChange(e);
