@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Attachment, QuestionnaireItem } from 'fhir/r4';
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { getMaxOccursExtensionValue } from '@/util/extension';
 import { getAttachmentsFromAnswer } from './helpers';

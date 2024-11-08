@@ -94,7 +94,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
         onUpload={onUpload}
         onDelete={onDelete}
         onOpen={onOpenAttachment}
-        id={getId(idWithLinkIdAndItemIndex)}
+        id={getId(id)}
         uploadButtonText={getButtonText()}
         resources={resources}
         isRequired={isRequired(item)}

@@ -91,10 +91,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const validationFileTypesMessage = getCustomValidationText(item, resources?.attachmentError_fileType);
   const maxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const validFileTypes: MimeTypes[] = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
-  console.log('Form id', idWithLinkIdAndItemIndex);
 
-  console.log('attahment error', error);
-  console.log('size', maxValueBytes);
   const {
     setAcceptedFiles,
     setRejectedFiles,
