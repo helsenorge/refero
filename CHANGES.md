@@ -1,3 +1,6 @@
+## 16.0.0-beta.61
+- Added check for changes to values and update react-hook-form validaton
+
 ## 16.0.0-beta.57
 - Added validation for digits in Time
 - Bugfix: The time 00:00 got validation error in Time
