@@ -142,26 +142,6 @@ const RenderForm = ({
     }
   };
 
-
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleSubmit = (): (() => void) => {
-     // eslint-disable-next-line no-console
-     console.log("Handle submit called");
-     if ( referoProps.isMicrowebStep ) {
-        // eslint-disable-next-line no-console
-        console.log("Is microweb step");
-        // eslint-disable-next-line no-console
-        console.log("Using step process foward");
-        if ( referoProps.onStepProcessForward) {
-          // eslint-disable-next-line no-console
-          console.log("Returning callback onStepProcessForward");
-          return referoProps.onStepProcessForward;
-        }
-    }
-    return onSubmit;
-  }
-
-
   return (
     <>
       {isAuthorized && (
@@ -171,7 +151,7 @@ const RenderForm = ({
             disabled={referoProps.blockSubmit}
             submitButtonText={displayNextButton ? resources.nextStep : resources.formSend}
             errorMessage={resources.formError}
-            onSubmit={displayNextButton ? nextStep : handleSubmit()}
+            onSubmit={displayNextButton ? nextStep : onSubmit}
             requiredLabel={resources.formRequired}
             optionalLabel={resources.formOptional}
             cancelButtonText={resources.formCancel}
@@ -188,7 +168,7 @@ const RenderForm = ({
             buttonClasses="page_refero__saveblock"
             validationSummaryPlacement={referoProps.validationSummaryPlacement}
             validationSummary={{
-              enable: true,
+              enable: referoProps.isMicrowebStep ? false:  true,
               header: resources.validationSummaryHeader,
             }}
             submitButtonDisabled={referoProps.submitButtonDisabled}
@@ -211,7 +191,7 @@ const RenderForm = ({
             triggerPreventDefaultOnSubmit
             validationSummaryPlacement={referoProps.validationSummaryPlacement}
             validationSummary={{
-              enable: true,
+              enable:  referoProps.isMicrowebStep ? false : true,
               header: resources.validationSummaryHeader,
             }}
             submitButtonDisabled={referoProps.submitButtonDisabled}

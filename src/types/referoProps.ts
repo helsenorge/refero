@@ -75,6 +75,5 @@ export interface ReferoProps {
   isMicrowebStep: boolean;
   onStepProcessCancel?: () => void;
   onStepProcessBack?: () => void;
-  onStepProcessForward?: () => void;
   onCancelMicroweb: (formData: any) => void;
 }
