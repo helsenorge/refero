@@ -1,5 +1,9 @@
+## 16.0.0-beta.63
+- fix confirmation of deleting repeatable groups
+
 ## 16.0.0-beta.61
 - Added check for changes to values and update react-hook-form validaton
+
 ## 16.0.0-beta.60
 - Bugfix: No year and month pickers in DatePicker (added default min/max)
 - UU-bugfix: Added label for YearMonth field
