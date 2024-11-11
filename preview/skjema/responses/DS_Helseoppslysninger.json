@@ -1,6 +1,6 @@
 {
   "resourceType": "QuestionnaireResponse",
-  "id": "9a0f9ad4-2758-463a-bcf7-acd55486efa5",
+  "id": "fda8600c-a99d-4496-85a2-04f016020898",
   "meta": { "versionId": "1" },
   "questionnaire": "Questionnaire/223",
   "status": "in-progress",
@@ -21,7 +21,7 @@
       "linkId": "sot-3",
       "text": "**Hva skjer med skjemaet du sender inn?**\r\n\r\nSkjemaet sendes automatisk til din pasientjournal, og det er bare de som skal gi deg helsehjelp som har tilgang til det. \r\n\r\nSkjemaet om helseopplysninger er ikke et verktøy for å få kontakt med sykehuset. Skjemaet vil først bli lest i forbindelse med din timeavtale, ikke med en gang du sender det inn.\r\n\r\nDu får ikke svar på dette skjemaet. Dersom du har informasjon som haster, ta kontakt med sykehuset på telefon.\r\n\r\nOpplysningene om din helsetilstand er gyldig inntil 3 måneder. Skjer det endringer i perioden kan du fylle ut nytt skjema eller kontakte sykehuset\r\n\r\n**Dersom du trenger helsehjelp før din time, ta kontakt med din fastlege eller legevakten på telefon 116 117**"
     },
-    { "linkId": "6b5b6350-2885-4ea1-8b78-21eec7079af7", "text": "Dato", "answer": [{ "valueDate": "2024-10-31" }] },
+    { "linkId": "6b5b6350-2885-4ea1-8b78-21eec7079af7", "text": "Dato", "answer": [{ "valueDate": "2024-11-11" }] },
     {
       "linkId": "2",
       "text": "Mottaker",
@@ -31,7 +31,12 @@
         {
           "linkId": "33a69e13-1594-4c4d-8b10-0eff240cdb84",
           "text": "Velg sykehuset du skal behandles ved. Dette står i innkallingsbrevet.",
-          "answer": [{ "item": [{ "linkId": "7570ab14-56cc-4a22-80aa-830e3e1335b4" }] }]
+          "answer": [
+            {
+              "valueCoding": { "code": "Endpoint/34", "display": "Betanien Hospital Skien" },
+              "item": [{ "linkId": "7570ab14-56cc-4a22-80aa-830e3e1335b4" }]
+            }
+          ]
         }
       ]
     },
@@ -47,7 +52,7 @@
             { "linkId": "4.1.2", "text": "Fødselsnummer (11 siffer)", "answer": [{ "valueString": "30819097751" }] },
             { "linkId": "4.1.3", "text": "Alder", "answer": [{ "valueInteger": 34 }] },
             { "linkId": "4.1.4", "text": "Mobiltelefonnummer", "answer": [{ "valueString": "+4792655665" }] },
-            { "linkId": "4.1.5", "text": "Eventuelt annet telefonnummer vi kan nå deg på" }
+            { "linkId": "4.1.5", "text": "Eventuelt annet telefonnummer vi kan nå deg på", "answer": [{ "valueString": "65656565" }] }
           ]
         },
         {
@@ -69,10 +74,14 @@
               "linkId": "4.3.1",
               "text": "Pårørende er en person over 18 år som sykehuset kan informere om din helsetilstand, hvis det blir behov for det."
             },
-            { "linkId": "4.3.2", "text": "Navn på hovedpårørende" },
-            { "linkId": "4.3.3", "text": "Fødselsdato hovedpårørende" },
-            { "linkId": "4.3.4", "text": "Telefonnummer hovedpårørende" },
-            { "linkId": "4.3.5", "text": "Relasjon" },
+            { "linkId": "4.3.2", "text": "Navn på hovedpårørende", "answer": [{ "valueString": "mge" }] },
+            { "linkId": "4.3.3", "text": "Fødselsdato hovedpårørende", "answer": [{ "valueDate": "2024-11-11" }] },
+            { "linkId": "4.3.4", "text": "Telefonnummer hovedpårørende", "answer": [{ "valueString": "21343434" }] },
+            {
+              "linkId": "4.3.5",
+              "text": "Relasjon",
+              "answer": [{ "valueCoding": { "system": "http://ehelse.no/Relasjon", "code": "SI", "display": "Søster" } }]
+            },
             { "linkId": "feeec8ff-90c1-4c52-be84-5b881c217b28", "text": "Relasjon" }
           ]
         },
@@ -84,16 +93,16 @@
               "linkId": "8261a08b-49b5-4004-8bb0-f8d00ed09587",
               "text": "Pårørende er en person over 18 år som sykehuset kan informere om din helsetilstand, hvis det blir behov for det."
             },
-            { "linkId": "654ffa64-44d7-4aba-c0a6-171a073aeff2", "text": "Navn pårørende", "answer": [{ "valueString": "abc" }] },
+            { "linkId": "654ffa64-44d7-4aba-c0a6-171a073aeff2", "text": "Navn pårørende", "answer": [{ "valueString": "sdsfdsf" }] },
             {
               "linkId": "8cdc55b7-f624-46f5-8e7d-e15785b16a7d",
               "text": "Fødselsdato pårørende",
-              "answer": [{ "valueDate": "2024-10-10" }]
+              "answer": [{ "valueDate": "2024-11-06" }]
             },
             {
               "linkId": "3f7b5f98-1dd3-405e-8d6d-0d3dbc44c095",
               "text": "Telefonnummer pårørende",
-              "answer": [{ "valueString": "13123123" }]
+              "answer": [{ "valueString": "34343434" }]
             },
             {
               "linkId": "f45d5299-9e73-489c-8e3a-471946635ee6",
@@ -107,7 +116,11 @@
           "linkId": "4.4",
           "text": "Barn i familien",
           "item": [
-            { "linkId": "4.4.1", "text": "Har du eneansvar for barn under 18 år eller andre med spesielle omsorgsbehov?" },
+            {
+              "linkId": "4.4.1",
+              "text": "Har du eneansvar for barn under 18 år eller andre med spesielle omsorgsbehov?",
+              "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
+            },
             {
               "linkId": "4.4.2",
               "text": "Barn og unge påvirkes når noen i familien er syke og trenger å forstå hva som skjer. Det kan være at du selv er pasient, pårørende eller at du er forelder til syke barn med søsken. Vi på sykehuset skal bidra til at barn og unge i din familie blir godt ivaretatt. Sykehuset forplikter seg derved å spørre om du har pårørende (barn eller søsken) som er under 18 år, slik at disse kan bli ivaretatt."
@@ -129,13 +142,13 @@
                       "linkId": "4.5.1.1",
                       "text": "Arbeidsgiver",
                       "item": [
-                        { "linkId": "4.5.1.1.1", "text": "Arbeidsgivers navn", "answer": [{ "valueString": "abc" }] },
-                        { "linkId": "4.5.1.1.2", "text": "Yrke/stilling", "answer": [{ "valueString": "abc" }] },
+                        { "linkId": "4.5.1.1.1", "text": "Arbeidsgivers navn", "answer": [{ "valueString": "asdasd" }] },
+                        { "linkId": "4.5.1.1.2", "text": "Yrke/stilling", "answer": [{ "valueString": "as" }] },
                         {
                           "linkId": "4.5.1.1.3",
                           "text": "Stillingsprosent",
                           "answer": [
-                            { "valueQuantity": { "value": 50, "unit": "prosent", "system": "http://unitsofmeasure.org", "code": "%" } }
+                            { "valueQuantity": { "value": 23, "unit": "prosent", "system": "http://unitsofmeasure.org", "code": "%" } }
                           ]
                         }
                       ]
@@ -218,8 +231,15 @@
                     {
                       "valueCoding": {
                         "system": "urn:uuid:9937ba45-16c3-46eb-a15c-f0e2763a47be",
-                        "code": "rytmeforstyrrelse-(atrieflimmer)",
-                        "display": "Rytmeforstyrrelse (atrieflimmer)"
+                        "code": "angina-pectoris-(hjertekrampe)",
+                        "display": "Angina pectoris (hjertekrampe)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:9937ba45-16c3-46eb-a15c-f0e2763a47be",
+                        "code": "hjertesvikt",
+                        "display": "Hjertesvikt"
                       }
                     }
                   ]
@@ -234,7 +254,7 @@
                         {
                           "linkId": "5.1.3.1",
                           "text": "Om du vet hvilken type pacemaker du har, skriv det under",
-                          "answer": [{ "valueString": "neu" }]
+                          "answer": [{ "valueString": "asdasd" }]
                         }
                       ]
                     }
@@ -248,7 +268,16 @@
           "linkId": "45dd2dfc-fa5e-45aa-8439-5177ba6451f2",
           "text": "Høyt blodtrykk (hypertensjon)",
           "answer": [
-            { "item": [{ "linkId": "ed30475e-45ab-4041-8265-022fbe39ac70", "text": "Er blodtrykket ditt velkontrollert med medisiner?" }] }
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [
+                {
+                  "linkId": "ed30475e-45ab-4041-8265-022fbe39ac70",
+                  "text": "Er blodtrykket ditt velkontrollert med medisiner?",
+                  "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "1", "display": "Ja" } }]
+                }
+              ]
+            }
           ]
         },
         {
@@ -256,11 +285,21 @@
           "text": "Økt blødningstendens eller bruker du blodfortynnende medisiner",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "8a1d7b4f-32c0-402e-dc4c-617844e9243f",
                   "text": "Huk av for det som gjelder deg",
-                  "answer": [{ "item": [{ "linkId": "9ca3c11a-1b84-4e53-a792-e234c1090511", "text": "Annen blødningstendens" }] }]
+                  "answer": [
+                    { "item": [{ "linkId": "9ca3c11a-1b84-4e53-a792-e234c1090511", "text": "Annen blødningstendens" }] },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:9a6e80b1-207d-4ec0-c437-3dc5c98723d8",
+                        "code": "blodfortynnende-medisiner",
+                        "display": "Blodfortynnende medisiner"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -271,13 +310,35 @@
           "text": "Lungesykdom",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "937d0a30-fe39-4e72-88c2-86d7e26b8c6c",
                   "text": "Hvilken lungesykdom?",
-                  "answer": [{ "item": [{ "linkId": "3fa933b3-4102-4830-adb8-6ed483818223", "text": "Annen lungesykdom" }] }]
+                  "answer": [
+                    {
+                      "item": [
+                        {
+                          "linkId": "3fa933b3-4102-4830-adb8-6ed483818223",
+                          "text": "Annen lungesykdom",
+                          "answer": [{ "valueString": "asdasd" }]
+                        }
+                      ]
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:1d00ec53-c765-430e-bba9-2927d2992fc2",
+                        "code": "annen-lungesykdom",
+                        "display": "Annen lungesykdom"
+                      }
+                    }
+                  ]
                 },
-                { "linkId": "7110533c-25ac-43e8-99c3-75e3b137d2a3", "text": "Bruker du oksygen hjemme?" }
+                {
+                  "linkId": "7110533c-25ac-43e8-99c3-75e3b137d2a3",
+                  "text": "Bruker du oksygen hjemme?",
+                  "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
+                }
               ]
             }
           ]
@@ -287,12 +348,14 @@
           "text": "Søvnapné",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "ee8c92a2-e5ec-4d86-840b-6c50c05a471e",
                   "text": "Bruker du pustemaske når du sover?",
                   "answer": [
                     {
+                      "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
                       "item": [
                         {
                           "linkId": "22394301-8fa5-4281-8324-42e9f524f5a8",
@@ -311,11 +374,28 @@
           "text": "Nevrologisk sykdom",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "b58bc134-89a5-49dd-8381-9192bbef3d7d",
                   "text": "Hvilken nevrologisk sykdom?",
-                  "answer": [{ "item": [{ "linkId": "36898039-9053-405f-ea47-123cfe53b160", "text": "Annen nevrologisk sykdom" }] }]
+                  "answer": [
+                    { "item": [{ "linkId": "36898039-9053-405f-ea47-123cfe53b160", "text": "Annen nevrologisk sykdom" }] },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:1cd0dfb7-7361-4d13-9fe3-7453e0912342",
+                        "code": "parkinsons-sykdom",
+                        "display": "Parkinsons sykdom"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:1cd0dfb7-7361-4d13-9fe3-7453e0912342",
+                        "code": "multippel-sklerose-(ms)",
+                        "display": "Multippel sklerose (MS)"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -326,11 +406,28 @@
           "text": "Nyresykdom",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "f85095a9-80a4-46e5-8911-792b28a58b24",
                   "text": "Hvilken nyresykdom?",
-                  "answer": [{ "item": [{ "linkId": "a1d1b623-866b-4583-c1c1-648b2482986a", "text": "Annen nyresykdom" }] }]
+                  "answer": [
+                    { "item": [{ "linkId": "a1d1b623-866b-4583-c1c1-648b2482986a", "text": "Annen nyresykdom" }] },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:9956e6e0-58d1-48ed-bd32-23e5378925b0",
+                        "code": "nyresvikt",
+                        "display": "Nyresvikt"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:9956e6e0-58d1-48ed-bd32-23e5378925b0",
+                        "code": "nyrestein",
+                        "display": "Nyrestein"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -341,11 +438,28 @@
           "text": "Leversykdom",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "645a725a-bb7e-4fcb-9f7c-054c8b3e4348",
                   "text": "Hvilken leversykdom?",
-                  "answer": [{ "item": [{ "linkId": "e2d44462-fe18-4d3a-d7fa-fd1ceaf2d9a6", "text": "Annen leversykdom" }] }]
+                  "answer": [
+                    { "item": [{ "linkId": "e2d44462-fe18-4d3a-d7fa-fd1ceaf2d9a6", "text": "Annen leversykdom" }] },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:ef7cc783-bbce-4142-82d3-3e546efef697",
+                        "code": "skrumplever/fettlever",
+                        "display": "Skrumplever/fettlever"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:ef7cc783-bbce-4142-82d3-3e546efef697",
+                        "code": "leversvikt",
+                        "display": "Leversvikt"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -354,18 +468,47 @@
         {
           "linkId": "347e9839-291a-43d7-c640-7d6480af423a",
           "text": "Diabetes",
-          "answer": [{ "item": [{ "linkId": "08556ec1-992f-457d-8083-95e5814845ac", "text": "Hvilken type diabetes har du?" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [
+                {
+                  "linkId": "08556ec1-992f-457d-8083-95e5814845ac",
+                  "text": "Hvilken type diabetes har du?",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:b3031217-152e-4282-8b69-c73516d04191",
+                        "code": "diabetes-type-2",
+                        "display": "Diabetes type 2"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
           "linkId": "32b090b0-3be1-4197-8601-d1142e22079f",
           "text": "Stoffskiftesykdom",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "4eebac0c-5064-4f70-e18c-113116e201e8",
                   "text": "Hvilken stoffskiftesykdom?",
-                  "answer": [{ "item": [{ "linkId": "ff6637d7-920b-45b0-fe05-e2e2898faf71", "text": "Annen stoffskiftesykdom" }] }]
+                  "answer": [
+                    { "item": [{ "linkId": "ff6637d7-920b-45b0-fe05-e2e2898faf71", "text": "Annen stoffskiftesykdom" }] },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:e527a017-0af5-421e-c95d-52f030823098",
+                        "code": "lavt-stoffskifte-(hypotyreose)",
+                        "display": "Lavt stoffskifte (hypotyreose)"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -376,11 +519,21 @@
           "text": "Leddgikt eller muskel-skjelettsykdom",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "1db1edac-d501-407c-828e-f8a29b59f481",
                   "text": "Hvilken leddgikt eller muskel-skjelettsykdom",
-                  "answer": [{ "item": [{ "linkId": "f637efdc-9c07-43ce-85bc-85f87854be1d", "text": "Annen muskel/skjelettsykdom" }] }]
+                  "answer": [
+                    { "item": [{ "linkId": "f637efdc-9c07-43ce-85bc-85f87854be1d", "text": "Annen muskel/skjelettsykdom" }] },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:736e86b3-ab3b-458a-d627-8c4425f06718",
+                        "code": "leddgikt/ra",
+                        "display": "Leddgikt/RA"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -391,11 +544,24 @@
           "text": "Mage- eller tarmproblemer",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "667d12e9-6eed-4001-84f3-d7d1e53f7c49",
                   "text": "Hvilken type mage- eller tarmproblemer?",
-                  "answer": [{ "item": [{ "linkId": "b5d4901b-a78d-432b-b4e2-3d4abb23bf3e", "text": "Annen mage eller tarmproblem" }] }]
+                  "answer": [
+                    { "item": [{ "linkId": "b5d4901b-a78d-432b-b4e2-3d4abb23bf3e", "text": "Annen mage eller tarmproblem" }] },
+                    {
+                      "valueCoding": { "system": "urn:uuid:ac6ec66a-36ee-4ad7-8a95-0f2581c7f6d4", "code": "magesår", "display": "Magesår" }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:ac6ec66a-36ee-4ad7-8a95-0f2581c7f6d4",
+                        "code": "sure-oppstøt/refluks",
+                        "display": "Sure oppstøt/refluks"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -406,11 +572,30 @@
           "text": "Psykisk sykdom",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "13665034-4d28-4e26-d07c-72de808610a8",
                   "text": "Hvilken psykisk sykdom?",
-                  "answer": [{ "item": [{ "linkId": "3c101c82-e67a-424d-c607-a95d35544680", "text": "Annen psykisk sykdom" }] }]
+                  "answer": [
+                    {
+                      "item": [
+                        {
+                          "linkId": "3c101c82-e67a-424d-c607-a95d35544680",
+                          "text": "Annen psykisk sykdom",
+                          "answer": [{ "valueString": "asd" }]
+                        }
+                      ]
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:191dd210-dfbe-4d1d-832d-e2e571a00a8d",
+                        "code": "annen-psykisk-sykdom",
+                        "display": "Annen psykisk sykdom"
+                      }
+                    },
+                    { "valueCoding": { "system": "urn:uuid:191dd210-dfbe-4d1d-832d-e2e571a00a8d", "code": "adhd", "display": "ADHD" } }
+                  ]
                 }
               ]
             }
@@ -421,11 +606,22 @@
           "text": "Smittsom sykdom",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "a828079a-0f50-49cc-bd71-2e1e429de4e8",
                   "text": "Hvilken smittsom sykdom?",
-                  "answer": [{ "item": [{ "linkId": "e0d9a7c7-ef73-4b25-8044-04a26967677c", "text": "Annen smittsom sykdom" }] }]
+                  "answer": [
+                    { "item": [{ "linkId": "e0d9a7c7-ef73-4b25-8044-04a26967677c", "text": "Annen smittsom sykdom" }] },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:56777958-d53e-423f-868e-efe5b3fc6706",
+                        "code": "hepatitt",
+                        "display": "Hepatitt"
+                      }
+                    },
+                    { "valueCoding": { "system": "urn:uuid:56777958-d53e-423f-868e-efe5b3fc6706", "code": "hiv", "display": "HIV" } }
+                  ]
                 }
               ]
             }
@@ -436,6 +632,7 @@
           "text": "Kreft",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "30c3b30e-2d40-4f74-b73f-ab828456c6bc",
@@ -443,9 +640,20 @@
                   "answer": [
                     {
                       "item": [
-                        { "linkId": "ceea7c12-f364-46e4-a3b9-9adb5b46dd92", "text": "Aktiv kreftsykdom" },
+                        {
+                          "linkId": "ceea7c12-f364-46e4-a3b9-9adb5b46dd92",
+                          "text": "Aktiv kreftsykdom",
+                          "answer": [{ "valueString": "asd" }]
+                        },
                         { "linkId": "0ad002a4-4c3f-4187-8088-ad05f66fff2a", "text": "Ferdigbehandlet kreftsykdom" }
                       ]
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:uuid:56777958-d53e-423f-868e-efe5b3fc6706",
+                        "code": "aktiv-kreftsykdom",
+                        "display": "Aktiv kreftsykdom"
+                      }
                     }
                   ]
                 }
@@ -456,9 +664,29 @@
         {
           "linkId": "8fd3f7b0-6404-466f-8784-d11166bd980b",
           "text": "Annen sykdom",
-          "answer": [{ "item": [{ "linkId": "5.13.1", "text": "Hvilken sykdom?" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [
+                { "linkId": "5.13.1", "text": "Hvilken sykdom?", "answer": [{ "valueString": "asd" }] },
+                { "linkId": "5.13.1", "text": "Hvilken sykdom?", "answer": [{ "valueString": "asdasd" }] }
+              ]
+            }
+          ]
         },
-        { "linkId": "5.5", "text": "Får du brystsmerter eller blir du tungpustet når du går opp trapper to etasjer i normalt tempo?" },
+        {
+          "linkId": "5.5",
+          "text": "Får du brystsmerter eller blir du tungpustet når du går opp trapper to etasjer i normalt tempo?",
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "urn:uuid:07956905-360a-428b-98c6-00b1772c3a80",
+                "code": "brystsmerter",
+                "display": "Brystsmerter"
+              }
+            }
+          ]
+        },
         { "linkId": "5.14", "text": "Er du gravid?", "answer": [{ "item": [{ "linkId": "5.14.1", "text": "Forventet termin" }] }] },
         { "linkId": "5.15", "text": "Ammer du?" }
       ]
@@ -636,7 +864,8 @@
       "item": [
         {
           "linkId": "6.1",
-          "text": "Bruker du medisiner? Gjelder også prevensjonsmidler, reseptfrie medisiner, alternative medisiner og naturmedisiner"
+          "text": "Bruker du medisiner? Gjelder også prevensjonsmidler, reseptfrie medisiner, alternative medisiner og naturmedisiner",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
         },
         {
           "linkId": "0b923e48-3f69-4205-edb7-dcc9cb531eb4",
@@ -653,17 +882,38 @@
             {
               "linkId": "6.2.1",
               "text": "Navn på medisin, styrke og type (for eksempel tablett, dråper eller sprøyte)",
-              "answer": [{ "item": [{ "linkId": "6.2.1.1", "text": "For eksempel Paracet 500mg tablett" }] }]
+              "answer": [{ "valueString": "asd", "item": [{ "linkId": "6.2.1.1", "text": "For eksempel Paracet 500mg tablett" }] }]
             },
             {
               "linkId": "6.2.2",
               "text": "Hvor mye tar du av medisinen hver dag?",
-              "answer": [{ "item": [{ "linkId": "6.2.2.1", "text": "For eksempel 2 tabletter 3 ganger om dagen" }] }]
+              "answer": [{ "valueString": "asd", "item": [{ "linkId": "6.2.2.1", "text": "For eksempel 2 tabletter 3 ganger om dagen" }] }]
             },
             { "linkId": "6.2.4", "text": "Ta med oppdatert medisinliste til timeavtalen. Denne kan du få i apotek eller hos din fastlege." }
           ]
         },
-        { "linkId": "6.3", "text": "Er du allergisk mot noen medisiner?" },
+        {
+          "linkId": "6.2",
+          "text": "Medisin:",
+          "item": [
+            {
+              "linkId": "6.2.1",
+              "text": "Navn på medisin, styrke og type (for eksempel tablett, dråper eller sprøyte)",
+              "answer": [{ "valueString": "asd", "item": [{ "linkId": "6.2.1.1", "text": "For eksempel Paracet 500mg tablett" }] }]
+            },
+            {
+              "linkId": "6.2.2",
+              "text": "Hvor mye tar du av medisinen hver dag?",
+              "answer": [{ "valueString": "asd", "item": [{ "linkId": "6.2.2.1", "text": "For eksempel 2 tabletter 3 ganger om dagen" }] }]
+            },
+            { "linkId": "6.2.4", "text": "Ta med oppdatert medisinliste til timeavtalen. Denne kan du få i apotek eller hos din fastlege." }
+          ]
+        },
+        {
+          "linkId": "6.3",
+          "text": "Er du allergisk mot noen medisiner?",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
+        },
         {
           "linkId": "6.4",
           "text": "Medisin du er allergisk mot:",
@@ -671,22 +921,61 @@
             {
               "linkId": "6.4.1",
               "text": "Legemiddelnavn, styrke og form",
-              "answer": [{ "item": [{ "linkId": "6.4.1.1", "text": "For eksempel Paracet 500mg tablett" }] }]
+              "answer": [{ "valueString": "asd", "item": [{ "linkId": "6.4.1.1", "text": "For eksempel Paracet 500mg tablett" }] }]
             },
-            { "linkId": "6.4.2", "text": "Reaksjon" }
+            { "linkId": "6.4.2", "text": "Reaksjon", "answer": [{ "valueString": "asd" }] }
           ]
         },
-        { "linkId": "6.5", "text": "Er du allergisk mot noen matvarer, pollen, lateks, nikkel eller annet?" },
+        {
+          "linkId": "6.4",
+          "text": "Medisin du er allergisk mot:",
+          "item": [
+            {
+              "linkId": "6.4.1",
+              "text": "Legemiddelnavn, styrke og form",
+              "answer": [{ "valueString": "asd", "item": [{ "linkId": "6.4.1.1", "text": "For eksempel Paracet 500mg tablett" }] }]
+            },
+            { "linkId": "6.4.2", "text": "Reaksjon", "answer": [{ "valueString": "asd" }] }
+          ]
+        },
+        {
+          "linkId": "6.5",
+          "text": "Er du allergisk mot noen matvarer, pollen, lateks, nikkel eller annet?",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
+        },
         {
           "linkId": "6.6",
           "text": "Allergi",
           "item": [
-            { "linkId": "6.6.1", "text": "Hva er du allergisk mot?" },
+            { "linkId": "6.6.1", "text": "Hva er du allergisk mot?", "answer": [{ "valueString": "asd" }] },
             {
               "linkId": "6.6.2",
               "text": "Reaksjon",
               "answer": [
                 {
+                  "valueCoding": { "system": "http://ehelse.no/Reaksjon", "code": "1", "display": "Mild" },
+                  "item": [
+                    {
+                      "linkId": "6.6.2.1",
+                      "text": "Mild: lette plager som lett utslett, kløende øyne og rennende nese, \r\nModerat: hoste, tung pust, magesmerter -diare\r\nAlvorlig: alvorlige pusteproblemer og eller blodtrykksfall som krevede akutt legetilsyn eller sykehusinnleggelse (har forskrevet epi-penn)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "6.6",
+          "text": "Allergi",
+          "item": [
+            { "linkId": "6.6.1", "text": "Hva er du allergisk mot?", "answer": [{ "valueString": "asd" }] },
+            {
+              "linkId": "6.6.2",
+              "text": "Reaksjon",
+              "answer": [
+                {
+                  "valueCoding": { "system": "http://ehelse.no/Reaksjon", "code": "2", "display": "Moderat" },
                   "item": [
                     {
                       "linkId": "6.6.2.1",
@@ -701,7 +990,12 @@
         {
           "linkId": "6.7",
           "text": "Har du tidligere reagert på kontrastmiddel i forbindelse med radiologiske undersøkelser?",
-          "answer": [{ "item": [{ "linkId": "6.7.1", "text": "Reaksjon" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "1", "display": "Ja" },
+              "item": [{ "linkId": "6.7.1", "text": "Reaksjon", "answer": [{ "valueString": "asd" }] }]
+            }
+          ]
         }
       ]
     },
@@ -714,6 +1008,7 @@
           "text": "Trenger du en spesiell type mat?",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "7.1.1",
@@ -722,7 +1017,11 @@
                 {
                   "linkId": "7.1.2",
                   "text": "Velg kost",
-                  "answer": [{ "item": [{ "linkId": "519a5401-08ce-4fc0-8924-7bfff739030a", "text": "Hvilken annen spesialkost?" }] }]
+                  "answer": [
+                    { "item": [{ "linkId": "519a5401-08ce-4fc0-8924-7bfff739030a", "text": "Hvilken annen spesialkost?" }] },
+                    { "valueCoding": { "system": "http://ehelse.no/Kost", "code": "1", "display": "Diabeteskost" } },
+                    { "valueCoding": { "system": "http://ehelse.no/Kost", "code": "2", "display": "Glutenfri kost" } }
+                  ]
                 }
               ]
             }
@@ -732,27 +1031,61 @@
           "linkId": "7.6",
           "text": "Har du problemer med å dusje, kle på deg og utføre daglige gjøremål selv?",
           "answer": [
-            { "item": [{ "linkId": "7.6.1", "text": "Hva trenger du hjelp til? Bruker du hjelpemidler? Har du en personlig assistent?" }] }
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [
+                {
+                  "linkId": "7.6.1",
+                  "text": "Hva trenger du hjelp til? Bruker du hjelpemidler? Har du en personlig assistent?",
+                  "answer": [{ "valueString": "asdad" }]
+                }
+              ]
+            }
           ]
         },
         {
           "linkId": "7.7",
           "text": "Har du problemer med å se, høre eller snakke som vi bør ta hensyn til?",
-          "answer": [{ "item": [{ "linkId": "7.7.1", "text": "Beskriv" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [{ "linkId": "7.7.1", "text": "Beskriv", "answer": [{ "valueString": "asd" }] }]
+            }
+          ]
         },
         {
           "linkId": "7.2",
           "text": "Hvor ofte røyker du?",
-          "answer": [{ "item": [{ "linkId": "7.2.1", "text": "Har du røkt tidligere?" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "http://ehelse.no/Levevaner", "code": "1", "display": "Aldri" },
+              "item": [
+                {
+                  "linkId": "7.2.1",
+                  "text": "Har du røkt tidligere?",
+                  "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
+                }
+              ]
+            }
+          ]
         },
-        { "linkId": "7.3", "text": "Hvor ofte snuser du?" },
+        {
+          "linkId": "7.3",
+          "text": "Hvor ofte snuser du?",
+          "answer": [{ "valueCoding": { "system": "http://ehelse.no/Levevaner", "code": "4", "display": "Daglig" } }]
+        },
         {
           "linkId": "7.4",
           "text": "Hvor ofte drikker du alkohol?",
           "answer": [
             {
+              "valueCoding": { "system": "http://ehelse.no/Levevaner", "code": "4", "display": "Daglig" },
               "item": [
-                { "linkId": "96d44b9b-8849-476e-bb44-ca154d62030f", "text": "Hvor mange enheter daglig?" },
+                {
+                  "linkId": "96d44b9b-8849-476e-bb44-ca154d62030f",
+                  "text": "Hvor mange enheter daglig?",
+                  "answer": [{ "valueInteger": 23 }]
+                },
                 { "linkId": "298b7546-ba87-4a02-b9e9-153a749e87fb", "text": "Hvor mange enheter ukentlig?" }
               ]
             }
@@ -763,12 +1096,17 @@
           "text": "Bruker du andre rusmidler?",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "7.5.1",
                   "text": "Vi spør om dette fordi det kan påvirke hvordan du reagerer på bedøvelse, smertestillende og andre medisiner. Sykehuset melder ikke til politiet om du svarer ja på spørsmål om bruk av ulovlige rusmidler."
                 },
-                { "linkId": "51774493-4380-49f7-b73f-3b54e4dd56f9", "text": "Beskriv type og hyppighet" }
+                {
+                  "linkId": "51774493-4380-49f7-b73f-3b54e4dd56f9",
+                  "text": "Beskriv type og hyppighet",
+                  "answer": [{ "valueString": "asdasd" }]
+                }
               ]
             }
           ]
@@ -828,9 +1166,21 @@
       "linkId": "8",
       "text": "Høyde og vekt",
       "item": [
-        { "linkId": "8.1", "text": "Høyde" },
-        { "linkId": "8.2", "text": "Vekt" },
-        { "linkId": "8.3", "text": "Kroppsmasseindeks" }
+        {
+          "linkId": "8.1",
+          "text": "Høyde",
+          "answer": [{ "valueQuantity": { "value": 150, "unit": "centimeter", "system": "http://unitsofmeasure.org", "code": "cm" } }]
+        },
+        {
+          "linkId": "8.2",
+          "text": "Vekt",
+          "answer": [{ "valueQuantity": { "value": 55, "unit": "kilo", "system": "http://unitsofmeasure.org", "code": "kg" } }]
+        },
+        {
+          "linkId": "8.3",
+          "text": "Kroppsmasseindeks",
+          "answer": [{ "valueQuantity": { "value": 24.44, "unit": "(KMI)", "system": "http://ehelse.no/Score", "code": "score" } }]
+        }
       ]
     },
     {
@@ -846,7 +1196,11 @@
       "linkId": "9",
       "text": "Hvis du skal opereres eller undersøkes i narkose eller annen bedøvelse, ber vi om at du svarer på noen ekstra spørsmål."
     },
-    { "linkId": "10", "text": "Skal du opereres eller undersøkes i narkose eller annen bedøvelse?" },
+    {
+      "linkId": "10",
+      "text": "Skal du opereres eller undersøkes i narkose eller annen bedøvelse?",
+      "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "1", "display": "Ja" } }]
+    },
     {
       "linkId": "11",
       "text": "Før eventuell operasjon eller undersøkelse i narkose eller annen bedøvelse",
@@ -856,6 +1210,7 @@
           "text": "Har du vært i narkose tidligere?",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 {
                   "linkId": "11.1.1",
@@ -871,9 +1226,14 @@
           "text": "Har du eller noen du er i slekt med reagert på narkose eller bedøvelse?",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "1", "display": "Ja" },
               "item": [
                 { "linkId": "11.2.1", "text": "Det å reagere uønsket på narkose eller bedøvelse kan være arvelig" },
-                { "linkId": "11.2.2", "text": "Hvem har reagert, hva slags bedøvelse og hva slags reaksjon?" }
+                {
+                  "linkId": "11.2.2",
+                  "text": "Hvem har reagert, hva slags bedøvelse og hva slags reaksjon?",
+                  "answer": [{ "valueString": "adsd" }]
+                }
               ]
             }
           ]
@@ -881,16 +1241,22 @@
         {
           "linkId": "11.3",
           "text": "Har du problemer med å bevege kjeve eller nakke, eller med å gape?",
-          "answer": [{ "item": [{ "linkId": "11.3.1", "text": "Beskriv hvordan:" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [{ "linkId": "11.3.1", "text": "Beskriv hvordan:", "answer": [{ "valueString": "asd" }] }]
+            }
+          ]
         },
         {
           "linkId": "11.5",
           "text": "Har du tenner som er reparerte eller løse (bro, gebiss, stift, implantater)?",
           "answer": [
             {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
               "item": [
                 { "linkId": "11.5.1", "text": "Gjelder ikke fyllinger i egne tenner" },
-                { "linkId": "11.5.2", "text": "Beskriv hva:" }
+                { "linkId": "11.5.2", "text": "Beskriv hva:", "answer": [{ "valueString": "asdasd" }] }
               ]
             }
           ]
@@ -903,21 +1269,41 @@
         {
           "linkId": "11.4",
           "text": "Har du problemer med å ligge flatt på ryggen?",
-          "answer": [{ "item": [{ "linkId": "11.4.1", "text": "Beskriv hvorfor:" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [{ "linkId": "11.4.1", "text": "Beskriv hvorfor:", "answer": [{ "valueString": "asd" }] }]
+            }
+          ]
         },
         {
           "linkId": "11.6",
           "text": "Har du halsbrann, magesår, magekatarr, spiserørsbrokk, sure oppstøt eller lignende?",
-          "answer": [{ "item": [{ "linkId": "b3fdcfca-03fc-4434-c6e2-c07ea7140830", "text": "Beskriv tilstanden:" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "1", "display": "Ja" },
+              "item": [
+                { "linkId": "b3fdcfca-03fc-4434-c6e2-c07ea7140830", "text": "Beskriv tilstanden:", "answer": [{ "valueString": "asd" }] }
+              ]
+            }
+          ]
         },
         {
           "linkId": "11.7",
           "text": "Har du sår eller utslett i huden nær operasjonsstedet?",
-          "answer": [{ "item": [{ "linkId": "616a52a9-1feb-4140-951b-5844a53ae735", "text": "Beskriv tilstanden:" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [
+                { "linkId": "616a52a9-1feb-4140-951b-5844a53ae735", "text": "Beskriv tilstanden:", "answer": [{ "valueString": "asda" }] }
+              ]
+            }
+          ]
         },
         {
           "linkId": "11.8",
-          "text": "Det er anbefalt å ha en voksen person hos seg det første døgnet i hjemmet etter en operasjon. Har du en slik hjelper som kan være sammen med deg det første døgnet etter inngrepet/ undersøkelsen?"
+          "text": "Det er anbefalt å ha en voksen person hos seg det første døgnet i hjemmet etter en operasjon. Har du en slik hjelper som kan være sammen med deg det første døgnet etter inngrepet/ undersøkelsen?",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
         }
       ]
     },
@@ -928,9 +1314,18 @@
         {
           "linkId": "06a6ef90-10de-4ec4-9561-a2bca01933e4",
           "text": "Trenger du tolk?",
-          "answer": [{ "item": [{ "linkId": "41f29e51-d17a-4663-a4b1-5b6c698a12a3", "text": "Hvilket språk?" }] }]
+          "answer": [
+            {
+              "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" },
+              "item": [{ "linkId": "41f29e51-d17a-4663-a4b1-5b6c698a12a3", "text": "Hvilket språk?", "answer": [{ "valueString": "asd" }] }]
+            }
+          ]
         },
-        { "linkId": "7e3cfede-16a6-4475-9e06-c14de67c8b0d", "text": "Kan du komme til time på kort varsel?" }
+        {
+          "linkId": "7e3cfede-16a6-4475-9e06-c14de67c8b0d",
+          "text": "Kan du komme til time på kort varsel?",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
+        }
       ]
     },
     {
@@ -944,28 +1339,36 @@
         { "linkId": "930d154a-9248-40d1-bf24-27bc601071ff", "text": "Har du i løpet av de siste 12 måneder:" },
         {
           "linkId": "26ae8b51-f73e-4e77-85a3-1dd8f9aeef04",
-          "text": "Vært smittet av eller bodd i samme husstand som en person som har vært smittet av resistente bakterier (MRSA, VRE eller ESBL)?"
+          "text": "Vært smittet av eller bodd i samme husstand som en person som har vært smittet av resistente bakterier (MRSA, VRE eller ESBL)?",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
         },
         {
           "linkId": "a5b41ecc-c840-4446-b616-fc00ae4b275b",
-          "text": "Arbeidet som helsearbeider eller vært innlagt i sykehus eller annen helseinstitusjon utenfor Norden?"
+          "text": "Arbeidet som helsearbeider eller vært innlagt i sykehus eller annen helseinstitusjon utenfor Norden?",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
         },
         {
           "linkId": "9f257d1d-718d-4dc1-859f-a93b596ebd9d",
-          "text": "Fått omfattende undersøkelse, behandling, injeksjoner eller tannbehandling i en helsetjeneste utenfor Norden?"
+          "text": "Fått omfattende undersøkelse, behandling, injeksjoner eller tannbehandling i en helsetjeneste utenfor Norden?",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
         },
-        { "linkId": "6a5ec8b0-8504-48c1-ad19-1d64255dda5e", "text": "Oppholdt deg i flyktningleir eller barnehjem utenfor Norden?" },
+        {
+          "linkId": "6a5ec8b0-8504-48c1-ad19-1d64255dda5e",
+          "text": "Oppholdt deg i flyktningleir eller barnehjem utenfor Norden?",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
+        },
         {
           "linkId": "130c51fd-3a5a-4ee6-8c0f-b0c155c68fda",
-          "text": "Oppholdt deg sammenhengende i mer enn 6 uker utenfor Norden og du i tillegg har kronisk eksem, sår eller hudinfeksjon?"
+          "text": "Oppholdt deg sammenhengende i mer enn 6 uker utenfor Norden og du i tillegg har kronisk eksem, sår eller hudinfeksjon?",
+          "answer": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1", "display": "Ja" } }]
         },
         {
           "linkId": "348fcd5a-b8e4-45e5-9494-464027fc9895",
-          "text": "Test deg for resistente bakterier hos fastlegen. Du må teste deg i god tid før oppmøte på sykehuset. Testen er gratis.  Kontakt sykehuset hvis du er usikker på om du trenger å teste deg. Ring oss så fort som mulig hvis du vet at du selv eller noen du bor sammen med, har eller har hatt resistente bakterier."
+          "text": "Test deg for resistente bakterier hos fastlegen. Du må teste deg i god tid før oppmøte på sykehuset. Testen er gratis.  Kontakt sykehuset hvis du er usikker på om du trenger å teste deg. Ring oss så fort som mulig hvis du vet at du selv eller noen du bor sammen med, har eller har hatt resistente bakterier."
         }
       ]
     },
-    { "linkId": "12", "text": "Er det noe annet vi bør vite for å kunne gi deg god behandling?" },
+    { "linkId": "12", "text": "Er det noe annet vi bør vite for å kunne gi deg god behandling?", "answer": [{ "valueString": "asdasd" }] },
     {
       "linkId": "cde2bd0b-87bb-4f42-95fb-a790042d30e8",
       "text": "Er det noe du gruer deg spesielt til, eller noe annet vi bør vite for å kunne gi deg god behandling?"
@@ -975,11 +1378,23 @@
       "text": "Oppsummering",
       "item": [
         { "linkId": "13.1", "text": "Dette er en forenklet oppstilling av svarene dine." },
-        { "linkId": "13.4", "text": "Kroppsmasseindeks" },
+        {
+          "linkId": "13.4",
+          "text": "Kroppsmasseindeks",
+          "answer": [{ "valueQuantity": { "value": 24.44, "unit": "(KMI)", "system": "http://ehelse.no/Score", "code": "score" } }]
+        },
         { "linkId": "ac044d09-ffd3-4d3c-832c-502736a8e6ec", "text": "Kroppsmasseindeks" },
-        { "linkId": "037d1c57-dd30-4f5b-86c4-b6bd67b9e9db", "text": "Høyde" },
+        {
+          "linkId": "037d1c57-dd30-4f5b-86c4-b6bd67b9e9db",
+          "text": "Høyde",
+          "answer": [{ "valueQuantity": { "value": 150, "unit": "cm", "system": "http://ehelse.no/Score", "code": "cm" } }]
+        },
         { "linkId": "bedfdd82-e32e-4c17-b4e2-06206b7e1f6e", "text": "Høyde" },
-        { "linkId": "93a9beb9-6268-44ff-8db5-c37219350684", "text": "Vekt" },
+        {
+          "linkId": "93a9beb9-6268-44ff-8db5-c37219350684",
+          "text": "Vekt",
+          "answer": [{ "valueQuantity": { "value": 55, "unit": "kg", "system": "http://ehelse.no/Score", "code": "kg" } }]
+        },
         { "linkId": "51fdcdd0-c423-4851-f1d9-45b100ce9f1c", "text": "Vekt" },
         { "linkId": "13.5", "text": "Har eneansvar for barn under 18 år eller andre med spesielle behov" },
         { "linkId": "13.6", "text": "Har en eller flere arbeidsgivere" },

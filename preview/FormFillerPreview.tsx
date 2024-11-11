@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Attachment,
@@ -15,7 +15,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/number_and_quantity_fields.json';
+import skjema from './skjema/q.json';
 import qr from './skjema/responses/qr.json';
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
@@ -28,7 +28,6 @@ import HelpButton from './external-components/HelpButton';
 import Button from '@helsenorge/designsystem-react/components/Button';
 import { MimeType } from '@/util/attachmentHelper';
 import { getId, setSkjemaDefinitionAction, TextMessage } from '@/index';
-import { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
 
 const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
@@ -144,6 +143,14 @@ const fetchValueSetFn = (
 const FormFillerPreview = (): JSX.Element => {
   const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
   const [lang, setLang] = useState<number>(0);
+  useEffect(() => {
+    dispatch(
+      setSkjemaDefinitionAction({
+        questionnaire: mainQuestionnaire,
+        questionnaireResponse: parsedQuestionnaireResponse,
+      })
+    );
+  }, []);
 
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
   const mainQuestionnaire = getQuestionnaireFromBubndle(parsedQuestionnaire, 0);
@@ -216,7 +223,7 @@ const FormFillerPreview = (): JSX.Element => {
     );
   };
 
-  if (!questionnaire) return <div>{'loading...'}</div>;
+  if (!questionnaire || !questionnaireResponse) return <div>{'loading...'}</div>;
   return (
     <Provider store={store}>
       <div className="overlay">
@@ -246,7 +253,7 @@ const FormFillerPreview = (): JSX.Element => {
                   sticky={true}
                   saveButtonDisabled={false}
                   loginButton={<button>{'Login'}</button>}
-                  syncQuestionnaireResponse
+                  syncQuestionnaireResponse={false}
                   validateScriptInjection
                   language={LanguageLocales.NORWEGIAN}
                   fetchValueSet={fetchValueSetFn}
