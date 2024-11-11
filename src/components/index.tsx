@@ -82,7 +82,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
       );
     }
   }, [props.language, props.syncQuestionnaireResponse]);
-
+  console.log('form', methods.getValues());
   const externalRenderProps = {
     onRequestHelpElement,
     onRequestHelpButton,
