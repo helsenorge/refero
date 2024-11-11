@@ -90,6 +90,9 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     console.log("Refero: Is microweb? " + this.props.isMicroweb);
     // eslint-disable-next-line no-console
     console.log("Refero: Is microweb step? " + this.props.isMicrowebStep);
+
+    // eslint-disable-next-line no-console
+    console.log("Skjemanavn: " + this.props.skjemanavn);
   }
 
   componentDidUpdate(): void {

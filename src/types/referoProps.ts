@@ -76,4 +76,5 @@ export interface ReferoProps {
   onStepProcessCancel?: () => void;
   onStepProcessBack?: () => void;
   onCancelMicroweb: (formData: any) => void;
+  skjemanavn ?: string;
 }
