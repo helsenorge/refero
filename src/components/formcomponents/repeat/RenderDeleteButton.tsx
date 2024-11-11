@@ -3,11 +3,11 @@ import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItem
 import DeleteButton from './DeleteButton';
 
 import { Path, shouldRenderDeleteButton } from '@/util/refero-core';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getResponseItemWithPathSelector } from '@/reducers/selectors';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
+import { isGroupAndDescendantsHasAnswer } from '@/util/fhirpathHelper';
 
 type Props = {
   className?: string;
@@ -17,23 +17,22 @@ type Props = {
 };
 
 export const RenderDeleteButton = memo(function RenderDeleteButton({ className, item, path, index }: Props): JSX.Element | null {
+  const [decendentAnswer, setDecendentAnswer] = useState<boolean>(false);
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
+  useEffect(() => {
+    const checkDecendentAnswer = async (): Promise<void> => {
+      const hasAnswer = await isGroupAndDescendantsHasAnswer(responseItem);
+      setDecendentAnswer(hasAnswer);
+    };
+    checkDecendentAnswer();
+  }, [responseItem]);
   if (!shouldRenderDeleteButton(item, index || 0) || !item || !path) {
     return null;
   }
-  const answer = useGetAnswer(item?.linkId, path);
 
-  const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
-    return !!answer && Object.keys(answer).length > 0;
-  };
-
-  let mustShowConfirm: boolean = hasAnwer(answer);
-
-  if (!mustShowConfirm && responseItem && responseItem.item) {
-    mustShowConfirm = responseItem.item.some(item => (item ? hasAnwer(answer) : false));
-  }
+  const mustShowConfirm: boolean = decendentAnswer;
 
   return (
     <div className="page_refero__deletebutton-wrapper">
