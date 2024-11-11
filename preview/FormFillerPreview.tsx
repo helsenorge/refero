@@ -143,14 +143,6 @@ const fetchValueSetFn = (
 const FormFillerPreview = (): JSX.Element => {
   const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
   const [lang, setLang] = useState<number>(0);
-  useEffect(() => {
-    dispatch(
-      setSkjemaDefinitionAction({
-        questionnaire: mainQuestionnaire,
-        questionnaireResponse: parsedQuestionnaireResponse,
-      })
-    );
-  }, []);
 
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
   const mainQuestionnaire = getQuestionnaireFromBubndle(parsedQuestionnaire, 0);

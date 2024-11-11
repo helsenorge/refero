@@ -45,7 +45,7 @@ export const Text = (props: Props): JSX.Element | null => {
   const answer = useGetAnswer(linkId, path);
   const value = getStringValue(answer);
 
-  useResetFormField(idWithLinkIdAndItemIndex, value);
+  useResetFormField(idWithLinkIdAndItemIndex, value, item);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch && path && item) {

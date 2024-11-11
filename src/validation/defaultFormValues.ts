@@ -11,6 +11,24 @@ export type DefaultValues = Record<string, IItemType | unknown>;
 const excludedTypes = ['group', 'display', 'reference', 'url'];
 type excludedTypes = 'group' | 'display' | 'reference' | 'url';
 
+const excludedItemControlTypes = (item: QuestionnaireItem): boolean | undefined => {
+  const itemControls = getItemControlExtensionValue(item);
+  return (
+    itemControls &&
+    itemControls.some(
+      itemControl =>
+        itemControl.code === itemControlConstants.SIDEBAR ||
+        itemControl.code === itemControlConstants.HELP ||
+        itemControl.code === itemControlConstants.HIGHLIGHT ||
+        itemControl.code === itemControlConstants.INLINE ||
+        itemControl.code === itemControlConstants.HELP ||
+        itemControl.code === itemControlConstants.HELPLINK
+    )
+  );
+};
+const excludedCodes = (item: QuestionnaireItem): boolean | undefined => {
+  return item.code && item.code.some(code => code.code === 'SOT-1' || code.code === 'SOT-2' || code.code === 'SOT-3');
+};
 export const createIntitialFormValues = (items?: QuestionnaireItem[]): DefaultValues => {
   if (!items) return {};
 
@@ -18,7 +36,7 @@ export const createIntitialFormValues = (items?: QuestionnaireItem[]): DefaultVa
     return items.reduce((acc: DefaultValues, item) => {
       const key = isRepeat(item) ? `${item.linkId}^0` : item.linkId;
       const itemValue = getInitialFormValueForItemtype(key, item);
-      if (!isReadOnly(item)) {
+      if (!isReadOnly(item) && !excludedTypes.includes(item.type) && !excludedItemControlTypes(item) && !excludedCodes(item)) {
         acc = { ...acc, ...(itemValue && itemValue) };
       }
       if (item.item && item.item.length > 0) {
