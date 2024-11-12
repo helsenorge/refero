@@ -4,8 +4,8 @@ import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { format, isValid } from 'date-fns';
-import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
+import { isValid } from 'date-fns';
+import { DatePicker } from '@helsenorge/datepicker/components/DatePicker';
 
 import { DateFormat, DateTimeUnit, defaultMaxDate, defaultMinDate, TimeUnit } from '../../../types/dateTypes';
 
@@ -26,6 +26,7 @@ import {
 } from '../../../util/date-utils';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
+import dateStyles from './date.module.css';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -38,7 +39,10 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
-import { getErrorMessage, isNumber } from '@/components/validation/rules';
+import { getErrorMessage } from '@/components/validation/rules';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label from '@helsenorge/designsystem-react/components/Label';
+import SafeText from '@/components/referoLabel/SafeText';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -83,8 +87,8 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const dateAnswerValue = getDateAnswerValue(answer);
   const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
   const [dateValue, setDateValue] = useState(dateAnswerValueParsed);
-  const hours = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Hours);
-  const minutes = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Minutes);
+  const [hours, setHours] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Hours));
+  const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Minutes));
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
 
   useEffect(() => {
@@ -99,35 +103,40 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   }
 
   const handleDateChange = (newDate: string | Date | undefined): void => {
-    updateQuestionnaireResponse(newDate, hours, minutes);
+    let newValue: Date | undefined = undefined;
+    if (typeof newDate === 'string') {
+      const parsedDate = parseStringToDate(newDate);
+      if (isValid(parsedDate)) {
+        newValue = parsedDate;
+      }
+    } else if (isValid(newDate)) {
+      newValue = newDate;
+    }
+    setDateValue(newValue);
+    updateQuestionnaireResponse(newValue, hours, minutes);
   };
 
   const handleHoursChange = (newHours: string | undefined): void => {
+    let newString = newHours === '' ? undefined : newHours;
     if (newHours && Number(newHours) >= 0 && Number(newHours) < 24) {
-      updateQuestionnaireResponse(dateValue, newHours, minutes);
+      newString = newHours;
     }
+    setHours(newString);
+    updateQuestionnaireResponse(dateValue, newString, minutes);
   };
   const handleMinutesChange = (newMinutes: string | undefined): void => {
+    let newString = newMinutes === '' ? undefined : newMinutes;
     if (newMinutes && Number(newMinutes) >= 0 && Number(newMinutes) < 60) {
-      updateQuestionnaireResponse(dateValue, hours, newMinutes);
+      newString = newMinutes;
     }
+    setMinutes(newString);
+    updateQuestionnaireResponse(dateValue, hours, newString);
   };
 
-  const updateQuestionnaireResponse = (
-    newDate: Date | string | undefined,
-    newHours: string | undefined,
-    newMinutes: string | undefined
-  ): void => {
-    let fullDate: string | undefined = '';
-    if (typeof newDate === 'string') {
-      const parsedDate = parseStringToDate(newDate);
-      if (parsedDate && isValid(parsedDate)) {
-        setDateValue(parsedDate);
-        const formatedDate = format(parsedDate, 'yyyy-MM-dd');
-        fullDate = getFullFnsDate(formatedDate, newHours, newMinutes);
-      }
-    } else if (isValid(newDate)) {
-      setDateValue(newDate);
+  const updateQuestionnaireResponse = (newDate: Date | undefined, newHours: string | undefined, newMinutes: string | undefined): void => {
+    let fullDate: string | undefined = undefined;
+
+    if (isValid(newDate) && newHours && newMinutes) {
       fullDate = getFullFnsDate(newDate, newHours, newMinutes);
     }
 
@@ -243,45 +252,53 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
           sublabelId={`${getId(id)}-sublabel`}
           dateLabel={resources?.dateFormat_ddmmyyyy}
         />
-        <DateTimePickerWrapper testId={`${getId(id)}-datetime-wrapper`}>
-          <DatePicker
-            {...restDate}
-            inputId={`${getId(id)}-datepicker`}
-            testId={`${getId(id)}-datetime`}
-            autoComplete=""
-            dateButtonAriaLabel="Open datepicker"
-            dateFormat={'dd.MM.yyyy'}
-            dateValue={isValid(dateValue) ? dateValue : undefined}
-            minDate={minDateTime ?? defaultMinDate}
-            maxDate={maxDateTime ?? defaultMaxDate}
-            onChange={(e, newDate) => {
-              handleDateChange(newDate);
-              onChangeDate(e);
-            }}
-          />
+        <div className={dateStyles.dateTimeWrapper}>
+          <div>
+            <DatePicker
+              {...restDate}
+              inputId={`${getId(id)}-datepicker`}
+              testId={`${getId(id)}-datetime`}
+              autoComplete=""
+              dateButtonAriaLabel="Open datepicker"
+              dateFormat={'dd.MM.yyyy'}
+              dateValue={isValid(dateValue) ? dateValue : undefined}
+              minDate={minDateTime ?? defaultMinDate}
+              maxDate={maxDateTime ?? defaultMaxDate}
+              onChange={(e, newDate) => {
+                handleDateChange(newDate);
+                onChangeDate(e);
+              }}
+            />
+          </div>
 
-          <DateTime
-            {...restHours}
-            testId={`hours-test`}
-            timeUnit="hours"
-            onChange={e => {
-              handleHoursChange(e.target.value);
-              onChangeHours(e);
-            }}
-            value={isNumber(hours) ? Number(hours) : undefined}
-          />
-
-          <DateTime
-            {...restMinutes}
-            testId={`minutes-test`}
-            timeUnit="minutes"
-            onChange={e => {
-              handleMinutesChange(e.target.value);
-              onChangeMinutes(e);
-            }}
-            value={isNumber(minutes) ? Number(minutes) : undefined}
-          />
-        </DateTimePickerWrapper>
+          <div className={dateStyles.timeWrapper}>
+            <Input
+              {...restHours}
+              type="number"
+              testId={`hours-test`}
+              onChange={e => {
+                handleHoursChange(e.target.value);
+                onChangeHours(e);
+              }}
+              width={4}
+              value={hours}
+            />
+            <Label labelTexts={[]} className={dateStyles.timeColon}>
+              <SafeText as="span" text={':'}></SafeText>
+            </Label>
+            <Input
+              {...restMinutes}
+              type="number"
+              testId={`minutes-test`}
+              onChange={e => {
+                handleMinutesChange(e.target.value);
+                onChangeMinutes(e);
+              }}
+              width={4}
+              value={minutes}
+            />
+          </div>
+        </div>
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
         <RenderRepeatButton path={path} item={item} index={index} />
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

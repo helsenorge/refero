@@ -1,0 +1,14 @@
+.dateTimeWrapper {
+  display: flex;
+  gap: 35px;
+}
+
+.timeWrapper {
+  display: flex;
+  gap: 7.5px;
+}
+
+.timeColon {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
