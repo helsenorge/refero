@@ -287,9 +287,18 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   }
 
   renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
+
+    // eslint-disable-next-line no-console
+    console.log("Refero: RenderSkjema called");
+    
+
     const { formDefinition, resources } = this.props;
 
     if (!formDefinition || !formDefinition.Content || !resources) {
+
+      // eslint-disable-next-line no-console
+      console.log("No form def or content, or resources - reutrning null - nothing to render...");
+
       return null;
     }
 
@@ -327,7 +336,8 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       isMicrowebStep,
       onStepProcessBack,
       onStepProcessCancel,
-      onCancelMicroweb
+      onCancelMicroweb,
+      skjemanavn,
     } = this.props;
     if (!formDefinition || !resources) {
       return;
@@ -349,7 +359,8 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       isMicrowebStep,  // TODO - need callbacks here too?
       onStepProcessBack,
       onStepProcessCancel,
-      onCancelMicroweb
+      onCancelMicroweb,
+      skjemanavn
     };
 
     return (
