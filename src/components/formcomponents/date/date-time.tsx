@@ -43,6 +43,7 @@ import { getErrorMessage } from '@/components/validation/rules';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label from '@helsenorge/designsystem-react/components/Label';
 import SafeText from '@/components/referoLabel/SafeText';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -90,6 +91,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const [hours, setHours] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Hours));
   const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Minutes));
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-date`, dateAnswerValue);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-hours`, hours);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-minutes`, minutes);
 
   useEffect(() => {
     if (isValid(dateAnswerValueParsed)) {

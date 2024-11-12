@@ -1,5 +1,5 @@
 import React from 'react';
-//test
+
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
 
 import { FormProvider, useForm } from 'react-hook-form';
@@ -59,7 +59,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,
-    mode: 'onBlur',
+    mode: 'onChange',
     criteriaMode: 'all',
     ...(useFormProps !== undefined && { ...useFormProps }),
 
@@ -82,7 +82,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
       );
     }
   }, [props.language, props.syncQuestionnaireResponse]);
-
   const externalRenderProps = {
     onRequestHelpElement,
     onRequestHelpButton,

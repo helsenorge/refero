@@ -53,10 +53,12 @@ import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
 export interface FormData {
   Content: QuestionnaireResponse | null | undefined;
+  isExternalUpdate?: boolean;
 }
 
 export interface FormDefinition {
   Content: Questionnaire | null | undefined;
+  isExternalUpdate?: boolean;
 }
 
 export interface Form {
@@ -76,13 +78,18 @@ const initialState: Form = {
   },
   FormDefinition: {
     Content: null,
+    isExternalUpdate: false,
   },
   Language: LanguageLocales.NORWEGIAN.toLowerCase(),
 };
 const formSlice = createSlice({
   name: 'form',
   initialState,
-  reducers: {},
+  reducers: {
+    setIsExternalUpdateAction(state, action: PayloadAction<boolean>) {
+      state.FormData.isExternalUpdate = action.payload;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(setSkjemaDefinitionAction, (state, action: PayloadAction<SetFormDefinitionAction>) => {
@@ -112,6 +119,7 @@ const formSlice = createSlice({
   },
 });
 export default formSlice.reducer;
+export const actions = formSlice.actions;
 
 export function getFormData(state: GlobalState): FormData | null {
   if (!state.refero?.form?.FormData) {
@@ -834,17 +842,20 @@ function processSetSkjemaDefinition(payload: SetFormDefinitionAction, state: For
     Content: payload.questionnaire,
   };
   const statetest = current(state.FormData);
+
   let formData: FormData;
+
   if (payload.questionnaireResponse && payload.syncQuestionnaireResponse) {
-    formData = { Content: syncQuestionnaireResponse(payload.questionnaire, payload.questionnaireResponse) };
+    formData = { Content: syncQuestionnaireResponse(payload.questionnaire, payload.questionnaireResponse), isExternalUpdate: true };
   } else if (payload.questionnaireResponse) {
-    formData = { Content: payload.questionnaireResponse };
+    formData = { Content: payload.questionnaireResponse, isExternalUpdate: true };
   } else if (statetest?.Content === initialState.FormData.Content) {
     formData = { Content: generateQuestionnaireResponse(payload.questionnaire) };
   } else {
     formData = state.FormData;
   }
   state.FormDefinition = formDefinition;
+
   state.FormData = formData;
   state.Language = payload.language || state.Language;
   return state;

@@ -18,6 +18,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type ReceiverComponentProps = QuestionnaireComponentItemProps & {
   item?: QuestionnaireItem;
@@ -54,6 +55,8 @@ const ReceiverComponent = ({
       fetchReceivers(loadSuccessCallback, loadErrorCallback);
     }
   }, []);
+
+  useResetFormField(idWithLinkIdAndItemIndex, selectedPath);
 
   const loadSuccessCallback = (receiverTreeNodes: Array<OrgenhetHierarki>): void => {
     const pathsToEndPoint = selected ? findPathToEndpointNode(receiverTreeNodes, selected[0] || '') : [];

@@ -1,3 +1,4 @@
+import ItemType from '@/constants/itemType';
 import { QuestionnaireItem, Extension, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import fhirpath, { Context } from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
@@ -100,3 +101,21 @@ export function evaluateExtension(path: string | fhirpath.Path, questionnare?: Q
    */
   return fhirpath.evaluate(qCopy, path, context, fhirpath_r4_model);
 }
+export const isGroupAndDescendantsHasAnswer = async (responseItem?: QuestionnaireResponseItem): Promise<boolean> => {
+  if (!responseItem) {
+    return false;
+  }
+  try {
+    const resource = {
+      resourceType: 'QuestionnaireResponse',
+      item: [responseItem],
+    };
+    const result: any[] = await fhirpath.evaluate(resource, 'descendants().answer.exists()', undefined, fhirpath_r4_model);
+
+    const hasAnswer = result[0] === true;
+    return hasAnswer;
+  } catch (e) {
+    console.log('error', e);
+    return false;
+  }
+};
