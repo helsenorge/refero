@@ -8,6 +8,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { Path } from '@/util/refero-core';
 
 type UseAttachmentSyncParams = {
+  setInternalAcceptedFiles: React.Dispatch<React.SetStateAction<UploadFile[]>>;
   onUpload: (files: UploadFile[]) => void;
   onDelete: (fileId: string) => void;
   setAcceptedFiles: React.Dispatch<React.SetStateAction<UploadFile[]>>;
@@ -29,6 +30,7 @@ type UseAttachmentSyncReturn = {
 };
 
 export const useAttachmentSync = ({
+  setInternalAcceptedFiles,
   onUpload,
   onDelete,
   setAcceptedFiles,
@@ -41,18 +43,21 @@ export const useAttachmentSync = ({
 }: UseAttachmentSyncParams): UseAttachmentSyncReturn => {
   const answer = useGetAnswer(item?.linkId, path);
   const [disableButton, setDisableButton] = useState(false);
-  const { setValue } = useFormContext();
+  const { setValue, getFieldState, resetField } = useFormContext();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex);
   const internalUpdateRef = useRef(false);
 
   const handleUpload = (files: UploadFile[]): void => {
     internalUpdateRef.current = true;
     onUpload(files);
+    setInternalAcceptedFiles(prevState => [...prevState, ...files]);
     setAcceptedFiles(prevState => [...prevState, ...files]);
   };
 
   const handleDelete = (fileId: string): void => {
     internalUpdateRef.current = true;
     onDelete(fileId);
+    setInternalAcceptedFiles(prevState => prevState.filter(x => x.id !== fileId));
     setAcceptedFiles(prevState => prevState.filter(x => x.id !== fileId));
     setRejectedFiles(prevState => prevState.filter(x => x.id !== fileId));
   };
@@ -72,6 +77,7 @@ export const useAttachmentSync = ({
       internalUpdateRef.current = false;
     } else {
       const attachments = getAttachmentsFromAnswer(answer);
+
       if (attachments.length > 0) {
         const files: UploadFile[] = attachments.map(attachment => {
           let fileBits: BlobPart[] = [];
@@ -95,11 +101,14 @@ export const useAttachmentSync = ({
 
           return file;
         });
-        setValue(idWithLinkIdAndItemIndex, files);
+        resetField(idWithLinkIdAndItemIndex, { defaultValue: files });
+        setInternalAcceptedFiles(files);
         setAcceptedFiles(files);
         setRejectedFiles([]);
       } else {
-        setValue(idWithLinkIdAndItemIndex, []);
+        resetField(idWithLinkIdAndItemIndex, { defaultValue: [] });
+
+        setInternalAcceptedFiles([]);
         setAcceptedFiles([]);
         setRejectedFiles([]);
       }
