@@ -1,7 +1,9 @@
 import { QuestionnaireItem } from 'fhir/r4';
 
 import constants from '@/constants';
-import { getMaxSizeExtensionValue } from '@/util/extension';
+import { getMaxSizeExtensionValue, getValidationTextExtension } from '@/util/extension';
+import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import { Resources } from '@/util/resources';
 
 export function convertMBToBytes(mb: number): number {
   if (typeof mb !== 'number' || isNaN(mb)) {
@@ -49,3 +51,8 @@ export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefin
   }
   return constants.MAX_FILE_SIZE;
 }
+export const validateRequired = (item?: QuestionnaireItem, resources?: Resources, files?: UploadFile[]): string | true => {
+  const validationTextExtension = getValidationTextExtension(item);
+  const filesLength = files?.length ?? 0;
+  return item?.required && filesLength <= 0 ? validationTextExtension ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd' : true;
+};
