@@ -1,6 +1,7 @@
 .dateTimeWrapper {
   display: flex;
   gap: 35px;
+  flex-wrap: wrap;
 }
 
 .timeWrapper {
