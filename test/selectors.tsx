@@ -15,6 +15,32 @@ export async function repeatNTimes(input: string, n: number, labelText: Matcher)
     await clickButtonTimes(/-repeat-button/i, 1);
   }
 }
+export async function repeatDateTimeNTimes(
+  dateLabelText: Matcher,
+  hoursTestId: string,
+  minutesTestId: string,
+  dateString: string,
+  hoursString: string,
+  minutesString: string,
+  n: number
+): Promise<void> {
+  for (let i = 0; i < n; i++) {
+    const dateElement = screen.queryAllByLabelText(dateLabelText)[i];
+    const hoursElement = screen.queryAllByTestId(hoursTestId)[i];
+    const minutesElement = screen.queryAllByTestId(minutesTestId)[i];
+
+    const hoursInput = hoursElement.querySelector('input');
+    const minutesInput = minutesElement.querySelector('input');
+
+    await userEvent.type(dateElement, dateString);
+    if (hoursInput && minutesInput) {
+      await userEvent.type(hoursInput, hoursString);
+      await userEvent.type(minutesInput, minutesString);
+    }
+
+    await clickButtonTimes(/-repeat-button/i, 1);
+  }
+}
 export async function repeatGroupNTimes(input: string, n: number, labelText: Matcher, startIndex = 0): Promise<void> {
   for (let i = startIndex; i < n; i++) {
     await userEvent.type(screen.queryAllByLabelText(labelText)[i], input);
