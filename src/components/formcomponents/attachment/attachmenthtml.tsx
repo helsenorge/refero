@@ -13,7 +13,7 @@ import {
   validateFileType,
   validateTotalFileSize,
 } from '@helsenorge/file-upload/components/file-upload/validate-utils';
-import { getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
+import { getAttachmentMaxSizeBytesToUse, validateRequired } from './attachmentUtil';
 import { VALID_FILE_TYPES } from '@/constants';
 import { getId, isReadOnly } from '@/util';
 import { Resources } from '@/util/resources';
@@ -22,10 +22,9 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { TextMessage } from '@/types/text-message';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReadOnly } from '../read-only/readOnly';
-import { getErrorMessage, required } from '@/components/validation/rules';
+import { getErrorMessage } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useAttachmentSync } from './useAttachmentSync';
-import { useEffect } from 'react';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -75,12 +74,10 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     multiple,
     onRequestAttachmentLink,
   } = props;
-
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
 
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-
   const numberOfFilesMessage = getCustomValidationText(
     item,
     (minFiles && !maxFiles && resources?.attachmentError_minFiles) ||
@@ -103,7 +100,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     [validateFileType(validFileTypes, validationFileTypesMessage)],
     [
       validateNumberOfFiles(minFiles ?? 0, maxFiles ?? 20, numberOfFilesMessage || 'Number of files'),
-      validateTotalFileSize(0, maxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize || 'tiotal file size')),
+      validateTotalFileSize(0, maxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize || 'total file size')),
     ]
   );
 
@@ -118,16 +115,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     item,
     idWithLinkIdAndItemIndex,
   });
-
-  useEffect(() => {
-    if (onRequestAttachmentLink && acceptedFiles.length > 0) {
-      for (const file of acceptedFiles) {
-        onRequestAttachmentLink(file.id);
-      }
-    }
-  }, [acceptedFiles, onRequestAttachmentLink]);
-
-  const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
   const getPdfValue = (): string => {
     const getAttachmentValueForPdf = (): UploadedFile[] | undefined => {
@@ -153,8 +140,9 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   };
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
-    required: required({ item, resources }),
-    validate: () => true,
+    validate: {
+      required: value => validateRequired(item, resources, value),
+    },
     shouldUnregister: true,
   };
   if (pdf || isReadOnly(item)) {
@@ -191,10 +179,12 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}
-          deleteText={deleteText}
+          deleteText={resources?.deleteAttachmentText}
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}
           onOpenFile={onOpen}
+          accept={validFileTypes.join(',')}
+          onRequestLink={onRequestAttachmentLink}
           shouldUploadMultiple={multiple}
           disabled={disableButton}
           validFileTypes={validFileTypes as MimeTypes[]}

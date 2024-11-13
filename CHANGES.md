@@ -1,3 +1,6 @@
+## 16.0.0-beta.64
+- use correct id when handling delete and upload of attachments
+
 ## 16.0.0-beta.63
 - fix confirmation of deleting repeatable groups
 

@@ -41,7 +41,7 @@ export const useAttachmentSync = ({
 }: UseAttachmentSyncParams): UseAttachmentSyncReturn => {
   const answer = useGetAnswer(item?.linkId, path);
   const [disableButton, setDisableButton] = useState(false);
-  const { setValue } = useFormContext();
+  const { resetField } = useFormContext();
   const internalUpdateRef = useRef(false);
 
   const handleUpload = (files: UploadFile[]): void => {
@@ -72,6 +72,7 @@ export const useAttachmentSync = ({
       internalUpdateRef.current = false;
     } else {
       const attachments = getAttachmentsFromAnswer(answer);
+
       if (attachments.length > 0) {
         const files: UploadFile[] = attachments.map(attachment => {
           let fileBits: BlobPart[] = [];
@@ -95,11 +96,12 @@ export const useAttachmentSync = ({
 
           return file;
         });
-        setValue(idWithLinkIdAndItemIndex, files);
+        resetField(idWithLinkIdAndItemIndex, { defaultValue: files });
         setAcceptedFiles(files);
         setRejectedFiles([]);
       } else {
-        setValue(idWithLinkIdAndItemIndex, []);
+        resetField(idWithLinkIdAndItemIndex, { defaultValue: [] });
+
         setAcceptedFiles([]);
         setRejectedFiles([]);
       }
