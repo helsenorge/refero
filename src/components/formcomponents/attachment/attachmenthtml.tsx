@@ -22,10 +22,9 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { TextMessage } from '@/types/text-message';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReadOnly } from '../read-only/readOnly';
-import { getErrorMessage, required } from '@/components/validation/rules';
+import { getErrorMessage } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useAttachmentSync } from './useAttachmentSync';
-import { useEffect, useState } from 'react';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -75,7 +74,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     multiple,
     onRequestAttachmentLink,
   } = props;
-  const [internalAcceptedFiles, setInternalAcceptedFiles] = useState<UploadFile[]>([]);
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
 
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -107,7 +105,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   );
 
   const { acceptedFiles, rejectedFiles, handleDelete, handleUpload, disableButton, value } = useAttachmentSync({
-    setInternalAcceptedFiles,
     onUpload,
     path,
     onDelete,
