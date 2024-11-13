@@ -56,8 +56,6 @@ const ReceiverComponent = ({
     }
   }, []);
 
-  useResetFormField(idWithLinkIdAndItemIndex, selectedPath);
-
   const loadSuccessCallback = (receiverTreeNodes: Array<OrgenhetHierarki>): void => {
     const pathsToEndPoint = selected ? findPathToEndpointNode(receiverTreeNodes, selected[0] || '') : [];
     const selectedPath = pathsToEndPoint.length === 1 ? pathsToEndPoint[0] : [];
@@ -176,14 +174,6 @@ const ReceiverComponent = ({
     return '';
   };
 
-  const doesValueExistInReceiverArray = (searchData: Array<OrgenhetHierarki>, searchPath: Array<number>, valueToFind: string): boolean => {
-    const receiverNodes = searchPath.map((_x, index) => {
-      return findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
-    });
-    const match = receiverNodes.find(node => node?.OrgenhetId === Number(valueToFind));
-    return match ? true : false;
-  };
-
   const createSelect = (treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element => {
     const fieldState = getFieldState(`${idWithLinkIdAndItemIndex}-${selectKey}`, formState);
     const { error } = fieldState;
@@ -206,17 +196,6 @@ const ReceiverComponent = ({
 
     const validationRules: RegisterOptions<FieldValues, string> | undefined = {
       required: required({ item, resources, message: resources?.adresseKomponent_feilmelding }),
-      validate: {
-        validReceiverName: value => {
-          if (value) {
-            return doesValueExistInReceiverArray(receiverTreeNodes, selectedPath, value)
-              ? true
-              : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng';
-          } else {
-            return true;
-          }
-        },
-      },
       shouldUnregister: true,
     };
     const { onChange, ...rest } = register(
