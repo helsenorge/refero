@@ -202,13 +202,24 @@
     display: none;
   }
 
-  .page_refero__stickybar {
-  & .page_refero__buttons {
-    position: sticky;
-    bottom: 0.5rem;
-    z-index: 2;
+  .page_refero__hidden_buttons{
+    & .page_refero__buttons {
+      display: none;
+    }
   }
-}
+  .page_refero__stickybar{
+    & .page_refero__buttons {
+      position: sticky;
+      bottom: 0.5rem;
+      z-index: 2;
+    }
+  }
+  .page_refero__static {
+    & .page_refero__buttons {
+      bottom: 0.5rem;
+      z-index: 2;
+    }
+  }
 
   .mol_validation-summary {
     margin-bottom: 2rem;
