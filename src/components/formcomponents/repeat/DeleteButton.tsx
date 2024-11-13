@@ -48,7 +48,6 @@ const DeleteButton = ({ item, path, mustShowConfirm }: Props): JSX.Element => {
   const testId = `${pathItem?.[0].linkId ?? item?.linkId}-${pathItem?.[0].index ?? 0}`;
   return (
     <>
-      <br />
       <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem} testId={`${testId}-delete-button`} ariaLabel="slett">
         <Icon svgIcon={TrashCan} />
         {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
