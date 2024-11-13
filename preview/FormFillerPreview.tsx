@@ -6,6 +6,7 @@ import {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
+  QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   ValueSet,
 } from 'fhir/r4';
@@ -28,6 +29,7 @@ import HelpButton from './external-components/HelpButton';
 import Button from '@helsenorge/designsystem-react/components/Button';
 import { MimeType } from '@/util/attachmentHelper';
 import { getId, setSkjemaDefinitionAction, TextMessage } from '@/index';
+import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
@@ -139,6 +141,30 @@ const fetchValueSetFn = (
     },
   });
 };
+function getNumberOfAttachments(questionnaireResponse: QuestionnaireResponse): number {
+  // let gjennom questionnaireResponse etter item med type === attachment, og tell antall answer.valueAttachment
+  const reduceMaxAttachments = (currentMaxAttachments: number, qrItem: QuestionnaireResponseItem): number => {
+    const childItemAttachments = qrItem.item ? qrItem.item.reduce(reduceMaxAttachments, 0) : 0;
+    const itemAnswerAttachments = qrItem.answer
+      ? qrItem.answer.filter((x: QuestionnaireResponseItemAnswer) => !!x.valueAttachment).length
+      : 0;
+    const itemAnswerItemAttachments = qrItem.answer
+      ? qrItem.answer.reduce((current: number, answerItem: QuestionnaireResponseItemAnswer): number => {
+          const inner = answerItem.item ? answerItem.item.reduce(reduceMaxAttachments, 0) : 0;
+          return inner + current;
+        }, 0)
+      : 0;
+    return childItemAttachments + itemAnswerAttachments + itemAnswerItemAttachments + currentMaxAttachments;
+  };
+  return questionnaireResponse.item ? questionnaireResponse.item.reduce(reduceMaxAttachments, 0) : 0;
+}
+
+export function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | null | undefined): boolean {
+  if (!questionnaireResponse) {
+    return false;
+  }
+  return getNumberOfAttachments(questionnaireResponse) > 3;
+}
 
 const FormFillerPreview = (): JSX.Element => {
   const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
@@ -157,7 +183,7 @@ const FormFillerPreview = (): JSX.Element => {
     console.log(JSON.stringify(questionnaireResponse));
   };
   const uploadAttachment = (
-    file: File[],
+    files: UploadFile[],
     onSuccess: (attachment: Attachment) => void,
     onError: (errormessage: TextMessage | null) => void
   ): void => {
@@ -166,11 +192,11 @@ const FormFillerPreview = (): JSX.Element => {
       const dataString = reader.result?.toString() || '';
 
       const attachment: Attachment = {
-        id: getId(),
-        title: file[0].name,
+        id: getId(files[0].id),
+        title: files[0].name,
         url: `${getId()}-generated`,
         data: dataString.substring(dataString.indexOf(',') + 1),
-        contentType: file[0].type,
+        contentType: files[0].type,
       };
 
       onSuccess(attachment);
@@ -178,7 +204,7 @@ const FormFillerPreview = (): JSX.Element => {
     reader.onerror = (): void => {
       onError({ Title: 'ERROR TITLE', Body: 'ERROR BODY' });
     };
-    reader.readAsDataURL(file[0]);
+    reader.readAsDataURL(files[0]);
   };
   //@ts-expect-error error
   const onDeleteAttachment = (fileId: string, onSuccess: () => void): void => {
@@ -255,6 +281,7 @@ const FormFillerPreview = (): JSX.Element => {
                   onOpenAttachment={onOpenAttachment}
                   attachmentValidTypes={[MimeType.PNG, MimeType.JPG, MimeType.JPEG, MimeType.PDF, MimeType.PlainText]}
                   attachmentMaxFileSize={10000000}
+                  attachmentErrorMessage={hasTooManyAttachments(questionnaireResponse) ? 'For mange vedlegg' : undefined}
                   onRequestHelpButton={(_1, _2, _3, _4, opening) => {
                     return <HelpButton opening={opening} />;
                   }}

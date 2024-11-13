@@ -39,6 +39,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
 
   const { globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
+
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment && item) {
       for (const file of files) {
@@ -63,7 +64,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     if (onDeleteAttachment && item) {
       const onSuccess = (): void => {
         if (dispatch) {
-          const attachment: Attachment = { title: fileId };
+          const attachment: Attachment = { id: fileId };
           if (path)
             dispatch(removeAttachmentAsync(path, attachment, item))?.then(
               newState => onAnswerChange && onAnswerChange(newState, item, { valueAttachment: { id: fileId } })
