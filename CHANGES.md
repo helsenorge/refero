@@ -6,6 +6,7 @@
 - Bugfix: Wrong validation error in Receiver component
 - Bugfix: Button bar is floating when it should be static
 - Bugfix: Wrong validation in YearMonth
+- Bugfix: Default dates were too low or too high
 - Added validation for amount of characters in time fields in DateTime
 - Made space over delete-button smaller
 
