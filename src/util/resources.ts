@@ -495,4 +495,8 @@ export interface Resources {
    * Måned
    */
   dateLabel_month?: string;
+  /**
+   * tegn
+   */
+  maxCharactersText: string;
 }

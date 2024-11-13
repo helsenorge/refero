@@ -49,7 +49,6 @@ export const getResources = (language: string): Resources => {
       autoSuggestLoadError: 'Technical error',
       autosuggestNoSuggestions: 'No results found for "{0}". Try another word or check for spelling errors.',
       stringOverMaxLengthError: 'You have typed too many characters. Make the text shorter.',
-      maxLengthText: 'characters',
       chooseFilesText: 'Select files',
       skipLinkText: 'Go to navigator',
       clearDate: 'Remove date',
@@ -127,6 +126,7 @@ export const getResources = (language: string): Resources => {
       dateLabel_december: 'December',
       dateLabel_year: 'Year',
       dateLabel_month: 'Month',
+      maxCharactersText: 'characters',
     };
   }
   if (language === 'fr-FR') {
@@ -177,7 +177,6 @@ export const getResources = (language: string): Resources => {
       autoSuggestLoadError: 'Erreur technique',
       autosuggestNoSuggestions: 'Pas de résultat pour "{0}". Essayez un autre mot ou vérifiez son orthographe.',
       stringOverMaxLengthError: 'Vous avez entré trop de caractères. Réduisez le texte.',
-      maxLengthText: 'caractères',
       chooseFilesText: 'Selectionnez les fichiers',
       skipLinkText: 'Allez au navigateur',
       clearDate: 'Supprimer la date',
@@ -255,6 +254,7 @@ export const getResources = (language: string): Resources => {
       dateLabel_december: 'December',
       dateLabel_year: 'Year',
       dateLabel_month: 'Month',
+      maxCharactersText: 'caractères',
     };
   }
   return {
@@ -304,7 +304,6 @@ export const getResources = (language: string): Resources => {
     autoSuggestLoadError: 'Teknisk feil',
     autosuggestNoSuggestions: 'Ingen treff på "{0}". Prøv med et annet ord eller sjekk for skrivefeil.',
     stringOverMaxLengthError: 'Du har skrevet for mange tegn. Gjør teksten kortere.',
-    maxLengthText: 'tegn',
     chooseFilesText: 'Velg filer',
     skipLinkText: 'Hopp til navigator',
     clearDate: 'Fjern dato',
@@ -382,5 +381,6 @@ export const getResources = (language: string): Resources => {
     dateLabel_december: 'Desember',
     dateLabel_year: 'År',
     dateLabel_month: 'Måned',
+    maxCharactersText: 'tegn',
   };
 };
