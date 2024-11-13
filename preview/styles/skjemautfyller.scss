@@ -210,13 +210,11 @@
   .page_refero__stickybar{
     & .page_refero__buttons {
       position: sticky;
-      bottom: 0.5rem;
       z-index: 2;
     }
   }
   .page_refero__static {
     & .page_refero__buttons {
-      bottom: 0.5rem;
       z-index: 2;
     }
   }
