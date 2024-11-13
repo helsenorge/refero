@@ -9,7 +9,7 @@ import { Store } from 'redux';
 import {} from '@/actions/newValue';
 import { TextMessage } from './text-message';
 import { UseFormProps } from 'react-hook-form';
-import { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
+import { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 export interface ReferoProps {
   /**
@@ -33,7 +33,7 @@ export interface ReferoProps {
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void; //TODO: add to context
   uploadAttachment?: (
-    files: File[],
+    files: UploadFile[],
     onSuccess: (attachment: Attachment) => void,
     onError: (errormessage: TextMessage | null) => void
   ) => void;
