@@ -174,12 +174,7 @@ export function extractLinkIdAndIndexPath(fieldNameParts: string[]): { linkId: s
     const subParts = part.split('^');
     const guid = findFirstGuidInString(part);
     const dateLinkId = specialDatePart(part);
-    console.log(fieldNameParts);
-    if (part === '14ca7622-5dea-431e-80bb-a020a114412b-generated') {
-      console.log('subParts', subParts);
-      console.log('guid', guid);
-      console.log('dateLinkId', dateLinkId);
-    }
+
     if (guid) {
       linkIdParts.push(guid);
     } else if (dateLinkId) {

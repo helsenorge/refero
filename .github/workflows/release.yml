@@ -42,6 +42,6 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm run build:lib
-      - run: cd ./lib && npm publish --provenance
+      - run: cd ./lib && npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.PUBLISH_HELSENORGE_PACKAGES_TO_NPMJS}}
