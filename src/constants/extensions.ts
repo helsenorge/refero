@@ -1,5 +1,6 @@
 export const ENTRY_FORMAT_URL = 'http://hl7.org/fhir/StructureDefinition/entryFormat' as const;
 export const STEP_URL = 'http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces' as const;
+export const MAX_DECIMAL_PLACES = 'http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces' as const;
 export const MAX_VALUE_URL = 'http://hl7.org/fhir/StructureDefinition/maxValue' as const;
 export const MIN_VALUE_URL = 'http://hl7.org/fhir/StructureDefinition/minValue' as const;
 export const MIN_LENGTH_URL = 'http://hl7.org/fhir/StructureDefinition/minLength' as const;
@@ -41,6 +42,7 @@ const extensionUrls = {
   AUTHENTICATION_REQUIREMENT_URL,
   ENTRY_FORMAT_URL,
   STEP_URL,
+  MAX_DECIMAL_PLACES,
   MAX_VALUE_URL,
   MIN_VALUE_URL,
   MIN_LENGTH_URL,

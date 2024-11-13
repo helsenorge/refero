@@ -9,7 +9,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { newDecimalValueAsync } from '@/actions/newValue';
 import { GlobalState, useAppDispatch } from '@/reducers';
-import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder } from '@/util/extension';
+import { getMaxDecimalPlacesExtensionValue, getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -89,8 +89,9 @@ const Decimal = (props: Props): JSX.Element | null => {
   };
 
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
+  const maxDecimals = getMaxDecimalPlacesExtensionValue(item) ? getMaxDecimalPlacesExtensionValue(item) : undefined;
+  const width = getInputWidth(maxCharacters, maxDecimals);
   const baseIncrementValue = getMinValueExtensionValue(item);
-  const width = getInputWidth(maxCharacters);
   const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {

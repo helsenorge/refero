@@ -111,6 +111,17 @@ export function getQuestionnaireUnitExtensionValue(item?: QuestionnaireItem): Co
   return extension.valueCoding;
 }
 
+export function getMaxDecimalPlacesExtensionValue(item?: QuestionnaireItem): number | undefined {
+  const maxValue = getExtension(Extensions.MAX_DECIMAL_PLACES, item);
+  if (maxValue && maxValue.valueDecimal !== null && maxValue.valueDecimal !== undefined) {
+    return maxValue.valueDecimal;
+  }
+  if (maxValue && maxValue.valueInteger !== null && maxValue.valueInteger !== undefined) {
+    return maxValue.valueInteger;
+  }
+  return undefined;
+}
+
 export function getMaxValueExtensionValue(item?: QuestionnaireItem): number | undefined {
   const maxValue = getExtension(Extensions.MAX_VALUE_URL, item);
   if (maxValue && maxValue.valueDecimal !== null && maxValue.valueDecimal !== undefined) {

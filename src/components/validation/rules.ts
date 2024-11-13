@@ -125,6 +125,10 @@ export const scriptInjection = ({ value, resources, shouldValidate }: ValidateIn
   return shouldValidate ? scriptInjectionValidation(value, resources) : undefined;
 };
 
-export const getInputWidth = (maxCharacters: number | undefined): number => {
-  return maxCharacters ? maxCharacters + 2 : 20;
+export const getInputWidth = (maxCharacters: number | undefined, maxDecimals?: number): number => {
+  let width = maxCharacters ? maxCharacters + 2 : 20;
+  if (maxDecimals) {
+    width = width + 1 + maxDecimals;
+  }
+  return width;
 };
