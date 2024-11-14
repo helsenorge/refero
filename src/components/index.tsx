@@ -98,7 +98,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   componentDidUpdate(prevProps: ReferoProps): void {
     IE11HackToWorkAroundBug187484();
     // eslint-disable-next-line no-console
-    console.log("Component did update called");
+    console.log("Refero: Component did update called");
     if (this.props.skjemanavn !== prevProps.skjemanavn) {
       console
       // eslint-disable-next-line no-console
