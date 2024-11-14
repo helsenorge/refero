@@ -85,7 +85,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   componentDidMount(): void {
     this.props.mount();
     // eslint-disable-next-line no-console
-    console.log("******** Refero loaded OK v.3 **********");
+    console.log("******** Refero loaded OK v.4 **********");
     // eslint-disable-next-line no-console
     console.log("Refero: Is microweb? " + this.props.isMicroweb);
     // eslint-disable-next-line no-console
@@ -99,17 +99,30 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     IE11HackToWorkAroundBug187484();
   }
 
+  componentWillUnmount(): void {
+    // eslint-disable-next-line no-console
+    console.log("Refero Component will unmount");
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps: ReferoProps): void {
-    if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
-      this.props.updateSkjema(
-        nextProps.questionnaire,
-        nextProps.questionnaireResponse,
-        nextProps.language,
-        nextProps.syncQuestionnaireResponse
-      );
-      this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
+    // eslint-disable-next-line no-console
+    console.log("Refero: componentWillReceiveProps called");
+    if ((nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) ||
+      (nextProps.skjemanavn && nextProps.skjemanavn !== this.props.skjemanavn)) {
+        if (nextProps.questionnaire) {
+          // eslint-disable-next-line no-console
+          console.log("Properties changes, calling updateSkjema...");
+          this.props.updateSkjema(
+            nextProps.questionnaire,
+            nextProps.questionnaireResponse,
+            nextProps.language,
+            nextProps.syncQuestionnaireResponse
+          );
+          this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
+        }
     }
   }
+
   onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
     if (this.props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
@@ -198,6 +211,9 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   };
 
   renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
+
+    // eslint-disable-next-line no-console
+    console.log("Render form items called");
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;
     if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
       return undefined;
@@ -377,15 +393,16 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             onStepChange={onStepChange}
           />
         ) : (
-          <RenderForm
-            isAuthorized={authorized}
-            isStepView={false}
-            referoProps={referoProps}
-            resources={resources}
-            formItemsToBeRendered={this.renderFormItems()}
-            onSave={this.onSave}
-            onSubmit={this.onSubmit}
-          />
+          <><RenderForm
+              isAuthorized={authorized}
+              isStepView={false}
+              referoProps={referoProps}
+              resources={resources}
+              formItemsToBeRendered={this.renderFormItems()}
+              onSave={this.onSave}
+              onSubmit={this.onSubmit} />
+
+              <div>{"Skjemanavn to render: " + this.props.skjemanavn}</div></>
         )}
       </>
     );
