@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
 import { dropdownView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -21,33 +21,33 @@ describe('Dropdown-view - choice', () => {
     vi.clearAllMocks();
   });
   describe('Render', () => {
-    it('Should render as text if props.pdf', () => {
-      const { queryByText } = createWrapper(q, { pdf: true });
+    it('Should render as text if props.pdf', async () => {
+      const { queryByText } = await createWrapper(q, { pdf: true });
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
-    it('Should render text if item is readonly', () => {
+    it('Should render text if item is readonly', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'readOnly', true);
 
-      const { queryByText } = createWrapper(questionnaire);
+      const { queryByText } = await createWrapper(questionnaire);
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
-    it('Should render as input if props.pdf === false && item is not readonly', () => {
-      const { queryByText } = createWrapper(q);
+    it('Should render as input if props.pdf === false && item is not readonly', async () => {
+      const { queryByText } = await createWrapper(q);
       expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
     });
-    it('Should render open-choice field', () => {
-      const { getByText } = createWrapper(q);
+    it('Should render open-choice field', async () => {
+      const { getByText } = await createWrapper(q);
       expect(getByText(/Annet/i)).toBeInTheDocument();
     });
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { getByTestId } = createWrapper(q);
+      const { getByTestId } = await createWrapper(q);
 
       expect(getByTestId(/-help-button/i)).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container, getByTestId } = createWrapper(q);
+      const { container, getByTestId } = await createWrapper(q);
 
       expect(getByTestId(/-help-button/i)).toBeInTheDocument();
 
@@ -58,16 +58,16 @@ describe('Dropdown-view - choice', () => {
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
 
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
       expect(getByTestId(/-repeat-button/i)).toBeInTheDocument();
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
@@ -81,7 +81,7 @@ describe('Dropdown-view - choice', () => {
           return y;
         }),
       };
-      const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
+      const { queryAllByText, queryByTestId } = await createWrapper(questionnaire);
       await repeatDropDownTimes(/Dropdown view label/i, 3, 'Ja');
       expect(queryAllByText(/Dropdown view label/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -90,20 +90,20 @@ describe('Dropdown-view - choice', () => {
   describe('delete button', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = await createWrapper(questionnaire);
       await repeatDropDownTimes(/Dropdown view label/i, 2, 'Ja');
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
       await repeatDropDownTimes(/Dropdown view label/i, 1, 'Ja');
 
       await clickButtonTimes(/-delete-button/i, 1);
@@ -112,7 +112,7 @@ describe('Dropdown-view - choice', () => {
     });
     it('Should remove item when delete button is clicked', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { getByTestId, queryByTestId } = createWrapper(questionnaire);
+      const { getByTestId, queryByTestId } = await createWrapper(questionnaire);
       await repeatDropDownTimes(/Dropdown view label/i, 1, 'Ja');
       await clickButtonTimes(/-delete-button/i, 1);
       await userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
@@ -128,7 +128,7 @@ describe('Dropdown-view - choice', () => {
           repeats: false,
         })),
       };
-      const { getByRole } = createWrapper(questionnaire);
+      const { getByRole } = await createWrapper(questionnaire);
       expect((getByRole('option', { name: 'Velg...' }) as HTMLOptionElement).selected).toBe(true);
     });
     it('Initial value should be set', async () => {
@@ -136,14 +136,14 @@ describe('Dropdown-view - choice', () => {
         { property: 'initial', value: [expectedAnswer] },
         { property: 'repeats', value: false },
       ]);
-      const { getByRole } = createWrapper(questionnaire);
+      const { getByRole } = await createWrapper(questionnaire);
       expect((getByRole('option', { name: 'Ja' }) as HTMLOptionElement).selected).toBe(true);
     });
   });
   describe('onChange', () => {
     it('Should render extra text field when open-choice extra value is selected', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const { getByTestId, getByRole } = createWrapper(questionnaire);
+      const { getByTestId, getByRole } = await createWrapper(questionnaire);
 
       await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
       expect(getByTestId(/-extra-field/i)).toBeInTheDocument();
@@ -151,7 +151,7 @@ describe('Dropdown-view - choice', () => {
     });
     it('Should update component with value from answer', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const { getByRole } = createWrapper(questionnaire);
+      const { getByRole } = await createWrapper(questionnaire);
 
       await selectDropdownOptionByName(/Dropdown view label/i, 'Ja');
 
@@ -160,7 +160,7 @@ describe('Dropdown-view - choice', () => {
     it('Should call onChange with correct value', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
       const onChange = vi.fn();
-      const { getByRole } = createWrapper(questionnaire, { onChange });
+      const { getByRole } = await createWrapper(questionnaire, { onChange });
       expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
       await selectDropdownOptionByName(/Dropdown view label/i, 'Ja');
 
@@ -175,7 +175,7 @@ describe('Dropdown-view - choice', () => {
           { property: 'required', value: true },
           { property: 'repeats', value: false },
         ]);
-        const { getByRole, getByText } = createWrapper(questionnaire);
+        const { getByRole, getByText } = await createWrapper(questionnaire);
         expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -185,7 +185,7 @@ describe('Dropdown-view - choice', () => {
           { property: 'required', value: true },
           { property: 'repeats', value: false },
         ]);
-        const { queryByText } = createWrapper(questionnaire);
+        const { queryByText } = await createWrapper(questionnaire);
         await selectDropdownOptionByName(/Dropdown view label/i, 'Ja');
         await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -195,7 +195,7 @@ describe('Dropdown-view - choice', () => {
           { property: 'required', value: true },
           { property: 'repeats', value: false },
         ]);
-        const { getByText, queryByText } = createWrapper(questionnaire);
+        const { getByText, queryByText } = await createWrapper(questionnaire);
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
         await selectDropdownOptionByName(/Dropdown view label/i, 'Ja');
@@ -208,7 +208,7 @@ describe('Dropdown-view - choice', () => {
     describe('OnChange', () => {
       it('Should render extra text field when open-choice extra value is selected', async () => {
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
-        const { getByTestId, getByRole } = createWrapper(questionnaire);
+        const { getByTestId, getByRole } = await createWrapper(questionnaire);
 
         await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
 
@@ -218,7 +218,7 @@ describe('Dropdown-view - choice', () => {
       it('Should not render extra text field when open-choice extra value is not selected', async () => {
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
 
-        const { queryByTestId } = createWrapper(questionnaire);
+        const { queryByTestId } = await createWrapper(questionnaire);
 
         expect(queryByTestId(/-extra-field/i)).not.toBeInTheDocument();
       });
@@ -229,7 +229,7 @@ describe('Dropdown-view - choice', () => {
         const onChange = vi.fn();
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
 
-        const { getByTestId } = createWrapper(questionnaire, { onChange });
+        const { getByTestId } = await createWrapper(questionnaire, { onChange });
         await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
         expect(getByTestId(/-extra-field/i)).toBeInTheDocument();
         await typeExtraField('test');
@@ -245,7 +245,7 @@ describe('Dropdown-view - choice', () => {
             { property: 'required', value: true },
           ]);
 
-          const { getByText, getByTestId } = createWrapper(questionnaire);
+          const { getByText, getByTestId } = await createWrapper(questionnaire);
 
           await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
           expect(getByTestId(/-extra-field/i)).toBeInTheDocument();
@@ -257,7 +257,7 @@ describe('Dropdown-view - choice', () => {
             { property: 'repeats', value: false },
             { property: 'required', value: true },
           ]);
-          const { queryByText } = createWrapper(questionnaire);
+          const { queryByText } = await createWrapper(questionnaire);
           await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
           await typeExtraField('epost@test.com');
           await submitForm();
@@ -268,7 +268,7 @@ describe('Dropdown-view - choice', () => {
             { property: 'repeats', value: false },
             { property: 'required', value: true },
           ]);
-          const { getByText, queryByText } = createWrapper(questionnaire);
+          const { getByText, queryByText } = await createWrapper(questionnaire);
           await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
           await submitForm();
           expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -293,7 +293,7 @@ describe('Dropdown-view - choice', () => {
               ],
             })),
           };
-          const { getByText } = createWrapper(questionnaire);
+          const { getByText } = await createWrapper(questionnaire);
           await submitForm();
 
           expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -303,6 +303,6 @@ describe('Dropdown-view - choice', () => {
   });
 });
 
-const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return renderRefero({ questionnaire, props: { ...props, resources } });
+const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return await waitFor(() => renderRefero({ questionnaire, props: { ...props, resources } }));
 };

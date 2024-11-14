@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
 import { q, qCustomErrorMessage } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -11,24 +11,24 @@ const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle
 
 describe('Quantity', () => {
   describe('Render', () => {
-    it('Should render as text if props.pdf', () => {
-      const { queryByText } = createWrapper(q, { pdf: true });
+    it('Should render as text if props.pdf', async () => {
+      const { queryByText } = await createWrapper(q, { pdf: true });
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
-    it('Should render text if item is readonly', () => {
+    it('Should render text if item is readonly', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
 
-      const { queryByText } = createWrapper(questionnaire);
+      const { queryByText } = await createWrapper(questionnaire);
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
-    it('Should render as input if props.pdf === false && item is not readonly', () => {
-      const { queryByText } = createWrapper(q);
+    it('Should render as input if props.pdf === false && item is not readonly', async () => {
+      const { queryByText } = await createWrapper(q);
       expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
     });
-    it('Should render with correct unit', () => {
+    it('Should render with correct unit', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({
@@ -36,7 +36,7 @@ describe('Quantity', () => {
           repeats: true,
         })),
       };
-      const { queryByText } = createWrapper(questionnaire);
+      const { queryByText } = await createWrapper(questionnaire);
       expect(queryByText('centimeter')).toBeInTheDocument();
     });
   });
@@ -49,7 +49,7 @@ describe('Quantity', () => {
           repeats: false,
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       expect(getByLabelText(/Quantity/i)).toHaveValue(null);
     });
@@ -71,19 +71,19 @@ describe('Quantity', () => {
           ],
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       expect(getByLabelText(/Quantity/i)).toHaveValue(12.3);
     });
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
@@ -98,23 +98,23 @@ describe('Quantity', () => {
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
 
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
       const repeatButton = getByTestId(/-repeat-button/i);
       expect(repeatButton).toBeInTheDocument();
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
       const repeatButton = queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
@@ -129,7 +129,7 @@ describe('Quantity', () => {
           return y;
         }),
       };
-      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      const { queryAllByLabelText, queryByTestId } = await createWrapper(questionnaire);
 
       const input = '2.2';
       await repeatNTimes(input, 3, /Quantity/i);
@@ -144,7 +144,7 @@ describe('Quantity', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = await createWrapper(questionnaire);
 
       const input = '2.2';
       await repeatNTimes(input, 2, /Quantity/i);
@@ -156,7 +156,7 @@ describe('Quantity', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -165,7 +165,7 @@ describe('Quantity', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
       const input = '2.2';
       await repeatNTimes(input, 1, /Quantity/i);
 
@@ -179,7 +179,7 @@ describe('Quantity', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryByTestId } = createWrapper(questionnaire);
+      const { getByTestId, queryByTestId } = await createWrapper(questionnaire);
       const input = '2.2';
       await repeatNTimes(input, 1, /Quantity/i);
 
@@ -211,7 +211,7 @@ describe('Quantity', () => {
           ],
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
       expect(getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
@@ -228,7 +228,7 @@ describe('Quantity', () => {
           extension: [...(q.extension ?? [])],
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
       expect(getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
@@ -256,7 +256,7 @@ describe('Quantity', () => {
         })),
       };
       const onChange = vi.fn();
-      const { getByLabelText } = createWrapper(questionnaire, { onChange });
+      const { getByLabelText } = await createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
       await userEvent.type(getByLabelText(/Quantity/i), '1');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
@@ -278,7 +278,7 @@ describe('Quantity', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByText } = createWrapper(questionnaire);
+        const { getByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -288,7 +288,7 @@ describe('Quantity', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = await createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '123');
         await submitForm();
 
@@ -299,7 +299,7 @@ describe('Quantity', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -324,7 +324,7 @@ describe('Quantity', () => {
             ],
           })),
         };
-        const { queryByText } = createWrapper(questionnaire);
+        const { queryByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -336,7 +336,7 @@ describe('Quantity', () => {
           ...qCustomErrorMessage,
           item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
-        const { queryByText } = createWrapper(questionnaire);
+        const { queryByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -346,7 +346,7 @@ describe('Quantity', () => {
           ...qCustomErrorMessage,
           item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = await createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '8');
         await submitForm();
 
@@ -357,7 +357,7 @@ describe('Quantity', () => {
           ...qCustomErrorMessage,
           item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText } = await createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '12');
         await submitForm();
 
@@ -374,7 +374,7 @@ describe('Quantity', () => {
           ...qCustomErrorMessage,
           item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
-        const { queryByText } = createWrapper(questionnaire);
+        const { queryByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -384,7 +384,7 @@ describe('Quantity', () => {
           ...qCustomErrorMessage,
           item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = await createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '8');
         await submitForm();
 
@@ -395,7 +395,7 @@ describe('Quantity', () => {
           ...qCustomErrorMessage,
           item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
-        const { queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { queryByText, getByLabelText } = await createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '3');
         await submitForm();
 
@@ -415,7 +415,7 @@ describe('Quantity', () => {
             required: false,
           })),
         };
-        const { queryByText } = createWrapper(questionnaire);
+        const { queryByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
@@ -428,7 +428,7 @@ describe('Quantity', () => {
             required: false,
           })),
         };
-        const { getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = await createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '6.12');
         await submitForm();
 
@@ -442,7 +442,7 @@ describe('Quantity', () => {
             required: false,
           })),
         };
-        const { queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { queryByText, getByLabelText } = await createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '6.121212');
         await submitForm();
 
@@ -456,6 +456,8 @@ describe('Quantity', () => {
   });
 });
 
-const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return renderRefero({ questionnaire, props: { ...props, resources } });
+const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return await waitFor(async () => {
+    return renderRefero({ questionnaire, props: { ...props, resources } });
+  });
 };

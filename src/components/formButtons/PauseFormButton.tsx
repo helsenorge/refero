@@ -11,11 +11,11 @@ type Props = {
 };
 
 export const PauseFormButton = ({ pauseButtonText, onPauseButtonClicked, pauseButtonDisabled, isStepView }: Props): JSX.Element | null => {
+  const breakpoint = useBreakpoint();
+
   if (!onPauseButtonClicked) {
     return null;
   }
-
-  const breakpoint = useBreakpoint();
 
   const displaySaveIcon = breakpoint > Breakpoint.xxs && !isStepView;
 

@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
 import { clickButtonTimes, repeatCheckboxTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
 import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
@@ -19,32 +19,32 @@ const expectedAnswer: QuestionnaireItemAnswerOption = {
 
 describe('checkbox-view - openchoice', () => {
   describe('Render', () => {
-    it('Should render as text if props.pdf', () => {
-      const { queryByText } = createWrapper(q, { pdf: true });
+    it('Should render as text if props.pdf', async () => {
+      const { queryByText } = await createWrapper(q, { pdf: true });
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
-    it('Should render text if item is readonly', () => {
+    it('Should render text if item is readonly', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'readOnly', true);
-      const { queryByText } = createWrapper(questionnaire);
+      const { queryByText } = await createWrapper(questionnaire);
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
-    it('Should render as input if props.pdf === false && item is not readonly', () => {
-      const { queryByText } = createWrapper(q);
+    it('Should render as input if props.pdf === false && item is not readonly', async () => {
+      const { queryByText } = await createWrapper(q);
       expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
     });
-    it('Should render open-choice field', () => {
-      const { getByLabelText } = createWrapper(q);
+    it('Should render open-choice field', async () => {
+      const { getByLabelText } = await createWrapper(q);
       expect(getByLabelText(/Annet/i)).toBeInTheDocument();
     });
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { getByTestId } = createWrapper(q);
+      const { getByTestId } = await createWrapper(q);
 
       expect(getByTestId(/-help-button/i)).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container, getByTestId } = createWrapper(q);
+      const { container, getByTestId } = await createWrapper(q);
 
       expect(getByTestId(/-help-button/i)).toBeInTheDocument();
 
@@ -55,20 +55,20 @@ describe('checkbox-view - openchoice', () => {
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
       expect(getByTestId(/-repeat-button/i)).toBeInTheDocument();
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
+      const { queryAllByText, queryByTestId } = await createWrapper(questionnaire);
       await repeatCheckboxTimes(/Ja/i, 3);
       expect(queryAllByText(/Checkbox view label/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -77,20 +77,20 @@ describe('checkbox-view - openchoice', () => {
   describe('delete button', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = await createWrapper(questionnaire);
       await repeatCheckboxTimes(/Ja/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
       await clickButtonTimes(/-delete-button/i, 1);
@@ -99,7 +99,7 @@ describe('checkbox-view - openchoice', () => {
     });
     it('Should remove item when delete button is clicked', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { getByTestId, queryByTestId } = createWrapper(questionnaire);
+      const { getByTestId, queryByTestId } = await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
       await clickButtonTimes(/-delete-button/i, 1);
@@ -110,7 +110,7 @@ describe('checkbox-view - openchoice', () => {
   describe('initialvalue', () => {
     it('Initial value should not be set', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       expect(getByLabelText(/Ja/i)).not.toBeChecked();
     });
@@ -120,7 +120,7 @@ describe('checkbox-view - openchoice', () => {
         { property: 'repeats', value: true },
       ]);
 
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       expect(getByLabelText(/Ja/i)).toBeChecked();
     });
@@ -129,7 +129,7 @@ describe('checkbox-view - openchoice', () => {
     describe('OnChange', () => {
       it('Should render extra text field when open-choice extra value is selected', async () => {
         const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-        const { getByLabelText, getByTestId } = createWrapper(questionnaire);
+        const { getByLabelText, getByTestId } = await createWrapper(questionnaire);
 
         await selectCheckboxOption(/Annet/i);
 
@@ -138,7 +138,7 @@ describe('checkbox-view - openchoice', () => {
       });
       it('Should not render extra text field when open-choice extra value is not selected', async () => {
         const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-        const { queryByTestId, getByLabelText } = createWrapper(questionnaire);
+        const { queryByTestId, getByLabelText } = await createWrapper(questionnaire);
 
         expect(queryByTestId(/-extra-field/i)).not.toBeInTheDocument();
         expect(getByLabelText(/Ja/i)).not.toBeChecked();
@@ -149,7 +149,7 @@ describe('checkbox-view - openchoice', () => {
         };
         const onChange = vi.fn();
         const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-        const { getByTestId } = createWrapper(questionnaire, { onChange });
+        const { getByTestId } = await createWrapper(questionnaire, { onChange });
 
         await selectCheckboxOption(/Annet/i);
         expect(getByTestId(/-extra-field/i)).toBeInTheDocument();
@@ -167,7 +167,7 @@ describe('checkbox-view - openchoice', () => {
             { property: 'required', value: true },
             { property: 'repeats', value: false },
           ]);
-          const { getByText, getByTestId } = createWrapper(questionnaire);
+          const { getByText, getByTestId } = await createWrapper(questionnaire);
 
           await selectCheckboxOption(/Annet/i);
           expect(getByTestId(/-extra-field/i)).toBeInTheDocument();
@@ -179,7 +179,7 @@ describe('checkbox-view - openchoice', () => {
             { property: 'required', value: true },
             { property: 'repeats', value: false },
           ]);
-          const { queryByText } = createWrapper(questionnaire);
+          const { queryByText } = await createWrapper(questionnaire);
           await selectCheckboxOption(/Annet/i);
           await typeExtraField('epost@test.com');
           await submitForm();
@@ -190,7 +190,7 @@ describe('checkbox-view - openchoice', () => {
             { property: 'required', value: true },
             { property: 'repeats', value: false },
           ]);
-          const { getByText, queryByText } = createWrapper(questionnaire);
+          const { getByText, queryByText } = await createWrapper(questionnaire);
           await selectCheckboxOption(/Annet/i);
           await submitForm();
           expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -215,7 +215,7 @@ describe('checkbox-view - openchoice', () => {
             },
           ]);
 
-          const { getByText } = createWrapper(questionnaire);
+          const { getByText } = await createWrapper(questionnaire);
           await submitForm();
 
           expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -226,7 +226,7 @@ describe('checkbox-view - openchoice', () => {
   describe('onChange', () => {
     it('Should update component with value from answer', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       await selectCheckboxOption(/Ja/i);
 
@@ -235,7 +235,7 @@ describe('checkbox-view - openchoice', () => {
     it('Should call onChange with correct value', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
       const onChange = vi.fn();
-      const { getByLabelText } = createWrapper(questionnaire, { onChange });
+      const { getByLabelText } = await createWrapper(questionnaire, { onChange });
 
       expect(getByLabelText(/Ja/i)).toBeInTheDocument();
 
@@ -252,7 +252,7 @@ describe('checkbox-view - openchoice', () => {
           { property: 'required', value: true },
           { property: 'repeats', value: false },
         ]);
-        const { getByLabelText, getByText } = createWrapper(questionnaire);
+        const { getByLabelText, getByText } = await createWrapper(questionnaire);
         expect(getByLabelText(/Ja/i)).toBeInTheDocument();
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -262,7 +262,7 @@ describe('checkbox-view - openchoice', () => {
           { property: 'required', value: true },
           { property: 'repeats', value: false },
         ]);
-        const { queryByText } = createWrapper(questionnaire);
+        const { queryByText } = await createWrapper(questionnaire);
         await selectCheckboxOption(/Ja/i);
         await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -272,7 +272,7 @@ describe('checkbox-view - openchoice', () => {
           { property: 'required', value: true },
           { property: 'repeats', value: false },
         ]);
-        const { getByText, queryByText } = createWrapper(questionnaire);
+        const { getByText, queryByText } = await createWrapper(questionnaire);
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
@@ -285,6 +285,6 @@ describe('checkbox-view - openchoice', () => {
   });
 });
 
-const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return renderRefero({ questionnaire, props: { ...props, resources } });
+const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return await waitFor(() => renderRefero({ questionnaire, props: { ...props, resources } }));
 };

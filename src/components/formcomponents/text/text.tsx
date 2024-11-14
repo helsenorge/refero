@@ -114,7 +114,7 @@ export const Text = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_text">
-      <FormGroup error={errorMessage} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           testId={`${getId(id)}-text-label`}
           htmlFor={getId(id)}

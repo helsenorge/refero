@@ -1,102 +1,1036 @@
 {
   "resourceType": "QuestionnaireResponse",
   "status": "in-progress",
-  "questionnaire": "Questionnaire/a7ecbce9-feea-4f2a-bea8-fed77a0e7bea",
   "item": [
     {
-      "linkId": "05d5e7fb-acd4-4eed-89f1-fb46d0b14374",
-      "text": "Dette skjemaet inneholder flere vedleggs opplastinger med og uten grupper, og som ligger i betinget visning"
-    },
-    {
-      "linkId": "fa009548-1f73-4d15-8343-f70362f68f52",
-      "text": "Vedlegg",
-      "answer": [
-        {
-          "valueAttachment": {
-            "id": "8065183a-1823-42c7-b2fa-f42bf944107b",
-            "url": "1238ee99-0916-4ef0-a862-8e4a81b140e7-generated",
-            "title": "Alternativ Logo 2.png",
-            "data": "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",
-            "contentType": "image/png"
-          }
-        }
-      ]
-    },
-    {
-      "linkId": "98a6514d-be82-4e06-85e7-bf6a8d2ae655",
-      "text": "Vedlegg med repetisjon"
-    },
-    {
-      "linkId": "12e7217a-b0ae-4700-8373-1f0e5ce48745",
-      "text": "Gruppe med vedlegg",
+      "linkId": "291d9c8a-3839-49b8-8ed4-ab72ee813c8f",
+      "text": "Pre-definert kodeverk",
       "item": [
         {
-          "linkId": "1135e85b-15b7-43e4-dc57-ae0f541d5c1c",
-          "text": "Vedlegg under gruppe"
+          "linkId": "711fd50d-23a5-4e11-8873-2e58d0e2ed1a",
+          "text": "Radio",
+          "item": [
+            {
+              "linkId": "20b4f532-3a95-4877-a125-f7d11d674e1b",
+              "text": "Åpne felt under",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "7d2fd375-cfd5-4d4e-9cc9-b4c26d816375",
+                      "text": "Fyll ut",
+                      "answer": [
+                        {
+                          "valueString": "asd"
+                        }
+                      ]
+                    }
+                  ],
+                  "valueCoding": {
+                    "code": "1",
+                    "display": "Ja",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1101"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "95104f55-b092-49cd-8117-a482fbd6c2f5",
+              "text": "Uten noen ting"
+            },
+            {
+              "linkId": "543f6770-57c4-44e8-dc8a-52676d48c291",
+              "text": "Uten noen ting med tekstfelt for åpent svar"
+            },
+            {
+              "linkId": "0823e2b4-ea63-4bf4-9bc7-8d163628b619",
+              "text": "Uten noen ting - Obligatorisk"
+            },
+            {
+              "linkId": "d1a4059c-c6d7-4505-f029-466684d27c4a",
+              "text": "Predefinert valg",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "2",
+                    "display": "Nei"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "487d3a8b-a0ab-4658-d97a-3565da88c137",
+              "text": "Predefinert valg skrivebeskyttet",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "2",
+                    "display": "Nei"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "088f435e-a871-4f3b-8221-7a543d1b0c93",
+              "text": "Instruks"
+            },
+            {
+              "linkId": "d6cf4647-1214-4fca-8d99-8a15ecc96b46",
+              "text": "Hjelp",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "80bf2c45-2721-4cd6-e0c5-7283b50b5104"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "08f54442-796b-4738-e38a-4a0a6e03d524",
+              "text": "Repeterende"
+            },
+            {
+              "linkId": "d6303ae9-2625-4ce1-8f7d-80b028e67734",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "d6303ae9-2625-4ce1-8f7d-80b028e67734",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "b208e0f7-f34c-4f6e-e23d-2c49b487c7bd",
+              "text": "Kopi fra uten noen ting"
+            },
+            {
+              "linkId": "c37e4c78-7589-4db1-a5b1-091dd37b697b",
+              "text": "Full vising i PDF"
+            },
+            {
+              "linkId": "8afae753-2f22-43a3-d683-2afd3adafc55",
+              "text": "Kompakt vising i PDF"
+            }
+          ]
         },
         {
-          "linkId": "10194eec-da97-4971-8b8b-d146c8500dbe",
-          "text": "Vedlegg med repetisjon under gruppe"
-        }
-      ]
-    },
-    {
-      "linkId": "c62806c7-ab37-4288-817a-fcf4c2ccccaa",
-      "text": "Se enda en vedleggsopplasting",
-      "answer": [
+          "linkId": "635cc551-e191-4552-8dd9-e87218d58167",
+          "text": "Multiselect",
+          "item": [
+            {
+              "linkId": "7e1fb0b5-af5f-467b-e93e-4dcc318dfbe2",
+              "text": "Åpne felt under",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "9f0b5c61-15a4-4b56-a98b-3966f967ca3e",
+                      "text": "Fyll ut"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "507cbda7-d557-4268-8252-44bb917aaca3",
+              "text": "Uten noen ting"
+            },
+            {
+              "linkId": "bafb1945-0cea-4439-a229-7874478b3b98",
+              "text": "Uten noen ting med tekstfelt for åpent svar"
+            },
+            {
+              "linkId": "3c619301-2097-44d0-818f-0c56bb798fa2",
+              "text": "Uten noen ting - Obligatorisk"
+            },
+            {
+              "linkId": "547e6624-7a97-47d2-9624-aa5481b7a174",
+              "text": "Predefinert valg",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "2",
+                    "display": "Nei"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "447b9953-94c9-45ad-915a-7c59dd1d8baf",
+              "text": "Predefinert valg skrivebeskyttet",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "2",
+                    "display": "Nei"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "f068dcb5-4399-444e-bb82-6f89d8f12ced",
+              "text": "Instruks"
+            },
+            {
+              "linkId": "db701a1b-3257-47ed-8cc0-55b53d7d0e96",
+              "text": "Hjelp",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "096f340b-4dbc-4d16-e52f-aed67e8bf260"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "4a61b3f1-9b7a-44f1-83a6-82ee850a6e25",
+              "text": "Repeterende"
+            },
+            {
+              "linkId": "e47d3ac9-054c-4eb1-fb77-407a56b6faca",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "e47d3ac9-054c-4eb1-fb77-407a56b6faca",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "80b40b2d-d870-4b94-d52c-63ee05657913",
+              "text": "Kopi fra uten noen ting"
+            },
+            {
+              "linkId": "2e2a1e17-8a50-41c0-f12d-d714d57dd602",
+              "text": "Full vising i PDF"
+            },
+            {
+              "linkId": "045aa597-227c-4c4b-b2ff-54cc8b477d91",
+              "text": "Kompakt vising i PDF"
+            }
+          ]
+        },
         {
-          "valueCoding": {
-            "code": "1",
-            "display": "Ja",
-            "system": "urn:oid:2.16.578.1.12.4.1.1101"
-          }
+          "linkId": "316961fb-209e-4555-edeb-a49731eea537",
+          "text": "Slider N/A med predefinerte valg PT",
+          "item": [
+            {
+              "linkId": "e92f638d-407f-485f-90cd-9c1781387f67",
+              "text": "Uten noen ting"
+            },
+            {
+              "linkId": "3d783b14-fa74-4dd4-8ac9-1930b3e02fac",
+              "text": "Uten noen ting med tekstfelt for åpent svar"
+            },
+            {
+              "linkId": "9889dc1c-2bdf-4f8c-9011-148f2af05cc4",
+              "text": "Uten noen ting - Obligatorisk"
+            },
+            {
+              "linkId": "401c99b3-669d-418a-9cdd-dc65c19e594b",
+              "text": "Predefinert valg",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "2",
+                    "display": "Nei"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "1091f228-df74-4755-afcb-e775e69037de",
+              "text": "Predefinert valg skrivebeskyttet",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "2",
+                    "display": "Nei"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "ae118974-2cd4-42db-8133-dc6485efe761",
+              "text": "Instruks"
+            },
+            {
+              "linkId": "129081d7-1336-493e-89e2-e9173c2daa3e",
+              "text": "Hjelp",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "f9efbed1-570f-496d-8f3b-a7b46b0b7f06"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "26424824-bd63-4b6c-9045-56df23a804f4",
+              "text": "Repeterende"
+            },
+            {
+              "linkId": "918ecd4b-9083-4739-89c5-c39642f5f934",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "918ecd4b-9083-4739-89c5-c39642f5f934",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "ca64980f-62b2-4f61-8722-4ed5da6c62c7",
+              "text": "Kopi fra uten noen ting"
+            },
+            {
+              "linkId": "b866798a-8503-415c-8a6c-6501edb95ca7",
+              "text": "Full vising i PDF"
+            },
+            {
+              "linkId": "d712095b-d5d5-4655-b424-00f99177a8a9",
+              "text": "Kompakt vising i PDF"
+            }
+          ]
         }
       ]
     },
     {
-      "linkId": "22ccddf8-ec85-4d77-f3b4-a3a5a18ee731",
-      "text": "Vedlegg 2 uten gruppe",
-      "answer": [
-        {
-          "valueAttachment": {
-            "id": "790ab4f9-52f3-4795-96f8-0ecf731c8a53",
-            "url": "03016d2b-f31f-4389-b2a1-9daa1fac55b8-generated",
-            "title": "Alternativ Logo 2.png",
-            "data": "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",
-            "contentType": "image/png"
-          }
-        }
-      ]
-    },
-    {
-      "linkId": "f70602ba-ec7a-4c9d-8a54-c682fe41fc0c",
-      "text": "Se enda en vedleggsopplastning med gruppe",
-      "answer": [
-        {
-          "valueCoding": {
-            "code": "1",
-            "display": "Ja",
-            "system": "urn:oid:2.16.578.1.12.4.1.1101"
-          }
-        }
-      ]
-    },
-    {
-      "linkId": "cb5f518d-61f8-4b11-818b-c10465c73de7",
-      "text": "Gruppe 2",
+      "linkId": "b8107539-29bb-4b8f-8829-e765baa0c6a4",
+      "text": "Egendefinert kodeverk",
       "item": [
         {
-          "linkId": "714183e8-261c-4a86-9440-c54e8206de2d",
-          "text": "Vedlegg",
-          "answer": [
+          "linkId": "05f26ce5-377c-4993-db38-228d476e3960",
+          "text": "Radio",
+          "item": [
             {
-              "valueAttachment": {
-                "id": "ff11ee06-fd44-4991-ac81-fa3dffaf8674",
-                "url": "c690f4db-d5b2-4baf-9281-00f6c152ecd6-generated",
-                "title": "Alternativ Logo 2.png",
-                "data": "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",
-                "contentType": "image/png"
-              }
+              "linkId": "585cbd04-52de-4533-89d4-6d17c820915e",
+              "text": "Åpne felt under",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "50a7bce0-1b9f-4c55-f9a6-4424bbfc58e7",
+                      "text": "Fyll ut"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "4ad9781f-8a2e-4add-e55e-d26fd87c71a0",
+              "text": "Uten noen ting"
+            },
+            {
+              "linkId": "4d22edae-fba1-4593-8f8d-22fc5c020424",
+              "text": "Uten noen ting med tekstfelt for åpent svar"
+            },
+            {
+              "linkId": "e990c46b-90ab-4f58-8241-c7e5f792da2c",
+              "text": "Uten noen ting - Obligatorisk"
+            },
+            {
+              "linkId": "fab82a86-d35f-4370-8826-110641e0c044",
+              "text": "Predefinert valg",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:uuid:fb714aa4-433e-4e8a-ddee-95a68040c447",
+                    "code": "test-1",
+                    "display": "Test 1"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "d9838585-f256-41f7-943c-9421ba1eddfc",
+              "text": "Predefinert valg skrivebeskyttet",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:uuid:155d21e1-0891-42c9-8a0f-aafa5c9618da",
+                    "code": "test-1",
+                    "display": "Test 1"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "736da6c8-7505-410a-854a-23bf8f874a18",
+              "text": "Instruks"
+            },
+            {
+              "linkId": "411c0673-5e67-4601-81ac-6160b6870210",
+              "text": "Hjelp",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "48a57d25-b8b3-4fad-8014-10935a35557d"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "3dfd4012-9936-459e-9e0c-126819e45733",
+              "text": "Repeterende"
+            },
+            {
+              "linkId": "4b8b79e8-2874-4f30-8a15-ab3953ae5bc8",
+              "text": "Kopi Uten noen ting"
+            },
+            {
+              "linkId": "29b3b88f-2691-45e1-82d3-1d6179eee076",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "29b3b88f-2691-45e1-82d3-1d6179eee076",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "c45e2349-4e43-44a0-8cc1-65e91a31fbdb",
+              "text": "Full vising i PDF"
+            },
+            {
+              "linkId": "5e045f2e-00e5-44f9-a068-ae3ce36932d9",
+              "text": "Kompakt vising i PDF"
+            },
+            {
+              "linkId": "6175a39d-8e38-4546-8300-64ad15b257f0",
+              "text": "Skåring 1",
+              "item": [
+                {
+                  "linkId": "f2641f83-7691-41f4-a465-9c5d66b4274d",
+                  "text": "Skåring 1"
+                },
+                {
+                  "linkId": "f5f3f38f-6780-43cc-e3b8-81395d92a870",
+                  "text": "Delsum"
+                }
+              ]
+            },
+            {
+              "linkId": "11ec698b-b05d-4838-aecb-02172e91a98b",
+              "text": "Skåring 2",
+              "item": [
+                {
+                  "linkId": "91fab6e1-70e1-4ca7-f8ee-9dcb7724af7d",
+                  "text": "Skåring 2"
+                },
+                {
+                  "linkId": "fb2a5521-dcca-4c0c-843e-084be0de5031",
+                  "text": "Delsum"
+                }
+              ]
+            },
+            {
+              "linkId": "336ace36-8dc3-4752-806a-abef5ec18577",
+              "text": "Totalsum",
+              "answer": [
+                {
+                  "valueInteger": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "d7abfad5-32f4-47b7-8e4d-7e441a48e816",
+          "text": "Dropdown",
+          "item": [
+            {
+              "linkId": "6b0414eb-bc61-4ec8-82ac-616b96edc63c",
+              "text": "Åpne felt under",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "8f54d36d-dfa9-4ccf-a07b-5188054c4572",
+                      "text": "Fyll ut"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "0ba96518-ea8e-46b4-8035-4d7aa13e3166",
+              "text": "Uten noen ting"
+            },
+            {
+              "linkId": "53f7d998-64fc-4450-81d0-f5b27dfb966e",
+              "text": "Uten noen ting med tekstfelt for åpent svar"
+            },
+            {
+              "linkId": "2ada56ca-9745-4169-8917-b9401cb0de54",
+              "text": "Uten noen ting - Obligatorisk"
+            },
+            {
+              "linkId": "35626510-be75-428a-86b8-e7fd01a7cc60",
+              "text": "Predefinert valg",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:uuid:fb714aa4-433e-4e8a-ddee-95a68040c447",
+                    "code": "test-1",
+                    "display": "Test 1"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "cc7fe173-f5d0-4bad-913c-489acd773590",
+              "text": "Predefinert valg skrivebeskyttet",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:uuid:155d21e1-0891-42c9-8a0f-aafa5c9618da",
+                    "code": "test-1",
+                    "display": "Test 1"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "9f921f25-bee5-4d84-ea79-8b569a8b2e27",
+              "text": "Instruks"
+            },
+            {
+              "linkId": "6e15264f-3c54-4b49-b1ef-f399730f9997",
+              "text": "Hjelp",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "05504e62-9339-4755-e881-ed07675bbb87"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "a08282ba-8f7d-4a5a-86c5-b5e8eaa9b03e",
+              "text": "Repeterende"
+            },
+            {
+              "linkId": "e57efec8-e805-498c-9550-564e145dbe52",
+              "text": "Kopi Uten noen ting"
+            },
+            {
+              "linkId": "f2f06c90-6dab-4b95-83a0-43fd2c3628f6",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "f2f06c90-6dab-4b95-83a0-43fd2c3628f6",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "7a871bf7-e7a0-4158-add5-c70239e20731",
+              "text": "Full vising i PDF"
+            },
+            {
+              "linkId": "3ee164ed-e3be-4b3e-ffde-435156f69501",
+              "text": "Kompakt vising i PDF"
+            },
+            {
+              "linkId": "33484930-7394-4ad1-8c20-e042b140a64c",
+              "text": "Skåring 1",
+              "item": [
+                {
+                  "linkId": "d6ecfa7c-9ead-4603-862d-c7f4f1fb5406",
+                  "text": "Skåring 1"
+                },
+                {
+                  "linkId": "9f57c246-fd8a-49a8-887a-1d9a5c73842c",
+                  "text": "Delsum"
+                }
+              ]
+            },
+            {
+              "linkId": "8bc52053-3bf7-4973-de3f-a7bf1974f46f",
+              "text": "Skåring 2",
+              "item": [
+                {
+                  "linkId": "0288fe7b-9555-4cfd-8170-9010d4648ff6",
+                  "text": "Skåring 2"
+                },
+                {
+                  "linkId": "a70467c4-df4c-428a-8d65-83e4bd9390ab",
+                  "text": "Delsum"
+                }
+              ]
+            },
+            {
+              "linkId": "500db4ca-ae6a-4de7-810c-b3432af7d081",
+              "text": "Totalsum",
+              "answer": [
+                {
+                  "valueInteger": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "aa631b14-04a0-4b7b-bb4c-1f2738bc118a",
+          "text": "Multiselect",
+          "item": [
+            {
+              "linkId": "9dcfe4c0-9c17-48b8-8b6b-0ae27787fc8c",
+              "text": "Åpne felt under",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "7dc5f4b0-c44c-43cc-815c-2b513c83e90f",
+                      "text": "Fyll ut"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "bf2047cb-c6e5-4f72-eaaa-14a5673f67bf",
+              "text": "Uten noen ting"
+            },
+            {
+              "linkId": "cfaa1071-4fa1-4ba5-9527-4024a1f9ff20",
+              "text": "Uten noen ting med tekstfelt for åpent svar"
+            },
+            {
+              "linkId": "ca1132e4-26dd-4bd4-848a-ef974f5dd4e6",
+              "text": "Uten noen ting - Obligatorisk"
+            },
+            {
+              "linkId": "07a5539d-623c-401b-8d0c-d0d79f4a09e3",
+              "text": "Predefinert valg",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:uuid:fb714aa4-433e-4e8a-ddee-95a68040c447",
+                    "code": "test-1",
+                    "display": "Test 1"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "106f2daf-96d7-4492-d7b9-307c41cab669",
+              "text": "Predefinert valg skrivebeskyttet",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "system": "urn:uuid:155d21e1-0891-42c9-8a0f-aafa5c9618da",
+                    "code": "test-1",
+                    "display": "Test 1"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "88b5d11f-8a75-430e-bc0b-5b29cb0aed6c",
+              "text": "Instruks"
+            },
+            {
+              "linkId": "e65c2d24-ea11-4edb-d24c-87aa75c07f33",
+              "text": "Hjelp",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "a75d03a7-053f-4d5e-f395-1ab7680918dc"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "366c32c0-34d1-4a07-e8af-608ea25765b1",
+              "text": "Repeterende"
+            },
+            {
+              "linkId": "fc4af600-ae64-4d0e-8e9e-ce7500513b05",
+              "text": "Kopi Uten noen ting"
+            },
+            {
+              "linkId": "a087a08a-7334-4f19-cd6e-b4c0457c061f",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "a087a08a-7334-4f19-cd6e-b4c0457c061f",
+              "text": "Repeterende Min 2 maks 10"
+            },
+            {
+              "linkId": "66f29428-686c-4996-8d97-305912604a95",
+              "text": "Full vising i PDF"
+            },
+            {
+              "linkId": "4ca0ceeb-3710-40fd-8e89-2f11977500fe",
+              "text": "Kompakt vising i PDF"
+            },
+            {
+              "linkId": "b0b20082-846a-41f9-a0ba-df5a12daf698",
+              "text": "Skåring 1",
+              "item": [
+                {
+                  "linkId": "9599f52b-2a69-4ea5-8e80-b801259129e0",
+                  "text": "Skåring 1"
+                },
+                {
+                  "linkId": "c9db31e1-5c6b-4a1d-f33b-1c9814f75121",
+                  "text": "Delsum"
+                }
+              ]
+            },
+            {
+              "linkId": "b56449c2-7bfc-4015-813a-ae0f2501f2a4",
+              "text": "Skåring 2",
+              "item": [
+                {
+                  "linkId": "9e5c2e86-b393-40c2-85f0-64e154571a38",
+                  "text": "Skåring 2"
+                },
+                {
+                  "linkId": "cf88b6fa-a404-463f-82e1-6496a98550cd",
+                  "text": "Delsum"
+                }
+              ]
+            },
+            {
+              "linkId": "c7fa2d4c-9b81-4439-8b61-c84e96595625",
+              "text": "Totalsum",
+              "answer": [
+                {
+                  "valueInteger": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "7d958dad-1631-4e2b-c57b-b84d19fb74fa",
+          "text": "Slider",
+          "item": [
+            {
+              "linkId": "34d2466a-cd36-4d09-c9cf-b93ed5850744",
+              "text": "Åpne felt under",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "08efa8bb-a2b5-43cd-ac80-54b232a9227f",
+                      "text": "Fyll ut",
+                      "answer": [
+                        {
+                          "valueString": "fgh"
+                        }
+                      ]
+                    }
+                  ],
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:272ddd45-a76e-4c0f-e58d-74e101565eb9"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "1f9929ea-542f-48af-8f7a-bbe888d7a571",
+              "text": "Uten noen ting",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-2",
+                    "display": "Test 2",
+                    "system": "urn:uuid:272ddd45-a76e-4c0f-e58d-74e101565eb9"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "92c9c4a7-e9a2-42d8-8d54-287269c6a946",
+              "text": "Emoji",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:272ddd45-a76e-4c0f-e58d-74e101565eb9"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "815abe37-58fe-4eb9-f64d-e0ce9551316f",
+              "text": "Emoji og etikett (Tall)",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-2",
+                    "display": "Test 2",
+                    "system": "urn:uuid:272ddd45-a76e-4c0f-e58d-74e101565eb9"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "5a8b295b-54a7-409e-baa2-52becd427a6d",
+              "text": "Uten noen ting med tekstfelt for åpent svar",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:bb1b5a48-0fb9-42cb-80d2-4ec351f14eb5"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "541a6897-f513-42bf-f41f-383a3281e1b4",
+              "text": "Uten noen ting - Obligatorisk",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-2",
+                    "display": "Test 2",
+                    "system": "urn:uuid:1e6688e7-f859-4dbc-82bb-5c4f62363d1e"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "92823513-a2f0-473e-f5ce-ce5943a3b86e",
+              "text": "Predefinert valg",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:fb714aa4-433e-4e8a-ddee-95a68040c447"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "ec9f3861-b191-4fa8-86f4-564588525e52",
+              "text": "Predefinert valg skrivebeskyttet",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:155d21e1-0891-42c9-8a0f-aafa5c9618da"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "60ae3c69-a0a1-4991-8fbe-c53263ab402d",
+              "text": "Instruks",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:a3e9a414-95da-417a-89b2-c4ee8b4729d5"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "e18311fc-76ee-416a-87aa-e93bff76e505",
+              "text": "Hjelp",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "2fd14d51-d8ba-4122-89fa-b20a8e182990"
+                    }
+                  ],
+                  "valueCoding": {
+                    "code": "test-2",
+                    "display": "Test 2",
+                    "system": "urn:uuid:d7954fa8-4208-4a4f-83a8-83dec00a1f73"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "efba5de0-1bf6-4b10-83d3-71d36e54db31",
+              "text": "Repeterende",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-2",
+                    "display": "Test 2",
+                    "system": "urn:uuid:b5cc47b4-2357-4e5f-8fee-6ed3c308928c"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "efba5de0-1bf6-4b10-83d3-71d36e54db31",
+              "text": "Repeterende",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:b5cc47b4-2357-4e5f-8fee-6ed3c308928c"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "efba5de0-1bf6-4b10-83d3-71d36e54db31",
+              "text": "Repeterende",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-2",
+                    "display": "Test 2",
+                    "system": "urn:uuid:b5cc47b4-2357-4e5f-8fee-6ed3c308928c"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "0a3d5b92-7ead-4c0e-a9e8-698b084a2d47",
+              "text": "Kopi Uten noen ting",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:272ddd45-a76e-4c0f-e58d-74e101565eb9"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "a35f48b4-b517-499c-8465-c02345511368",
+              "text": "Repeterende Min 2 maks 10",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-2",
+                    "display": "Test 2",
+                    "system": "urn:uuid:e1be625d-80df-4012-8f97-182ac9f406dd"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "a35f48b4-b517-499c-8465-c02345511368",
+              "text": "Repeterende Min 2 maks 10",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:e1be625d-80df-4012-8f97-182ac9f406dd"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "7d375e8e-5b8b-45c6-8eae-e9439a7791f4",
+              "text": "Full vising i PDF",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-2",
+                    "display": "Test 2",
+                    "system": "urn:uuid:32384c60-e60b-46dc-8b65-b5aec55a7a2a"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "6c33d390-6d52-408f-88f9-f3c03edfface",
+              "text": "Kompakt vising i PDF",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "test-1",
+                    "display": "Test 1",
+                    "system": "urn:uuid:0b8fd017-dde0-49d2-87ad-9e19cc7e4cac"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "146db6be-efc8-4dc1-83bf-a0887667a1c0",
+              "text": "Skåring 1",
+              "item": [
+                {
+                  "linkId": "c091736d-ed27-4301-8dd2-0caf3aae89fb",
+                  "text": "Skåring 1",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "code": "test-1",
+                        "display": "Test 1",
+                        "system": "urn:uuid:272ddd45-a76e-4c0f-e58d-74e101565eb9"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "d86e3837-aee7-4bf9-8fea-772a1b89c049",
+                  "text": "Delsum",
+                  "answer": [
+                    {
+                      "valueInteger": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "1b5eac5a-edb5-4bfe-8419-54ce29130ae0",
+              "text": "Skåring 2",
+              "item": [
+                {
+                  "linkId": "0f08e7e9-5d5b-4417-ee53-165b897d6cd7",
+                  "text": "Skåring 2",
+                  "answer": [
+                    {
+                      "valueCoding": {
+                        "code": "test-1",
+                        "display": "Test 1",
+                        "system": "urn:uuid:272ddd45-a76e-4c0f-e58d-74e101565eb9"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "392fd202-e290-4f1a-8829-37a301df8a6f",
+                  "text": "Delsum",
+                  "answer": [
+                    {
+                      "valueInteger": 1
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "3e9810e6-d43d-4727-eeea-0a64834bc0a8",
+              "text": "Totalsum",
+              "answer": [
+                {
+                  "valueInteger": 2
+                }
+              ]
             }
           ]
         }

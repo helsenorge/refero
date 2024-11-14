@@ -20,7 +20,6 @@ const useOnAnswerChange = (
     const questionnaireResponse = state.refero.form.FormData.Content;
     if (questionnaire && questionnaireResponse) {
       const actionRequester = new ActionRequester(questionnaire, questionnaireResponse);
-
       const questionnaireInspector = new QuestionniareInspector(questionnaire, questionnaireResponse);
       onChange && onChange(item, answer, actionRequester, questionnaireInspector);
       for (const action of actionRequester.getActions()) {

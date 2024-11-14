@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import styles from '../common-styles.module.css';
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -79,7 +78,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
-      <FormGroup error={getErrorMessage(item, error)} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={getErrorMessage(item, error)} onColor="ongrey">
         <ReferoLabel
           item={item}
           resources={resources}

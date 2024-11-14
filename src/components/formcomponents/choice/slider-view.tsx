@@ -1,12 +1,12 @@
 import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { Controller, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 import styles from '../common-styles.module.css';
 import codeSystems from '@/constants/codingsystems';
 import { Extensions } from '@/constants/extensions';
-import { getId } from '@/util';
+import { getId, isReadOnly } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
 import { getExtension } from '@/util/extension';
 import { isString } from '@/util/typeguards';
@@ -15,16 +15,18 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { getErrorMessage, required } from '@/components/validation/rules';
+import { getErrorMessage, isNumber, maxValue, minValue, required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { shouldValidate } from '@/components/validation/utils';
+import { ReadOnly } from '../read-only/readOnly';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
+  pdfValue?: string | number;
 };
 enum SliderDisplayTypes {
   Label = 'label',
@@ -35,11 +37,11 @@ enum SliderDisplayTypes {
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView = (props: SliderProps): JSX.Element | null => {
-  const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children } = props;
+  const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children, pdfValue } = props;
   const { resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
@@ -68,44 +70,57 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
     mapToSliderStep(option, (displayType?.[0]?.code as SliderDisplayTypes) || SliderDisplayTypes.OrdinalValue)
   );
   const leftRightLabels = getLeftRightLabels(item);
+  const isSelected = selected && selected[0] ? true : false;
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
-  };
+    min: minValue({ item, resources }),
+    max: maxValue({ item, resources }),
 
+    shouldUnregister: true,
+  };
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={selected}
+        pdfValue={pdfValue}
+        errors={error}
+      >
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <FormGroup mode="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup onColor="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           htmlFor={id}
           item={item}
           labelId={`${getId(id)}-slider-choice-label`}
           testId={`${getId(id)}-slider-choice-label`}
+          sublabelId={`${getId(id)}-slider-choice-sublabel`}
           resources={resources}
         />
-
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          shouldUnregister={true}
-          rules={shouldValidate(item, pdf) ? validationRules : undefined}
-          control={control}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Slider
-              {...rest}
-              labelLeft={leftRightLabels?.leftLabel}
-              labelRight={leftRightLabels?.rightLabel}
-              steps={sliderSteps}
-              testId={getId(item?.linkId)}
-              onChange={(value): void => {
-                if (!isNaN(value)) {
-                  onValueChange(value);
-                  onChange(value);
-                }
-              }}
-              selected={selected && selected[0] ? true : false}
-              value={getSelectedStep()}
-            />
-          )}
+        <Slider
+          {...rest}
+          labelLeft={leftRightLabels?.leftLabel}
+          labelRight={leftRightLabels?.rightLabel}
+          steps={sliderSteps}
+          testId={`${getId(id)}-${index}-slider-choice`}
+          onChange={(e): void => {
+            const val = e.target.value;
+            if (isNumber(val)) {
+              onValueChange(Number(val));
+              onChange(e);
+            }
+          }}
+          selected={isSelected}
+          value={getSelectedStep()}
         />
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
         <RenderRepeatButton path={path} item={item} index={index} />
