@@ -115,9 +115,7 @@ export const DateYearMonthInput = ({
     onDateValueChange(newValue);
   };
   const handleMonthChange = (newYear: string | undefined, newMonth: string | undefined | null): void => {
-    if (formState.isSubmitted) {
-      trigger(idWithLinkIdAndItemIndex + '-yearmonth-year');
-    }
+    trigger(idWithLinkIdAndItemIndex + '-yearmonth-year');
     let newValue = '';
     if (newYear && newMonth) {
       newValue = getConcatinatedYearAndMonth(newYear, newMonth);

@@ -370,9 +370,13 @@ export const validateYearMonthMin = (
   resources: Resources | undefined
 ): true | string => {
   if (minDate) {
-    const yearMonthToValidate = `${yearToValidate}-${monthToValidate}`;
-    const dateToValidate = parse(yearMonthToValidate, DateFormat.yyyyMM, new Date());
-    if (dateToValidate < minDate) {
+    const minYear = minDate.getFullYear();
+    const minMonth = minDate.getMonth() + 1; // January is 0 in JavaScript
+
+    const year = parseInt(yearToValidate, 10);
+    const month = parseInt(monthToValidate, 10);
+
+    if (year < minYear || (year === minYear && month < minMonth)) {
       return `${resources?.errorBeforeMinDate}: ${format(minDate, DateFormat.MMMMyyyy)}`;
     }
   }
@@ -386,9 +390,13 @@ export const validateYearMonthMax = (
   resources: Resources | undefined
 ): true | string => {
   if (maxDate) {
-    const yearMonthToValidate = `${yearToValidate}-${monthToValidate}`;
-    const dateToValidate = parse(yearMonthToValidate, DateFormat.yyyyMM, new Date());
-    if (dateToValidate > maxDate) {
+    const maxYear = maxDate.getFullYear();
+    const maxMonth = maxDate.getMonth() + 1; // January is 0 in JavaScript
+
+    const year = parseInt(yearToValidate, 10);
+    const month = parseInt(monthToValidate, 10);
+
+    if (year > maxYear || (year === maxYear && month > maxMonth)) {
       return `${resources?.errorAfterMaxDate}: ${format(maxDate, DateFormat.MMMMyyyy)}`;
     }
   }

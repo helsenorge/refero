@@ -96,11 +96,23 @@ describe('Copy value from item', () => {
       const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
       const labelRegex = new RegExp(`${sender.text}`, 'i');
-      await userEvent.type(getByLabelText(labelRegex), '12.12.2024');
+
+      const dateElement = getByLabelText(labelRegex);
+      const hoursElement = await findByTestId('hours-test');
+      const minutesElement = await findByTestId('minutes-test');
+
+      const hoursInput = hoursElement.querySelector('input');
+      const minutesInput = minutesElement.querySelector('input');
+
+      await userEvent.type(dateElement, '12.12.2024');
+      if (hoursInput && minutesInput) {
+        await userEvent.type(hoursInput, '12');
+        await userEvent.type(minutesInput, '30');
+      }
 
       const elm = await findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024 00:00'));
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024 12:30'));
     });
     it('should copy DATEYEAR value', async () => {
       const sender = createSenderChoiceItem(ItemType.DATE, createItemControlExtension(ItemControlConstants.YEAR));

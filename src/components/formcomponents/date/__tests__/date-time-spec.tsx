@@ -3,10 +3,12 @@ import { findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.t
 import { q, qMinMax, qMinMaxCustomError } from './__data__/date-time';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatDateTimeNTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 import { screen } from '@testing-library/dom';
+import { format } from 'date-fns';
+import { DateFormat } from '@/types/dateTypes';
 
 const resources = {
   ...getResources(''),
@@ -133,12 +135,12 @@ describe('Date time', () => {
           return y;
         }),
       };
-      const { queryAllByLabelText, queryByTestId } = await createWrapper(questionnaire);
-      const input = '31.05.2095';
-      await repeatNTimes(input, 3, /Dato/i);
+      await createWrapper(questionnaire);
 
-      await waitFor(async () => expect(queryAllByLabelText(/Dato/i)).toHaveLength(4));
-      await waitFor(async () => expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument());
+      await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 3);
+
+      await waitFor(async () => expect(screen.queryAllByLabelText(/Dato/i)).toHaveLength(4));
+      await waitFor(async () => expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument());
     });
   });
   describe('delete button', () => {
@@ -148,8 +150,8 @@ describe('Date time', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { queryAllByTestId } = await createWrapper(questionnaire);
-      const input = '31.05.2095';
-      await repeatNTimes(input, 2, /Dato/i);
+
+      await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 2);
 
       await waitFor(async () => expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2));
     });
@@ -168,8 +170,7 @@ describe('Date time', () => {
       };
       const { getByTestId } = await createWrapper(questionnaire);
 
-      const input = '31.05.2095';
-      await repeatNTimes(input, 1, /Dato/i);
+      await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
 
       await waitFor(async () => expect(getByTestId(/-delete-button/i)).toBeInTheDocument());
 
@@ -184,8 +185,7 @@ describe('Date time', () => {
       };
       const { getByTestId, queryByTestId } = await createWrapper(questionnaire);
 
-      const input = '31.05.2095';
-      await repeatNTimes(input, 1, /Dato/i);
+      await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
 
       await waitFor(async () => expect(getByTestId(/-delete-button/i)).toBeInTheDocument());
 
@@ -238,15 +238,30 @@ describe('Date time', () => {
     });
     it('Should call onChange with correct value when date field changes', async () => {
       const onChange = vi.fn();
-      const { getByLabelText } = await createWrapper(q, { onChange });
-      expect(getByLabelText(/Dato/i)).toBeInTheDocument();
+      await createWrapper(q, { onChange });
 
-      await userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
+      const dateElement = screen.getByLabelText(/Dato/i);
+      const hoursElement = await screen.findByTestId('hours-test');
+      const minutesElement = await screen.findByTestId('minutes-test');
 
+      const hoursInput = hoursElement.querySelector('input');
+      const minutesInput = minutesElement.querySelector('input');
+
+      expect(screen.getByLabelText(/Dato/i)).toBeInTheDocument();
+
+      await userEvent.type(dateElement, '12.12.2024');
+      if (hoursInput && minutesInput) {
+        await userEvent.type(hoursInput, '12');
+        await userEvent.type(minutesInput, '30');
+      }
+
+      const expectedDateHoursMinutes = new Date('2024-12-12T12:30:00');
+      const expectedDateString = format(expectedDateHoursMinutes, DateFormat.yyyyMMddHHmmssXXX);
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
-        valueDateTime: '1994-05-31T00:00:00+02:00',
+        valueDateTime: expectedDateString,
       };
-      await waitFor(async () => expect(onChange).toHaveBeenCalledTimes(10));
+
+      await waitFor(async () => expect(onChange).toHaveBeenCalledTimes(14));
       await waitFor(async () =>
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object))
       );
@@ -271,9 +286,18 @@ describe('Date time', () => {
       };
       const { getByLabelText, queryByText } = await createWrapper(questionnaire);
 
-      await userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
-      await submitForm();
+      const hoursElement = screen.getByTestId(/hours-test/i);
+      const minutesElement = screen.getByTestId(/minutes-test/i);
+      const hoursInput = hoursElement.querySelector('input');
+      const minutesInput = minutesElement.querySelector('input');
 
+      await userEvent.type(getByLabelText(/Dato/i), '12.12.2024');
+      if (hoursInput && minutesInput) {
+        await userEvent.type(hoursInput, '12');
+        await userEvent.type(minutesInput, '30');
+      }
+
+      await submitForm();
       await waitFor(async () => expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument());
     });
     it('Should show error if date is invalid', async () => {

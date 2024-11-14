@@ -1,3 +1,15 @@
+## 16.0.0-beta.65
+- Bugfix: Month field in YearMonth dont't trigger validation
+- Bugfix: Unwanted zero in time fields in DateTime (temporary fix: use Input fields)
+- Bugfix: Decimal input-field does not have correct width
+- Bugfix: Unwanted zero in Quantity input-field
+- Bugfix: Wrong validation error in Receiver component
+- Bugfix: Button bar is floating when it should be static
+- Bugfix: Wrong validation in YearMonth
+- Bugfix: Default dates were too low or too high
+- Added validation for amount of characters in time fields in DateTime
+- Made space over delete-button smaller
+
 ## 16.0.0-beta.64
 - use correct id when handling delete and upload of attachments
 

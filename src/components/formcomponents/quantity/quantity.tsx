@@ -16,7 +16,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { decimalPattern, getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
+import { decimalPattern, getErrorMessage, getInputWidth, isNumber, maxValue, minValue, required } from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
@@ -48,7 +48,8 @@ const Quantity = (props: Props): JSX.Element | null => {
       return answer.valueQuantity.value;
     }
   };
-  const value = getValue(answer);
+  const answerValue = getValue(answer);
+  const value = isNumber(answerValue) ? answerValue : '';
 
   useResetFormField(idWithLinkIdAndItemIndex, value);
   const getPDFValue = (): string => {
@@ -74,10 +75,13 @@ const Quantity = (props: Props): JSX.Element | null => {
       code: extension?.code,
     };
 
-    const value = Number(parseFloat(event.target.value));
-    if (value !== null && !isNaN(value) && isFinite(value)) {
-      quantity.value = value;
+    const newValue = parseFloat(event.target.value);
+    quantity.value = isNumber(newValue) ? newValue : undefined;
+
+    if (value !== null && !isNaN(newValue) && isFinite(newValue)) {
+      quantity.value = newValue;
     }
+
     if (dispatch && path && item) {
       dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(newState =>
         onAnswerChange(newState, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
@@ -141,7 +145,7 @@ const Quantity = (props: Props): JSX.Element | null => {
         <div className={styles.inputWrapper}>
           <Input
             {...rest}
-            value={value !== undefined ? value + '' : ''}
+            value={value}
             type="number"
             inputId={getId(id)}
             testId={getId(id)}

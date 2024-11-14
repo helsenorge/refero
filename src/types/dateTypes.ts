@@ -31,5 +31,5 @@ export interface TimeValues {
   minutes: string;
 }
 
-export const defaultMinDate = parseISO('1994-01-31');
-export const defaultMaxDate = parseISO('2024-12-31');
+export const defaultMinDate = parseISO('1800-01-01');
+export const defaultMaxDate = parseISO('2200-12-31');
