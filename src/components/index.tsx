@@ -95,8 +95,24 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     console.log("Skjemanavn: " + this.props.skjemanavn);
   }
 
-  componentDidUpdate(): void {
+  componentDidUpdate(prevProps: ReferoProps): void {
     IE11HackToWorkAroundBug187484();
+    // eslint-disable-next-line no-console
+    console.log("Component did update called");
+    if (this.props.skjemanavn !== prevProps.skjemanavn) {
+      console
+      // eslint-disable-next-line no-console
+      console.log("skjemanavn has changed, calling updateSkjema...");
+      if (this.props.questionnaire) {
+        this.props.updateSkjema(
+          this.props.questionnaire,
+          this.props.questionnaireResponse,
+          this.props.language,
+          this.props.syncQuestionnaireResponse
+        );
+        this.setState({ scoringCalculator: this.getScoringCalculator(this.props.questionnaire) });
+      }
+    }
   }
 
   componentWillUnmount(): void {
