@@ -71,7 +71,7 @@ const textField = (props: Props): JSX.Element | null => {
     );
   }
   return (
-    <FormGroup error={errorMessage} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+    <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
         item={item}
         resources={resources}
@@ -85,7 +85,7 @@ const textField = (props: Props): JSX.Element | null => {
         {...rest}
         disabled={isReadOnly(item)}
         type="text"
-        mode="ongrey"
+        onColor="ongrey"
         inputId={`${getId(id)}-extra-field`}
         testId={`${getId(id)}-extra-field`}
         value={value}

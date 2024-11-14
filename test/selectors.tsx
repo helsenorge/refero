@@ -1,3 +1,4 @@
+import exp from 'constants';
 import { Matcher, screen, userEvent } from './test-utils';
 
 export async function selectCheckboxOption(id: Matcher): Promise<void> {
@@ -82,12 +83,18 @@ export async function repeatCheckboxTimes(id: Matcher, n: number): Promise<void>
     await clickButtonTimes(/-repeat-button/i, 1);
   }
 }
-export async function repeatSliderTimes(id: Matcher, n: number): Promise<void> {
+export async function repeatSliderTimes(linkId: string, n: number): Promise<void> {
   for (let i = 0; i < n; i++) {
-    await userEvent.click(screen.getAllByText(id)[i]);
-    screen.debug(screen.getAllByText(id)[i]);
+    const elm = await screen.findByTestId(`item_${linkId}^${i}-${i}-slider-choice`);
+    const itemToClick = elm.querySelectorAll('div.slider__track__step')[0];
+    await userEvent.click(itemToClick);
     await clickButtonTimes(/-repeat-button/i, 1);
   }
+}
+export async function clickSliderValue(linkId: Matcher, index: number, sliderItemIndex: undefined | number = 0): Promise<void> {
+  const elm = await screen.findByTestId(`item_${linkId}-${sliderItemIndex}-slider-choice`);
+  const itemToClick = elm.querySelectorAll('div.slider__track__step')[index];
+  await userEvent.click(itemToClick);
 }
 export async function repeatDropDownTimes(
   id: Matcher,

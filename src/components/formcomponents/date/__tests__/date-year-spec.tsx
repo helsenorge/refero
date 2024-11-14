@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { findByRole, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { q, qMinMax, qMinMaxCustomError } from './__data__/date-year';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -17,20 +17,20 @@ const resources = {
 
 describe('Date year', () => {
   describe('Render', () => {
-    it('Should render as text if props.pdf', () => {
-      createWrapper(q, { pdf: true });
+    it('Should render as text if props.pdf', async () => {
+      await createWrapper(q, { pdf: true });
       expect(screen.queryByText('Ikke besvart')).toBeInTheDocument();
     });
-    it('Should render text if item is readonly', () => {
+    it('Should render text if item is readonly', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       expect(screen.queryByText('Ikke besvart')).toBeInTheDocument();
     });
-    it('Should render as input if props.pdf === false && item is not readonly', () => {
-      createWrapper(q);
+    it('Should render as input if props.pdf === false && item is not readonly', async () => {
+      await createWrapper(q);
       expect(screen.queryByText('Ikke besvart')).not.toBeInTheDocument();
     });
   });
@@ -43,7 +43,7 @@ describe('Date year', () => {
           repeats: false,
         })),
       };
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
       expect(screen.getByLabelText(/Dato/i)).toHaveValue(null);
     });
@@ -61,19 +61,19 @@ describe('Date year', () => {
           ],
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       expect(getByLabelText(/Dato/i)).toHaveValue(2004);
     });
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
@@ -88,23 +88,23 @@ describe('Date year', () => {
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
 
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
       const repeatButton = getByTestId(/-repeat-button/i);
       expect(repeatButton).toBeInTheDocument();
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
       const repeatButton = queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
@@ -119,7 +119,7 @@ describe('Date year', () => {
           return y;
         }),
       };
-      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      const { queryAllByLabelText, queryByTestId } = await createWrapper(questionnaire);
       const input = '2004';
       await repeatNTimes(input, 3, /Dato/i);
 
@@ -133,7 +133,7 @@ describe('Date year', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = await createWrapper(questionnaire);
 
       const input = '2004';
       await repeatNTimes(input, 2, /Dato/i);
@@ -145,7 +145,7 @@ describe('Date year', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -154,7 +154,7 @@ describe('Date year', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
       const input = '2004';
       await repeatNTimes(input, 1, /Dato/i);
 
@@ -168,7 +168,7 @@ describe('Date year', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryByTestId } = createWrapper(questionnaire);
+      const { getByTestId, queryByTestId } = await createWrapper(questionnaire);
 
       const input = '2004';
       await repeatNTimes(input, 1, /Dato/i);
@@ -184,7 +184,7 @@ describe('Date year', () => {
   });
   describe('onChange', () => {
     it('Should update component with value from answer', async () => {
-      const { getByLabelText } = createWrapper(q);
+      const { getByLabelText } = await createWrapper(q);
 
       const inputElement = getByLabelText(/Dato/i);
       expect(inputElement).toBeInTheDocument();
@@ -196,7 +196,7 @@ describe('Date year', () => {
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
-      const { getByLabelText } = createWrapper(q, { onChange });
+      const { getByLabelText } = await createWrapper(q, { onChange });
       expect(getByLabelText(/Dato/i)).toBeInTheDocument();
       await userEvent.type(getByLabelText(/Dato/i), '2004');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
@@ -213,7 +213,7 @@ describe('Date year', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByText } = createWrapper(questionnaire);
+        const { getByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(getByText(resources.year_field_required)).toBeInTheDocument();
@@ -223,7 +223,7 @@ describe('Date year', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = await createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
         await submitForm();
 
@@ -234,7 +234,7 @@ describe('Date year', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText } = await createWrapper(questionnaire);
         await submitForm();
         expect(getByText(resources.year_field_required)).toBeInTheDocument();
 
@@ -243,7 +243,7 @@ describe('Date year', () => {
         expect(queryByText(resources.year_field_required)).not.toBeInTheDocument();
       });
       it('Should show error if date is invalid', async () => {
-        const { getByLabelText, getByText } = createWrapper(q);
+        const { getByLabelText, getByText } = await createWrapper(q);
 
         await userEvent.type(getByLabelText(/Dato/i), '33333');
 
@@ -251,7 +251,7 @@ describe('Date year', () => {
         expect(getByText(resources.year_field_invalid)).toBeInTheDocument();
       });
       it('Should show error message for min value', async () => {
-        const { getByLabelText, getByText } = createWrapper(qMinMax);
+        const { getByLabelText, getByText } = await createWrapper(qMinMax);
 
         await userEvent.type(getByLabelText(/Dato/i), '1904');
 
@@ -259,7 +259,7 @@ describe('Date year', () => {
         expect(getByText(resources.year_field_mindate + ': 1994')).toBeInTheDocument();
       });
       it('Should show error message for max value', async () => {
-        const { getByLabelText, getByText } = createWrapper(qMinMax);
+        const { getByLabelText, getByText } = await createWrapper(qMinMax);
 
         await userEvent.type(getByLabelText(/Dato/i), '2095');
 
@@ -267,7 +267,7 @@ describe('Date year', () => {
         expect(getByText(resources.year_field_maxdate + ': 2094')).toBeInTheDocument();
       });
       it('Should show custom error message for min value', async () => {
-        const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+        const { getByLabelText, getByText } = await createWrapper(qMinMaxCustomError);
 
         await userEvent.type(getByLabelText(/Dato/i), '1904');
 
@@ -275,7 +275,7 @@ describe('Date year', () => {
         expect(getByText('Custom errormessage')).toBeInTheDocument();
       });
       it('Should show custom error message for max value', async () => {
-        const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+        const { getByLabelText, getByText } = await createWrapper(qMinMaxCustomError);
 
         await userEvent.type(getByLabelText(/Dato/i), '2095');
 
@@ -283,7 +283,7 @@ describe('Date year', () => {
         expect(getByText('Custom errormessage')).toBeInTheDocument();
       });
       it('Should not show error if date value is between min value and max value', async () => {
-        const { getByLabelText, queryByText } = createWrapper(qMinMax);
+        const { getByLabelText, queryByText } = await createWrapper(qMinMax);
 
         await userEvent.type(getByLabelText(/Dato/i), '2024');
 
@@ -296,7 +296,7 @@ describe('Date year', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByLabelText, getByText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, getByText, queryByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(getByText(resources.year_field_required)).toBeInTheDocument();
@@ -321,7 +321,7 @@ describe('Date year', () => {
             ],
           })),
         };
-        const { getByText } = createWrapper(questionnaire);
+        const { getByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(getByText(resources.year_field_required)).toBeInTheDocument();
@@ -330,6 +330,6 @@ describe('Date year', () => {
   });
 });
 
-export const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return renderRefero({ questionnaire, props: { ...props, resources } });
+const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return await waitFor(() => renderRefero({ questionnaire, props: { ...props, resources } }));
 };

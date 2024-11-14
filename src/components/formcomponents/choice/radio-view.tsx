@@ -63,7 +63,7 @@ const RadioView = (props: Props): JSX.Element => {
   }
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
-      <FormGroup mode="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup onColor="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}
@@ -82,7 +82,7 @@ const RadioView = (props: Props): JSX.Element => {
             key={getId(id) + index}
             inputId={`${getId(id)}-hn-${index}`}
             testId={`${getId(id)}-${index}-radio-choice`}
-            mode="ongrey"
+            onColor="ongrey"
             label={<Label testId={`${getId(id)}-${index}-radio-choice-label`} labelTexts={[{ text: option.label }]} />}
             checked={selectedValue === option?.type}
           />

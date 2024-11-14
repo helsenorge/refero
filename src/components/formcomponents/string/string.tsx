@@ -97,7 +97,7 @@ export const String = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_string">
-      <FormGroup error={errorMessage} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

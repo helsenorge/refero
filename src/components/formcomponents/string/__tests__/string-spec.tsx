@@ -1,4 +1,4 @@
-import { findByRole, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { q, qScriptInjection, qCustomErrorMessage } from './__data__/';
 
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -20,8 +20,8 @@ describe('string', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByText } = createWrapper(questionnaire, { pdf: true });
-      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+      createWrapper(questionnaire, { pdf: true });
+      expect(screen.queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
       const questionnaire: Questionnaire = {
@@ -29,16 +29,18 @@ describe('string', () => {
         item: q.item?.map(x => ({ ...x, readOnly: true, repeats: false })),
       };
 
-      const { queryByText } = createWrapper(questionnaire);
-      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+      createWrapper(questionnaire);
+      expect(screen.queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
-    it('Should render as input if props.pdf === false && item is not readonly', () => {
+    it('Should render as input if props.pdf === false && item is not readonly', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByText } = createWrapper(questionnaire);
-      expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
+      createWrapper(questionnaire);
+      await waitFor(async () => {
+        expect(screen.queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
+      });
     });
   });
   describe('initialvalue', () => {
@@ -50,9 +52,10 @@ describe('string', () => {
           repeats: false,
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
-
-      expect(getByLabelText(/String/i)).toHaveValue('');
+      createWrapper(questionnaire);
+      await waitFor(async () => {
+        expect(screen.getByLabelText(/String/i)).toHaveValue('');
+      });
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -67,16 +70,18 @@ describe('string', () => {
           ],
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
-
-      expect(getByLabelText(/String/i)).toHaveValue('test');
+      createWrapper(questionnaire);
+      await waitFor(async () => {
+        expect(screen.getByLabelText(/String/i)).toHaveValue('test');
+      });
     });
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
       const { container } = createWrapper(q);
-
-      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+      });
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
       const { container } = createWrapper(q);
@@ -89,11 +94,13 @@ describe('string', () => {
       if (helpButton) {
         await userEvent.click(helpButton);
       }
-      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      });
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
@@ -101,17 +108,21 @@ describe('string', () => {
 
       const { getByTestId } = createWrapper(questionnaire);
       const repeatButton = getByTestId(/-repeat-button/i);
-      expect(repeatButton).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(repeatButton).toBeInTheDocument();
+      });
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
-      const repeatButton = queryByTestId(/-repeat-button/i);
-      expect(repeatButton).not.toBeInTheDocument();
+      createWrapper(questionnaire);
+      const repeatButton = screen.queryByTestId(/-repeat-button/i);
+      await waitFor(async () => {
+        expect(repeatButton).not.toBeInTheDocument();
+      });
     });
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
       const questionnaire: Questionnaire = {
@@ -131,8 +142,9 @@ describe('string', () => {
       createWrapper(questionnaire);
       const input = 'string';
       await repeatNTimes(input, 3, /String/i);
-
-      expect(screen.queryAllByLabelText(/String/i)).toHaveLength(4);
+      await waitFor(async () => {
+        expect(screen.queryAllByLabelText(/String/i)).toHaveLength(4);
+      });
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -152,20 +164,22 @@ describe('string', () => {
           }),
         })),
       };
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      createWrapper(questionnaire);
       const input = 'string';
       await repeatNTimes(input, 3, /String/i);
-
-      expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+      await waitFor(async () => {
+        expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+      });
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
-
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      createWrapper(questionnaire);
+      await waitFor(async () => {
+        expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      });
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire: Questionnaire = {
@@ -176,8 +190,9 @@ describe('string', () => {
       const input = 'string';
 
       await repeatNTimes(input, 1, /String/i);
-
-      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      });
       await clickButtonTimes(/-delete-button/i, 1);
 
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
@@ -191,8 +206,9 @@ describe('string', () => {
       const input = 'string';
 
       await repeatNTimes(input, 1, /String/i);
-
-      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      });
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
@@ -296,10 +312,10 @@ describe('string', () => {
             ],
           })),
         };
-        const { queryByText } = createWrapper(questionnaire);
+        createWrapper(questionnaire);
         await submitForm();
 
-        expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
     });
     describe('minLength validation', () => {
@@ -311,10 +327,10 @@ describe('string', () => {
             required: false,
           })),
         };
-        const { queryByText } = createWrapper(questionnaire);
+        createWrapper(questionnaire);
         await submitForm();
 
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
+        expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
       it('Should not show error if value is bellow maxLength (20) and over minLemgth(10)', async () => {
         const questionnaire: Questionnaire = {
@@ -357,10 +373,10 @@ describe('string', () => {
             required: false,
           })),
         };
-        const { queryByText } = createWrapper(questionnaire);
+        createWrapper(questionnaire);
         await submitForm();
 
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
+        expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
       it('Should not show error if value is bellow maxLength (20) and over minLemgth(10)', async () => {
         const questionnaire: Questionnaire = {
@@ -403,10 +419,10 @@ describe('string', () => {
             required: false,
           })),
         };
-        const { queryByText } = createWrapper(questionnaire);
+        createWrapper(questionnaire);
         await submitForm();
 
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
+        expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
       it('Should not show error if value is valid pattern', async () => {
         const questionnaire: Questionnaire = {
@@ -430,14 +446,14 @@ describe('string', () => {
             required: false,
           })),
         };
-        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await userEvent.type(getByLabelText(/String/i), 'epostsdsdcom');
+        createWrapper(questionnaire);
+        await userEvent.type(screen.getByLabelText(/String/i), 'epostsdsdcom');
         await submitForm();
-        expect(getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(getByLabelText(/String/i));
-        await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
+        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        await userEvent.clear(screen.getByLabelText(/String/i));
+        await userEvent.type(screen.getByLabelText(/String/i), 'epost@test.com');
 
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
+        expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
     });
     describe('validateScriptInjection ', () => {

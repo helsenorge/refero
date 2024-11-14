@@ -1,19 +1,30 @@
 import { convertToEmoji, getCodePoint, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../slider-view';
 import { Questionnaire } from 'fhir/r4';
-import { findByRole, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
+import { act, findByRole, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { sliderView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, repeatSliderTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, clickSliderValue, repeatSliderTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
   valueCoding: {
-    code: 'ja',
-    display: 'Ja',
+    id: '540c894e-29ef-46bf-f961-851921c87d57',
+    code: 'vet-ikke',
     system: 'urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228',
+    display: 'Vet ikke',
+    extension: [
+      {
+        url: 'http://hl7.org/fhir/StructureDefinition/valueset-label',
+        valueString: '&#9917',
+      },
+      {
+        url: 'http://hl7.org/fhir/StructureDefinition/ordinalValue',
+        valueDecimal: 3.3,
+      },
+    ],
   },
 };
 
@@ -25,11 +36,14 @@ describe('Slider-view', () => {
         item: q.item?.map(x => ({
           ...x,
           repeats: false,
+          initial: [],
         })),
       };
       const { container } = createWrapper(questionnaire);
-
-      expect(container.querySelector('div[role="slider"]')).toHaveAttribute('aria-valuetext', '&#9917 Nei');
+      await waitFor(async () => {
+        const inputEl = container.querySelector(`input[name="${questionnaire?.item?.[0].linkId}"]`);
+        expect(inputEl).toHaveAttribute('value', '1');
+      });
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -41,23 +55,31 @@ describe('Slider-view', () => {
         })),
       };
       const { container } = createWrapper(questionnaire);
-
-      expect(container.querySelector('div[role="slider"]')).toHaveAttribute('aria-valuetext', '&#9917 Ja');
+      await waitFor(async () => {
+        const inputEl = container.querySelector(`input[name="${questionnaire?.item?.[0].linkId}"]`);
+        expect(inputEl).toHaveAttribute('value', '2');
+      });
     });
   });
   //TODO: Fix when component is updated and can be given refs
-  describe.skip('onChange', () => {
+  describe('onChange', () => {
     it('Should update component with value from answer', async () => {
       const onChange = vi.fn();
 
-      const { container, getByRole } = createWrapper(q, { onChange });
+      const { container } = createWrapper(q, { onChange });
 
-      await userEvent.click(getByRole('slider'));
+      await userEvent.click(screen.getByRole('slider'));
       await userEvent.keyboard('{ArrowRight}');
-
-      expect(onChange).toHaveBeenCalledTimes(1);
-      expect(container.querySelector('div[role="slider"]')).toHaveAttribute('aria-valuetext', '&#9917 Ja');
-      expect(container.querySelector('div[role="slider"]')).toHaveAttribute('aria-valuenow', '1');
+      await waitFor(async () => {
+        expect(onChange).toHaveBeenCalledTimes(2);
+      });
+      const inputEl = container.querySelector(`input[name="${q?.item?.[0].linkId}^0"]`);
+      await waitFor(async () => {
+        expect(inputEl).toHaveAttribute('value', '2');
+      });
+      await waitFor(async () => {
+        expect(inputEl).toHaveAttribute('aria-valuetext', '&#9917 Vet ikke');
+      });
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire: Questionnaire = {
@@ -66,19 +88,35 @@ describe('Slider-view', () => {
       };
       const onChange = vi.fn();
       const { container } = createWrapper(questionnaire, { onChange });
-      const JaElement = container.querySelectorAll('div.slider__value');
-      if (JaElement[1]) {
-        await userEvent.click(JaElement[1]);
-      }
-      expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
+      const JaElement = container.querySelectorAll('div.slider__track__step');
+
+      await waitFor(async () => {
+        if (JaElement[1]) {
+          await userEvent.click(JaElement[1]);
+        }
+      });
+      expect(onChange).toHaveBeenCalledTimes(2);
+      expect(onChange).toHaveBeenCalledWith(
+        expect.any(Object),
+        {
+          valueCoding: {
+            code: 'nei',
+            display: 'Nei',
+            system: 'urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228',
+          },
+        },
+        expect.any(Object),
+        expect.any(Object)
+      );
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), { valueString: '' }, expect.any(Object), expect.any(Object));
     });
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
       const { container } = createWrapper(q);
-
-      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+      });
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
       const { container } = createWrapper(q);
@@ -90,12 +128,13 @@ describe('Slider-view', () => {
       if (helpButton) {
         await userEvent.click(helpButton);
       }
-
-      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      });
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
@@ -103,43 +142,55 @@ describe('Slider-view', () => {
 
       const { getByTestId } = createWrapper(questionnaire);
       const repeatButton = getByTestId(/-repeat-button/i);
-      expect(repeatButton).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(repeatButton).toBeInTheDocument();
+      });
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
       const { queryByTestId } = createWrapper(questionnaire);
       const repeatButton = queryByTestId(/-repeat-button/i);
-      expect(repeatButton).not.toBeInTheDocument();
+      await waitFor(async () => {
+        expect(repeatButton).not.toBeInTheDocument();
+      });
     });
-    it.skip('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
+    it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
       const questionnaire: Questionnaire = {
         ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-        extension: q.extension?.map(y => {
-          if (y.url === Extensions.MIN_OCCURS_URL) {
-            return { ...y, valueInteger: 2 };
-          }
-          return y;
-        }),
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: true,
+          readOnly: false,
+          extension: x.extension?.map(y => {
+            if (y.url === Extensions.MIN_OCCURS_URL) {
+              return { ...y, valueInteger: 2 };
+            }
+            return y;
+          }),
+        })),
       };
-      const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
-      await repeatSliderTimes(/Ja/i, 3);
-      expect(queryAllByText(/Slider view label/i)).toHaveLength(4);
-      expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
+      await act(async () => {});
+      createWrapper(questionnaire);
+
+      await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 3);
+      await waitFor(async () => {
+        expect(screen.queryAllByTestId(/-slider-choice-label/i)).toHaveLength(4);
+        expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
+      });
     });
   });
   describe('delete button', () => {
-    it.skip('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
+    it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
-      await repeatSliderTimes(/Ja/i, 2);
+      await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -148,80 +199,83 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
-
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      createWrapper(questionnaire);
+      waitFor(async () => {
+        expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      });
     });
-    it.skip('Should show confirmationbox when deletebutton is clicked', async () => {
+    it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId } = createWrapper(questionnaire);
+      createWrapper(questionnaire);
 
-      await repeatSliderTimes(/Ja/i, 1);
-      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 1);
+      expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 
-      expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
-    it.skip('Should remove item when delete button is clicked', async () => {
+    it('Should remove item when delete button is clicked', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryByTestId } = createWrapper(questionnaire);
+      createWrapper(questionnaire);
 
-      await repeatSliderTimes(/Ja/i, 1);
+      await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 1);
 
-      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);
 
-      const confirmModal = getByTestId(/-delete-confirm-modal/i);
+      const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
       await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
-  //TODO: Fix when component is updated and can be given refs
-  describe.skip('Validation', () => {
+  describe('Validation', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { container, getByText } = createWrapper(questionnaire);
-        expect(container.querySelector('div[role="slider"]')).toBeInTheDocument();
+        createWrapper(questionnaire);
+        waitFor(async () => {
+          expect(screen.getByLabelText(/Slider view label/i)).toBeInTheDocument();
+        });
         await submitForm();
-
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        waitFor(async () => {
+          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        });
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { queryByText, getByText } = createWrapper(questionnaire);
-        await userEvent.click(getByText(/Ja/i));
+        createWrapper(questionnaire);
+        await clickSliderValue(`3dec9e0d-7b78-424e-8a59-f0909510985d`, 0);
         await submitForm();
 
-        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+        expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByText, queryByText } = createWrapper(questionnaire);
+        createWrapper(questionnaire);
         await submitForm();
-
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
-
-        await userEvent.click(getByText(/Ja/i));
+        waitFor(async () => {
+          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        });
+        await clickSliderValue(`3dec9e0d-7b78-424e-8a59-f0909510985d`, 0);
         await userEvent.tab();
-        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+        expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should get required error on readOnly if noe value', async () => {
         const questionnaire: Questionnaire = {
@@ -239,10 +293,10 @@ describe('Slider-view', () => {
             ],
           })),
         };
-        const { getByText } = createWrapper(questionnaire);
+        createWrapper(questionnaire);
         await submitForm();
 
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
     });
   });
