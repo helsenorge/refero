@@ -228,7 +228,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
 
     // eslint-disable-next-line no-console
-    console.log("Render form items called!");
+    console.log("Refero: Render form items called!");
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;
     if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
 
