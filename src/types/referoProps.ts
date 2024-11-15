@@ -71,10 +71,10 @@ export interface ReferoProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
-  isMicroweb: boolean;
-  isMicrowebStep: boolean;
+  isMicroweb?: boolean;
+  isMicrowebStep?: boolean;
   onStepProcessCancel?: () => void;
   onStepProcessBack?: () => void;
   onCancelMicroweb: (formData: any) => void;
-  skjemanavn ?: string;
+  skjemanavn?: string;
 }

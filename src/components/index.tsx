@@ -85,7 +85,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   componentDidMount(): void {
     this.props.mount();
     // eslint-disable-next-line no-console
-    console.log("******** Refero loaded OK v.4 **********");
+    console.log("******** Refero loaded OK v.5 **********");
     // eslint-disable-next-line no-console
     console.log("Refero: Is microweb? " + this.props.isMicroweb);
     // eslint-disable-next-line no-console
@@ -100,7 +100,6 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     // eslint-disable-next-line no-console
     console.log("Refero: Component did update called");
     if (this.props.skjemanavn !== prevProps.skjemanavn) {
-      console
       // eslint-disable-next-line no-console
       console.log("skjemanavn has changed, calling updateSkjema...");
       if (this.props.questionnaire) {
@@ -229,9 +228,13 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
 
     // eslint-disable-next-line no-console
-    console.log("Render form items called");
+    console.log("Render form items called!");
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;
     if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
+
+      // eslint-disable-next-line no-console
+      console.log("Refero: No form def or content, or items - reutrning undefined - nothing to render...");
+
       return undefined;
     }
     const contained = formDefinition.Content.contained;
@@ -243,10 +246,17 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       ? getTopLevelElements(formDefinition)
       : formDefinition.Content.item;
 
+      // eslint-disable-next-line no-console
+      console.log("Questionnaire item array length: ");
+      // eslint-disable-next-line no-console
+      console.log(questionnaireItemArray?.length);
+
     questionnaireItemArray?.map(item => {
       if (isHiddenItem(item)) return [];
       const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
       if (!Comp) {
+        // eslint-disable-next-line no-console
+        console.log("Component not found! - returning undefined");
         return undefined;
       }
       let responseItems: Array<QuestionnaireResponseItem> | undefined;
@@ -388,7 +398,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       onFieldsNotCorrectlyFilledOut,
       onStepChange,
       isMicroweb, 
-      isMicrowebStep,  // TODO - need callbacks here too?
+      isMicrowebStep,
       onStepProcessBack,
       onStepProcessCancel,
       onCancelMicroweb,
