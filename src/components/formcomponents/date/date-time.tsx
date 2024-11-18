@@ -87,7 +87,8 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   const dateAnswerValue = getDateAnswerValue(answer);
   const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
-  const [dateValue, setDateValue] = useState(dateAnswerValueParsed);
+  const [dateValue, setDateValue] = useState<Date | undefined>(dateAnswerValueParsed);
+  const [dateValueContainer, setDateValueContainer] = useState<Date | string | undefined>(dateAnswerValueParsed);
   const [hours, setHours] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Hours));
   const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Minutes));
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
@@ -107,17 +108,21 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   }
 
   const handleDateChange = (newDate: string | Date | undefined): void => {
-    let newValue: Date | undefined = undefined;
+    setDateValueContainer(newDate);
     if (typeof newDate === 'string') {
       const parsedDate = parseStringToDate(newDate);
       if (isValid(parsedDate)) {
-        newValue = parsedDate;
+        setDateValue(parsedDate);
+        setDateValueContainer(parsedDate);
       }
-    } else if (isValid(newDate)) {
-      newValue = newDate;
+      updateQuestionnaireResponse(parsedDate, hours, minutes);
+    } else {
+      if (isValid(newDate)) {
+        setDateValue(newDate);
+        setDateValueContainer(newDate);
+      }
+      updateQuestionnaireResponse(newDate, hours, minutes);
     }
-    setDateValue(newValue);
-    updateQuestionnaireResponse(newValue, hours, minutes);
   };
 
   const handleHoursChange = (newHours: string | undefined): void => {
@@ -126,7 +131,8 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
       newString = newHours;
     }
     setHours(newString);
-    updateQuestionnaireResponse(dateValue, newString, minutes);
+    const newDate = dateValueContainer;
+    updateQuestionnaireResponse(newDate, newString, minutes);
   };
   const handleMinutesChange = (newMinutes: string | undefined): void => {
     let newString = newMinutes === '' ? undefined : newMinutes;
@@ -134,10 +140,15 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
       newString = newMinutes;
     }
     setMinutes(newString);
-    updateQuestionnaireResponse(dateValue, hours, newString);
+    const newDate = dateValueContainer;
+    updateQuestionnaireResponse(newDate, hours, newString);
   };
 
-  const updateQuestionnaireResponse = (newDate: Date | undefined, newHours: string | undefined, newMinutes: string | undefined): void => {
+  const updateQuestionnaireResponse = (
+    newDate: Date | string | undefined,
+    newHours: string | undefined,
+    newMinutes: string | undefined
+  ): void => {
     let fullDate: string | undefined = undefined;
 
     if (isValid(newDate) && newHours && newMinutes) {

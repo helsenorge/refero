@@ -10,15 +10,7 @@ import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import {
-  formatDateToString,
-  getPDFValueForDate,
-  isValueFormatDDMMYYYY,
-  parseStringToDate,
-  validateDate,
-  validateMaxDate,
-  validateMinDate,
-} from '@/util/date-utils';
+import { getPDFValueForDate, parseStringToDate, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -94,21 +86,18 @@ export const DateDayInput = ({
 
   const handleChange = (newDate: string | Date | undefined): void => {
     if (typeof newDate === 'string') {
-      if (isValueFormatDDMMYYYY(newDate)) {
-        const parsedDate = parseStringToDate(newDate);
-        if (parsedDate && isValid(parsedDate)) {
-          setDateValue(parsedDate);
-          const formatedDate = format(parsedDate, 'yyyy-MM-dd');
-          onDateValueChange(formatedDate);
-        }
+      const parsedDate = parseStringToDate(newDate);
+      if (parsedDate && isValid(parsedDate)) {
+        setDateValue(parsedDate);
+        onDateValueChange(format(parsedDate, DateFormat.yyyyMMdd));
       } else {
         onDateValueChange(newDate);
       }
-    } else if (isValid(newDate)) {
-      setDateValue(newDate);
-      const valueAsString = formatDateToString(newDate);
-      const formatedDate = format(valueAsString, 'yyyy-MM-dd');
-      onDateValueChange(formatedDate);
+    } else {
+      if (newDate && isValid(newDate)) {
+        setDateValue(newDate);
+        onDateValueChange(format(newDate, DateFormat.yyyyMMdd));
+      }
     }
   };
 
