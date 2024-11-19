@@ -27,19 +27,19 @@ describe('Time', () => {
   });
   describe('Render', () => {
     it('Should render as text if props.pdf', async () => {
-      const { queryByText } = createWrapper(q, { pdf: true });
+      const { queryByText } = await createWrapper(q, { pdf: true });
       expect(queryByText('Ikke besvart')).toBeInTheDocument();
     });
-    it('Should render text if item is readonly', () => {
+    it('Should render text if item is readonly', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
-      const { queryByText } = createWrapper(questionnaire);
+      const { queryByText } = await createWrapper(questionnaire);
       expect(queryByText('Ikke besvart')).toBeInTheDocument();
     });
-    it('Should render as input if props.pdf === false && item is not readonly', () => {
-      const { queryByText } = createWrapper(q);
+    it('Should render as input if props.pdf === false && item is not readonly', async () => {
+      const { queryByText } = await createWrapper(q);
       expect(queryByText('Ikke besvart')).not.toBeInTheDocument();
     });
   });
@@ -52,7 +52,7 @@ describe('Time', () => {
           repeats: false,
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       expect(getByLabelText(/Klokkeslett/i)).toHaveValue(null);
     });
@@ -69,7 +69,7 @@ describe('Time', () => {
           ],
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByLabelText } = await createWrapper(questionnaire);
 
       const minutesElement = await screen.findByTestId('time-2');
 
@@ -82,12 +82,12 @@ describe('Time', () => {
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
@@ -102,23 +102,23 @@ describe('Time', () => {
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
 
-      const { getByTestId } = createWrapper(questionnaire);
-      const repeatButton = getByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = await screen.findByTestId(/-repeat-button/i);
       expect(repeatButton).toBeInTheDocument();
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
       const repeatButton = queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
@@ -133,12 +133,11 @@ describe('Time', () => {
           return y;
         }),
       };
-      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       const input = '14';
       await repeatNTimes(input, 3, /Klokkeslett/i);
-
-      expect(queryAllByLabelText(/Klokkeslett/i)).toHaveLength(4);
-      expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
+      await waitFor(async () => expect(screen.queryAllByLabelText(/Klokkeslett/i)).toHaveLength(4));
+      await waitFor(async () => expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument());
     });
   });
   describe('delete button', () => {
@@ -147,7 +146,7 @@ describe('Time', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = await createWrapper(questionnaire);
 
       const input = '14';
       await repeatNTimes(input, 2, /Klokkeslett/i);
@@ -159,7 +158,7 @@ describe('Time', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -168,7 +167,7 @@ describe('Time', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
 
       const input = '14';
       await repeatNTimes(input, 1, /Klokkeslett/i);
@@ -183,7 +182,7 @@ describe('Time', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryByTestId } = createWrapper(questionnaire);
+      const { getByTestId, queryByTestId } = await createWrapper(questionnaire);
 
       const input = '14';
       await repeatNTimes(input, 1, /Klokkeslett/i);
@@ -199,7 +198,7 @@ describe('Time', () => {
   });
   describe('onChange', () => {
     it('Should update hour field with value from answer', async () => {
-      const { getByLabelText } = createWrapper(q);
+      const { getByLabelText } = await createWrapper(q);
 
       const hoursElement = getByLabelText(/Klokkeslett/i);
 
@@ -211,7 +210,7 @@ describe('Time', () => {
       expect(hoursElement).toHaveValue(Number('14'));
     });
     it('Should update minutes field with value from answer', async () => {
-      const { getByTestId } = createWrapper(q);
+      const { getByTestId } = await createWrapper(q);
 
       const minutesElement = getByTestId('time-2');
       const minutesInput = minutesElement.querySelector('input');
@@ -224,7 +223,7 @@ describe('Time', () => {
     });
     it('Should call onChange with correct value when date field changes', async () => {
       const onChange = vi.fn();
-      const { getByLabelText, getByTestId } = createWrapper(q, { onChange });
+      const { getByLabelText, getByTestId } = await createWrapper(q, { onChange });
 
       const hoursElement = getByLabelText(/Klokkeslett/i);
       const minutesElement = getByTestId('time-2');
@@ -248,7 +247,7 @@ describe('Time', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByText } = createWrapper(questionnaire);
+        const { getByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -258,7 +257,7 @@ describe('Time', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByLabelText, queryByText, getByTestId } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText, getByTestId } = await createWrapper(questionnaire);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
@@ -281,7 +280,7 @@ describe('Time', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByText, queryByText, getByLabelText, getByTestId } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText, getByTestId } = await createWrapper(questionnaire);
 
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -299,7 +298,7 @@ describe('Time', () => {
         await waitFor(async () => expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument());
       });
       it('Should show error if hour value is invalid', async () => {
-        const { getByLabelText, getByText, getByTestId } = createWrapper(q);
+        const { getByLabelText, getByText, getByTestId } = await createWrapper(q);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
@@ -311,10 +310,10 @@ describe('Time', () => {
         }
 
         await submitForm();
-        expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+        await waitFor(async () => expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument());
       });
       it('Should show error if minute value is invalid', async () => {
-        const { getByLabelText, getByText, getByTestId } = createWrapper(q);
+        const { getByLabelText, getByText, getByTestId } = await createWrapper(q);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
@@ -329,7 +328,7 @@ describe('Time', () => {
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       });
       it('Should show error message if time value is lesser than min-time', async () => {
-        const { getByTestId, getByLabelText, getByText } = createWrapper(q);
+        const { getByTestId, getByLabelText, getByText } = await createWrapper(q);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
@@ -344,7 +343,7 @@ describe('Time', () => {
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       });
       it('Should show error message if time value is greater than max-time', async () => {
-        const { getByTestId, getByLabelText, getByText } = createWrapper(q);
+        const { getByTestId, getByLabelText, getByText } = await createWrapper(q);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
@@ -359,7 +358,7 @@ describe('Time', () => {
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       });
       it('Should show custom error message for min-time', async () => {
-        const { getByLabelText, getByTestId, getByText } = createWrapper(qMinMaxCustomError);
+        const { getByLabelText, getByTestId, getByText } = await createWrapper(qMinMaxCustomError);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
@@ -374,7 +373,7 @@ describe('Time', () => {
         expect(getByText('Custom errormessage')).toBeInTheDocument();
       });
       it('Should show custom error message for max-time', async () => {
-        const { getByLabelText, getByTestId, getByText } = createWrapper(qMinMaxCustomError);
+        const { getByLabelText, getByTestId, getByText } = await createWrapper(qMinMaxCustomError);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
@@ -389,7 +388,7 @@ describe('Time', () => {
         expect(getByText('Custom errormessage')).toBeInTheDocument();
       });
       it('Should not show error if date value is between min-time and max-time', async () => {
-        const { getByLabelText, getByTestId, queryByText } = createWrapper(q);
+        const { getByLabelText, getByTestId, queryByText } = await createWrapper(q);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
@@ -419,7 +418,7 @@ describe('Time', () => {
             ],
           })),
         };
-        const { getByText } = createWrapper(questionnaire);
+        const { getByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -428,6 +427,6 @@ describe('Time', () => {
   });
 });
 
-const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return renderRefero({ questionnaire, props: { ...props, resources } });
+const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return await waitFor(() => renderRefero({ questionnaire, props: { ...props, resources } }));
 };

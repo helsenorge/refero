@@ -132,7 +132,7 @@ const Quantity = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_quantity">
-      <FormGroup error={errorMessage} mode="ongrey" errorWrapperClassName={styles2.paddingBottom}>
+      <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles2.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

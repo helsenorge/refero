@@ -1,1165 +1,215 @@
 {
-  "resourceType": "Bundle",
-  "id": "1c36d6ef-f66a-4cd7-ac90-a830772ebb4f",
-  "type": "searchset",
-  "total": 1,
-  "link": [
+  "title": "Title",
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "name": "Techinal_boolean",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
     {
-      "relation": "self",
-      "url": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=d3323cca-d288-4d01-aea4-ed26bbf57918&_offset=0"
-    },
-    {
-      "relation": "first",
-      "url": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=d3323cca-d288-4d01-aea4-ed26bbf57918&_offset=0"
-    },
-    {
-      "relation": "last",
-      "url": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=d3323cca-d288-4d01-aea4-ed26bbf57918&_offset=0"
+      "name": "http://www.nhn.no"
     }
   ],
-  "entry": [
+  "subjectType": ["Patient"],
+  "extension": [
     {
-      "fullUrl": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/Questionnaire/0d80569a-b6f0-4039-b708-fe97dc8cd448/_history/11",
-      "resource": {
-        "resourceType": "Questionnaire",
-        "id": "0d80569a-b6f0-4039-b708-fe97dc8cd448",
-        "meta": {
-          "versionId": "11",
-          "lastUpdated": "2024-06-20T11:02:32.312+00:00",
-          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-          "security": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.7618", "code": "3", "display": "Helsehjelp (Full)" }],
-          "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }]
-        },
-        "language": "nb-NO",
-        "contained": [
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
           {
-            "resourceType": "ValueSet",
-            "id": "1102",
-            "url": "http://ehelse.no/fhir/ValueSet/Predefined",
-            "version": "1.0",
-            "name": "urn:oid:1102",
-            "title": "Ja / Nei / Vet ikke (structor)",
-            "status": "draft",
-            "publisher": "Direktoratet for e-helse",
-            "compose": {
-              "include": [
-                {
-                  "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                  "concept": [
-                    { "code": "1", "display": "Ja" },
-                    { "code": "2", "display": "Nei" },
-                    { "code": "3", "display": "Vet ikke" }
-                  ]
-                }
-              ]
-            }
-          }
-        ],
-        "extension": [
-          {
-            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
           },
           {
-            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
-          },
-          {
-            "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
-            "valueCodeableConcept": {
-              "coding": [
-                {
-                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-                  "code": "hide-help",
-                  "display": "Hide help texts"
-                },
-                {
-                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-                  "code": "hide-sublabel",
-                  "display": "Hide sublabel texts"
-                }
-              ]
-            }
-          },
-          { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint", "valueReference": { "reference": "Endpoint/1000" } }
-        ],
-        "url": "Questionnaire/0d80569a-b6f0-4039-b708-fe97dc8cd448",
-        "name": "NHN_Testskjema_SjekkResponse",
-        "title": "Testskjema sjekke responsen",
-        "status": "draft",
-        "subjectType": ["Patient"],
-        "publisher": "NHN",
-        "contact": [{ "name": "http://www.nhn.no" }],
-        "item": [
-          {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                "valueCodeableConcept": {
-                  "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "step" }]
-                }
-              }
-            ],
-            "linkId": "fcd20b3a-1177-4201-8bec-b7fbb4761f8b",
-            "text": "Kun data inn",
-            "type": "group",
-            "required": false,
-            "item": [
-              { "linkId": "f7d17eff-75d8-4df2-8f97-bc76c3b29f42", "text": "Enlinje", "type": "string", "required": false },
-              { "linkId": "3de26587-4032-4dc1-8463-9650729623a2", "text": "Flerlinje", "type": "text", "required": false },
-              { "linkId": "cc24a2b4-84de-42fe-8a15-2fd13313f014", "text": "Tall", "type": "integer", "required": false },
-              { "linkId": "0626b077-4964-4b8a-8de5-9b5768f315d6", "text": "Desimaltall", "type": "decimal", "required": false },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-                    "valueCoding": { "system": "http://unitsofmeasure.org", "code": "cm", "display": "centimeter" }
-                  }
-                ],
-                "linkId": "0d7465e6-2e98-4b26-c56c-4ac1b85a3786",
-                "text": "Kvantitet",
-                "type": "quantity",
-                "required": false
-              },
-              {
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/maxSize", "valueDecimal": 5.0 }],
-                "linkId": "3e84d30d-3c83-4e83-afab-30ad5e6f33c8",
-                "text": "Vedlegg",
-                "type": "attachment",
-                "required": false
-              },
-              {
-                "linkId": "bd2ae123-dcbc-4a9e-8f41-4122369d2592",
-                "text": "Alternativer med predefinert kodeverk",
-                "type": "choice",
-                "required": false,
-                "answerValueSet": "#1102"
-              },
-              {
-                "linkId": "7a1d6e54-97d6-48c8-87c4-bbe4f50ddf34",
-                "text": "Alternativer med predefinert kodeverk og tekstfelt for åpent svar",
-                "type": "choice",
-                "required": false,
-                "answerValueSet": "#1102"
-              },
-              {
-                "linkId": "890eef76-a7c7-4fb9-8aaa-db03c40091ed",
-                "text": "Alternativer med lokaldefinert kodeverk",
-                "type": "choice",
-                "required": false,
-                "answerOption": [
-                  {
-                    "valueCoding": {
-                      "id": "0dfc017e-b346-4c49-885b-c6194450bb27",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "hei",
-                      "display": "Hei"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "c453b44e-3322-4ae9-ae86-4ef68aa30545",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "på",
-                      "display": "på"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "aadd62b4-94fd-4a64-8719-8a40d4ace17e",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "deg",
-                      "display": "deg"
-                    }
-                  }
-                ]
-              },
-              {
-                "linkId": "25c56054-6d79-449e-a16f-b31064a55610",
-                "text": "Alternativer med lokaldefinert kodeverk og tekstfelt for åpent svar",
-                "type": "open-choice",
-                "required": false,
-                "answerOption": [
-                  {
-                    "valueCoding": {
-                      "id": "0dfc017e-b346-4c49-885b-c6194450bb27",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "hei",
-                      "display": "Hei"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "c453b44e-3322-4ae9-ae86-4ef68aa30545",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "på",
-                      "display": "på"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "aadd62b4-94fd-4a64-8719-8a40d4ace17e",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "deg",
-                      "display": "deg"
-                    }
-                  }
-                ]
-              },
-              { "linkId": "de4d1b95-5ae4-451c-e863-3a7ffb4bff4d", "text": "Dato", "type": "date", "required": false },
-              { "linkId": "6f7e216b-c372-4069-fe3e-265630f7e301", "text": "Klokkeslett", "type": "time", "required": false }
-            ]
-          },
-          {
-            "linkId": "cd20ddf0-9cfa-407f-b217-5d5bd1bd208e",
-            "text": "Virker repetisjoner i responsen?",
-            "type": "group",
-            "required": false,
-            "item": [
-              { "linkId": "43a9fb20-a017-48b2-8455-2e99390a9226", "text": "Enlinje", "type": "string", "required": false, "repeats": true },
-              { "linkId": "3092346b-b5a4-4908-9d98-f41590077967", "text": "Flerlinje", "type": "text", "required": false, "repeats": true },
-              { "linkId": "f9c3688b-7b48-42b7-8c7c-8d1e9a0f77db", "text": "Tall", "type": "integer", "required": false, "repeats": true },
-              {
-                "linkId": "591bad56-41fc-49c4-e53d-92d5ea361573",
-                "text": "Desimaltall",
-                "type": "decimal",
-                "required": false,
-                "repeats": true
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-                    "valueCoding": { "system": "http://unitsofmeasure.org", "code": "cm", "display": "centimeter" }
-                  }
-                ],
-                "linkId": "fda7c1f0-a73c-4d04-8a26-5ad330dd1a17",
-                "text": "Kvantitet",
-                "type": "quantity",
-                "required": false,
-                "repeats": true
-              },
-              {
-                "extension": [
-                  { "url": "http://hl7.org/fhir/StructureDefinition/maxSize", "valueDecimal": 5.0 },
-                  { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til vedlegg" }
-                ],
-                "linkId": "9f6e223c-60a2-4741-8293-c7177a70e26f",
-                "text": "Vedlegg",
-                "type": "attachment",
-                "required": false,
-                "repeats": true
-              },
-              {
-                "linkId": "ba345b42-11ec-40c8-8486-eb0bcb56461f",
-                "text": "Alternativer med predefinert kodeverk",
-                "type": "choice",
-                "required": false,
-                "repeats": true,
-                "answerValueSet": "#1102"
-              },
-              {
-                "linkId": "ea9769b1-4b9e-463c-9f8b-7d2a40525f21",
-                "text": "Alternativer med predefinert kodeverk og tekstfelt for åpent svar",
-                "type": "choice",
-                "required": false,
-                "repeats": true,
-                "answerValueSet": "#1102"
-              },
-              {
-                "linkId": "453f18b3-583a-441a-b570-341c92e1adc3",
-                "text": "Alternativer med lokaldefinert kodeverk",
-                "type": "choice",
-                "required": false,
-                "repeats": true,
-                "answerOption": [
-                  {
-                    "valueCoding": {
-                      "id": "0dfc017e-b346-4c49-885b-c6194450bb27",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "hei",
-                      "display": "Hei"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "c453b44e-3322-4ae9-ae86-4ef68aa30545",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "på",
-                      "display": "på"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "aadd62b4-94fd-4a64-8719-8a40d4ace17e",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "deg",
-                      "display": "deg"
-                    }
-                  }
-                ]
-              },
-              {
-                "linkId": "bd50ba50-bd34-4532-fe2a-9e7042783431",
-                "text": "Alternativer med lokaldefinert kodeverk og tekstfelt for åpent svar",
-                "type": "open-choice",
-                "required": false,
-                "repeats": true,
-                "answerOption": [
-                  {
-                    "valueCoding": {
-                      "id": "0dfc017e-b346-4c49-885b-c6194450bb27",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "hei",
-                      "display": "Hei"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "c453b44e-3322-4ae9-ae86-4ef68aa30545",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "på",
-                      "display": "på"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "aadd62b4-94fd-4a64-8719-8a40d4ace17e",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "deg",
-                      "display": "deg"
-                    }
-                  }
-                ]
-              },
-              { "linkId": "6d2fb2c5-2523-4562-85aa-3446d6d04b72", "text": "Dato", "type": "date", "required": false, "repeats": true },
-              {
-                "linkId": "3795a075-4ae4-48de-a112-ad3790eb537f",
-                "text": "Klokkeslett",
-                "type": "time",
-                "required": false,
-                "repeats": true
-              }
-            ]
-          },
-          {
-            "linkId": "917ad148-3622-4cec-87fb-5c1888ff7934",
-            "text": "Virker enable when i reponsen pr komponent? Kun med funksjonen \"Er besvart\" - aka exists = True",
-            "type": "group",
-            "required": false,
-            "item": [
-              {
-                "linkId": "42075675-8817-4848-bb5e-6cbb59a0fd40",
-                "text": "Enlinje",
-                "type": "string",
-                "required": false,
-                "repeats": true,
-                "item": [
-                  {
-                    "linkId": "3a7ae5cd-ce5e-49bb-bbd9-0c970377f430",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "42075675-8817-4848-bb5e-6cbb59a0fd40", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "b5f7d86a-0d50-4857-81d8-502c3227f721",
-                "text": "Flerlinje",
-                "type": "text",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "26703ded-8dcc-45fb-e8b0-8c265c04f28f",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "b5f7d86a-0d50-4857-81d8-502c3227f721", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "d18b12f7-7cae-453d-8651-3be28bc74a37",
-                "text": "Tall",
-                "type": "integer",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "9a33521f-7de6-40f7-86a3-24f07e8d07a5",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "d18b12f7-7cae-453d-8651-3be28bc74a37", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "f3a6dc47-fa67-4bf7-88ec-4ac7d593633c",
-                "text": "Desimaltall",
-                "type": "decimal",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "6f5ee02a-903e-481f-8da6-9d3cf14c449d",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "f3a6dc47-fa67-4bf7-88ec-4ac7d593633c", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-                    "valueCoding": { "system": "http://unitsofmeasure.org", "code": "cm", "display": "centimeter" }
-                  }
-                ],
-                "linkId": "89ae8da5-9c35-4e0c-8598-153cc8322426",
-                "text": "Kvantitet",
-                "type": "quantity",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "4a10ae39-728a-413f-fdd3-34ce2bd8ca06",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "89ae8da5-9c35-4e0c-8598-153cc8322426", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/maxSize", "valueDecimal": 5.0 }],
-                "linkId": "a937e161-677e-4a98-8991-4fa8dc071588",
-                "text": "EW på vedlegg støttes ikke skjemabyggeren, men er kodet inn manult.",
-                "type": "attachment",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "cb143f32-0f6e-469b-ded5-578c47697ea1",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "a937e161-677e-4a98-8991-4fa8dc071588", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "db45b4d2-30ca-4008-ab75-125976df9bc5",
-                "text": "Alternativer med predefinert kodeverk",
-                "type": "choice",
-                "required": false,
-                "answerValueSet": "#1102",
-                "item": [
-                  {
-                    "linkId": "9364ca09-ff77-4798-a6d6-c87c2737812d",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "db45b4d2-30ca-4008-ab75-125976df9bc5", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "388bfce6-91c7-4aa6-8699-504bb5926191",
-                "text": "Alternativer med predefinert kodeverk og tekstfelt for åpent svar",
-                "type": "choice",
-                "required": false,
-                "answerValueSet": "#1102",
-                "item": [
-                  {
-                    "linkId": "e4b2b5d5-8472-4c72-bc9f-ca01e0d7ede9",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "388bfce6-91c7-4aa6-8699-504bb5926191", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "91205a30-14b5-4bf1-9a24-ab92fce3a56c",
-                "text": "Alternativer med lokaldefinert kodeverk",
-                "type": "choice",
-                "required": false,
-                "answerOption": [
-                  {
-                    "valueCoding": {
-                      "id": "0dfc017e-b346-4c49-885b-c6194450bb27",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "hei",
-                      "display": "Hei"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "c453b44e-3322-4ae9-ae86-4ef68aa30545",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "på",
-                      "display": "på"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "aadd62b4-94fd-4a64-8719-8a40d4ace17e",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "deg",
-                      "display": "deg"
-                    }
-                  }
-                ],
-                "item": [
-                  {
-                    "linkId": "1c3f4759-9fcf-4197-de00-cfbbfd45be12",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "91205a30-14b5-4bf1-9a24-ab92fce3a56c", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "56541bce-1ce6-4f04-88c0-a928fd68fdc6",
-                "text": "Alternativer med lokaldefinert kodeverk og tekstfelt for åpent svar",
-                "type": "open-choice",
-                "required": false,
-                "answerOption": [
-                  {
-                    "valueCoding": {
-                      "id": "0dfc017e-b346-4c49-885b-c6194450bb27",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "hei",
-                      "display": "Hei"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "c453b44e-3322-4ae9-ae86-4ef68aa30545",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "på",
-                      "display": "på"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "aadd62b4-94fd-4a64-8719-8a40d4ace17e",
-                      "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                      "code": "deg",
-                      "display": "deg"
-                    }
-                  }
-                ],
-                "item": [
-                  {
-                    "linkId": "1619d2f8-472e-4242-9f46-e95bf503c486",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "56541bce-1ce6-4f04-88c0-a928fd68fdc6", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "9b3a3346-697e-4714-8e5c-a43a571e8210",
-                "text": "Dato",
-                "type": "date",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "0299c1d4-5924-4372-9d4e-d5ceb9e4c09a",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "9b3a3346-697e-4714-8e5c-a43a571e8210", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "e2f82b8c-2813-4229-8759-7768cfae9608",
-                "text": "Klokkeslett",
-                "type": "time",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "d72dfcea-3831-495e-8999-19b6fe2d5df1",
-                    "text": "Virker!",
-                    "type": "display",
-                    "enableWhen": [{ "question": "e2f82b8c-2813-4229-8759-7768cfae9608", "operator": "exists", "answerBoolean": true }],
-                    "required": false
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "linkId": "fb10de5f-50c1-4e88-a5c6-c012e633d91f",
-            "text": "Kommer det noen skåringer i responsen?",
-            "type": "group",
-            "required": false,
-            "item": [
-              {
-                "linkId": "87321ad0-12c5-4a39-9dc9-cc5ed2076ea3",
-                "text": "Gruppe 1",
-                "type": "group",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "4a737860-a22d-49d4-82f1-5fe6cf45e22a",
-                    "code": [
-                      { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-                      { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-                    ],
-                    "text": "Velg verdi",
-                    "type": "choice",
-                    "required": false,
-                    "answerOption": [
-                      {
-                        "valueCoding": {
-                          "id": "47bddb99-c775-4338-be91-601da62d8772",
-                          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1.0 }],
-                          "system": "urn:uuid:769b09ac-a05b-4c54-9937-26209abd4be5",
-                          "code": "ja",
-                          "display": "Ja"
-                        }
-                      },
-                      {
-                        "valueCoding": {
-                          "id": "1d2653c7-f100-4b94-fcb1-13ffa48b9918",
-                          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2.0 }],
-                          "system": "urn:uuid:769b09ac-a05b-4c54-9937-26209abd4be5",
-                          "code": "nei",
-                          "display": "Nei"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "linkId": "adc60315-05bc-43cb-8cad-b6a55cfd619a",
-                    "code": [
-                      { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-                      { "system": "http://ehelse.no/scoringFormulas", "code": "SS", "display": "Section score" }
-                    ],
-                    "text": "Del Sum",
-                    "type": "integer",
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "94d8b6cd-c29c-42e9-8627-897f9da40c6e",
-                "text": "Gruppe 2",
-                "type": "group",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "1740c220-5a12-48cb-a938-58ff333aa1ee",
-                    "code": [
-                      { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-                      { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-                    ],
-                    "text": "Velg verdi",
-                    "type": "choice",
-                    "required": false,
-                    "answerOption": [
-                      {
-                        "valueCoding": {
-                          "id": "47bddb99-c775-4338-be91-601da62d8772",
-                          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1.0 }],
-                          "system": "urn:uuid:769b09ac-a05b-4c54-9937-26209abd4be5",
-                          "code": "ja",
-                          "display": "Ja"
-                        }
-                      },
-                      {
-                        "valueCoding": {
-                          "id": "1d2653c7-f100-4b94-fcb1-13ffa48b9918",
-                          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2.0 }],
-                          "system": "urn:uuid:769b09ac-a05b-4c54-9937-26209abd4be5",
-                          "code": "nei",
-                          "display": "Nei"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "linkId": "f2239532-867b-4b7c-e09e-98ad4884339a",
-                    "code": [
-                      { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-                      { "system": "http://ehelse.no/scoringFormulas", "code": "SS", "display": "Section score" }
-                    ],
-                    "text": "Del Sum",
-                    "type": "integer",
-                    "required": false
-                  }
-                ]
-              },
-              {
-                "linkId": "10f59732-3a76-4b2e-8e5a-f63e7e651170",
-                "code": [
-                  { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-                  { "system": "http://ehelse.no/scoringFormulas", "code": "TS", "display": "Total score" }
-                ],
-                "text": "Totalsum",
-                "type": "integer",
-                "required": false
-              }
-            ]
-          },
-          {
-            "linkId": "5d03949b-f370-45a5-88b1-d8a52fb6c651",
-            "text": "Virker kalkulasjoner i responsen?",
-            "type": "group",
-            "required": false,
-            "item": [
-              { "linkId": "Heltall1", "text": "Heltall 1", "type": "integer", "required": false },
-              { "linkId": "Heltall2", "text": "Heltall 2", "type": "integer", "required": false },
-              {
-                "extension": [
-                  {
-                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-                    "valueString": "QuestionnaireResponse.descendants().where(linkId='Heltall1').answer.value + QuestionnaireResponse.descendants().where(linkId='Heltall2').answer.value"
-                  }
-                ],
-                "linkId": "88b810a6-7360-4f7e-e4af-3e251794c7de",
-                "text": "Sum heltall",
-                "type": "integer",
-                "required": false,
-                "readOnly": true
-              },
-              {
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }],
-                "linkId": "Decimaltall1",
-                "text": "Decimaltall 1",
-                "type": "decimal",
-                "required": false
-              },
-              {
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }],
-                "linkId": "Decimaltall2",
-                "text": "Decimaltall 2",
-                "type": "decimal",
-                "required": false
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-                    "valueString": "QuestionnaireResponse.descendants().where(linkId='Decimaltall1').answer.value + QuestionnaireResponse.descendants().where(linkId='Decimaltall2').answer.value"
-                  },
-                  { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }
-                ],
-                "linkId": "9eb0a518-d2ec-48c7-89ce-dfe5e6316f64",
-                "text": "Decimaltall sum",
-                "type": "decimal",
-                "required": false,
-                "readOnly": true
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-                    "valueCoding": { "system": "http://unitsofmeasure.org", "code": "kg", "display": "kilo" }
-                  },
-                  { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }
-                ],
-                "linkId": "Enhet1",
-                "text": "Enhet 1",
-                "type": "quantity",
-                "required": false
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-                    "valueCoding": { "system": "http://unitsofmeasure.org", "code": "kg", "display": "kilo" }
-                  },
-                  { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }
-                ],
-                "linkId": "Enhet2",
-                "text": "Enhet 2",
-                "type": "quantity",
-                "required": false
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-                    "valueCoding": { "system": "http://unitsofmeasure.org", "code": "kg", "display": "kilo" }
-                  },
-                  {
-                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-                    "valueString": "QuestionnaireResponse.descendants().where(linkId='Enhet1').answer.value.value + QuestionnaireResponse.descendants().where(linkId='Enhet2').answer.value.value"
-                  },
-                  { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }
-                ],
-                "linkId": "ed14783c-5d95-4e69-ebf0-854fb8369894",
-                "text": "Sum Enhet",
-                "type": "quantity",
-                "required": false,
-                "readOnly": true
-              }
-            ]
-          },
-          {
-            "linkId": "ac4d3aab-c378-4033-9954-88e975bed322",
-            "text": "Ting som skjer i PDF",
-            "type": "group",
-            "required": false,
-            "item": [
-              {
-                "linkId": "5a4f0fb2-5332-4f9a-90e3-e1a63369b7f4",
-                "text": "Vises KUN i PDF - er pre-utfylt med verdier",
-                "type": "group",
-                "required": false,
-                "item": [
-                  {
-                    "linkId": "68c4aef6-ee33-43c0-8b0d-649b915bb38d",
-                    "code": [
-                      {
-                        "id": "9430b124-5504-4c1c-862f-599a7118006a",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      }
-                    ],
-                    "text": "Enlinje",
-                    "type": "string",
-                    "required": false,
-                    "initial": [{ "valueString": "Initiell verdi satt i definisjonen" }]
-                  },
-                  {
-                    "linkId": "52e73d4f-5fe0-44ce-8ffc-32a4571f0433",
-                    "code": [
-                      {
-                        "id": "08482e05-4ab4-4e72-8eec-39ed3895b565",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      }
-                    ],
-                    "text": "Flerlinje",
-                    "type": "text",
-                    "required": false,
-                    "initial": [{ "valueString": "Initiell verdi satt i definisjonen" }]
-                  },
-                  {
-                    "linkId": "b1b7b45a-d413-4e7e-e2b9-bf5c129651c9",
-                    "code": [
-                      {
-                        "id": "7ea439f8-b70b-45f2-8d9d-d093b3c091e8",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      }
-                    ],
-                    "text": "Tall",
-                    "type": "integer",
-                    "required": false,
-                    "initial": [{ "valueInteger": 99 }]
-                  },
-                  {
-                    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }],
-                    "linkId": "48401ca0-b9ee-4981-d77e-9d65b71e443b",
-                    "code": [
-                      {
-                        "id": "358f192b-cdc7-426c-8854-684f1e2e7faf",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      }
-                    ],
-                    "text": "Desimaltall",
-                    "type": "decimal",
-                    "required": false,
-                    "initial": [{ "valueDecimal": 99.109999999999999 }]
-                  },
-                  {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-                        "valueCoding": { "system": "http://unitsofmeasure.org", "code": "cm", "display": "centimeter" }
-                      }
-                    ],
-                    "linkId": "de521b71-65b6-4377-e782-1b775ee52eee",
-                    "code": [
-                      {
-                        "id": "ac635c47-f0b1-4e30-97f9-48065a1f7840",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      }
-                    ],
-                    "text": "Kvantitet.",
-                    "type": "quantity",
-                    "required": false,
-                    "initial": [
-                      {
-                        "valueQuantity": {
-                          "value": 99.989999999999995,
-                          "unit": "centimeter",
-                          "system": "http://unitsofmeasure.org",
-                          "code": "cm"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/maxSize", "valueDecimal": 5.0 }],
-                    "linkId": "a4514dec-1a74-4e77-d95b-dfba1af3ba79",
-                    "code": [
-                      {
-                        "id": "290fc283-58e4-4706-8f05-fd9f671bc11a",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      }
-                    ],
-                    "text": "Vedlegg - ikke så lett å preutfylle",
-                    "type": "attachment",
-                    "required": false
-                  },
-                  {
-                    "linkId": "8dbee96f-a9ca-4602-a591-863dcc068014",
-                    "code": [
-                      {
-                        "id": "cf81eb79-aee2-4162-a650-7857132cdad8",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      },
-                      {
-                        "id": "ef98af3b-a40f-48dc-8ef6-99e15bc46adc",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/ChoiceRenderOptions",
-                        "code": "Full",
-                        "display": "Full vising"
-                      }
-                    ],
-                    "text": "Alternativer med predefinert kodeverk - Full vising",
-                    "type": "choice",
-                    "required": false,
-                    "answerValueSet": "#1102",
-                    "initial": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "1", "display": "Ja" } }]
-                  },
-                  {
-                    "linkId": "7ae943ed-d01a-4eda-836d-e33839736dbb",
-                    "code": [
-                      {
-                        "id": "cf81eb79-aee2-4162-a650-7857132cdad8",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      },
-                      {
-                        "id": "d3cf20c8-80d2-4fd4-ea8a-1dc501fb1f48",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/ChoiceRenderOptions",
-                        "code": "Compact",
-                        "display": "Kompakt vising"
-                      }
-                    ],
-                    "text": "Alternativer med predefinert kodeverk - Kompakt vising",
-                    "type": "choice",
-                    "required": false,
-                    "answerValueSet": "#1102",
-                    "initial": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "2", "display": "Nei" } }]
-                  },
-                  {
-                    "linkId": "a5ad29a0-c943-442f-8242-8e53cf16a15f",
-                    "code": [
-                      {
-                        "id": "dd8dff82-133b-42b4-8391-57569d1056fc",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      }
-                    ],
-                    "text": "Alternativer med predefinert kodeverk og tekstfelt for åpent svar",
-                    "type": "choice",
-                    "required": false,
-                    "answerValueSet": "#1102",
-                    "initial": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "3", "display": "Vet ikke" } }]
-                  },
-                  {
-                    "linkId": "6b73af62-fa03-4d89-bcfc-099fd457d0bd",
-                    "code": [
-                      {
-                        "id": "d7e6b188-17be-45f3-9b9b-e13ec7839d60",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      }
-                    ],
-                    "text": "Alternativer med lokaldefinert kodeverk",
-                    "type": "choice",
-                    "required": false,
-                    "answerOption": [
-                      {
-                        "valueCoding": {
-                          "id": "0dfc017e-b346-4c49-885b-c6194450bb27",
-                          "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                          "code": "hei",
-                          "display": "Hei"
-                        }
-                      },
-                      {
-                        "valueCoding": {
-                          "id": "c453b44e-3322-4ae9-ae86-4ef68aa30545",
-                          "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                          "code": "på",
-                          "display": "på"
-                        }
-                      },
-                      {
-                        "valueCoding": {
-                          "id": "aadd62b4-94fd-4a64-8719-8a40d4ace17e",
-                          "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                          "code": "deg",
-                          "display": "deg"
-                        }
-                      }
-                    ],
-                    "initial": [
-                      { "valueCoding": { "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664", "code": "hei", "display": "Hei" } }
-                    ]
-                  },
-                  {
-                    "linkId": "855c60b2-a54e-42f0-af23-46b8fbff2c5b",
-                    "code": [
-                      {
-                        "id": "b8ae3316-f86b-4188-a454-57b3117852b2",
-                        "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                        "code": "2",
-                        "display": "KunPdf"
-                      }
-                    ],
-                    "text": "Alternativer med lokaldefinert kodeverk og tekstfelt for åpent svar",
-                    "type": "open-choice",
-                    "required": false,
-                    "answerOption": [
-                      {
-                        "valueCoding": {
-                          "id": "0dfc017e-b346-4c49-885b-c6194450bb27",
-                          "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                          "code": "hei",
-                          "display": "Hei"
-                        }
-                      },
-                      {
-                        "valueCoding": {
-                          "id": "c453b44e-3322-4ae9-ae86-4ef68aa30545",
-                          "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                          "code": "på",
-                          "display": "på"
-                        }
-                      },
-                      {
-                        "valueCoding": {
-                          "id": "aadd62b4-94fd-4a64-8719-8a40d4ace17e",
-                          "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664",
-                          "code": "deg",
-                          "display": "deg"
-                        }
-                      }
-                    ],
-                    "initial": [
-                      { "valueCoding": { "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664", "code": "på", "display": "på" } }
-                    ]
-                  }
-                ]
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                    "valueCodeableConcept": {
-                      "coding": [
-                        { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "table-hn1" },
-                        { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "summary" }
-                      ]
-                    }
-                  }
-                ],
-                "linkId": "e2e54566-4e19-4419-8958-c3cfc5b01883",
-                "code": [
-                  {
-                    "id": "b57d2c46-b272-40c4-8faa-151e723660dc",
-                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                    "code": "2",
-                    "display": "KunPdf"
-                  }
-                ],
-                "text": "Tabell med spørsmål og svar i to kolonner. Legg først i PDF, Vises kun i PDF. Henter verdier fra 1.1 og 1.2",
-                "type": "group",
-                "required": false,
-                "item": [
-                  {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                        "valueCodeableConcept": {
-                          "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
-                        }
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                        "valueString": "QuestionnaireResponse.descendants().where(linkId='f7d17eff-75d8-4df2-8f97-bc76c3b29f42').answer.value"
-                      }
-                    ],
-                    "linkId": "43f8b7c4-7850-4205-8742-45be8a788aef",
-                    "text": "Enlinje",
-                    "type": "string",
-                    "enableWhen": [{ "question": "f7d17eff-75d8-4df2-8f97-bc76c3b29f42", "operator": "exists", "answerBoolean": true }],
-                    "required": false,
-                    "readOnly": true
-                  },
-                  {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                        "valueCodeableConcept": {
-                          "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
-                        }
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                        "valueString": "QuestionnaireResponse.descendants().where(linkId='3de26587-4032-4dc1-8463-9650729623a2').answer.value"
-                      }
-                    ],
-                    "linkId": "3349e790-0ad2-44a8-d12d-15b36fd52ad3",
-                    "text": "Flerlinje",
-                    "type": "text",
-                    "enableWhen": [{ "question": "3de26587-4032-4dc1-8463-9650729623a2", "operator": "exists", "answerBoolean": true }],
-                    "required": false,
-                    "readOnly": true
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "linkId": "cb0c5d96-936d-4d8f-8ae2-7c57ffcadbf7",
-            "text": "Diverse",
-            "type": "group",
-            "required": false,
-            "item": [
-              {
-                "extension": [
-                  { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Her er det _**markdown**_" }
-                ],
-                "linkId": "441bcf2c-cb3d-422d-b34b-f52d29dde4a8",
-                "text": "Tekst markdown",
-                "_text": {
-                  "extension": [
-                    { "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Tekst _markdown_" }
-                  ]
-                },
-                "type": "string",
-                "required": false
-              }
-            ]
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
           }
         ]
       }
+    }
+  ],
+  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
+  "item": [
+    {
+      "linkId": "3dec9e0d-7b78-424e-8a59-f0909510985d",
+      "type": "open-choice",
+      "code": [
+        {
+          "code": "label",
+          "display": "Display value",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+        },
+        {
+          "code": "LabelLeft",
+          "display": "min",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        },
+        {
+          "code": "LabelRight",
+          "display": "max",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        }
+      ],
+      "item": [
+        {
+          "linkId": "f799ebd5-7cac-4d15-8b84-2e6037124401",
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "maxLength": 250,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Help text"
+              }
+            ]
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "help"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "required": true,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Slider view label**"
+          }
+        ]
+      },
+      "text": "Slider view label",
+      "extension": [
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
+        },
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "**Slider view sublabel**"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "slider"
+              }
+            ]
+          }
+        }
+      ],
+      "repeats": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "d5646b17-bb7c-4776-8186-88011b98a0bf",
+            "code": "ja",
+            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
+            "display": "Ja",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
+                "valueString": "&#9917"
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                "valueDecimal": 1.1
+              }
+            ]
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "352926a9-27f8-4bc1-e394-08edc439b4d7",
+            "code": "nei",
+            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
+            "display": "Nei",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                "valueDecimal": 2.2
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
+                "valueString": "&#9917"
+              }
+            ]
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "540c894e-29ef-46bf-f961-851921c87d57",
+            "code": "vet-ikke",
+            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
+            "display": "Vet ikke",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
+                "valueString": "&#9917"
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                "valueDecimal": 3.3
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }
