@@ -45,9 +45,13 @@ export const useAttachmentSync = ({
   const internalUpdateRef = useRef(false);
 
   const handleUpload = (files: UploadFile[]): void => {
+    const newFiles = files.map(file => {
+      file.id = `${file.id}-${new Date().getTime()}`;
+      return file;
+    });
     internalUpdateRef.current = true;
-    onUpload(files);
-    setAcceptedFiles(prevState => [...prevState, ...files]);
+    onUpload(newFiles);
+    setAcceptedFiles(prevState => [...prevState, ...newFiles]);
   };
 
   const handleDelete = (fileId: string): void => {
