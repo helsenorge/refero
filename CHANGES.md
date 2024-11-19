@@ -1,3 +1,6 @@
+## 16.0.0-beta.66
+- Update helsenorge packages to v33.0.0
+
 ## 16.0.0-beta.65
 - Bugfix: Month field in YearMonth dont't trigger validation
 - Bugfix: Unwanted zero in time fields in DateTime (temporary fix: use Input fields)
