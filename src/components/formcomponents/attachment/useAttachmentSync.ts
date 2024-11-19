@@ -94,7 +94,7 @@ export const useAttachmentSync = ({
             fileBits = [new Uint8Array(0)];
           }
 
-          const file = new UploadFile(fileBits, attachment.title || 'file', attachment.url ?? '-1', fileSize, {
+          const file = new UploadFile(fileBits, attachment.title || 'file', attachment.id ?? '-1', fileSize, {
             type: attachment.contentType || '',
           });
 
