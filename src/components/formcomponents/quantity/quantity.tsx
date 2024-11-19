@@ -84,7 +84,7 @@ const Quantity = (props: Props): JSX.Element | null => {
 
     if (dispatch && path && item) {
       dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(newState =>
-        onAnswerChange(newState, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
+        onAnswerChange(newState, item, { valueQuantity: quantity })
       );
     }
 
