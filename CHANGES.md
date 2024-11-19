@@ -1,3 +1,7 @@
+## 16.0.0-beta.67
+- Bugfix: Backspace deleted entire input in date-time component
+- Bugfix: Couldn't remove zero in time component
+
 ## 16.0.0-beta.66
 - Update helsenorge packages to v33.0.0
 
