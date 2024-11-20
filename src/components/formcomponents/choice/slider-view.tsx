@@ -15,7 +15,7 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { getErrorMessage, isNumber, maxValue, minValue, required } from '@/components/validation/rules';
+import { getErrorMessage, isInteger, maxValue, minValue, required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
@@ -76,10 +76,11 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
     required: required({ item, resources }),
     min: minValue({ item, resources }),
     max: maxValue({ item, resources }),
-
     shouldUnregister: true,
+    setValueAs: value => (isSelected ? value : undefined),
   };
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+
   if (pdf || isReadOnly(item)) {
     return (
       <ReadOnly
@@ -114,7 +115,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
           testId={`${getId(id)}-${index}-slider-choice`}
           onChange={(e): void => {
             const val = e.target.value;
-            if (isNumber(val)) {
+            if (isInteger(val)) {
               onValueChange(Number(val));
               onChange(e);
             }
