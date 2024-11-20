@@ -95,23 +95,8 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     console.log("Skjemanavn: " + this.props.skjemanavn);
   }
 
-  componentDidUpdate(prevProps: ReferoProps): void {
+  componentDidUpdate(): void {
     IE11HackToWorkAroundBug187484();
-    // eslint-disable-next-line no-console
-    console.log("Refero: Component did update called");
-    if (this.props.skjemanavn !== prevProps.skjemanavn) {
-      // eslint-disable-next-line no-console
-      console.log("skjemanavn has changed, calling updateSkjema...");
-      if (this.props.questionnaire) {
-        this.props.updateSkjema(
-          this.props.questionnaire,
-          this.props.questionnaireResponse,
-          this.props.language,
-          this.props.syncQuestionnaireResponse
-        );
-        this.setState({ scoringCalculator: this.getScoringCalculator(this.props.questionnaire) });
-      }
-    }
   }
 
   componentWillUnmount(): void {
@@ -120,21 +105,14 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   }
 
   UNSAFE_componentWillReceiveProps(nextProps: ReferoProps): void {
-    // eslint-disable-next-line no-console
-    console.log("Refero: componentWillReceiveProps called");
-    if ((nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) ||
-      (nextProps.skjemanavn && nextProps.skjemanavn !== this.props.skjemanavn)) {
-        if (nextProps.questionnaire) {
-          // eslint-disable-next-line no-console
-          console.log("Properties changes, calling updateSkjema...");
-          this.props.updateSkjema(
-            nextProps.questionnaire,
-            nextProps.questionnaireResponse,
-            nextProps.language,
-            nextProps.syncQuestionnaireResponse
-          );
-          this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
-        }
+    if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
+      this.props.updateSkjema(
+        nextProps.questionnaire,
+        nextProps.questionnaireResponse,
+        nextProps.language,
+        nextProps.syncQuestionnaireResponse
+      );
+      this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
     }
   }
 
