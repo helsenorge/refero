@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Attachment, QuestionnaireItem } from 'fhir/r4';
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
-import { getMaxOccursExtensionValue } from '@/util/extension';
 import { getAttachmentsFromAnswer } from './helpers';
 import { useFormContext } from 'react-hook-form';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -62,10 +61,7 @@ export const useAttachmentSync = ({
   };
 
   useEffect(() => {
-    const max = getMaxOccursExtensionValue(item);
-    if (max === undefined && acceptedFiles.length > 0) {
-      setDisableButton(true);
-    } else if (max !== undefined && acceptedFiles.length > max) {
+    if (!item?.repeats && acceptedFiles.length > 0) {
       setDisableButton(true);
     } else {
       setDisableButton(false);
