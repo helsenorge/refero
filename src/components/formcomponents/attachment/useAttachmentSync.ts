@@ -45,9 +45,13 @@ export const useAttachmentSync = ({
   const internalUpdateRef = useRef(false);
 
   const handleUpload = (files: UploadFile[]): void => {
+    const newFiles = files.map(file => {
+      file.id = `${file.id}-${new Date().getTime()}`;
+      return file;
+    });
     internalUpdateRef.current = true;
-    onUpload(files);
-    setAcceptedFiles(prevState => [...prevState, ...files]);
+    onUpload(newFiles);
+    setAcceptedFiles(prevState => [...prevState, ...newFiles]);
   };
 
   const handleDelete = (fileId: string): void => {
@@ -90,7 +94,7 @@ export const useAttachmentSync = ({
             fileBits = [new Uint8Array(0)];
           }
 
-          const file = new UploadFile(fileBits, attachment.title || 'file', attachment.url ?? '-1', fileSize, {
+          const file = new UploadFile(fileBits, attachment.title || 'file', attachment.id ?? '-1', fileSize, {
             type: attachment.contentType || '',
           });
 

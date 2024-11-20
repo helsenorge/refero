@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import DeleteButton from './DeleteButton';
 

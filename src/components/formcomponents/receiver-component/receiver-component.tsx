@@ -18,7 +18,6 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type ReceiverComponentProps = QuestionnaireComponentItemProps & {
   item?: QuestionnaireItem;
