@@ -1,4 +1,8 @@
 ## 16.0.0-beta.69
+- Bugfix: attachement disabled button when multiple
+- Bugfix: attachement add validation on single file filesize 
+
+## 16.0.0-beta.69
 - Bugfix: Select in receiver component di not set value
 
 ## 16.0.0-beta.67
