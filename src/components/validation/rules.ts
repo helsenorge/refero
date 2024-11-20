@@ -28,7 +28,20 @@ export const isNumber = (input: unknown): input is number => {
 
   return false;
 };
+export const isInteger = (input: unknown): input is number => {
+  if (typeof input === 'number' && Number.isFinite(input) && Number.isInteger(input)) {
+    return true;
+  }
 
+  if (typeof input === 'string' && input.trim() !== '') {
+    const num = Number(input);
+    if (!isNaN(num) && Number.isInteger(num)) {
+      return true;
+    }
+  }
+
+  return false;
+};
 export const getErrorMessage = (item: QuestionnaireItem | undefined, error: FieldError | undefined): string | undefined => {
   if (error) {
     const validationTextExtension = getValidationTextExtension(item);

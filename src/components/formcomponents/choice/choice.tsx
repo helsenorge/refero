@@ -68,9 +68,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     return code ? [code] : undefined;
   }, [item]);
 
-  const getValue = useCallback((): string[] | undefined => {
-    return getAnswerValue() || getInitialValue();
-  }, [getAnswerValue, getInitialValue]);
+  const getValue = () => getAnswerValue() || getInitialValue();
 
   const getPDFValue = (): string => {
     const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
