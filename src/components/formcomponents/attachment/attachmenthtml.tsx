@@ -11,6 +11,7 @@ import { getCustomValidationText } from './attachment-validation';
 import {
   validateNumberOfFiles,
   validateFileType,
+  validateFileSize,
   validateTotalFileSize,
 } from '@helsenorge/file-upload/components/file-upload/validate-utils';
 import { getAttachmentMaxSizeBytesToUse, validateRequired } from './attachmentUtil';
@@ -87,6 +88,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   );
   const validationFileTypesMessage = getCustomValidationText(item, resources?.attachmentError_fileType);
   const maxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
+
   const validFileTypes: MimeTypes[] = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
 
   const {
@@ -97,7 +99,10 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     rejectedFiles: extRejected,
   } = useFileUpload(
     internalRegister,
-    [validateFileType(validFileTypes, validationFileTypesMessage)],
+    [
+      validateFileType(validFileTypes, validationFileTypesMessage),
+      validateFileSize(0, maxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize || 'total file size')),
+    ],
     [
       validateNumberOfFiles(minFiles ?? 0, maxFiles ?? 20, numberOfFilesMessage || 'Number of files'),
       validateTotalFileSize(0, maxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize || 'total file size')),
