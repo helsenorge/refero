@@ -1,3 +1,6 @@
+## 16.0.0-beta.69
+- Bugfix: Select in receiver component di not set value
+
 ## 16.0.0-beta.67
 - Bugfix: Backspace deleted entire input in date-time component
 - Bugfix: Couldn't remove zero in time component
