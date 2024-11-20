@@ -179,8 +179,6 @@ const ReceiverComponent = ({
     const { error } = fieldState;
 
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
-    const defaultOption = new Option(resources?.selectDefaultPlaceholder, '');
-    selectOptions.unshift(defaultOption);
 
     const label = getLabelText(treeNodes[0].EnhetType) || '';
     const value = selectedPath[level] ? selectedPath[level].toString() : '';
@@ -236,11 +234,12 @@ const ReceiverComponent = ({
             handleSelectChange(e);
             onChange(e);
           }}
-          value={value ?? selectOptions[0].value}
+          value={value}
           testId={`${getId(id)}-${selectKey}`}
           selectId={`${getId(id)}-${selectKey}`}
           className="page_refero__input"
         >
+          {!value && <option value={''}>{resources?.selectDefaultPlaceholder}</option>}
           {selectOptions.map(option => {
             return (
               <option key={`${option.value}-${option.label}`} value={option.value}>
