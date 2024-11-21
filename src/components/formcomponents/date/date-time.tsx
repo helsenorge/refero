@@ -92,6 +92,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const [hours, setHours] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Hours));
   const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Minutes));
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
+
   useResetFormField(`${idWithLinkIdAndItemIndex}-date`, dateAnswerValue);
   useResetFormField(`${idWithLinkIdAndItemIndex}-hours`, hours);
   useResetFormField(`${idWithLinkIdAndItemIndex}-minutes`, minutes);
@@ -295,6 +296,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
                 handleHoursChange(e.target.value);
                 onChangeHours(e);
               }}
+              min={0}
+              max={23}
+              inputMode="numeric"
               width={4}
               value={hours}
             />
@@ -304,7 +308,10 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             <Input
               {...restMinutes}
               type="number"
+              min={0}
+              max={59}
               testId={`minutes-test`}
+              inputMode="numeric"
               onChange={e => {
                 handleMinutesChange(e.target.value);
                 onChangeMinutes(e);

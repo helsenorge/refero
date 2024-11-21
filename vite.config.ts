@@ -17,7 +17,9 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
 
   return {
     root: dev ? path.resolve(__dirname, './preview') : path.resolve(__dirname, ''),
-
+    server: {
+      port: 3000,
+    },
     css: {
       preprocessorOptions: {
         scss: {

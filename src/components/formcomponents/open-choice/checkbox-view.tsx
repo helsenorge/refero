@@ -69,7 +69,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         <ReferoLabel
           item={item}
           resources={resources}
-          htmlFor={getId(id)}
+          htmlFor={`${getId(id)}-hn-${index}`}
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
           sublabelId={`${getId(id)}-open-choice-sublabel`}
@@ -79,7 +79,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
           <Checkbox
             {...rest}
             key={`${option.type}-${index}`}
-            inputId={`${id}-${option.type}`}
+            inputId={`${getId(id)}-hn-${index}`}
             testId={`${getId(id)}-${index}-checkbox-openchoice`}
             label={<Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label }]} />}
             checked={selected?.some((val: string | undefined) => val === option?.type)}

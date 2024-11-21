@@ -223,8 +223,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-
-    expect(container.querySelector('#item_6b-2')).toBeChecked();
+    expect(container.querySelector('#item_6b-hn-1')).toBeChecked();
   });
   describe('date fields gets updated', () => {
     beforeEach(() => {

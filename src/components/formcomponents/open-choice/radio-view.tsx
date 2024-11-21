@@ -72,12 +72,13 @@ const RadioView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
           sublabelId={`${getId(id)}-open-choice-sublabel`}
+          htmlFor={`${getId(id)}-hn-${index}`}
         />
         {options?.map((option: Options, index: number) => (
           <RadioButton
             {...rest}
             key={`${getId(id)}-${index.toString()}`}
-            inputId={getId(id) + '-hn-' + index}
+            inputId={`${getId(id)}-hn-${index}`}
             testId={`${getId(id)}-${index}-radio-open-choice`}
             value={option.type}
             onChange={(e): void => {
