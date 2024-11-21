@@ -64,7 +64,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         <ReferoLabel
           item={item}
           resources={resources}
-          htmlFor={id}
+          htmlFor={`${getId(id)}-hn-${index}`}
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label`}
           sublabelId="select-sublsbel"

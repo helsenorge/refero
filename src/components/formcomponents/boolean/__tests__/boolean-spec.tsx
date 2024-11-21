@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { clickButtonTimes, clickByLabelText, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
@@ -12,23 +12,23 @@ describe('Boolean', () => {
     vi.clearAllMocks();
   });
   describe('Render', () => {
-    it('Should render as text if props.pdf', () => {
-      const { queryByTestId } = createWrapper(q, { pdf: true });
-      expect(queryByTestId(/-pdf/i)).toBeInTheDocument();
+    it('Should render as text if props.pdf', async () => {
+      await createWrapper(q, { pdf: true });
+      expect(screen.queryByTestId(/-pdf/i)).toBeInTheDocument();
     });
-    it('Should render text if item is readonly', () => {
+    it('Should render text if item is readonly', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
 
-      const { queryByTestId } = createWrapper(questionnaire);
-      expect(queryByTestId(/-label-readonly/i)).toBeInTheDocument();
+      await createWrapper(questionnaire);
+      expect(screen.queryByTestId(/-label-readonly/i)).toBeInTheDocument();
     });
-    it('Should render as input if props.pdf === false && item is not readonly', () => {
-      const { queryByText } = createWrapper(q);
-      expect(queryByText(/-label-readonly/i)).not.toBeInTheDocument();
-      expect(queryByText(/-pdf/i)).not.toBeInTheDocument();
+    it('Should render as input if props.pdf === false && item is not readonly', async () => {
+      await createWrapper(q);
+      expect(screen.queryByText(/-label-readonly/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/-pdf/i)).not.toBeInTheDocument();
     });
   });
   describe('initialvalue', () => {
@@ -40,9 +40,9 @@ describe('Boolean', () => {
           repeats: false,
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
-      expect(getByLabelText(/Boolean/i)).not.toBeChecked();
+      expect(screen.getByLabelText(/Boolean/i)).not.toBeChecked();
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -57,19 +57,19 @@ describe('Boolean', () => {
           ],
         })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
-      expect(getByLabelText(/Boolean/i)).toBeChecked();
+      expect(screen.getByLabelText(/Boolean/i)).toBeChecked();
     });
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
@@ -83,24 +83,24 @@ describe('Boolean', () => {
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
 
-      const { getByTestId } = createWrapper(questionnaire);
-      const repeatButton = getByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = screen.getByTestId(/-repeat-button/i);
       expect(repeatButton).toBeInTheDocument();
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
-      const repeatButton = queryByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = screen.queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
@@ -114,11 +114,11 @@ describe('Boolean', () => {
           return y;
         }),
       };
-      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       await repeatCheckboxTimes(/Boolean/i, 3);
 
-      expect(queryAllByLabelText(/Boolean/i)).toHaveLength(4);
-      expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
+      expect(screen.queryAllByLabelText(/Boolean/i)).toHaveLength(4);
+      expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
   describe('delete button', () => {
@@ -127,68 +127,68 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       await repeatCheckboxTimes(/Boolean/i, 2);
 
-      expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+      expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(1)', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Boolean/i, 1);
-      const deleteButton = getByTestId(/-delete-button/i);
+      const deleteButton = screen.getByTestId(/-delete-button/i);
       expect(deleteButton).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 
-      expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
     it('Should remove item when delete button is clicked', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryByTestId } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Boolean/i, 1);
-      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);
 
-      const confirmModal = getByTestId(/-delete-confirm-modal/i);
+      const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
       await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
   describe('onChange', () => {
     it('Should update component with value from answer', async () => {
-      const { getByLabelText } = createWrapper(q);
+      await createWrapper(q);
 
-      const inputElement = getByLabelText(/Boolean/i);
+      const inputElement = screen.getByLabelText(/Boolean/i);
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', `checkbox`);
 
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
       await userEvent.click(inputElement);
-      expect(getByLabelText(/Boolean/i)).toBeChecked();
+      expect(screen.getByLabelText(/Boolean/i)).toBeChecked();
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
-      const { getByLabelText } = createWrapper(q, { onChange });
-      expect(getByLabelText(/Boolean/i)).toBeInTheDocument();
+      await createWrapper(q, { onChange });
+      expect(screen.getByLabelText(/Boolean/i)).toBeInTheDocument();
       await clickByLabelText(/Boolean/i);
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueBoolean: true,
@@ -204,36 +204,38 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, required: true })),
       };
-      const { getByText } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       await submitForm();
 
-      expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
     });
     it('Should not show error if required and has value', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, required: true })),
       };
-      const { queryByText } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       await clickByLabelText(/Boolean/i);
       await submitForm();
-      expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
     });
     it('Should not show error if form dirty and value is changed to a valid state', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, required: true })),
       };
-      const { queryByText } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       await submitForm();
-      expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      expect(screen.queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       await clickByLabelText(/Boolean/i);
 
-      expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
     });
   });
 });
 
-const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return renderRefero({ questionnaire, props: { ...props, resources } });
+const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return await waitFor(async () => {
+    return renderRefero({ questionnaire, props: { ...props, resources } });
+  });
 };

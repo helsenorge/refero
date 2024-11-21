@@ -2,7 +2,7 @@ import '../../util/__tests__/defineFetch';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import questionnaireWithMarkdown from './__data__/markdown';
 import ItemType from '../../constants/itemType';
-import { renderRefero } from '../../../test/test-utils';
+import { renderRefero, waitFor } from '../../../test/test-utils';
 
 describe('support for external markdown', () => {
   it('enableWhen should trigger when correct answer is selected', async () => {
@@ -11,7 +11,7 @@ describe('support for external markdown', () => {
       visited[q.linkId] = q.type;
       return '';
     };
-    createWrapper(questionnaireWithMarkdown, cb);
+    await createWrapper(questionnaireWithMarkdown, cb);
 
     expect(visited['0']).toBe(ItemType.GROUP);
     expect(visited['1']).toBe(ItemType.DECIMAL);
@@ -35,6 +35,8 @@ describe('support for external markdown', () => {
 });
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function createWrapper(questionnaire: Questionnaire, markdownCb: (q: QuestionnaireItem, markdown: string) => string) {
-  return renderRefero({ questionnaire, props: { onRenderMarkdown: markdownCb } });
+async function createWrapper(questionnaire: Questionnaire, markdownCb: (q: QuestionnaireItem, markdown: string) => string) {
+  return await waitFor(async () => {
+    return renderRefero({ questionnaire, props: { onRenderMarkdown: markdownCb } });
+  });
 }

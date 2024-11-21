@@ -172,7 +172,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
         <ReferoLabel
           item={item}
           resources={resources}
-          htmlFor={id}
+          htmlFor={getId(id)}
           labelId={`${getId(id)}-attachment-label`}
           testId={`${getId(id)}-attachment-label`}
           attachmentLabel={resources?.supportedFileFormats}
@@ -180,7 +180,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
         <FileUpload
           {...register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined)}
           wrapperTestId={`${getId(id)}-attachment`}
-          inputId={id}
+          inputId={getId(id)}
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}
