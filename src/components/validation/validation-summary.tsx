@@ -29,6 +29,22 @@ const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
     setFocus(fieldName, {
       shouldSelect: true,
     });
+    setTimeout(() => {
+      const element = document.querySelector(`[name="${fieldName}"]`);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        const isInViewport =
+          rect.top >= 0 &&
+          rect.left >= 0 &&
+          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+
+        // If the element is not in the viewport, scroll it into view
+        if (!isInViewport) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    }, 0);
   };
 
   useEffect(() => {
