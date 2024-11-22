@@ -141,6 +141,7 @@ const Decimal = (props: Props): JSX.Element | null => {
             handleChange(e);
             onChange(e);
           }}
+          inputMode="decimal"
           width={width}
           baseIncrementValue={baseIncrementValue}
         />

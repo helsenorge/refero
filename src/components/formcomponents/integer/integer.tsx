@@ -132,6 +132,7 @@ const Integer = (props: Props): JSX.Element | null => {
           className="page_refero__input"
           width={width}
           baseIncrementValue={baseIncrementValue}
+          inputMode="numeric"
         />
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
         <RenderRepeatButton path={path} item={item} index={index} />

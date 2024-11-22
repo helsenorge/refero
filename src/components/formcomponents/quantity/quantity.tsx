@@ -156,6 +156,7 @@ const Quantity = (props: Props): JSX.Element | null => {
               handleChange(e);
             }}
             width={width}
+            inputMode="decimal"
             baseIncrementValue={baseIncrementValue}
           />
           <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
