@@ -8,10 +8,6 @@ export interface Resources {
    */
   validationSummaryHeader: string;
   /**
-   * Filstørrelsen må være mindre enn 25MB
-   */
-  validationFileMax: string;
-  /**
    * Filtypen må være jpeg, png, eller pdf
    */
   validationFileType: string;
@@ -23,10 +19,7 @@ export interface Resources {
    * Velg...
    */
   selectDefaultPlaceholder: string;
-  /**
-   * Nullstill tidspunkt
-   */
-  resetTime: string;
+
   /**
    * Dato kan ikke være etter maksimum dato
    */
@@ -35,26 +28,6 @@ export interface Resources {
    * Dato kan ikke være før minimums dato
    */
   errorBeforeMinDate: string;
-  /**
-   * Oppgi en dato
-   */
-  dateRequired: string;
-  /**
-   * Oppgi tid
-   */
-  oppgiTid: string;
-  /**
-   * Ugyldig tid
-   */
-  ugyldigTid: string;
-  /**
-   * oppgi dato og tid
-   */
-  oppgiDatoTid: string;
-  /**
-   * Ugyldig dato og tid
-   */
-  ugyldigDatoTid: string;
   /**
    * Oppgi en verdi
    */
@@ -76,10 +49,6 @@ export interface Resources {
    */
   formSave: string;
   /**
-   * Sjekk at alt er riktig utfylt.
-   */
-  formError: string;
-  /**
    * (valgfritt)
    */
   formOptional: string;
@@ -91,14 +60,7 @@ export interface Resources {
    * Legg til
    */
   repeatButtonText: string;
-  /**
-   * Avslutt skjema
-   */
-  avsluttSkjema: string;
-  /**
-   * Fortsett
-   */
-  fortsett: string;
+
   /**
    * Forkast endringer
    */
@@ -116,14 +78,6 @@ export interface Resources {
    */
   confirmDeleteDescription: string;
   /**
-   * mm
-   */
-  minutePlaceholder: string;
-  /**
-   * tt
-   */
-  hourPlaceholder: string;
-  /**
    * Ikke besvart
    */
   ikkeBesvart: string;
@@ -131,30 +85,6 @@ export interface Resources {
    * Last opp fil
    */
   uploadButtonText: string;
-  /**
-   * Velg dato
-   */
-  filterDateCalendarButton: string;
-  /**
-   * Tilbake
-   */
-  filterDateNavigateBackward: string;
-  /**
-   * Fram
-   */
-  filterDateNavigateForward: string;
-  /**
-   * Datoen er oppgitt på feil format
-   */
-  filterDateErrorDateFormat: string;
-  /**
-   * Fra-dato kan ikke være senere enn til-dato
-   */
-  filterDateErrorBeforeMinDate: string;
-  /**
-   * Fra-dato kan ikke være senere enn til-dato
-   */
-  filterDateErrorAfterMaxDate: string;
   /**
    * er ikke tillatt
    */
@@ -179,10 +109,7 @@ export interface Resources {
    * Du har skrevet for mange tegn. Gjør teksten kortere.
    */
   stringOverMaxLengthError?: string;
-  /**
-   * Maksimum {0} tegn
-   */
-  maxLengthText?: string;
+
   /**
    * Velg filer
    */
@@ -191,98 +118,7 @@ export interface Resources {
    * Hopp til navigator
    */
   skipLinkText?: string;
-  /**
-   * Fjern dato
-   */
-  clearDate?: string;
-  /**
-   * Kalender
-   */
-  calendarLabel?: string;
-  /**
-   * Lukk
-   */
-  closeDatePicker?: string;
-  /**
-   * Bruk kalenderen og velg dato.
-   */
-  focusStartDate: string;
-  /**
-   * Gå bakover til forrige måned
-   */
-  jumpToPrevMonth?: string;
-  /**
-   * Gå fremover til neste måned
-   */
-  jumpToNextMonth?: string;
-  /**
-   * Tastatursnarveier
-   */
-  keyboardShortcuts?: string;
-  /**
-   * Åpne panelet med tastatursnarveier
-   */
-  showKeyboardShortcutsPanel?: string;
-  /**
-   * Lukk panelet med tastatursnarveier
-   */
-  hideKeyboardShortcutsPanel?: string;
-  /**
-   * Enter tast
-   */
-  enterKey?: string;
-  /**
-   * Høyre og venstre piltast
-   */
-  leftArrowRightArrow?: string;
-  /**
-   * Opp og ned piltast
-   */
-  upArrowDownArrow?: string;
-  /**
-   * Side opp og Side ned tast
-   */
-  pageUpPageDown?: string;
-  /**
-   * Hjem og Slutt tast
-   */
-  homeEnd?: string;
-  /**
-   * Escape tast
-   */
-  escape?: string;
-  /**
-   * Spørsmålstegn
-   */
-  questionMark?: string;
-  /**
-   * Åpne dette panelet
-   */
-  openThisPanel?: string;
-  /**
-   * Velg datoen som har fokus
-   */
-  selectFocusedDate?: string;
-  /**
-   * Flytt en dag bakover (venstre) og fremover (høyre)
-   */
-  moveFocusByOneDay?: string;
-  /**
-   * Flytt en uke bakover (opp) og fremover (ned)
-   */
-  moveFocusByOneWeek?: string;
-  /**
-   * Skifte måned
-   */
-  moveFocusByOneMonth?: string;
-  /**
-   * Gå til første eller siste dag av uken
-   */
-  moveFocustoStartAndEndOfWeek?: string;
-  /**
-   * Gå tilbake til datoen i inputfeltet
-   */
-  returnFocusToInput?: string;
+
   /**
    * Du må skrive inn et gyldig årstall
    */
