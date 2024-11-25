@@ -1,284 +1,249 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import moment from 'moment';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { newTimeValueAsync } from '../../../actions/newValue';
+import { getId, isReadOnly, isRequired } from '../../../util/index';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useSelector } from 'react-redux';
 
-import TimeInput from '@helsenorge/date-time/components/time-input';
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import Validation from '@helsenorge/form/components/form/validation';
+import { GlobalState, useAppDispatch } from '@/reducers';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import styles from '../common-styles.module.css';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import {
+  extractHoursAndMinutesFromAnswer,
+  getPDFValueForTime,
+  validateHours,
+  validateMaxTime,
+  validateMinTime,
+  validateMinutes,
+  validateTimeDigits,
+} from '@/util/date-utils';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { QuestionnaireItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { initialize } from '@/util/date-fns-utils';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
+import { getErrorMessage } from '@/components/validation/rules';
+import { TimeUnit } from '@/types/dateTypes';
+import { useResetFormField } from '@/hooks/useResetFormField';
+import dateStyles from './date.module.css';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label from '@helsenorge/designsystem-react/components/Label';
+import SafeText from '@/components/referoLabel/SafeText';
 
-import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
-import ExtensionConstants from '../../../constants/extensions';
-import { GlobalState } from '../../../reducers';
-import { getExtension, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
-import TextView from '../textview';
+export type Props = QuestionnaireComponentItemProps;
 
-export interface Props {
-  value?: string;
-  answer: QuestionnaireResponseItemAnswer;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
-  resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  path: Array<Path>;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  id?: string;
-  renderFieldset?: boolean;
-  className?: string;
-  enable?: boolean;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-}
+const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
+  initialize();
 
-class Time extends React.Component<Props & ValidationProps> {
-  static defaultProps: Partial<Props> = {
-    renderFieldset: true,
-    path: [],
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+  const dispatch = useAppDispatch();
+
+  const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
+  const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
+  const answer = useGetAnswer(linkId, path);
+  const hoursAndMinutesFromAnswer = extractHoursAndMinutesFromAnswer(answer, item);
+  const hours = hoursAndMinutesFromAnswer?.hours;
+  const minutes = hoursAndMinutesFromAnswer?.minutes;
+  const [hoursValue, setHoursValue] = useState(hours);
+  const [minutesValue, setMinutesValue] = useState(minutes);
+
+  useResetFormField(`${idWithLinkIdAndItemIndex}-hours`, hours);
+  useResetFormField(`${idWithLinkIdAndItemIndex}-minutes`, minutes);
+
+  const getTimeValueFromAnswer = (): string | undefined => {
+    if (!answer) return undefined;
+
+    const answerItem = Array.isArray(answer) ? answer[0] : answer;
+    return answerItem ? answerItem.valueTime : '';
   };
 
-  constructor(props: Props) {
-    super(props);
+  useEffect(() => {
+    setValue(`${idWithLinkIdAndItemIndex}-hours`, hours);
+    setValue(`${idWithLinkIdAndItemIndex}-minutes`, minutes);
+  }, []);
 
-    this.onTimeChange = this.onTimeChange.bind(this);
-    this.getValue = this.getValue.bind(this);
-  }
-
-  convertAnswerToString(answer: QuestionnaireResponseItemAnswer): string {
-    if (answer && answer.valueTime) {
-      return answer.valueTime;
+  const dispatchNewTime = (newTime: string): void => {
+    if (dispatch && onAnswerChange && path && item) {
+      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState => onAnswerChange(newState, item, { valueTime: newTime }));
     }
-    if (answer && answer.valueDate) {
-      return this.getTimeStringFromDate(parseDate(String(answer.valueDate)));
+  };
+
+  const updateQuestionnaireResponse = (newHours: string | undefined, newMinutes: string | undefined): void => {
+    const validTime = makeValidTime(newHours, newMinutes);
+    dispatchNewTime(validTime);
+    if (promptLoginMessage) {
+      promptLoginMessage();
     }
-    if (answer && answer.valueDateTime) {
-      return this.getTimeStringFromDate(parseDate(String(answer.valueDateTime)));
+  };
+
+  const handleHoursChange = (newHours: string | undefined): void => {
+    let newMinutes: string | undefined = minutes;
+    if (!minutes) {
+      newMinutes = '00';
     }
-    return '';
-  }
-
-  getValue(): string | undefined {
-    const { value, answer } = this.props;
-    if (value) {
-      return value;
+    let newString = newHours === '' ? undefined : newHours;
+    if (newHours && Number(newHours) >= 0 && Number(newHours) < 24) {
+      newString = newHours;
     }
-    if (Array.isArray(answer)) {
-      return answer.map(m => this.convertAnswerToString(m)).join(', ');
-    }
-    return this.convertAnswerToString(answer);
-  }
+    setHoursValue(newString);
+    updateQuestionnaireResponse(newHours, newMinutes);
+  };
 
-  getPDFValue(): string {
-    const value = this.getValue();
-    if (!value) {
-      let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
-      }
-      return text;
-    }
-    return value;
-  }
-
-  getTimeStringFromDate(date: Date): string {
-    const momentDate = moment(date);
-    return `${momentDate.hours()}${DateTimeConstants.TIME_SEPARATOR}${momentDate.minutes()}`;
-  }
-
-  getMaxHour(): number {
-    const maxTime = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
-    if (!maxTime) {
-      return 23;
-    }
-    const maxTimeString = String(maxTime.valueTime);
-    const hoursString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-    return parseInt(hoursString, 10);
-  }
-
-  getMaxMinute(): number {
-    const maxTime = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
-    if (!maxTime) {
-      return 59;
-    }
-    const maxTimeString = String(maxTime.valueTime);
-    const minuteString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-    return parseInt(minuteString, 10);
-  }
-
-  getMinHour(): number {
-    const minTime = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
-    if (!minTime) {
-      return 0;
-    }
-    const minTimeString = String(minTime.valueTime);
-    const hoursString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-    return parseInt(hoursString, 10);
-  }
-
-  getMinMinute(): number {
-    const minTime = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
-    if (!minTime) {
-      return 0;
-    }
-    const minTimeString = String(minTime.valueTime);
-    const minuteString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-    return parseInt(minuteString, 10);
-  }
-
-  dispatchNewTime(newTime: string): void {
-    const { dispatch, item, path, onAnswerChange } = this.props;
-    if (dispatch) {
-      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueTime: newTime } as QuestionnaireResponseItemAnswer)
-      );
-    }
-  }
-
-  onTimeChange(newTime: string = ''): void {
-    const validTime = this.makeValidTime(newTime);
-
-    this.dispatchNewTime(validTime);
-    if (this.props.promptLoginMessage) {
-      this.props.promptLoginMessage();
-    }
-  }
-
-  makeValidTime(time: string): string {
-    const values = time.split(':');
-    const hours = values[0] || '00';
-    const minutes = values[1] || '00';
-    return this.addSeconds(`${hours.slice(-2)}:${minutes.slice(-2)}`);
-  }
-
-  addSeconds(time: string): string {
-    if (time !== '' && time.split(':').length === 2) {
-      return (time += ':00');
-    }
-    return time;
-  }
-
-  padNumber(value?: string): string {
-    if (value) {
-      const values = value.split(':');
-      let retVal = '';
-      for (let i = 0; i < values.length; i++) {
-        let timeString = '';
-        if (parseInt(values[i], 10) < 10 && values[i].length === 1) {
-          timeString += '0';
-        }
-        timeString += values[i];
-        if (i !== values.length - 1) {
-          timeString += ':';
-        }
-        retVal += timeString;
-      }
-      return retVal;
-    }
-    return '';
-  }
-
-  getResetButtonText(): string {
-    if (this.props.resources && this.props.resources.resetTime) {
-      return this.props.resources.resetTime;
-    }
-    return '';
-  }
-
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
-
-  render(): JSX.Element | null {
-    const { pdf, item, renderFieldset, id, onRenderMarkdown } = this.props;
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
-
-    if (pdf || isReadOnly(this.props.item)) {
-      const value = this.getPDFValue();
-      if (renderFieldset) {
-        return (
-          <TextView
-            id={id}
-            item={this.props.item}
-            value={this.padNumber(value)}
-            onRenderMarkdown={onRenderMarkdown}
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-          >
-            {this.props.children}
-          </TextView>
-        );
-      } else if (value) {
-        return (
-          <span>
-            {', kl. '} {this.padNumber(value)}
-          </span>
-        );
-      }
-      return <span />;
+  const handleMinutesChange = (newMinutes: string | undefined): void => {
+    //trigger validations in the hour field as well, to validate if time is valid
+    if (formState.isSubmitted) {
+      trigger(idWithLinkIdAndItemIndex + '-hours');
     }
 
+    let newHours: string | undefined = hours;
+    if (!hours) {
+      newHours = '00';
+    }
+    let newString = newMinutes === '' ? undefined : newMinutes;
+    if (newMinutes && Number(newMinutes) >= 0 && Number(newMinutes) < 60) {
+      newString = newMinutes;
+    }
+    setMinutesValue(newString);
+    updateQuestionnaireResponse(newHours, newMinutes);
+  };
+
+  const makeValidTime = (hours: string | undefined, minutes: string | undefined): string => {
+    const paddedHours = hours?.padStart(2, '0');
+    const paddedMinutes = minutes?.padStart(2, '0');
+
+    return `${paddedHours}:${paddedMinutes}:00`;
+  };
+
+  function getCombinedFieldError(hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
+    const error = hoursField.error || minutesField.error || undefined;
+    return error;
+  }
+
+  const validationRulesHours: RegisterOptions<FieldValues, string> | undefined = {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validDigits: value => {
+        return value ? validateTimeDigits(value, TimeUnit.Hours, resources) : true;
+      },
+      validHours: value => {
+        const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+        return value && minutesValue ? validateHours(Number(value), resources) : true;
+      },
+      validMinTime: value => {
+        const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+        return value && minutesValue ? validateMinTime(value, minutesValue, resources, item) : true;
+      },
+      validMaxTime: value => {
+        const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+        return value && minutesValue ? validateMaxTime(value, minutesValue, resources, item) : true;
+      },
+    },
+    shouldUnregister: true,
+  };
+
+  const validationRulesMinutes: RegisterOptions<FieldValues, string> | undefined = {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validDigits: value => {
+        return value ? validateTimeDigits(value, TimeUnit.Minutes, resources) : true;
+      },
+      validMinutes: value => {
+        const hoursValue = getValues(idWithLinkIdAndItemIndex + '-hours');
+        return value && hoursValue ? validateMinutes(Number(value), resources) : true;
+      },
+    },
+    shouldUnregister: true,
+  };
+
+  const { onChange: onChangeHours, ...restHours } = register(
+    `${idWithLinkIdAndItemIndex}-hours`,
+    shouldValidate(item, pdf) ? validationRulesHours : undefined
+  );
+  const { onChange: onChangeMinutes, ...restMinutes } = register(
+    `${idWithLinkIdAndItemIndex}-minutes`,
+    shouldValidate(item, pdf) ? validationRulesMinutes : undefined
+  );
+
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_time">
-        <Validation {...this.props}>
-          <TimeInput
-            id={getId(id)}
-            value={this.getValue()}
-            legend={
-              <Label
-                item={this.props.item}
-                onRenderMarkdown={this.props.onRenderMarkdown}
-                questionnaire={this.props.questionnaire}
-                resources={this.props.resources}
-              />
-            }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            maxHour={this.getMaxHour()}
-            minHour={this.getMinHour()}
-            maxMinute={this.getMaxMinute()}
-            minMinute={this.getMinMinute()}
-            onBlur={this.onTimeChange}
-            className={this.props.className + ' page_refero__input'}
-            renderFieldset={this.props.renderFieldset}
-            errorMessage={getValidationTextExtension(item)}
-            resetButton={{
-              resetButtonText: this.getResetButtonText(),
-              onReset: this.onTimeChange,
-            }}
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-          />
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={getTimeValueFromAnswer()}
+        pdfValue={getPDFValueForTime(answer, item, resources)}
+        errors={getCombinedFieldError(hoursField, minutesField)}
+      >
+        {children}
+      </ReadOnly>
     );
   }
-}
-const withCommonFunctionsComponent = withCommonFunctions(Time);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+  return (
+    <div className="page_refero__component page_refero__component_time">
+      <FormGroup
+        error={getErrorMessage(item, getCombinedFieldError(hoursField, minutesField))}
+        errorWrapperClassName={styles.paddingBottom}
+      >
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={`${getId(id)}-datetime-hours`}
+          labelId={`${getId(id)}-label`}
+          testId={`${getId(id)}-label-test`}
+          sublabelId={`${getId(id)}-sublabel`}
+        />
+        <div className={dateStyles.timeWrapper}>
+          <Input
+            {...restHours}
+            inputId={`${getId(id)}-datetime-hours`}
+            type="number"
+            testId={`time-1`}
+            onChange={e => {
+              handleHoursChange(e.target.value);
+              onChangeHours(e);
+            }}
+            width={4}
+            value={hoursValue}
+          />
+          <Label labelTexts={[]} className={dateStyles.timeColon}>
+            <SafeText as="span" text={':'}></SafeText>
+          </Label>
+          <Input
+            {...restMinutes}
+            type="number"
+            testId={`time-2`}
+            onChange={e => {
+              handleMinutesChange(e.target.value);
+              onChangeMinutes(e);
+            }}
+            width={4}
+            value={minutesValue}
+          />
+        </div>
+
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path} item={item} index={index} />
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      </FormGroup>
+    </div>
+  );
+};
+
+export default Time;

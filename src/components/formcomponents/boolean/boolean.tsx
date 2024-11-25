@@ -1,50 +1,57 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import { CheckBox } from '@helsenorge/form/components/checkbox';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-
+import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import styles from '../common-styles.module.css';
 import Pdf from './pdf';
-import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
+import { newBooleanValueAsync } from '@/actions/newValue';
+import { GlobalState, useAppDispatch } from '@/reducers';
+import { isReadOnly, getId, getSublabelText, getLabelText } from '@/util/index';
+import SafeText from '../../referoLabel/SafeText';
+import { useSelector } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { getFormDefinition } from '@/reducers/form';
+import { getErrorMessage, required } from '@/components/validation/rules';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
-export interface Props {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseItemAnswer;
-  resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  path: Array<Path>;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  id?: string;
-  onValidated?: (valid: boolean | undefined) => void;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
-  repeatButton: JSX.Element;
-  oneToTwoColumn: boolean;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-}
+export type Props = QuestionnaireComponentItemProps & {
+  children?: React.ReactNode;
+};
 
-class Boolean extends React.Component<Props & ValidationProps, {}> {
-  getValue(): boolean {
-    const { item, answer } = this.props;
+const Boolean = (props: Props): JSX.Element | null => {
+  const { path, pdf, id, index, idWithLinkIdAndItemIndex, linkId, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
+
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+
+  const dispatch = useAppDispatch();
+  const { onRenderMarkdown, promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const answer = useGetAnswer(linkId, path);
+  const getValue = (): boolean => {
+    if (answer && Array.isArray(answer)) {
+      return answer.map(m => m.valueBoolean).filter(f => f !== undefined)[0] ?? false;
+    }
     if (answer && answer.valueBoolean !== undefined) {
       return answer.valueBoolean;
     }
@@ -52,87 +59,98 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
       return false;
     }
     return item.initial[0].valueBoolean;
-  }
+  };
+  const value = getValue();
 
-  handleChange = (): void => {
-    const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
-    const newValue = !this.getValue();
-    if (dispatch) {
-      dispatch(newBooleanValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
-      );
+  useResetFormField(props.idWithLinkIdAndItemIndex, value);
+
+  const handleChange = (): void => {
+    const newValue = !getValue();
+    if (dispatch && item) {
+      path &&
+        dispatch(newBooleanValueAsync(path, newValue, item))?.then(
+          newState => onAnswerChange && onAnswerChange(newState, item, { valueBoolean: newValue })
+        );
     }
 
-    if (promptLoginMessage) {
-      promptLoginMessage();
-    }
+    promptLoginMessage?.();
   };
 
-  getLabel = (): JSX.Element => {
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: required({ item, resources }),
+    shouldUnregister: true,
+  };
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+
+  if (pdf) {
+    return <Pdf item={item} checked={getValue()} />;
+  } else if (isReadOnly(item)) {
     return (
-      <Label
-        item={this.props.item}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        questionnaire={this.props.questionnaire}
-        resources={this.props.resources}
-      />
-    );
-  };
-
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
-
-  render(): JSX.Element | null {
-    if (this.props.pdf) {
-      return <Pdf item={this.props.item} checked={this.getValue()} onRenderMarkdown={this.props.onRenderMarkdown} />;
-    } else if (isReadOnly(this.props.item)) {
-      return (
-        <CheckBox
-          label={this.getLabel()}
-          id={getId(this.props.id)}
-          checked={this.getValue()}
-          disabled
-          isStyleBlue
+      <FormGroup error={getErrorMessage(item, error)}>
+        <Checkbox
+          testId={`${getId(id)}-readonly`}
+          label={
+            <Label
+              testId={`${getId(id)}-label-readonly`}
+              labelTexts={[{ text: item?.text || '' }]}
+              afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+            />
+          }
+          checked={getValue()}
+          disabled={true}
           onChange={(): void => {
             /*kan ikke endres, er alltid disabled*/
           }}
           className="page_refero__input"
         />
-      );
-    }
-    return (
-      // Dette er en hack for FHI-skjema. TODO: fjern hack
-      <div className="page_refero__component page_refero__component_boolean">
-        <Validation {...this.props}>
-          <CheckBox
-            label={this.getLabel()}
-            id={getId(this.props.id)}
-            isRequired={isRequired(this.props.item)}
-            errorMessage={getValidationTextExtension(this.props.item)}
-            checked={this.getValue()}
-            onChange={this.handleChange}
-            disabled={isReadOnly(this.props.item)}
-            className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            isStyleBlue
-          />
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      </FormGroup>
     );
   }
-}
-const withCommonFunctionsComponent = withCommonFunctions(Boolean);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
-export default connectedComponent;
+  return (
+    <div className="page_refero__component page_refero__component_boolean">
+      <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
+        <Checkbox
+          {...rest}
+          testId={`${getId(id)}-boolean`}
+          inputId={getId(id)}
+          label={
+            <Label
+              labelId={`${getId(id)}-label-boolean`}
+              testId={`${getId(id)}-label-boolean`}
+              labelTexts={[{ text: item?.text || '', type: 'normal' }]}
+              htmlFor={getId(id)}
+              className="page_refero__label label_helpButton_align"
+              sublabel={
+                <Sublabel
+                  testId={`${getId(id)}-sublabel-boolean`}
+                  id={`${getId(id)}-sublabel-boolean`}
+                  sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
+                />
+              }
+              afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+            >
+              <SafeText text={labelText} />
+            </Label>
+          }
+          checked={value}
+          onChange={(e): void => {
+            handleChange();
+            onChange(e);
+          }}
+          className="page_refero__input"
+        />
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
+      </FormGroup>
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+
+      <RenderRepeatButton path={path} item={item} index={index} />
+
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
+    </div>
+  );
+};
+
+export default Boolean;

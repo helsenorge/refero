@@ -1,32 +1,17 @@
-import * as React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { mount } from 'enzyme';
-
-import '../../util/defineFetch';
-import rootReducer from '../../reducers';
+import '../../util/__tests__/defineFetch';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { ReferoContainer } from '..';
-import { Resources } from '../../util/resources';
 import questionnaireWithMarkdown from './__data__/markdown';
 import ItemType from '../../constants/itemType';
+import { renderRefero, waitFor } from '../../../test/test-utils';
 
 describe('support for external markdown', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('enableWhen should trigger when correct answer is selected', async () => {
-    let visited = {};
-    let cb = (q: QuestionnaireItem, _markdown: string) => {
+    const visited: { [key: string]: string } = {};
+    const cb = (q: QuestionnaireItem): string => {
       visited[q.linkId] = q.type;
       return '';
     };
-    const wrapper = createWrapper(questionnaireWithMarkdown, cb);
-    wrapper.render();
+    await createWrapper(questionnaireWithMarkdown, cb);
 
     expect(visited['0']).toBe(ItemType.GROUP);
     expect(visited['1']).toBe(ItemType.DECIMAL);
@@ -49,21 +34,9 @@ describe('support for external markdown', () => {
   });
 });
 
-function createWrapper(questionnaire: Questionnaire, markdownCb: (q: QuestionnaireItem, markdown: string) => string) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={questionnaire}
-        onRenderMarkdown={markdownCb}
-      />
-    </Provider>
-  );
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function createWrapper(questionnaire: Questionnaire, markdownCb: (q: QuestionnaireItem, markdown: string) => string) {
+  return await waitFor(async () => {
+    return renderRefero({ questionnaire, props: { onRenderMarkdown: markdownCb } });
+  });
 }

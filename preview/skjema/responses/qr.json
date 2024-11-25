@@ -1,0 +1,15 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "ef5f832e-f959-41f1-a589-d784f61600ec",
+      "text": "Vennligst velg en dato og en tid",
+      "answer": [
+        {
+          "valueDateTime": "2024-11-14T12:12:00+01:00"
+        }
+      ]
+    }
+  ]
+}

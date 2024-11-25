@@ -1,71 +1,132 @@
-import * as React from 'react';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
-import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
+import styles from '../common-styles.module.css';
+import codeSystems from '@/constants/codingsystems';
+import { Extensions } from '@/constants/extensions';
+import { getId, isReadOnly } from '@/util';
+import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
+import { getExtension } from '@/util/extension';
+import { isString } from '@/util/typeguards';
 
-import codeSystems from '../../../constants/codingsystems';
-import ExtensionConstants from '../../../constants/extensions';
-import { getCodes as getCodingSystemCodes } from '../../../util/codingsystem';
-import { getExtension } from '../../../util/extension';
-import { isString } from '../../../util/typeguards';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { getErrorMessage, isInteger, maxValue, minValue, required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { GlobalState } from '@/reducers';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { shouldValidate } from '@/components/validation/utils';
+import { ReadOnly } from '../read-only/readOnly';
 
-interface SliderProps {
-  item: QuestionnaireItem;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
+export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
-  children: React.ReactNode;
-}
+  pdfValue?: string | number;
+};
 enum SliderDisplayTypes {
   Label = 'label',
   OrdinalValue = 'ordnialValue',
-  default = 'label',
+  default = '',
 }
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children }) => {
-  const title = item.text;
+const SliderView = (props: SliderProps): JSX.Element | null => {
+  const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children, pdfValue } = props;
+  const { resources } = useExternalRenderContext();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
 
   const onValueChange = (index: number): void => {
-    const code = item.answerOption?.[index]?.valueCoding?.code;
-
+    const code = item?.answerOption?.[index]?.valueCoding?.code;
     if (code) {
       handleChange(code);
     }
   };
 
   const getSelectedStep = (): number | undefined => {
-    if (item.answerOption && selected && selected[0]) {
+    if (item?.answerOption && selected && selected[0]) {
       const stepCodes = getCodes(item.answerOption);
       for (let i = 0; i < stepCodes.length; i++) {
         if (stepCodes[i] === selected[0]) {
-          const selectedStepIndex = i;
-          return selectedStepIndex;
+          return i;
         }
       }
     } else {
       return undefined;
     }
   };
+
   const displayType = getCodingSystemCodes(item, codeSystems.SliderDisplayType);
   const sliderSteps = item?.answerOption?.map(option =>
     mapToSliderStep(option, (displayType?.[0]?.code as SliderDisplayTypes) || SliderDisplayTypes.OrdinalValue)
   );
   const leftRightLabels = getLeftRightLabels(item);
+  const isSelected = selected && selected[0] ? true : false;
+
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: required({ item, resources }),
+    min: minValue({ item, resources }),
+    max: maxValue({ item, resources }),
+    shouldUnregister: true,
+    setValueAs: value => (isSelected ? value : undefined),
+  };
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={selected}
+        pdfValue={pdfValue}
+        errors={error}
+      >
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <Slider
-        title={title}
-        labelLeft={leftRightLabels?.leftLabel}
-        labelRight={leftRightLabels?.rightLabel}
-        onChange={onValueChange}
-        steps={sliderSteps}
-        value={getSelectedStep()}
-        selected={selected && selected[0] ? true : false}
-      />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+      <FormGroup onColor="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
+        <ReferoLabel
+          htmlFor={getId(id)}
+          item={item}
+          labelId={`${getId(id)}-slider-choice-label`}
+          testId={`${getId(id)}-slider-choice-label`}
+          sublabelId={`${getId(id)}-slider-choice-sublabel`}
+          resources={resources}
+        />
+        <Slider
+          {...rest}
+          labelLeft={leftRightLabels?.leftLabel}
+          labelRight={leftRightLabels?.rightLabel}
+          steps={sliderSteps}
+          testId={`${getId(id)}-${index}-slider-choice`}
+          onChange={(e): void => {
+            const val = e.target.value;
+            if (isInteger(val)) {
+              onValueChange(Number(val));
+              onChange(e);
+            }
+          }}
+          selected={isSelected}
+          value={getSelectedStep()}
+        />
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path} item={item} index={index} />
+        <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
+      </FormGroup>
     </div>
   );
 };
@@ -93,13 +154,12 @@ function getLeftRightLabels(item?: QuestionnaireItem): LeftRightLabels | undefin
 }
 
 function getStepLabel(option: QuestionnaireItemAnswerOption, displayType: SliderDisplayTypes): number | string | undefined {
-  if (displayType === SliderDisplayTypes.OrdinalValue)
-    return getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding)?.valueDecimal;
+  if (displayType === SliderDisplayTypes.OrdinalValue) return getExtension(Extensions.ORDINAL_VALUE_URL, option.valueCoding)?.valueDecimal;
   return option.valueCoding?.display;
 }
 
 function getStepEmoji(option: QuestionnaireItemAnswerOption): string | undefined {
-  const emojiLabel = getExtension(ExtensionConstants.VALUESET_LABEL, option.valueCoding)?.valueString?.trim();
+  const emojiLabel = getExtension(Extensions.VALUESET_LABEL_URL, option.valueCoding)?.valueString?.trim();
   if (!emojiLabel) return undefined;
 
   return convertToEmoji(emojiLabel);

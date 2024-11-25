@@ -1,415 +1,199 @@
-import * as React from 'react';
+import React from 'react';
 
-import {
-  QuestionnaireResponseItem,
-  Questionnaire,
-  QuestionnaireResponse,
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Quantity,
-} from 'fhir/r4';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { PresentationButtonsType } from '@constants/presentationButtonsType';
 
-import { DispatchProps } from '../types/dispatchProps';
-import { ReferoProps } from '../types/referoProps';
-import { State } from '../types/state';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { ReferoProps } from '@/types/referoProps';
 
 import RenderForm from './renderForm';
 import StepView from './stepView';
-import { setSkjemaDefinition } from '../actions/form';
-import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../actions/newValue';
-import RepeatButton from '../components/formcomponents/repeat/repeat-button';
-import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
-import ItemType from '../constants/itemType';
-import { PresentationButtonsType } from '../constants/presentationButtonsType';
-import { GlobalState } from '../reducers';
-import { getFormDefinition, getFormData } from '../reducers/form';
-import { FormDefinition, FormData } from '../reducers/form';
-import { ActionRequester } from '../util/actionRequester';
-import {
-  getQuestionnaireUnitExtensionValue,
-  getPresentationButtonsExtension,
-  getNavigatorExtension,
-  getCodingTextTableValues,
-} from '../util/extension';
-import { getTopLevelElements } from '../util/getTopLevelElements';
-import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
-import { QuestionniareInspector } from '../util/questionnaireInspector';
-import {
-  getRootQuestionnaireResponseItemFromData,
-  Path,
-  createPathForItem,
-  getAnswerFromResponseItem,
-  shouldRenderDeleteButton,
-  createIdSuffix,
-  getQuestionnaireDefinitionItem,
-  getResponseItemAndPathWithLinkId,
-} from '../util/refero-core';
-import { RenderContext } from '../util/renderContext';
-import { ScoringCalculator } from '../util/scoringCalculator';
-import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 
-interface StateProps {
-  formDefinition?: FormDefinition | null;
-  formData?: FormData | null;
-}
+import { GlobalState, useAppDispatch } from '@/reducers';
+import { getFormDefinition, getFormData } from '@/reducers/form';
+import { FormDefinition, FormData } from '@/reducers/form';
 
-class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
-  constructor(props: StateProps & DispatchProps & ReferoProps) {
-    super(props);
-    const questionnaire = this.props.questionnaire ? this.props.questionnaire : this.props.formDefinition?.Content;
-    this.state = {
-      valid: true,
-      validated: false,
-      showCancelLightbox: false,
-      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined,
-    };
-  }
+import { getPresentationButtonsExtension } from '@/util/extension';
+import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
 
-  onSubmit = (): void => {
-    const { formData, onSubmit } = this.props;
+import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
+import { ExternalRenderProvider } from '@/context/externalRenderContext';
+import { setSkjemaDefinitionAction } from '@/actions/form';
+import { AttachmentProvider } from '@/context/AttachmentContext';
+import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
+import { createIntitialFormValues } from '@/validation/defaultFormValues';
+
+const Refero = (props: ReferoProps): JSX.Element | null => {
+  const {
+    resources,
+    authorized,
+    pdf,
+    sticky,
+    onRequestHelpButton,
+    onRequestHelpElement,
+    onRenderMarkdown,
+    fetchReceivers,
+    fetchValueSet,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+    promptLoginMessage,
+    autoSuggestProps,
+    validateScriptInjection,
+    onChange,
+    attachmentErrorMessage,
+    attachmentMaxFileSize,
+    attachmentValidTypes,
+    onDeleteAttachment,
+    onRequestAttachmentLink,
+    onOpenAttachment,
+    uploadAttachment,
+    useFormProps,
+  } = props;
+  IE11HackToWorkAroundBug187484();
+  const dispatch = useAppDispatch();
+  const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
+  const formData = useSelector<GlobalState, FormData | null>((state: GlobalState) => getFormData(state));
+  const questionnaire = formDefinition?.Content;
+  // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
+  const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item?.length]);
+  const methods = useForm({
+    defaultValues: defualtVals,
+    shouldFocusError: false,
+    mode: 'onChange',
+    criteriaMode: 'all',
+    ...(useFormProps !== undefined && { ...useFormProps }),
+
+    // resolver: async (data, context, options) => {
+    //   // you can debug your validation schema here
+    //   console.log('resolver in data', data);
+    //   console.log('resolver validation result', await zodResolver(schema)(data, context, options));
+    //   return zodResolver(schema)(data, context, options);
+    // },
+  });
+  React.useEffect(() => {
+    if (props.questionnaire) {
+      dispatch(
+        setSkjemaDefinitionAction({
+          questionnaire: props.questionnaire,
+          questionnaireResponse: props.questionnaireResponse,
+          language: props.language,
+          syncQuestionnaireResponse: props.syncQuestionnaireResponse,
+        })
+      );
+    }
+  }, [props.language, props.syncQuestionnaireResponse]);
+  const externalRenderProps = {
+    onRequestHelpElement,
+    onRequestHelpButton,
+    onRenderMarkdown,
+    fetchValueSet,
+    fetchReceivers,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+    promptLoginMessage,
+    resources,
+    autoSuggestProps,
+    validateScriptInjection,
+    onChange,
+  };
+
+  const attachmentProviderProps = {
+    attachmentErrorMessage,
+    attachmentMaxFileSize,
+    attachmentValidTypes,
+    onDeleteAttachment,
+    onRequestAttachmentLink,
+    onOpenAttachment,
+    uploadAttachment,
+  };
+  const handleSubmit = (): void => {
+    const { onSubmit } = props;
 
     if (formData && formData.Content && onSubmit) {
       onSubmit(formData.Content);
     }
   };
 
-  onSave = (): void => {
-    if (this.props.onSave && this.props.formData && this.props.formData.Content) {
-      this.props.onSave(this.props.formData.Content);
+  const handleSave = (): void => {
+    if (props.onSave && formData?.Content) {
+      props.onSave(formData.Content);
     }
   };
 
-  componentDidMount(): void {
-    this.props.mount();
-  }
+  const getButtonClasses = (
+    presentationButtonsType: PresentationButtonsType | null,
+    defaultClasses: string[] = [],
+    sticky: boolean | undefined
+  ): string => {
+    const classes = [...defaultClasses];
 
-  componentDidUpdate(): void {
-    IE11HackToWorkAroundBug187484();
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps: ReferoProps): void {
-    if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
-      this.props.updateSkjema(
-        nextProps.questionnaire,
-        nextProps.questionnaireResponse,
-        nextProps.language,
-        nextProps.syncQuestionnaireResponse
-      );
-      this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
-    }
-  }
-  onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
-    if (this.props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
-      const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
-
-      const questionnaireInspector = new QuestionniareInspector(
-        newState.refero.form.FormDefinition.Content,
-        newState.refero.form.FormData.Content
-      );
-
-      this.props.onChange(item, answer, actionRequester, questionnaireInspector);
-
-      for (const action of actionRequester.getActions()) {
-        this.props.dispatch(action);
-      }
-    }
-
-    this.runScoringCalculator(newState);
-  };
-
-  getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {
-    return new ScoringCalculator(questionnaire);
-  };
-
-  runScoringCalculator = (newState: GlobalState): void => {
-    const questionnaireResponse = newState.refero?.form?.FormData?.Content;
-    const questionnaire = newState.refero.form.FormDefinition?.Content;
-    if (!questionnaire || !questionnaireResponse) return;
-
-    if (this.state.scoringCalculator) {
-      const scores = this.state.scoringCalculator.calculateScore(questionnaireResponse);
-      this.updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
-
-      const fhirScores = this.state.scoringCalculator.calculateFhirScore(questionnaireResponse);
-      this.updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
-    }
-  };
-
-  updateQuestionnaireResponseWithScore = (
-    scores: { [linkId: string]: number | undefined },
-    questionnaire: Questionnaire,
-    questionnaireResponse: QuestionnaireResponse
-  ): void => {
-    const actions: Array<NewValueAction> = [];
-    for (const linkId in scores) {
-      const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
-      if (!item) continue;
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
-      const value = scores[linkId];
-
-      switch (item.type) {
-        case ItemType.QUANTITY: {
-          const extension = getQuestionnaireUnitExtensionValue(item);
-          if (!extension) continue;
-
-          const quantity: Quantity = {
-            unit: extension.display,
-            system: extension.system,
-            code: extension.code,
-            value: getDecimalValue(item, value),
-          };
-          for (const itemAndPath of itemsAndPaths) {
-            actions.push(newQuantityValue(itemAndPath.path, quantity, item));
-          }
-          break;
-        }
-        case ItemType.DECIMAL: {
-          const decimalValue = getDecimalValue(item, value);
-          for (const itemAndPath of itemsAndPaths) {
-            actions.push(newDecimalValue(itemAndPath.path, decimalValue, item));
-          }
-          break;
-        }
-        case ItemType.INTEGER: {
-          const intValue = value !== undefined ? Math.round(value) : undefined;
-          for (const itemAndPath of itemsAndPaths) {
-            actions.push(newIntegerValue(itemAndPath.path, intValue, item));
-          }
-          break;
-        }
-      }
-    }
-
-    for (const a of actions) {
-      this.props.dispatch(a);
-    }
-  };
-
-  renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
-    const { formDefinition, resources, formData, promptLoginMessage } = this.props;
-    if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
-      return undefined;
-    }
-    const contained = formDefinition.Content.contained;
-    const renderedItems: Array<JSX.Element> | undefined = [];
-    const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
-    let isNavigatorBlindzoneInitiated = false;
-
-    const questionnaireItemArray: QuestionnaireItem[] | undefined = shouldFormBeDisplayedAsStepView(formDefinition)
-      ? getTopLevelElements(formDefinition)
-      : formDefinition.Content.item;
-
-    questionnaireItemArray?.map(item => {
-      if (isHiddenItem(item)) return [];
-      const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
-      if (!Comp) {
-        return undefined;
-      }
-      let responseItems: Array<QuestionnaireResponseItem> | undefined;
-      if (formData) {
-        responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
-      }
-
-      if (responseItems && responseItems.length > 0) {
-        responseItems.forEach((responseItem, index) => {
-          const repeatButton =
-            item.repeats && shouldRenderRepeatButton(item, responseItems, index) ? (
-              <div className="page_refero__repeatbutton-wrapper">
-                <RepeatButton
-                  key={`item_${item.linkId}_add_repeat_item`}
-                  resources={this.props.resources}
-                  item={item}
-                  responseItems={responseItems}
-                  parentPath={this.props.path}
-                  renderContext={new RenderContext()}
-                  disabled={item.type !== ItemType.GROUP && !responseItem.answer}
-                />
-              </div>
-            ) : undefined;
-          const path = createPathForItem(this.props.path, item, responseItem, index);
-          // legg på blindzone rett over den første seksjonen
-          if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
-            isNavigatorBlindzoneInitiated = true;
-            renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
-          }
-          renderedItems.push(
-            <Comp
-              language={formDefinition.Content?.language}
-              pdf={pdf}
-              includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}
-              promptLoginMessage={promptLoginMessage}
-              key={`item_${responseItem.linkId}_${index}`}
-              id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
-              item={item}
-              questionnaire={formDefinition.Content}
-              responseItem={responseItem}
-              answer={getAnswerFromResponseItem(responseItem)}
-              resources={resources}
-              containedResources={contained}
-              path={path}
-              headerTag={Constants.DEFAULT_HEADER_TAG}
-              visibleDeleteButton={shouldRenderDeleteButton(item, index)}
-              repeatButton={repeatButton}
-              onRequestAttachmentLink={this.props.onRequestAttachmentLink}
-              onOpenAttachment={this.props.onOpenAttachment}
-              onDeleteAttachment={this.props.onDeleteAttachment}
-              uploadAttachment={this.props.uploadAttachment}
-              onRequestHelpButton={this.props.onRequestHelpButton}
-              onRequestHelpElement={this.props.onRequestHelpElement}
-              attachmentErrorMessage={this.props.attachmentErrorMessage}
-              attachmentMaxFileSize={this.props.attachmentMaxFileSize}
-              attachmentValidTypes={this.props.attachmentValidTypes}
-              validateScriptInjection={this.props.validateScriptInjection}
-              onAnswerChange={this.onAnswerChange}
-              renderContext={new RenderContext()}
-              onRenderMarkdown={this.props.onRenderMarkdown}
-              fetchValueSet={this.props.fetchValueSet}
-              autoSuggestProps={this.props.autoSuggestProps}
-              fetchReceivers={this.props.fetchReceivers}
-            />
-          );
-        });
-      }
-    });
-    return renderedItems;
-  }
-
-  renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
-    const { formDefinition, resources } = this.props;
-
-    if (!formDefinition || !formDefinition.Content || !resources) {
-      return null;
-    }
-
-    if (pdf) {
-      return this.renderFormItems(true);
-    }
-
-    const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
-    const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
-
-    return (
-      <div className={this.getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
-        <div className="page_refero__messageboxes" />
-        {this.renderForm(isStepView)}
-      </div>
-    );
-  };
-
-  renderForm = (isStepView?: boolean): JSX.Element | undefined => {
-    const {
-      formDefinition,
-      resources,
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-    } = this.props;
-    if (!formDefinition || !resources) {
-      return;
-    }
-
-    const referoProps = {
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-    };
-
-    return (
-      <>
-        {isStepView ? (
-          <StepView
-            isAuthorized={authorized}
-            referoProps={referoProps}
-            resources={resources}
-            formItems={this.renderFormItems()}
-            formDefinition={formDefinition}
-            onSave={this.onSave}
-            onSubmit={this.onSubmit}
-            onStepChange={onStepChange}
-          />
-        ) : (
-          <RenderForm
-            isAuthorized={authorized}
-            isStepView={false}
-            referoProps={referoProps}
-            resources={resources}
-            formItemsToBeRendered={this.renderFormItems()}
-            onSave={this.onSave}
-            onSubmit={this.onSubmit}
-          />
-        )}
-      </>
-    );
-  };
-
-  getButtonClasses(presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string {
-    defaultClasses = defaultClasses ?? [];
     if (presentationButtonsType === PresentationButtonsType.None) {
-      defaultClasses.push('page_refero__hidden_buttons');
-    }
-    if (presentationButtonsType === PresentationButtonsType.Sticky || (this.props.sticky && !presentationButtonsType)) {
-      defaultClasses.push('page_refero__stickybar');
+      classes.push('page_refero__hidden_buttons');
+    } else if (presentationButtonsType === PresentationButtonsType.Sticky || (sticky && !presentationButtonsType)) {
+      classes.push('page_refero__stickybar');
+    } else if (presentationButtonsType === PresentationButtonsType.Static) {
+      classes.push('page_refero__static');
+    } else {
+      classes.push('page_refero__stickybar');
     }
 
-    return defaultClasses.join(' ');
+    return classes.join(' ');
+  };
+
+  if (!formDefinition || !formDefinition.Content || !resources) {
+    return null;
   }
 
-  render(): JSX.Element | null {
-    const { resources } = this.props;
-
-    if (!resources) {
-      return null;
-    }
-
-    return <React.Fragment>{this.renderSkjema(this.props.pdf)}</React.Fragment>;
+  if (pdf) {
+    return (
+      <ExternalRenderProvider {...externalRenderProps}>
+        <AttachmentProvider {...attachmentProviderProps}>
+          <FormProvider {...methods}>
+            <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={true} />
+          </FormProvider>
+        </AttachmentProvider>
+      </ExternalRenderProvider>
+    );
   }
-}
 
-function mapStateToProps(state: GlobalState): StateProps {
-  return {
-    formDefinition: getFormDefinition(state),
-    formData: getFormData(state),
-  };
-}
+  const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
+  const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
+  return (
+    <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'], sticky)}>
+      <div className="page_refero__messageboxes" />
+      <ExternalRenderProvider {...externalRenderProps}>
+        <AttachmentProvider {...attachmentProviderProps}>
+          <FormProvider {...methods}>
+            {isStepView ? (
+              <StepView
+                isAuthorized={authorized}
+                referoProps={props}
+                resources={resources}
+                onSave={handleSave}
+                onSubmit={handleSubmit}
+                methods={methods}
+              />
+            ) : (
+              <RenderForm
+                isAuthorized={authorized}
+                isStepView={false}
+                referoProps={props}
+                resources={resources}
+                onSave={handleSave}
+                onSubmit={handleSubmit}
+                methods={methods}
+                onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
+              >
+                <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
+              </RenderForm>
+            )}
+          </FormProvider>
+        </AttachmentProvider>
+      </ExternalRenderProvider>
+    </div>
+  );
+};
 
-function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {
-  return {
-    updateSkjema: (
-      questionnaire: Questionnaire,
-      questionnaireResponse: QuestionnaireResponse | undefined,
-      language: string | undefined,
-      syncQuestionnaireResponse: boolean | undefined
-    ): void => {
-      dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
-    },
-    mount: (): void => {
-      if (props.questionnaire) {
-        dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
-      }
-    },
-    dispatch,
-    path: [],
-  };
-}
-
-const ReferoContainer = connect<StateProps, DispatchProps, ReferoProps>(mapStateToProps, mapDispatchToProps)(Refero);
+const ReferoContainer = Refero;
 export { ReferoContainer };
+export default ReferoContainer;

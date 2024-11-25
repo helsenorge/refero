@@ -1,31 +1,88 @@
-import { QuestionnaireItem, Extension, QuestionnaireResponse } from 'fhir/r4';
+import { QuestionnaireItem, Extension, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import fhirpath, { Context } from 'fhirpath';
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
-import r4 from './fhirpathLoaderHelper';
+export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireItem, fhirExpression?: string): Promise<Date | undefined> {
+  if (!item || !fhirExpression) {
+    return undefined;
+  }
+  const iCopy = structuredClone(item);
+  const result = await fhirpath.evaluate(iCopy, fhirExpression, undefined, fhirpath_r4_model);
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fhirpath = require('fhirpath');
-const fhirpath_r4_model = require('fhirpath/fhir-context/r4');
-
-export function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhirExpression: string): Date | undefined {
-  const result = fhirpath.evaluate(item, fhirExpression, null, r4);
-  if (result.length > 0) {
-    return new Date(result[0].asStr);
+  if (Array.isArray(result)) {
+    return new Date(result[0]);
   }
 
-  return;
+  return undefined;
 }
+export async function getAnswerFromResponseItem(responseItem?: QuestionnaireResponseItem): Promise<any> {
+  try {
+    return await fhirpath.evaluate(responseItem, 'answer');
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function getResonseItem(linkId: string, responseItem: QuestionnaireResponseItem): Promise<any[] | undefined> {
+  if (!linkId || !responseItem) {
+    return undefined;
+  }
+  try {
+    const compiledExpression = fhirpath.compile(
+      `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`,
+      fhirpath_r4_model
+    );
+    return compiledExpression(responseItem);
+  } catch (e) {
+    console.log(e);
+    return undefined;
+  }
+}
+
+export const descendantsHasAnswer = (questionnaire?: QuestionnaireResponseItem[] | null): boolean => {
+  if (!questionnaire || !questionnaire.length) {
+    return false; // Return false if the questionnaire is null, undefined, or has no items.
+  }
+  try {
+    const result = fhirpath.evaluate({ item: questionnaire }, 'item.descendants().where(answer.exists()).exists()');
+    return Array.isArray(result) ? result[0] === true : false;
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
+};
+export const hasDescendants = (questionnaire?: QuestionnaireResponseItem[] | null): boolean => {
+  if (!questionnaire || !questionnaire.length) {
+    return false; // Return false if the questionnaire is null, undefined, or has no items.
+  }
+  try {
+    const result = fhirpath.evaluate({ item: questionnaire }, 'item.descendants().exists()');
+    console.log(result);
+    return Array.isArray(result) ? result[0] === true : false;
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
+};
 
 export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnare?: QuestionnaireResponse | null): any {
   const qCopy = structuredClone(questionnare);
   const qExt = structuredClone(fhirExtension);
+
   try {
-    return fhirpath.evaluate(qCopy, qExt.valueString, null, fhirpath_r4_model);
+    if (qExt.valueString) {
+      const compiledExpression = fhirpath.compile(qExt.valueString, fhirpath_r4_model);
+
+      return compiledExpression(qCopy);
+    } else {
+      return [];
+    }
   } catch (error) {
     return [];
   }
 }
 
-export function evaluateExtension(path: string | object, questionnare?: QuestionnaireResponse | null, context?: 'object' | null): unknown {
+export function evaluateExtension(path: string | fhirpath.Path, questionnare?: QuestionnaireResponse | null, context?: Context): unknown {
   const qCopy = structuredClone(questionnare);
   /**
    *  Evaluates the "path" FHIRPath expression on the given resource or part of the resource,
@@ -43,3 +100,21 @@ export function evaluateExtension(path: string | object, questionnare?: Question
    */
   return fhirpath.evaluate(qCopy, path, context, fhirpath_r4_model);
 }
+export const isGroupAndDescendantsHasAnswer = async (responseItem?: QuestionnaireResponseItem): Promise<boolean> => {
+  if (!responseItem) {
+    return false;
+  }
+  try {
+    const resource = {
+      resourceType: 'QuestionnaireResponse',
+      item: [responseItem],
+    };
+    const result: any[] = await fhirpath.evaluate(resource, 'descendants().answer.exists()', undefined, fhirpath_r4_model);
+
+    const hasAnswer = result[0] === true;
+    return hasAnswer;
+  } catch (e) {
+    console.log('error', e);
+    return false;
+  }
+};

@@ -1,20 +1,27 @@
-import * as React from 'react';
+import { ReactNode } from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
 
 import { renderPrefix, getText } from '../../../util/index';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   checked: boolean;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: ReactNode;
 }
 
-const pdf: React.SFC<Props> = ({ item, checked, children, onRenderMarkdown }) => {
+const pdf = ({ item, checked, children }: Props): JSX.Element => {
+  const { onRenderMarkdown } = useExternalRenderContext();
   return (
     <div>
       {/* eslint-disable react/jsx-no-literals */}
-      {checked ? <b>[ X ]</b> : <b>[&nbsp;&nbsp;&nbsp;&nbsp;]</b>} {`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
+      {checked ? (
+        <b data-testid={`item_${item?.linkId}-pdf`}>[ X ]</b>
+      ) : (
+        <b data-testid={`item_${item?.linkId}-pdf`}>[&nbsp;&nbsp;&nbsp;&nbsp;]</b>
+      )}{' '}
+      {`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
       {children ? (
         <span>
           <br />

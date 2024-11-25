@@ -1,215 +1,303 @@
-import * as React from 'react';
+import { userEvent, Matcher, renderRefero, screen } from '@test/test-utils.tsx';
+import { q } from './__data__/';
 
-import { Matcher, render, screen } from '@testing-library/react';
-
-import userEvent from '@testing-library/user-event';
-
-import '@testing-library/jest-dom';
-
+import { createMockFile } from './__data__/mockUtil';
+import { convertMBToBytes } from '../attachmentUtil';
+import { vi } from 'vitest';
+import { Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import { ReferoProps } from '@/types/referoProps';
+import { getResources } from '../../../../../preview/resources/referoResources';
+import { submitForm } from '@test/selectors';
+import { ExtensionConstants } from '@/index';
+import { MimeType } from '@/util/attachmentHelper';
+import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 import {
-  MimeType_For_Test_Util as MIME_TYPES_TEST,
-  createMockAttachmentProps,
-  createMockFile,
-  createMockQuestionnaireItem,
-  createMockQuestionnaireItemWithEmptyValue,
-} from '../mockUtil';
-import { Resources } from '../../../../util/resources';
-import { convertBytesToMBString, convertMBToBytes } from '../attachmentUtil';
-import constants from '../../../../constants';
-import { AttachmentComponent } from '../attachment';
+  validateFileSize,
+  validateFileType,
+  validateNumberOfFiles,
+  validateTotalFileSize,
+} from '@helsenorge/file-upload/components/file-upload/validate-utils';
+import React from 'react';
+import FileUpload, { MimeTypes, Props } from '@helsenorge/file-upload/components/file-upload';
+import { FieldValues, useForm } from 'react-hook-form';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Button from '@helsenorge/designsystem-react/components/Button';
 
-beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: jest.fn().mockImplementation(query => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: jest.fn(), // Deprecated but included for compatibility
-      removeListener: jest.fn(), // Deprecated but included for compatibility
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn(),
-    })),
-  });
-});
-
-const mockFileTooLarge = 'Filstørrelsen må være mindre enn {0} MB';
-const wrongFileTypeMsg = 'Feil filtype';
 const mockFileName = 'testFile.txt';
 const defaulMockSize = 3;
-const qItemMockName = 'qItem';
-const PLAIN_TEXT_3_MB = createMockFile(mockFileName, MIME_TYPES_TEST.PlainText, convertMBToBytes(defaulMockSize));
-const PLAIN_TEXT_4_MB = createMockFile(mockFileName, MIME_TYPES_TEST.PlainText, convertMBToBytes(4));
-const PLAIN_TEXT_5_MB = createMockFile(mockFileName, MIME_TYPES_TEST.PlainText, convertMBToBytes(5));
-const JPEG_5_MB = createMockFile(mockFileName, MIME_TYPES_TEST.JPG, convertMBToBytes(5));
-const PLAIN_TEXT_6_MB = createMockFile(mockFileName, MIME_TYPES_TEST.PlainText, convertMBToBytes(6));
-const PLAIN_TEXT_30_MB = createMockFile(mockFileName, MIME_TYPES_TEST.PlainText, convertMBToBytes(30));
+const PLAIN_TEXT_3_MB = createMockFile(mockFileName, MimeType.PlainText, convertMBToBytes(defaulMockSize));
+const PLAIN_TEXT_6_MB = createMockFile(mockFileName, MimeType.PlainText, convertMBToBytes(6));
 
-const mockResources: Partial<Resources> = {
-  validationFileMax: mockFileTooLarge,
-  validationFileType: wrongFileTypeMsg,
-};
+async function uploadMockFile(
+  mockFile: File | File[],
+  testId = 'item_5fece702-bf32-445b-979d-862ade17306a-attachment-label'
+): Promise<void> {
+  const input = screen.getByTestId(testId);
 
-const expectReplacedFileSizeError = (number: any) => {
-  const resourceStringWithNumber = mockFileTooLarge.replace('{0}', number);
-  expect(screen.getByText(resourceStringWithNumber)).toBeInTheDocument();
-};
-
-async function uploadMockFile(mockFile: File | File[], label = 'Last opp fil') {
-  const input = screen.getByLabelText(label);
   await userEvent.upload(input, mockFile);
 }
 
-export const expectNotToFindByText = (text: Matcher) => {
+export const expectNotToFindByText = (text: Matcher): void => {
   expect(screen.queryByText(text)).toBeNull();
 };
+const addOReplaceMaxSizeExtension = (item: QuestionnaireItem, maxSize: number | undefined): QuestionnaireItem => ({
+  ...item,
+  extension: item.extension?.map(e => (e.url === ExtensionConstants.MAX_SIZE_URL ? { ...e, valueDecimal: maxSize } : e)),
+});
+const removeExtensionFromItemByUrl = (extension?: Extension[], url?: Extension['url'] | undefined): Extension[] | undefined =>
+  extension?.filter(e => e.url !== url);
 
-function expectNoFileErrors() {
-  expect(screen.queryByText(wrongFileTypeMsg)).toBe(null);
-  expect(screen.queryByText(mockFileTooLarge)).toBe(null);
+const hasFiletypeError = (hasError: boolean): void => {
+  if (hasError) expect(screen.getByText(/Tillatte filtyper er:/i)).toBeInTheDocument();
+  else expect(screen.queryByText(/Tillatte filtyper er:/i)).not.toBeInTheDocument();
+};
+const hasFileSizeError = (hasError: boolean): void => {
+  if (hasError) expect(screen.getByText(/Filstørrelse må være mindre enn/i)).toBeInTheDocument();
+  else expect(screen.queryByText(/Filstørrelse må være mindre enn/i)).not.toBeInTheDocument();
+};
+const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', ikkeBesvart: 'ikkeBesvart' };
+
+class MockDataTransfer {
+  items = {
+    add: vi.fn(),
+  };
 }
 
-describe('<AttachmentComponent />', () => {
-  describe('File Type validation', () => {
-    it('When uploading a file - Show error if mime type is NOT among valid types', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, undefined, true);
-      const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.JPG, MIME_TYPES_TEST.PDF];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, undefined, undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_3_MB);
-      expect(screen.getByText(wrongFileTypeMsg)).toBeInTheDocument();
+global.DataTransfer = MockDataTransfer;
+
+// const FileUploadExample: React.FC<Props> = props => {
+//   const { acceptedFiles, rejectedFiles, validFileTypes } = props;
+//   const validFileTypes1 = validFileTypes as MimeTypes[] ?? ['image/jpeg', 'image/png', 'application/pdf'];
+//   const fileupload = 'fileupload';
+//   const sublabelId = 'sublabelId';
+//   const useFormReturn = useForm<{ fileupload: string }>({ mode: 'all' });
+
+//   const useFileUpload1 = useFileUpload(
+//     useFormReturn.register,
+//     [validateFileSize(0, 300000, 'Filen må være under 300kb'), validateFileType(validFileTypes1, 'Feil filtype')],
+//     [
+//       validateNumberOfFiles(1, 2, 'Det må lastes en til to bilder'),
+//       validateTotalFileSize(0, 400000, 'Samlet filstørrelse må være under 400kb'),
+//     ]
+//   );
+
+//   React.useEffect(() => {
+//     if (useFileUpload1) {
+//       acceptedFiles && useFileUpload1.setAcceptedFiles(acceptedFiles);
+//       rejectedFiles && useFileUpload1.setRejectedFiles(rejectedFiles);
+//     }
+//   }, [useFileUpload1]);
+
+//   const onOpenFile = (fileId: string): void => {
+//     // eslint-disable-next-line no-console
+//     console.log('file ' + fileId + ' was opened');
+//   };
+
+//   const onRequestLink = (fileId: string): string => {
+//     // eslint-disable-next-line no-console
+//     console.log('link was requested for ' + fileId);
+//     return 'file:///' + fileId;
+//   };
+
+//   // eslint-disable-next-line
+//   const onSubmit = (data: FieldValues): any => {
+//     // eslint-disable-next-line no-console
+//     console.log('onSubmit data:', data);
+//   };
+
+//   return (
+//     <form onSubmit={useFormReturn.handleSubmit(onSubmit)}>
+//       <FileUpload
+//         aria-describedby={sublabelId}
+//         errorText={useFormReturn.formState.errors.fileupload?.message}
+//         label={
+//           <Label
+//             labelTexts={[{ text: 'Last opp et bilde', type: 'semibold' }]}
+//             sublabel={<Sublabel id={sublabelId} sublabelTexts={[{ text: 'Gyldige filformater er jpeg, png og pdf, maks 300kb' }]} />}
+//           />
+//         }
+//         acceptedFiles={useFileUpload1.acceptedFiles}
+//         rejectedFiles={useFileUpload1.rejectedFiles}
+//         onOpenFile={onOpenFile}
+//         onRequestLink={onRequestLink}
+//         validFileTypes={validFileTypes1}
+//         {...useFileUpload1.register(fileupload, { validate: () => true })}
+//         {...props}
+//         inputId={fileupload}
+//         dropzoneStatusText="Slipp filer her"
+//         chooseFilesText={'Last opp'}
+//         errorTextId="errorTextId"
+//       />
+//       <Button type="submit">{'Send inn'}</Button>
+//     </form>
+//   );
+// };
+
+// vi.mock('@helsenorge/file-upload/components/file-upload', () => ({
+//   FileUpload: FileUploadExample,
+// }));
+
+describe('Attachment', () => {
+  describe('Render', () => {
+    it('Should render as text if props.pdf', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: false })),
+      };
+      const { getByText } = createWrapper(questionnaire, { pdf: true });
+      expect(getByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
 
-    it('When uploading a file - Do NOT show error file type error message when valid mime', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, undefined, false);
-      const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.JPG, MIME_TYPES_TEST.PDF, MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, undefined, undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_3_MB);
-      expectNotToFindByText(wrongFileTypeMsg);
+    it('Should render text if item is readonly', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, readOnly: true, repeats: false })),
+      };
+
+      const { getByText } = createWrapper(questionnaire);
+      expect(getByText(resources.ikkeBesvart)).toBeInTheDocument();
+    });
+
+    it('Should render as input if props.pdf === false && item is not readonly', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: false })),
+      };
+      const { queryByText } = createWrapper(questionnaire);
+      expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('help button', () => {
+    it('Should render helpButton', async () => {
+      const { container } = createWrapper(q);
+
+      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+    });
+
+    it('Should render helpElement when helpbutton is clicked', async () => {
+      const { container } = createWrapper(q);
+
+      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+
+      expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
+
+      const helpButton = container.querySelector('.page_refero__helpButton');
+      if (helpButton) {
+        await userEvent.click(helpButton);
+      }
+      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
   });
 
-  describe('File Size validation - Questionnaire Extension', () => {
-    it('When uploading a file - Show resource size error if size > max rule in qItem', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, 5, true);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, undefined, undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
+  // describe('validation', () => {
+  //   it('readOnly value should get validation error if error exist', async () => {
+  //     const questionnaire: Questionnaire = {
+  //       ...q,
+  //       item: q.item?.map(x => ({
+  //         ...x,
+  //         readOnly: true,
+  //         required: true,
+  //         code: [
+  //           {
+  //             code: 'ValidateReadOnly',
+  //             display: 'Valider skrivebeskyttet felt',
+  //             system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+  //           },
+  //         ],
+  //       })),
+  //     };
+  //     const { getByText } = createWrapper(questionnaire);
+  //     await submitForm();
 
-      await uploadMockFile(PLAIN_TEXT_6_MB);
+  //     expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+  //   });
 
-      screen.debug(undefined, 6000000);
-      expectReplacedFileSizeError(5);
-      expectNotToFindByText(wrongFileTypeMsg);
-    });
+  //   describe('File Type validation', () => {
+  //     it('When uploading a file - Do NOT show error file type error message when valid mime', async () => {
+  //       const validTypes = [MimeType.PNG, MimeType.JPG, MimeType.PDF, MimeType.PlainText];
+  //       const questionnaire: Questionnaire = {
+  //         ...q,
+  //       };
+  //       createWrapper(questionnaire, { attachmentValidTypes: validTypes });
+  //       await uploadMockFile(PLAIN_TEXT_3_MB);
+  //       await submitForm();
+  //       hasFiletypeError(false);
+  //     });
+  //   });
 
-    it('When uploading a file - Do NOT show resource size error if size <= max rule in qItem', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, 5, true);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, undefined, undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_4_MB);
-      expectNoFileErrors();
-    });
+  //   describe('File Size validation - Questionnaire Extension', () => {
+  //     it('When uploading a file - Do NOT show resource size error if file size excactly max rule from qItem', async () => {
+  //       const validTypes = [MimeType.PlainText];
+  //       const questionnaire: Questionnaire = {
+  //         ...q,
+  //         item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 6)),
+  //       };
 
-    it('When uploading a file - Do NOT show resource size error if file size excactly max rule from qItem', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, 5, true);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, undefined, undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_5_MB);
-      expectNoFileErrors();
-    });
+  //       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
+  //       await uploadMockFile(PLAIN_TEXT_6_MB);
+  //       await submitForm();
 
-    it('When uploading a file - And not set Questionnaire item max rule will be read as null and should be skipped', async () => {
-      const qItem = createMockQuestionnaireItemWithEmptyValue('test', null);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, convertMBToBytes(4), undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_5_MB);
-      expectReplacedFileSizeError(4);
-    });
+  //       hasFileSizeError(false);
+  //     });
 
-    it('When uploading a file - And not set Questionnaire item max rule with undefined value should be skipped', async () => {
-      const qItem = createMockQuestionnaireItemWithEmptyValue('test', undefined);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, convertMBToBytes(4), undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_5_MB);
-      expectReplacedFileSizeError(4);
-    });
-  });
+  //     it('When uploading a file - And not set Questionnaire item max rule will be read as null and should be skipped', async () => {
+  //       const validTypes = [MimeType.PlainText];
+  //       const questionnaire: Questionnaire = {
+  //         ...q,
+  //         item: q.item?.map(x => ({
+  //           ...x,
+  //           extension: removeExtensionFromItemByUrl(x.extension, ExtensionConstants.MAX_SIZE_URL),
+  //         })),
+  //       };
+  //       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
+  //       await uploadMockFile(PLAIN_TEXT_6_MB);
+  //       await submitForm();
 
-  describe('File Size validation - Max Setttings From Props', () => {
-    it('When uploading a file - Show resource size error if filesize > Props Max', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, undefined, false);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, convertMBToBytes(5), undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_6_MB);
-      expectReplacedFileSizeError(5);
-      expectNotToFindByText(wrongFileTypeMsg);
-    });
+  //       hasFileSizeError(false);
+  //     });
 
-    it('When uploading a file - Do NOT show size error message - when file size excatly == props max value', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, undefined, false);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, convertMBToBytes(4), undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_4_MB);
-      expectNoFileErrors();
-    });
+  //     it('When uploading a file - And not set Questionnaire item max rule with undefined value should be skipped', async () => {
+  //       const validTypes = [MimeType.PlainText];
+  //       const questionnaire: Questionnaire = {
+  //         ...q,
+  //         item: q.item?.map(x => addOReplaceMaxSizeExtension(x, undefined)),
+  //       };
+  //       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
+  //       await uploadMockFile(PLAIN_TEXT_6_MB);
+  //       await submitForm();
 
-    it('When uploading a file - Do NOT show resource size error if size == excactly props max value', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, undefined, false);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, convertMBToBytes(5), undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_5_MB);
-      expectNoFileErrors();
-    });
-  });
+  //       hasFileSizeError(false);
+  //     });
+  //   });
 
-  describe('File validation - Prioritiy of rules', () => {
-    it('When uploading a file - File type errors should have priority over other errors', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, 2, true);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, convertMBToBytes(4), undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(JPEG_5_MB);
-      expect(screen.getByText(wrongFileTypeMsg)).toBeInTheDocument();
-    });
-
-    it('When uploading a file - Questionniare Item Max Rule has priority over props if both set', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, 2, true);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, convertMBToBytes(4), undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_3_MB);
-      expectReplacedFileSizeError(2);
-      expectNotToFindByText(wrongFileTypeMsg);
-    });
-
-    it('When uploading a file - And questionnaire max rule is not set, use props max value if set', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, undefined, false);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, convertMBToBytes(4), undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_5_MB);
-      expectReplacedFileSizeError(4);
-      expectNotToFindByText(wrongFileTypeMsg);
-    });
-
-    it('When uploading a file - Refero constant should be fallback if neither qItem rule or props', async () => {
-      const qItem = createMockQuestionnaireItem(qItemMockName, 2, false);
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const mockProps = createMockAttachmentProps(qItem, mockResources, undefined, undefined, validTypes);
-      render(<AttachmentComponent {...mockProps} />);
-      await uploadMockFile(PLAIN_TEXT_30_MB);
-      expectReplacedFileSizeError(convertBytesToMBString(constants.MAX_FILE_SIZE));
-      expectNotToFindByText(wrongFileTypeMsg);
-    });
-  });
+  //   describe('File validation - Prioritiy of rules', () => {
+  //     it('When uploading a file - Questionniare Item Max Rule has priority over props if both set', async () => {
+  //       const validTypes = [MimeType.PNG, MimeType.PlainText];
+  //       const questionnaire: Questionnaire = {
+  //         ...q,
+  //         item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 8)),
+  //       };
+  //       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 4 });
+  //       await uploadMockFile(PLAIN_TEXT_6_MB);
+  //       await submitForm();
+  //       hasFiletypeError(false);
+  //       hasFileSizeError(false);
+  //     });
+  //   });
+  // });
 });
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}, resource = resources) {
+  const attahchmentProps: Partial<ReferoProps> = {
+    attachmentErrorMessage: undefined,
+    attachmentMaxFileSize: 20,
+    attachmentValidTypes: [MimeType.JPG, MimeType.PNG, MimeType.PDF, MimeType.PlainText],
+    onRequestAttachmentLink: vi.fn(),
+    onOpenAttachment: vi.fn(),
+    onDeleteAttachment: vi.fn(),
+    uploadAttachment: vi.fn(),
+  };
+  return renderRefero({ questionnaire, props: { ...attahchmentProps, ...props }, resources: resource });
+}

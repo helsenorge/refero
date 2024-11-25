@@ -1,105 +1,119 @@
-import * as React from 'react';
-
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Moment } from 'moment';
-
-import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/year-input';
-import { Validation } from '@helsenorge/form/components/form/validation';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import styles from '../common-styles.module.css';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
-import { createDateFromYear } from '../../../util/createDateFromYear';
-import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
-import TextView from '../textview';
+import { getPDFValueForDate, validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useMinMaxDate } from './useMinMaxDate';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { GlobalState } from '@/reducers';
+import { initialize } from '@/util/date-fns-utils';
+import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
+import { getErrorMessage } from '@/components/validation/rules';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
-interface Props {
-  id?: string;
-  pdf?: boolean;
-  item: QuestionnaireItem;
-  resources?: Resources;
-  label?: JSX.Element;
-  subLabel?: JSX.Element;
-  helpButton?: JSX.Element;
-  helpElement?: JSX.Element;
+type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  className?: string;
-  maxDate?: Moment;
-  minDate?: Moment;
-  answer: QuestionnaireResponseItemAnswer;
-}
+};
 
-export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Element => {
-  const [answerState, setAnswerState] = React.useState<number | undefined>(0);
+export const DateYearInput = (props: Props): JSX.Element | null => {
+  const { id, pdf, linkId, onDateValueChange, idWithLinkIdAndItemIndex, children, path } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-  const getYear = (): (number | undefined)[] | undefined => {
-    if (Array.isArray(props.answer)) {
-      return props.answer.map(m => createDateFromYear(props.item, m)?.getFullYear());
+  initialize();
+
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const answer = useGetAnswer(linkId, path);
+  const { resources } = useExternalRenderContext();
+  const { error } = fieldState;
+  const { minDateTime, maxDateTime } = useMinMaxDate(item);
+
+  const getYearValue = (answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): string | undefined => {
+    const answerValue = Array.isArray(answer) ? answer[0] : answer;
+    if (answerValue && answerValue.valueDate) {
+      return answerValue.valueDate;
     }
+    if (!item || !item.initial || item.initial.length === 0) {
+      return undefined;
+    }
+    if (!item.initial[0].valueDate) {
+      return undefined;
+    }
+    return item.initial[0].valueDate;
   };
 
-  React.useEffect(() => {
-    props.answer ? setAnswerState(Number(props.answer.valueDate)) : setAnswerState(getYear()?.[0]);
-  }, [props.answer]);
-
-  function getYearInputResources(): YearErrorResources {
-    const { resources, item } = props;
-    // Vi får maks én valideringstekst, derfor settes alle til denne.
-    const validationErrorText = getValidationTextExtension(item);
-
-    return {
-      errorInvalidYear: validationErrorText ? validationErrorText : resources?.year_field_invalid || '',
-      errorRequiredYear: resources?.year_field_required || '',
-      errorYearBeforeMinDate: resources?.year_field_mindate || '',
-      errorYearAfterMaxDate: resources?.year_field_maxdate || '',
-    };
-  }
-
-  const onYearChange = (year: number): void => {
-    props.onDateValueChange(year === 0 ? '' : year.toString());
+  const onYearChange = (year: string | undefined): void => {
+    onDateValueChange(year ?? '');
   };
 
-  const getPDFValue = (): string => {
-    const ikkeBesvartText = props.resources?.ikkeBesvart || '';
+  const yearValue: string | undefined = getYearValue(answer);
+  useResetFormField(`${idWithLinkIdAndItemIndex}`, yearValue);
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: {
+      value: isRequired(item),
+      message: resources?.year_field_required || '',
+    },
+    validate: {
+      validYear: value => {
+        return value ? validateYearDigits(value, resources) : true;
+      },
+      validMinDate: value => {
+        return value ? validateYearMin(minDateTime, value, resources) : true;
+      },
+      validMaxDate: value => {
+        return value ? validateYearMax(maxDateTime, value, resources) : true;
+      },
+    },
+    shouldUnregister: true,
+  };
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+
+  if (pdf || isReadOnly(item)) {
     return (
-      getYear()
-        ?.map(m => m?.toString())
-        .join(', ') || ikkeBesvartText
-    );
-  };
-
-  if (props.pdf || isReadOnly(props.item)) {
-    return (
-      <TextView
-        id={props.id}
-        item={props.item}
-        value={getPDFValue()}
-        onRenderMarkdown={props.onRenderMarkdown}
-        helpButton={props.helpButton}
-        helpElement={props.helpElement}
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={yearValue || ''}
+        pdfValue={getPDFValueForDate(yearValue, resources?.ikkeBesvart)}
+        errors={error}
       >
-        {props.children}
-      </TextView>
+        {children}
+      </ReadOnly>
     );
   }
-
   return (
-    <Validation {...props}>
-      <YearInput
-        id={`${getId(props.id)}-year_input`}
-        errorResources={getYearInputResources()}
-        label={props.label}
-        subLabel={props.subLabel}
-        isRequired={isRequired(props.item)}
-        placeholder={getPlaceholder(props.item)}
-        maximumYear={props.maxDate?.year()}
-        minimumYear={props.minDate?.year()}
-        value={answerState}
-        className={props.className}
-        onChange={onYearChange}
-        helpButton={props.helpButton}
-        helpElement={props.helpElement}
+    <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={`${getId(id)}-input`}
+        labelId={`${getId(id)}-label`}
+        testId={`${getId(id)}-label-test`}
+        sublabelId={`${getId(id)}-sublabel`}
       />
-    </Validation>
+      <Input
+        {...rest}
+        inputId={`${getId(id)}-input`}
+        type="number"
+        testId={getId(id)}
+        onChange={e => {
+          onYearChange(e.target.value);
+          onChange(e);
+        }}
+        value={yearValue || ''}
+        width={10}
+      />
+    </FormGroup>
   );
 };

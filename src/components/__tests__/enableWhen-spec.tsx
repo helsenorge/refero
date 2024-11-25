@@ -1,63 +1,30 @@
-import * as React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { mount } from 'enzyme';
-
-import '../../util/defineFetch';
-import rootReducer from '../../reducers';
+import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
-import { ReferoContainer } from '..';
-import { Resources } from '../../util/resources';
+
 import questionnaireWithEnableWhen from './__data__/enableWhen';
-import { selectCheckBoxOption } from './utils';
+import { renderRefero } from '../../../test/test-utils';
+import { selectCheckboxOption } from '../../../test/selectors';
 
 describe('enableWhen with checkboxes and multiple answers', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('enableWhen should trigger when correct answer is selected', async () => {
-    const wrapper = createWrapper(questionnaireWithEnableWhen);
-    wrapper.render();
+    const { getByLabelText, queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
+    expect(queryByLabelText(/Flere sykdommer/i)).not.toBeInTheDocument();
+    await selectCheckboxOption(/Andre sykdommer/i);
 
-    expect(wrapper.find('input#item_9_2')).toHaveLength(0);
-    await selectCheckBoxOption('9_1', '18', wrapper);
-    expect(wrapper.find('input#item_9_2')).toHaveLength(1);
+    expect(getByLabelText(/Flere sykdommer/i)).toBeInTheDocument();
   });
 
   it('enableWhen should trigger when correct answer is selected along with other answers', async () => {
-    const wrapper = createWrapper(questionnaireWithEnableWhen);
-    wrapper.render();
+    const { getByLabelText, queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
+    expect(queryByLabelText(/Flere sykdommer/i)).not.toBeInTheDocument();
+    await selectCheckboxOption(/Allergi/i);
+    await selectCheckboxOption(/Hepatitt C/i);
+    await selectCheckboxOption(/Andre sykdommer/i);
 
-    expect(wrapper.find('input#item_9_2')).toHaveLength(0);
-    await selectCheckBoxOption('9_1', '10', wrapper);
-    expect(wrapper.find('input#item_9_2')).toHaveLength(0);
-
-    await selectCheckBoxOption('9_1', '18', wrapper);
-    expect(wrapper.find('input#item_9_2')).toHaveLength(1);
-
-    await selectCheckBoxOption('9_1', '11', wrapper);
-    expect(wrapper.find('input#item_9_2')).toHaveLength(1);
+    expect(getByLabelText(/Flere sykdommer/i)).toBeInTheDocument();
   });
 });
-
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function createWrapper(questionnaire: Questionnaire) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={questionnaire}
-      />
-    </Provider>
-  );
+  return renderRefero({ questionnaire, props: { authorized: true } });
 }

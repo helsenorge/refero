@@ -1,0 +1,118 @@
+{
+  "title": "Default verdi",
+  "description": "Tester default verdi for validering",
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "name": "DefaultVerdi",
+  "status": "active",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "1ce1a649-f81a-4f97-8c36-8a798a0e025a",
+  "item": [
+    {
+      "linkId": "563f43da-9205-42a3-e12f-70c276a3b9ee",
+      "type": "quantity",
+      "text": "Tom quantity",
+      "required": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "cm",
+            "display": "centimeter",
+            "system": "http://unitsofmeasure.org"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+          "valueInteger": 2
+        }
+      ]
+    },
+    {
+      "linkId": "567345b4-6c6e-4035-8d84-a1b18f23e372",
+      "type": "quantity",
+      "text": "Preutfylt quantity",
+      "required": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "cm",
+            "display": "centimeter",
+            "system": "http://unitsofmeasure.org"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+          "valueInteger": 2
+        }
+      ],
+      "initial": [
+        {
+          "valueQuantity": {
+            "unit": "centimeter",
+            "code": "cm",
+            "system": "http://unitsofmeasure.org",
+            "value": 2
+          }
+        }
+      ]
+    }
+  ]
+}

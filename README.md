@@ -1,39 +1,45 @@
 # @helsenorge/refero
 
-React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/questionnaire.html) object and renders it as a form.
+React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/questionnaire.html) object and renders it as a form.
+
+## PeerDependencies
+- [react](https://www.npmjs.com/package/react)
+- [react-dom](https://www.npmjs.com/package/react-dom)
+- [redux](https://www.npmjs.com/package/redux)
+- [react-redux](https://www.npmjs.com/package/react-redux)
+
 
 ## Dependencies
-
+- [dompurify](https://www.npmjs.com/package/dompurify)
+- [firepath](https://www.npmjs.com/package/firepath)
+- [immer](https://www.npmjs.com/package/immer)
+- [marked](https://www.npmjs.com/package/marked)
+- [uuid](https://www.npmjs.com/package/uuid)
+- [react-collapse](https://www.npmjs.com/package/react-collapse)
+- [react-hook-form](https://www.npmjs.com/package/react-hook-form)
+- [redux-thunk](https://www.npmjs.com/package/redux-thunk)
+- [date-fns](https://www.npmjs.com/package/date-fns)
+- [classnames](https://www.npmjs.com/package/classnames)
 - [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
 - [@helsenorge/file-upload](https://www.npmjs.com/package/@helsenorge/file-upload)
-- [@helsenorge/form](https://www.npmjs.com/package/@helsenorge/form)
-- [@helsenorge/date-time](https://www.npmjs.com/package/@helsenorge/date-time)
+- [@helsenorge/datepicker](https://www.npmjs.com/package/@helsenorge/datepicker)
 - [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
 - [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
-- [marked](https://www.npmjs.com/package/marked)
-- [moment](https://www.npmjs.com/package/moment)
-- [uuid](https://www.npmjs.com/package/uuid)
-- [dompurify](https://www.npmjs.com/package/dompurify)
-- [immer](https://www.npmjs.com/package/immer)
 
 ## Example usage
 
 ```tsx
 import React from 'react';
-import { Store, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import rootReducer from '@helsenorge/refero/reducers';
-import { ReferoContainer } from '@helsenorge/refero/components';
+import { configureStore } from '@reduxjs/toolkit';
+import { Refero, rootReducer } from '@helsenorge/refero';
 
-let store: Store<{}> = createStore(rootReducer, applyMiddleware(thunk));
+const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
 
-class App extends Component<{}, {}> {
-  render() {
+const App = () => {
     return (
       <Provider store={store}>
-        <ReferoContainer
-          store={store}
+        <Refero
           questionnaire={...}
           questionnaireResponse={...}
           resources={...}
@@ -71,13 +77,13 @@ class App extends Component<{}, {}> {
         />
       </Provider>
     );
+};
 ```
 
 ## Props
 
 | Name                          | Required | Type                       | Default | Description                                                                                                   |
 | ----------------------------- | -------- | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
-| store                         |          | Store<{}>                  | null    | Redux store                                                                                                   |
 | questionnaire                 |          | Questionnaire              | null    | FHIR Questionnaire object                                                                                     |
 | questionnaireResponse         |          | QuestionnaireResponse      | null    | FHIR QuestionnaireResponse object                                                                             |
 | resources                     |          | Resources                  | null    | Resources object                                                                                              |
@@ -89,7 +95,7 @@ class App extends Component<{}, {}> {
 | onOpenAttachment              |          | callback                   | null    | Callback when user opens attachment                                                                           |
 | onRequestAttachmentLink       |          | callback                   | null    | Callback when the form needs to render a link to an attachment                                                |
 | attachmentMaxFileSize         |          | number                     | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
-| attachmentValidTypes          |          | Array<string>              | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
+| attachmentValidTypes          |          | string[]                   | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
 | attachmentErrorMessage        |          | string                     | null    | Text shown when file-upload fails to validate                                                                 |
 | promptLoginMessage            |          | callback                   | null    | Callback when the form needs to notify the user about authentication                                          |
 | loginButton                   | true     | JSX.Element                |         | JSX for when the form needs to render a login button                                                          |
@@ -114,15 +120,14 @@ class App extends Component<{}, {}> {
 | onFieldsNotCorrectlyFilledOut |          | callback                   |         | Callback when a field is incorrectly filled out                                                               |
 | onStepChange                  |          | callback                   |         | Callback when the current step in step-views changes                                                          |
 
-
 ### `questionnaire: Questionnaire`
 
-This is the questionnaire to be rendered. It must be a [`Questionnaire`](https://www.hl7.org/fhir/questionnaire.html) object.
+This is the questionnaire to be rendered. It must be a [`Questionnaire`](https://hl7.org/fhir/R4/questionnaire.html) object.
 
 ### `questionnaireResponse: QuestionnaireResponse`
 
 This is the object that reflects the users answers. If the property is not specified, an empty
-[`QuestionnaireResponse`](https://www.hl7.org/fhir/questionnaireresponse.html) will be generated.
+[`QuestionnaireResponse`](https://hl7.org/fhir/R4/questionnaireresponse.html) will be generated.
 
 ### `resources: Resources`
 
@@ -146,7 +151,7 @@ When this property is `true`, the form renders the actionbar as sticky.
 
 Max file size in bytes allowed for attachments. Default is 25M.
 
-### `attachmentValidTypes: Array<string>`
+### `attachmentValidTypes: Array<MimeTypes>`
 
 List of allowed mime types for attachments. Default allowed types are image/jpeg, image/png, application/pdf
 
@@ -186,22 +191,20 @@ This callback is called when the user requests the current form to be saved.
 
 This callback is called when the user requests the current form to be cancled.
 
-### `uploadAttachment: (files: File[], onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void, onError: (errorMessage: TextMessage|null)) => void`
+### `uploadAttachment: (files: UploadFile[], onSuccess: (attachment: Attachment) => void) => void`
 
 This callback is called when the user requests uploading an attachment. The callback is called with the following arguments:
 
-- `files: File[]` An array of [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) objects to be be uploaded.
+- `files: UploadFile[]` An array of [`UploadFile`](https://developer.mozilla.org/en-US/docs/Web/API/File)  objects to be be uploaded.
 
-- `onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void` Call this callback to indicate success
-- `onError: (errormessage: TextMessage|null) => void` Call this callback to indicate error.
+- `onSuccess: (attachment: Attachment) => void` Call this callback to indicate success
 
-### `onDeleteAttachment: (fileId: string, onSuccess: () => void, onError: (errorMessage: TextMessage|null)) => void`
+### `onDeleteAttachment: (fileId: string, onSuccess: () => void) => void`
 
 This callback is called when the user requests deleting an attachment. The callback is called with the following arguments:
 
 - `fileId: string` This indicates which file the user is requesting to delete
 - `onSuccess: () => void` Call this callback to indicate success.
-- `onError: (errormessage: TextMessage|null) => void` Call this callback to indicate error.
 
 ### `onOpenAttachment: (fileId: string) => void`
 
@@ -289,15 +292,14 @@ This callback is called when a required field is not filled out, or if a field i
 
 ### `onStepChange: (newIndex: number) => void`
 
-This callback is called when the current step in a step-view changes. It takes in the parameter newIndex, which contains the new index that the current index will be updated to.
-This can be used to make progress indicators display the correct step.
+This callback is called when the current step in a step-view changes. It takes in the parameter newIndex, which contains the new index that
+the current index will be updated to. This can be used to make progress indicators display the correct step.
 
 # Enum definitions
 
 ## `ValidationSummaryPlacement`
 
 ```ts
-// location: '@helsenorge/form/components/form/validationSummaryPlacement'
 enum ValidationSummaryPlacement {
   Top = 'Top',
   Bottom = 'Bottom',
@@ -309,7 +311,6 @@ enum ValidationSummaryPlacement {
 ## `IActionRequester`
 
 ```ts
-// location '@helsenorge/refero/util/actionRequester'
 interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;
   addDecimalAnswer(linkId: string, value: number, index?: number): void;
@@ -358,7 +359,6 @@ interface IQuestionnaireInspector {
 ## `Path`
 
 ```ts
-// location: '@helsenorge/refero/util/refero-core'
 interface Path {
   linkId: string;
   index?: number;
@@ -382,7 +382,6 @@ interface ItemAndPath {
 ## `TextMessage`
 
 ```ts
-// location: '@helsenorge/refero/types/text-message'
 interface TextMessage {
   Title: string;
   Body: string;
@@ -402,79 +401,36 @@ interface UploadedFile {
 ## `Resources`
 
 ```ts
-// location: '@helsenorge/refero/util/resources'
 interface Resources {
   deleteButtonText: string;
   validationSummaryHeader: string;
-  validationFileMax: string;
   validationFileType: string;
   supportedFileFormats: string;
   selectDefaultPlaceholder: string;
-  resetTime: string;
   errorAfterMaxDate: string;
   errorBeforeMinDate: string;
-  dateRequired: string;
-  oppgiTid: string;
-  ugyldigTid: string;
-  oppgiDatoTid: string;
-  ugyldigDatoTid: string;
   oppgiVerdi: string;
   oppgiGyldigVerdi: string;
   formCancel: string;
   formSend: string;
   formSave: string;
-  formError: string;
   formOptional: string;
   formRequired: string;
   repeatButtonText: string;
-  avsluttSkjema: string;
-  fortsett: string;
   confirmDeleteButtonText: string;
   confirmDeleteCancelButtonText: string;
   confirmDeleteHeading: string;
   confirmDeleteDescription: string;
-  minutePlaceholder: string;
-  hourPlaceholder: string;
   ikkeBesvart: string;
   uploadButtonText: string;
-  filterDateCalendarButton: string;
-  filterDateNavigateBackward: string;
-  filterDateNavigateForward: string;
-  filterDateErrorDateFormat: string;
-  filterDateErrorBeforeMinDate: string;
-  filterDateErrorAfterMaxDate: string;
   validationNotAllowed: string;
   formRequiredErrorMessage?: string;
   deleteAttachmentText?: string;
   autoSuggestLoadError?: string;
   autosuggestNoSuggestions?: string;
   stringOverMaxLengthError?: string;
-  maxLengthText?: string;
   chooseFilesText?: string;
   skipLinkText?: string;
-  clearDate?: string;
-  calendarLabel?: string;
-  closeDatePicker?: string;
-  focusStartDate: string;
-  jumpToPrevMonth?: string;
-  jumpToNextMonth?: string;
-  keyboardShortcuts?: string;
-  showKeyboardShortcutsPanel?: string;
-  hideKeyboardShortcutsPanel?: string;
-  enterKey?: string;
-  leftArrowRightArrow?: string;
-  upArrowDownArrow?: string;
-  pageUpPageDown?: string;
-  homeEnd?: string;
-  escape?: string;
-  questionMark?: string;
-  openThisPanel?: string;
-  selectFocusedDate?: string;
-  moveFocusByOneDay?: string;
-  moveFocusByOneWeek?: string;
-  moveFocusByOneMonth?: string;
-  moveFocustoStartAndEndOfWeek?: string;
-  returnFocusToInput?: string;
   year_field_invalid?: string;
   year_field_maxdate?: string;
   year_field_mindate?: string;
@@ -503,13 +459,18 @@ interface Resources {
   linkOpensInNewTab?: string;
   nextStep?: string;
   previousStep?: string;
+  openChoiceOption?: string;
+  attachmentError_required?: string;
+  attachmentError_minFiles?: string;
+  attachmentError_maxFiles?: string;
+  attachmentError_fileSize?: string;
+  attachmentError_fileType?: string;
 }
 ```
 
 ## `AutoSuggestProps`
 
 ```ts
-// location: '@helsenorge/refero/types/autoSuggestProps'
 interface AutoSuggestProps {
   minSearchCharacters: number;
   typingSearchDelay: number;
@@ -519,7 +480,6 @@ interface AutoSuggestProps {
 ## `ValueSet`
 
 ```ts
-// location: '@helsenorge/refero/types/fhir'
 interface ValueSet extends DomainResource {
   // ValueSet as defined by the FHIR standard
 }
@@ -528,13 +488,12 @@ interface ValueSet extends DomainResource {
 ## `OrgenhetHierarki`
 
 ```ts
-// location: '@helsenorge/refero/types/orgenhetHierarki'
 interface OrgenhetHierarki {
   OrgenhetId: number;
   Navn: string;
   EnhetType: EnhetType;
   EndepunktId: string | null;
-  UnderOrgenheter: Array<OrgenhetHierarki> | null;
+  UnderOrgenheter: OrgenhetHierarki[] | null;
 }
 
 enum EnhetType {

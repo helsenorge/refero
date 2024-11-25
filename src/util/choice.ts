@@ -12,36 +12,37 @@ import {
   ValueSetComposeInclude,
 } from 'fhir/r4';
 
-import { Options } from '@helsenorge/form/components/radio-group';
+import { Options } from '../types/formTypes/radioGroupOptions';
 
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
 import { Resources } from './resources';
-import ExtensionConstants from '../constants/extensions';
-import Constants, { OPEN_CHOICE_ID } from '../constants/index';
-import itemControlConstants from '../constants/itemcontrol';
-import ItemType from '../constants/itemType';
+import { Extensions } from '@/constants/extensions';
+import Constants, { OPEN_CHOICE_ID } from '@/constants/index';
+import itemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
+import ItemType from '@/constants/itemType';
 
 import { isReadOnly, isRequired } from './index';
+import { isItemControlValue } from './typeguards';
 
-export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
-  return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
+export function hasCanonicalValueSet(item?: QuestionnaireItem): boolean {
+  return !!item?.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
 }
 
-export function hasOptions(resources: Resources | undefined, item: QuestionnaireItem, containedResources?: Resource[]): boolean {
+export function hasOptions(resources: Resources | undefined, item?: QuestionnaireItem, containedResources?: Resource[]): boolean {
   const options = getOptions(resources, item, containedResources);
   return !!options && options.length > 0;
 }
 
 export function getOptions(
   resources: Resources | undefined,
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   containedResources?: Resource[]
 ): Array<Options> | undefined {
   if (!item) {
     return undefined;
   }
 
-  let options;
+  let options: Options[] | undefined;
   if (item.answerValueSet) {
     if (item.answerValueSet.startsWith('#')) {
       options = getContainedOptions(item, containedResources);
@@ -54,26 +55,31 @@ export function getOptions(
 
   if (item.type === ItemType.OPENCHOICE) {
     if (!options) {
-      options = [] as Options[];
+      options = [];
     }
     options.push({
-      label: resources?.openChoiceOption,
+      label: resources?.openChoiceOption || '',
       type: OPEN_CHOICE_ID,
-    } as Options);
+    });
   }
 
   return options;
 }
 
-export function getSystem(item: QuestionnaireItem, code: string, containedResources?: Resource[]): string | undefined {
-  if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
-    const id: string = item.answerValueSet.replace('#', '');
-    const resource = getContainedResource(id, containedResources);
-    if (resource && resource.compose) {
-      return resource.compose.include[0].system;
-    }
-  } else if (item.answerOption && code) {
-    const matchingCode = item.answerOption.filter(x => x.valueCoding && x.valueCoding.code === code);
+function getValueSet(answerValueSet: QuestionnaireItem['answerValueSet'], containedResources?: Resource[]): string | undefined {
+  const id = answerValueSet?.replace('#', '');
+  const resource = getContainedResource(id, containedResources);
+
+  if (resource && resource.compose) {
+    return resource.compose.include[0].system;
+  }
+}
+
+export function getSystem(item?: QuestionnaireItem, code?: string, containedResources?: Resource[]): string | undefined {
+  if (item?.answerValueSet && item?.answerValueSet.startsWith('#')) {
+    return getValueSet(item?.answerValueSet, containedResources);
+  } else if (item?.answerOption && code) {
+    const matchingCode = item?.answerOption.filter(x => x.valueCoding && x.valueCoding.code === code);
     return matchingCode.length > 0 ? matchingCode[0].valueCoding?.system : undefined;
   }
   return undefined;
@@ -81,12 +87,7 @@ export function getSystem(item: QuestionnaireItem, code: string, containedResour
 
 export function getSystemForItem(item: QuestionnaireItem, containedResources?: Resource[]): string | undefined {
   if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
-    const id: string = item.answerValueSet.replace('#', '');
-    const resource = getContainedResource(id, containedResources);
-
-    if (resource && resource.compose) {
-      return resource.compose.include[0].system;
-    }
+    return getValueSet(item.answerValueSet, containedResources);
   } else if (item.answerOption) {
     const foundOption = item.answerOption.find(option => option.valueCoding?.system);
     return foundOption?.valueCoding?.system;
@@ -94,7 +95,7 @@ export function getSystemForItem(item: QuestionnaireItem, containedResources?: R
   return undefined;
 }
 
-export function getDisplay(options: Array<Options> | undefined, value: string | undefined): string | undefined {
+export function getDisplay(options?: Options[], value?: string): string | undefined {
   if (!options || options.length === 0) {
     return undefined;
   }
@@ -147,36 +148,20 @@ export function renderOptions(
   return null;
 }
 
-function isAboveDropdownThreshold(options: Array<Options> | undefined): boolean {
+export function isAboveDropdownThreshold(options: Array<Options> | undefined): boolean {
   if (!options) {
     return false;
   }
   return options.length > Constants.CHOICE_DROPDOWN_TRESHOLD;
 }
 
-export function getItemControlValue(item: QuestionnaireItem): string | undefined {
+export function getItemControlValue(item?: QuestionnaireItem): ItemControlValue | undefined {
   const itemControl = getItemControlExtensionValue(item);
   if (itemControl) {
-    for (let i = 0; i < itemControl.length; i++) {
-      if (itemControl[i] && itemControl[i].code) {
-        if (itemControl[i].code === itemControlConstants.CHECKBOX) {
-          return itemControlConstants.CHECKBOX;
-        }
-        if (itemControl[i].code === itemControlConstants.DROPDOWN) {
-          return itemControlConstants.DROPDOWN;
-        }
-        if (itemControl[i].code === itemControlConstants.RADIOBUTTON) {
-          return itemControlConstants.RADIOBUTTON;
-        }
-        if (itemControl[i].code === itemControlConstants.AUTOCOMPLETE) {
-          return itemControlConstants.AUTOCOMPLETE;
-        }
-        if (itemControl[i].code === itemControlConstants.RECEIVERCOMPONENT) {
-          return itemControlConstants.RECEIVERCOMPONENT;
-        }
-        if (itemControl[i].code === itemControlConstants.SLIDER) {
-          return itemControlConstants.SLIDER;
-        }
+    for (const control of itemControl) {
+      const code = control?.code;
+      if (code && isItemControlValue(code)) {
+        return code;
       }
     }
   }
@@ -243,7 +228,7 @@ export function validateInput(
   return true;
 }
 
-export function getIndexOfAnswer(code: string, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): number {
+export function getIndexOfAnswer(code: string, answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): number {
   if (answer && Array.isArray(answer)) {
     return answer.findIndex(el => {
       if (el && el.valueCoding && el.valueCoding.code) {
@@ -257,14 +242,14 @@ export function getIndexOfAnswer(code: string, answer: Array<QuestionnaireRespon
   return -1;
 }
 
-export function shouldShowExtraChoice(answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): boolean {
+export function shouldShowExtraChoice(answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): boolean {
   if (!answer) {
     return false;
   }
 
   if (Array.isArray(answer)) {
     for (let i = 0; i < answer.length; i++) {
-      const el = answer[i] as QuestionnaireResponseItemAnswer;
+      const el = answer[i];
       if (el.valueCoding && el.valueCoding.code === OPEN_CHOICE_ID) {
         return true;
       }
@@ -277,31 +262,31 @@ export function shouldShowExtraChoice(answer: Array<QuestionnaireResponseItemAns
 
 function hasExtensionOptions(item: QuestionnaireItem): boolean {
   if (item.extension) {
-    return item.extension.filter((it: Extension) => it.url === ExtensionConstants.OPTION_REFERENCE).length > 0;
+    return item.extension.filter((it: Extension) => it.url === Extensions.OPTION_REFERENCE_URL).length > 0;
   }
 
   return false;
 }
 
-function getExtensionOptions(item: QuestionnaireItem, readOnly: boolean): Array<Options> | undefined {
+function getExtensionOptions(item: QuestionnaireItem, readOnly: boolean): Options[] | undefined {
   if (!item || !item.extension) {
     return undefined;
   }
 
   return item.extension
-    .filter((it: Extension) => it.url === ExtensionConstants.OPTION_REFERENCE)
+    .filter((it: Extension) => it.url === Extensions.OPTION_REFERENCE_URL)
     .map((it: Extension) => createRadiogroupOptionFromQuestionnaireExtension(it, readOnly))
-    .filter((it: Options | undefined) => it !== undefined) as Options[];
+    .filter((it): it is Options => it !== undefined);
 }
 
-function getInlineOptions(item: QuestionnaireItem, readOnly: boolean): Array<Options> | undefined {
+function getInlineOptions(item: QuestionnaireItem, readOnly: boolean): Options[] | undefined {
   if (!item || !item.answerOption) {
     return undefined;
   }
 
   return item.answerOption
-    .map((it: QuestionnaireItemAnswerOption) => createRadiogroupOptionFromQuestionnaireOption(it, readOnly))
-    .filter((it: Options | undefined) => it !== undefined) as Options[];
+    .map((it: QuestionnaireItemAnswerOption): Options | undefined => createRadiogroupOptionFromQuestionnaireOption(it, readOnly))
+    .filter((it): it is Options => it !== undefined);
 }
 
 function createRadiogroupOptionFromQuestionnaireExtension(extension: Extension, readOnly: boolean): Options | undefined {
@@ -412,7 +397,7 @@ function createRadiogroupOption(type: string, label: string, disabled: boolean):
   };
 }
 
-function getContainedResource(id: string, containedResources?: Resource[]): ValueSet | undefined {
+function getContainedResource(id?: string, containedResources?: Resource[]): ValueSet | undefined {
   if (!containedResources) {
     return undefined;
   }

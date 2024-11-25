@@ -1,99 +1,86 @@
-import * as React from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
-import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
-
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-
+import { ValueSet, Coding, QuestionnaireItem } from 'fhir/r4';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import styles from '../common-styles.module.css';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 import { debounce } from '@helsenorge/core-utils/debounce';
-import Validation from '@helsenorge/form/components/form/validation';
 
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
-import ItemType from '../../../constants/itemType';
-import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText } from '../../../util/index';
-import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
+import ItemType from '@/constants/itemType';
+import { getId, getMaxLength, isReadOnly } from '@/util/index';
+import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero-core';
 
-interface AutosuggestProps {
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { getErrorMessage, required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
+
+export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
-  fetchValueSet?: (
-    searchString: string,
-    item: QuestionnaireItem,
-    successCallback: (valueSet: ValueSet) => void,
-    errorCallback: (error: string) => void
-  ) => void;
-  autoSuggestProps?: AutoSuggestProps;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  id?: string;
-  resources?: Resources;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
-  repeatButton: JSX.Element;
-  children?: JSX.Element;
-
   handleStringChange?: (value: string) => void;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-}
+  pdfValue?: string | number;
+};
 
-interface AutosuggestState {
-  inputValue: string;
-  lastSearchValue: string;
-  system: string;
-  suggestions: Array<Suggestion>;
-  noSuggestionsToShow: boolean;
-  isLoading: boolean;
-  hasLoadError: boolean;
-  isDirty: boolean;
-}
+const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
+  const {
+    linkId,
+    id,
+    idWithLinkIdAndItemIndex,
+    clearCodingAnswer,
+    handleChange,
+    handleStringChange,
+    index,
+    path,
+    pdf,
+    pdfValue,
+    children,
+  } = props;
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState> {
-  constructor(props: AutosuggestProps) {
-    super(props);
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+  const answer = useGetAnswer(linkId, path);
+  const { fetchValueSet, autoSuggestProps, resources } = useExternalRenderContext();
 
-    const codingAnswer = this.getCodingAnswer();
-    const initialInputValue =
-      codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? this.getStringAnswer() : codingAnswer?.display;
+  const codingAnswer = getCodingAnswer(answer);
+  const initialInputValue =
+    codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;
 
-    this.state = {
-      inputValue: initialInputValue || '',
-      lastSearchValue: '',
-      system: '',
-      suggestions: [],
-      noSuggestionsToShow: false,
-      isLoading: false,
-      hasLoadError: false,
-      isDirty: false,
-    };
+  const [inputValue, setInputValue] = useState(initialInputValue || '');
+  const [lastSearchValue, setLastSearchValue] = useState('');
+  const [system, setSystem] = useState('');
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [noSuggestionsToShow, setNoSuggestionsToShow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasLoadError, setHasLoadError] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  useResetFormField(idWithLinkIdAndItemIndex, inputValue);
 
-    this.debouncedOnSuggestionsFetchRequested = this.debouncedOnSuggestionsFetchRequested.bind(this);
-    this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
-    this.errorCallback = this.errorCallback.bind(this);
-    this.successCallback = this.successCallback.bind(this);
-    this.onSubmitValidator = this.onSubmitValidator.bind(this);
-    this.onChangeInput = this.onChangeInput.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-  }
+  useEffect(() => {
+    if (initialInputValue) setInputValue(initialInputValue);
+  }, [initialInputValue]);
+  const isOpenChoice = (): boolean => {
+    return item?.type === ItemType.OPENCHOICE;
+  };
 
-  isOpenChoice(): boolean {
-    return this.props.item.type === ItemType.OPENCHOICE;
-  }
-
-  onSubmitValidator(): boolean {
-    return isRequired(this.props.item) ? !!this.hasCodingAnswer() || !!this.hasStringAnswer() : true;
-  }
-
-  successCallback(valueSet: ValueSet): void {
+  const successCallback = (valueSet: ValueSet): void => {
     if (
       !valueSet.compose ||
       !valueSet.compose.include ||
@@ -101,196 +88,179 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
       !valueSet.compose.include[0].concept ||
       !valueSet.compose.include[0].system
     ) {
-      this.setState({
-        isLoading: false,
-        noSuggestionsToShow: !this.isOpenChoice(),
-        suggestions: [],
-      });
+      setIsLoading(false);
+      setNoSuggestionsToShow(!isOpenChoice());
+      setSuggestions([]);
+
       return;
     }
-
-    this.setState({
-      isLoading: false,
-      system: valueSet.compose.include[0].system || '',
-      suggestions: valueSet.compose.include[0].concept.map(x => {
+    setIsLoading(false);
+    setSystem(valueSet.compose.include[0].system || '');
+    setSuggestions(
+      valueSet.compose.include[0].concept.map(x => {
         return { label: x.display || '', value: x.code };
-      }),
-    });
-  }
+      })
+    );
+  };
 
-  errorCallback(): void {
-    this.setState({
-      isLoading: false,
-      hasLoadError: true,
-    });
-  }
+  const errorCallback = (): void => {
+    setIsLoading(false);
+    setHasLoadError(true);
+  };
 
-  clearCodingAnswerIfExists(): void {
-    const codingAnswer = this.getCodingAnswer();
-    const hasStringAnswer = this.hasStringAnswer();
-    if (codingAnswer && !hasStringAnswer) {
-      this.props.clearCodingAnswer(codingAnswer);
+  const clearCodingAnswerIfExists = (): void => {
+    const codingAnswer = getCodingAnswer(answer);
+    const stringAnswer = hasStringAnswer(answer);
+    if (codingAnswer && !stringAnswer) {
+      clearCodingAnswer(codingAnswer);
     }
-  }
+  };
 
-  onSuggestionsFetchRequested({ value }: { value: string }): void {
-    if (value.length < (this.props.autoSuggestProps?.minSearchCharacters || 0)) {
-      this.setState({
-        suggestions: [],
-      });
+  const onSuggestionsFetchRequested = ({ value }: { value: string }): void => {
+    if (value.length < (autoSuggestProps?.minSearchCharacters || 0)) {
+      setSuggestions([]);
+
       return;
     }
-    if (value === this.state.lastSearchValue) {
+    if (value === lastSearchValue) {
       return;
     }
+    if (fetchValueSet && item) {
+      setIsLoading(true);
+      setSuggestions([]);
+      setLastSearchValue(value);
 
-    if (this.props.fetchValueSet) {
-      this.setState({
-        isLoading: true,
-        suggestions: [],
-        lastSearchValue: value,
-      });
-      this.clearCodingAnswerIfExists();
-      this.props.fetchValueSet(value, this.props.item, this.successCallback, this.errorCallback);
+      clearCodingAnswerIfExists();
+      fetchValueSet(value, item, successCallback, errorCallback);
     }
-  }
+  };
 
-  onChangeInput(_event: React.FormEvent<HTMLInputElement>, { newValue }: { newValue: string; method: string }): void {
+  const onChangeInput = (_event: FormEvent<HTMLElement>, { newValue }: { newValue: string; method: string }): void => {
     if (newValue === '') {
-      this.clearCodingAnswerIfExists();
+      clearCodingAnswerIfExists();
     }
-    this.setState({
-      inputValue: newValue,
-      isDirty: true,
-      noSuggestionsToShow: false,
-      hasLoadError: this.state.hasLoadError && !newValue,
-    });
-  }
+    setInputValue(newValue);
+    setIsDirty(true);
+    setNoSuggestionsToShow(false);
+    setHasLoadError(hasLoadError && !newValue);
+  };
 
-  debouncedOnSuggestionsFetchRequested: ({ value }: { value: string }) => void = debounce(
-    this.onSuggestionsFetchRequested,
-    this.props.autoSuggestProps?.typingSearchDelay || 500,
+  const debouncedOnSuggestionsFetchRequested: ({ value }: { value: string }) => void = debounce(
+    onSuggestionsFetchRequested,
+    autoSuggestProps?.typingSearchDelay || 500,
     false
   );
 
-  onSuggestionSelected(_event: React.FormEvent<HTMLInputElement>, { suggestion }: { suggestion: Suggestion }): void {
-    this.setState({
-      lastSearchValue: suggestion.label,
-      isDirty: false,
-    });
-    this.props.handleChange(suggestion.value, this.state.system, suggestion.label);
-  }
+  const onSuggestionSelected = (_event: FormEvent<HTMLInputElement>, { suggestion }: { suggestion: Suggestion }): void => {
+    setLastSearchValue(suggestion.label);
+    setIsDirty(false);
 
-  onBlur(_e: React.FormEvent<{}>, { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }): void {
-    if (this.state.isDirty && highlightedSuggestion) {
-      this.setState({
-        lastSearchValue: highlightedSuggestion.label,
-        isDirty: false,
-        noSuggestionsToShow: false,
-      });
-      this.props.handleChange(highlightedSuggestion.value, this.state.system, highlightedSuggestion.label);
-    } else if (this.state.isDirty && this.isOpenChoice() && this.props.handleStringChange) {
-      this.setState({
-        isDirty: false,
-        noSuggestionsToShow: false,
-      });
+    handleChange(suggestion.value, system, suggestion.label);
+  };
 
-      const codingAnswer = this.getCodingAnswer();
-      if (this.state.inputValue) {
-        this.props.handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, this.props.resources?.openChoiceOption);
-        this.props.handleStringChange(this.state.inputValue);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onBlur = (_e: ChangeEvent<HTMLElement>, { highlightedSuggestion }: any | undefined): void => {
+    if (isDirty && highlightedSuggestion) {
+      setLastSearchValue(highlightedSuggestion.label);
+      setIsDirty(false);
+      setNoSuggestionsToShow(false);
+
+      handleChange(highlightedSuggestion.value, system, highlightedSuggestion.label);
+    } else if (isDirty && isOpenChoice() && handleStringChange) {
+      setIsDirty(false);
+      setNoSuggestionsToShow(false);
+
+      const codingAnswer = getCodingAnswer(answer);
+
+      if (inputValue) {
+        handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, resources?.openChoiceOption);
+        handleStringChange(inputValue);
       } else if (codingAnswer) {
-        this.props.clearCodingAnswer(codingAnswer);
-        this.props.handleStringChange('');
+        clearCodingAnswer(codingAnswer);
+        handleStringChange('');
       }
     } else {
-      this.setState({
-        noSuggestionsToShow: false,
-      });
+      setNoSuggestionsToShow(false);
     }
-  }
+  };
 
-  hasStringAnswer(): boolean {
-    return !!this.getStringAnswer();
-  }
+  const maxCharacters = getMaxLength(item);
+  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
+  const errorMessage = getErrorMessage(item, error);
 
-  hasCodingAnswer(): boolean {
-    return !!this.getCodingAnswer();
-  }
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: required({ item, resources }),
+    shouldUnregister: true,
+  };
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
-  getCodingAnswer(): Coding | undefined {
-    if (Array.isArray(this.props.answer)) {
-      return this.props.answer.reduce((acc, x) => acc || x.valueCoding, undefined);
-    } else if (this.props.answer) {
-      return this.props.answer.valueCoding;
-    }
-    return undefined;
-  }
-
-  getStringAnswer(): string | undefined {
-    if (Array.isArray(this.props.answer)) {
-      return this.props.answer.reduce((acc, x) => acc || x.valueString, undefined);
-    } else if (this.props.answer) {
-      return this.props.answer.valueString;
-    }
-  }
-
-  render(): JSX.Element {
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
-
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
-        <Collapse isOpened>
-          <Validation {...this.props}>
-            <Autosuggest
-              id={getId(this.props.id)}
-              label={
-                <Label
-                  item={this.props.item}
-                  onRenderMarkdown={this.props.onRenderMarkdown}
-                  questionnaire={this.props.questionnaire}
-                  resources={this.props.resources}
-                />
-              }
-              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              className="page_refero__autosuggest"
-              type="search"
-              isRequired={isRequired(this.props.item)}
-              errorMessage={getValidationTextExtension(this.props.item)}
-              helpButton={this.props.renderHelpButton()}
-              helpElement={this.props.renderHelpElement()}
-              suggestions={this.state.suggestions}
-              onSuggestionsFetchRequested={this.debouncedOnSuggestionsFetchRequested}
-              onSuggestionsClearRequested={(): void => {
-                // vis samme resultatsett neste gang feltet får fokus
-              }}
-              noCharacterValidation
-              onSubmitValidator={this.onSubmitValidator}
-              onSuggestionSelected={this.onSuggestionSelected}
-              onChange={this.onChangeInput}
-              onBlur={this.onBlur}
-              focusInputOnSuggestionClick={true}
-              value={this.state.inputValue}
-            />
-          </Validation>
-          {this.state.isLoading && (
-            <div>
-              <Loader size={'tiny'} />
-            </div>
-          )}
-          {this.state.noSuggestionsToShow && (
-            <div className="page_refero__no-suggestions">
-              {this.props.resources?.autosuggestNoSuggestions?.replace('{0}', this.state.inputValue)}
-            </div>
-          )}
-          {this.state.hasLoadError && <NotificationPanel variant="alert">{this.props.resources?.autoSuggestLoadError}</NotificationPanel>}
-          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-          {this.props.repeatButton}
-          {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-        </Collapse>
-      </div>
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+        {children}
+      </ReadOnly>
     );
   }
-}
+  return (
+    <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
+      <FormGroup error={errorMessage} errorWrapperClassName={styles.paddingBottom}>
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-autosuggest-label`}
+          testId={`${getId(id)}-label`}
+          sublabelId={`${getId(id)}-sublabel`}
+        />
+
+        <Autosuggest
+          inputProps={{
+            ...rest,
+            id: getId(id),
+            width: width,
+            onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+              onChange(e);
+              onChangeInput(e, AutosuggestChangeEvent);
+            },
+            value: inputValue,
+            type: 'search',
+            onBlur: (e: ChangeEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+              onBlur(e, AutosuggestChangeEvent);
+            },
+          }}
+          className="page_refero__autosuggest"
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}
+          onSuggestionsClearRequested={(): void => {
+            // vis samme resultatsett neste gang feltet får fokus
+          }}
+          renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
+          onSuggestionSelected={(e, data): void => {
+            onChange({
+              target: {
+                value: [data.suggestion.value],
+              },
+            });
+            onSuggestionSelected(e, data);
+          }}
+          focusInputOnSuggestionClick={true}
+        />
+
+        {isLoading && (
+          <div>
+            <Loader size={'tiny'} />
+          </div>
+        )}
+        {noSuggestionsToShow && (
+          <div className="page_refero__no-suggestions">{resources?.autosuggestNoSuggestions?.replace('{0}', inputValue)}</div>
+        )}
+        {hasLoadError && <NotificationPanel variant="error">{resources?.autoSuggestLoadError}</NotificationPanel>}
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path} item={item} index={index} />
+      </FormGroup>
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
+    </div>
+  );
+};
 
 export default AutosuggestView;

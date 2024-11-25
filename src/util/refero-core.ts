@@ -4,6 +4,10 @@ import {
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
+  Coding,
+  Reference,
+  Attachment,
+  Quantity,
 } from 'fhir/r4';
 
 import { QuestionnaireEnableOperator } from '../types/fhirEnums';
@@ -12,19 +16,35 @@ import { getMinOccursExtensionValue } from './extension';
 import ItemType from '../constants/itemType';
 import { FormData, FormDefinition } from '../reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
-
+import { isRepeat } from '.';
+import { isOfTypeQuestionnaireResponseItem } from './typeguards';
+export interface Path {
+  linkId: string;
+  index?: number;
+}
 export function getRootQuestionnaireResponseItemFromData(
-  definitionLinkId: string,
-  formData: FormData
-): Array<QuestionnaireResponseItem> | undefined {
+  definitionLinkId?: string,
+  formData?: FormData | null
+): QuestionnaireResponseItem[] | undefined {
   if (!formData || !formData.Content) {
     return undefined;
   }
-  const content = formData.Content;
-  if (!content.item || content.item.length === 0) {
+  const response = formData.Content;
+
+  if (!response.item || response.item.length === 0) {
     return undefined;
   }
-  return getItemWithIdFromResponseItemArray(definitionLinkId, content.item);
+  return getItemWithIdFromResponseItemArray(definitionLinkId, response.item);
+}
+export function getResponseItems(formData: FormData | null): QuestionnaireResponseItem[] | undefined {
+  if (!formData || !formData.Content) {
+    return undefined;
+  }
+  const response = formData.Content;
+  if (!response.item || response.item.length === 0) {
+    return undefined;
+  }
+  return response.item;
 }
 
 export function isInGroupContext(path: Path[], item: QuestionnaireResponseItem, items: QuestionnaireResponseItem[]): boolean {
@@ -40,7 +60,7 @@ export function isInGroupContext(path: Path[], item: QuestionnaireResponseItem, 
 export function getQuestionnaireResponseItemWithLinkid(
   linkId: string,
   responseItem: QuestionnaireResponseItem,
-  referencePath: Array<Path>
+  referencePath: Path[]
 ): QuestionnaireResponseItem | undefined {
   if (!responseItem) {
     return undefined;
@@ -79,9 +99,9 @@ export function getQuestionnaireResponseItemWithLinkid(
 
 export function getQuestionnaireResponseItemsWithLinkId(
   linkId: string,
-  responseItems: Array<QuestionnaireResponseItem>,
+  responseItems: QuestionnaireResponseItem[],
   recursive = false
-): Array<QuestionnaireResponseItem> {
+): QuestionnaireResponseItem[] {
   if (!responseItems) {
     return [];
   }
@@ -91,20 +111,20 @@ export function getQuestionnaireResponseItemsWithLinkId(
     return itemsWithLinkId;
   }
 
-  function collectAnswerItems(items: Array<QuestionnaireResponseItem>): Array<QuestionnaireResponseItemAnswer> {
+  function collectAnswerItems(items: QuestionnaireResponseItem[]): QuestionnaireResponseItemAnswer[] {
     if (items.length === 0) return [];
 
-    let answers: Array<QuestionnaireResponseItemAnswer> = [];
+    let answers: QuestionnaireResponseItemAnswer[] = [];
     answers = answers.concat(...items.map(i => i.answer || []));
 
-    let subItems: Array<QuestionnaireResponseItem> = [];
+    let subItems: QuestionnaireResponseItem[] = [];
     subItems = subItems.concat(...items.map(i => i.item || []));
 
     return answers.concat(...collectAnswerItems(subItems));
   }
 
   const answers = collectAnswerItems(responseItems);
-  let items: Array<QuestionnaireResponseItem> = [];
+  let items: QuestionnaireResponseItem[] = [];
   items = items.concat(...answers.map(a => a.item || []));
   itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, items, false);
   return itemsWithLinkId;
@@ -112,8 +132,8 @@ export function getQuestionnaireResponseItemsWithLinkId(
 
 export function getArrayContainingResponseItemFromItems(
   linkId: string,
-  items: Array<QuestionnaireResponseItem>
-): Array<QuestionnaireResponseItem> | undefined {
+  items: QuestionnaireResponseItem[]
+): QuestionnaireResponseItem[] | undefined {
   for (const item of items) {
     if (item.linkId === linkId) {
       return items;
@@ -133,8 +153,8 @@ export function getArrayContainingResponseItemFromItems(
 
 function getArrayContainingResponseItemFromAnswers(
   linkId: string,
-  answers: Array<QuestionnaireResponseItemAnswer>
-): Array<QuestionnaireResponseItem> | undefined {
+  answers: QuestionnaireResponseItemAnswer[]
+): QuestionnaireResponseItem[] | undefined {
   for (const answer of answers) {
     if (answer.item) {
       const result = getArrayContainingResponseItemFromItems(linkId, answer.item);
@@ -160,18 +180,7 @@ export function getAnswerFromResponseItem(
   return responseItem.answer[0];
 }
 
-export function getResponseItems(formData: FormData | null): Array<QuestionnaireResponseItem> | undefined {
-  if (!formData || !formData.Content) {
-    return undefined;
-  }
-  const response = formData.Content;
-  if (!response.item || response.item.length === 0) {
-    return undefined;
-  }
-  return response.item;
-}
-
-export function getDefinitionItems(formDefinition: FormDefinition | null): Array<QuestionnaireItem> | undefined {
+export function getDefinitionItems(formDefinition: FormDefinition | null): QuestionnaireItem[] | undefined {
   if (!formDefinition || !formDefinition.Content) {
     return undefined;
   }
@@ -183,9 +192,9 @@ export function getDefinitionItems(formDefinition: FormDefinition | null): Array
 }
 
 export function getItemWithIdFromResponseItemArray(
-  linkId: string,
-  responseItems: Array<QuestionnaireResponseItem> | undefined
-): Array<QuestionnaireResponseItem> | undefined {
+  linkId?: string,
+  responseItems?: QuestionnaireResponseItem[] | undefined
+): QuestionnaireResponseItem[] | undefined {
   if (!responseItems || responseItems.length === 0) {
     return undefined;
   }
@@ -196,11 +205,104 @@ export function getItemWithIdFromResponseItemArray(
   return filteredItems;
 }
 
+function itemChildrenHasAnswer(item: QuestionnaireResponseItem, hasAnswer: boolean): boolean {
+  if (!hasAnswer && item.item) {
+    for (const child of item.item) {
+      hasAnswer = itemHasPrimitiveAnswer(child);
+      if (hasAnswer) {
+        return hasAnswer;
+      } else {
+        if (child.item) {
+          hasAnswer = itemChildrenHasAnswer(child, hasAnswer);
+        }
+      }
+    }
+  }
+  return hasAnswer;
+}
+
+export const descendantsHasPrimitiveAnswer = (items?: QuestionnaireResponseItem[] | undefined): boolean => {
+  if (!items || items.length === 0) {
+    return false;
+  }
+
+  // Group items by linkId
+  const itemsByLinkId: { [linkId: string]: QuestionnaireResponseItem[] } = {};
+
+  for (const item of items) {
+    if (!item.linkId) {
+      continue; // Skip items without linkId
+    }
+
+    if (!itemsByLinkId[item.linkId]) {
+      itemsByLinkId[item.linkId] = [];
+    }
+    itemsByLinkId[item.linkId].push(item);
+  }
+
+  // Check each group of items with the same linkId
+  for (const linkId in itemsByLinkId) {
+    const itemGroup = itemsByLinkId[linkId];
+
+    // For each item in the group, check if it has a primitive answer
+    for (const item of itemGroup) {
+      const hasAnswer = itemChildrenHasAnswer(item, itemHasPrimitiveAnswer(item));
+      if (!hasAnswer) {
+        // If any item in the group lacks a primitive answer, return false
+        return false;
+      }
+    }
+  }
+
+  // If all groups passed the checks, return true
+  return true;
+};
+
+// Helper function to check if an item or its descendants have primitive answers
+function itemHasPrimitiveAnswer(item: QuestionnaireResponseItem): boolean {
+  // Check if the item has answers with primitive values
+  if (item.answer && item.answer.length > 0) {
+    for (const answer of item.answer) {
+      // Check for primitive value[x] properties
+      const hasPrimitiveValue = Object.keys(answer).some(key => {
+        if (key.startsWith('value') && key !== 'value') {
+          if (key === 'valueCoding') {
+            // Check if valueCoding.code exists
+            return answer.valueCoding && answer.valueCoding.code !== undefined;
+          } else if (key === 'valueQuantity') {
+            // Check if valueQuantity.value exists
+            return answer.valueQuantity && answer.valueQuantity.value !== undefined;
+          } else {
+            // For other value[x], check if it's not an object (primitive value)
+            return (
+              answer[key as keyof QuestionnaireResponseItemAnswer] !== undefined &&
+              typeof answer[key as keyof QuestionnaireResponseItemAnswer] !== 'object'
+            );
+          }
+        }
+        return false;
+      });
+
+      if (hasPrimitiveValue) {
+        // Found a primitive value
+        return true;
+      }
+    }
+  }
+
+  // Recursively check child items
+  if (item.item && item.item.length > 0) {
+    return descendantsHasPrimitiveAnswer(item.item);
+  }
+
+  // No primitive answers found in this item
+  return false;
+}
 export function getItemsWithIdFromResponseItemArray(
   linkId: string,
-  responseItems: Array<QuestionnaireResponseItem> | undefined,
+  responseItems: QuestionnaireResponseItem[] | undefined,
   recurse = false
-): Array<QuestionnaireResponseItem> {
+): QuestionnaireResponseItem[] {
   if (!responseItems || responseItems.length === 0) {
     return [];
   }
@@ -208,7 +310,7 @@ export function getItemsWithIdFromResponseItemArray(
   const filteredItems = responseItems.filter(i => i.linkId === linkId);
 
   if (recurse) {
-    const reducer = (acc: Array<QuestionnaireResponseItem>, val: QuestionnaireResponseItem): QuestionnaireResponseItem[] => {
+    const reducer = (acc: QuestionnaireResponseItem[], val: QuestionnaireResponseItem): QuestionnaireResponseItem[] => {
       if (val.item) {
         acc.push(...getItemsWithIdFromResponseItemArray(linkId, val.item, recurse));
       }
@@ -222,12 +324,12 @@ export function getItemsWithIdFromResponseItemArray(
 
 export function getItemWithTypeFromArray(
   type: string,
-  items: Array<QuestionnaireResponseItem> | undefined
-): Array<QuestionnaireResponseItem> | undefined {
+  items: QuestionnaireResponseItem[] | undefined
+): QuestionnaireResponseItem[] | undefined {
   if (!items || items.length === 0) {
     return undefined;
   }
-  let filteredItems: Array<QuestionnaireResponseItem> = [];
+  let filteredItems: QuestionnaireResponseItem[] = [];
   if (type === ItemType.ATTATCHMENT) {
     filteredItems = items.filter(
       i => i.answer && i.answer[0] && i.answer[0].valueAttachment !== null && i.answer[0].valueAttachment !== undefined
@@ -239,7 +341,7 @@ export function getItemWithTypeFromArray(
   return filteredItems;
 }
 
-export function hasAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
+export function hasAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
   if (!answer) {
     return false;
   }
@@ -254,56 +356,124 @@ export function hasAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
     hasDecimalAnswer(answer) ||
     hasIntegerAnswer(answer) ||
     hasStringAnswer(answer) ||
-    hasAttachmentAnswer(answer)
+    hasAttachmentAnswer(answer) ||
+    hasReferendeAnswer(answer) ||
+    hasUriAnswer(answer)
   );
 }
 
-export function hasBooleanAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return answer.valueBoolean === true || answer.valueBoolean === false;
+function isObjEmpty(obj: object | undefined): boolean {
+  return obj ? Object.keys(obj).length === 0 : true;
 }
 
-export function hasCodingAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  const coding = answer.valueCoding;
-  const codingValue = coding && coding.code ? String(coding.code) : null;
-
-  return codingValue !== null && codingValue !== undefined && codingValue !== '';
+function getAnswer<T>(
+  key: keyof QuestionnaireResponseItemAnswer,
+  answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+): T | undefined {
+  if (Array.isArray(answer)) {
+    //@ts-expect-error - TS doesn't know that key is a valid key of QuestionnaireResponseItemAnswer
+    return answer?.reduce((acc, x) => acc || (x[key] as T), undefined);
+  } else if (answer) {
+    return answer[key] as T;
+  }
+  return undefined;
+}
+export function getBooleanAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean | undefined {
+  return getAnswer<boolean>('valueBoolean', answer);
 }
 
-export function hasQuantityAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return answer.valueQuantity != null && (!!answer.valueQuantity.value || answer.valueQuantity.value === 0);
+export function getDecimalAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): number | undefined {
+  return getAnswer<number>('valueDecimal', answer);
 }
 
-export function hasDateAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueDate;
+export function getIntegerAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): number | undefined {
+  return getAnswer<number>('valueInteger', answer);
 }
 
-export function hasDateTimeAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueDateTime;
+export function getDateAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>('valueDate', answer);
 }
 
-export function hasTimeAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueTime;
+export function getDateTimeAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>('valueDateTime', answer);
 }
 
-export function hasDecimalAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueDecimal || answer.valueDecimal === 0;
+export function getTimeAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>('valueTime', answer);
 }
 
-export function hasIntegerAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueInteger || answer.valueInteger === 0;
+export function getStringAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>('valueString', answer);
 }
 
-export function hasStringAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueString;
+export function getUriAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>('valueUri', answer);
 }
 
-export function hasAttachmentAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return answer.valueAttachment != null && !!answer.valueAttachment.id;
+export function getAttachmentAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): Attachment | undefined {
+  return getAnswer<{ id?: string }>('valueAttachment', answer);
 }
 
+export function getCodingAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): Coding | undefined {
+  return getAnswer<Coding>('valueCoding', answer);
+}
+
+export function getQuantityAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): Quantity | undefined {
+  return getAnswer<Quantity>('valueQuantity', answer);
+}
+
+export function getReferenceAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): Reference | undefined {
+  return getAnswer<Reference>('valueReference', answer);
+}
+
+export function hasBooleanAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return getBooleanAnswer(answer) === true || getBooleanAnswer(answer) === false;
+}
+
+export function hasCodingAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getCodingAnswer(answer) && !isObjEmpty(getCodingAnswer(answer));
+}
+export function hasQuantityAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return getQuantityAnswer(answer) !== null && !isObjEmpty(getQuantityAnswer(answer));
+}
+
+export function hasDateAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getDateAnswer(answer);
+}
+
+export function hasDateTimeAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getDateTimeAnswer(answer);
+}
+
+export function hasTimeAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getTimeAnswer(answer);
+}
+
+export function hasDecimalAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getDecimalAnswer(answer) || getDecimalAnswer(answer) === 0;
+}
+
+export function hasIntegerAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getIntegerAnswer(answer) || getIntegerAnswer(answer) === 0;
+}
+
+export function hasStringAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getStringAnswer(answer);
+}
+
+export function hasAttachmentAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return getAttachmentAnswer(answer) != null && !!getAttachmentAnswer(answer)?.id;
+}
+export function hasReferendeAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return getReferenceAnswer(answer) != null && !!getReferenceAnswer(answer)?.id;
+}
+
+export function hasUriAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getUriAnswer(answer);
+}
 export function enableWhenMatchesAnswer(
   enableWhen: QuestionnaireItemEnableWhen,
-  answers: Array<QuestionnaireResponseItemAnswer> | undefined
+  answers: QuestionnaireResponseItemAnswer[] | undefined
 ): boolean {
   if (!enableWhen) return false;
 
@@ -327,13 +497,7 @@ export function enableWhenMatchesAnswer(
   });
   return matches;
 }
-
-export interface Path {
-  linkId: string;
-  index?: number;
-}
-
-export function createIdSuffix(path: Array<Path> | undefined, index = 0, repeats: boolean | undefined): string {
+export function createIdSuffix(path: Path[] | undefined, index = 0, repeats: boolean | undefined): string {
   let suffix = '';
 
   if (path) {
@@ -347,33 +511,65 @@ export function createIdSuffix(path: Array<Path> | undefined, index = 0, repeats
 
   return suffix + '^' + index;
 }
+export function parseSuffix(suffix: string, linkId: string): Path[] {
+  const paths: Path[] = [];
 
-export function createPathForItem(
-  path: Array<Path> | undefined,
-  item: QuestionnaireItem,
-  responseItem: QuestionnaireResponseItem,
-  index: number | undefined
-): Array<Path> {
-  let newPath: Array<Path>;
+  if (suffix) {
+    const indices = suffix.split('^').filter(part => part !== '');
+    indices.forEach(part => {
+      paths.push({ linkId, index: parseInt(part, 10) });
+    });
+  }
+
+  return paths;
+}
+export function parseIdSuffix(input: string): Path[] {
+  const [linkId, suffix] = input.split(/^([^\\^]+)/).filter(part => part !== ''); // Split into two parts: linkId and the rest as suffix
+  const paths: Path[] = [{ linkId: linkId.trim() }, ...parseSuffix(suffix, linkId.trim())]; // Combine linkId and parsed suffix paths
+
+  return paths;
+}
+
+export function findFirstGuidInString(input: string): string | null {
+  const regex = /\b[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}\b/;
+  const match = input.match(regex);
+  return match ? match[0] : null;
+}
+
+export const getUniqueId = (item: QuestionnaireItem, path?: Path[], index?: number): string => {
+  let rawId = '';
+  const newPath = createPathForItem(path, item, index);
+  rawId = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
+  return rawId.replace(/\./g, '-');
+};
+export function extractLinkIdFromUniqueId(uniqueId: string): string {
+  const [linkIdWithDashes] = uniqueId.split('^');
+
+  const linkId = linkIdWithDashes.replace(/-/g, '.');
+
+  return linkId;
+}
+export function createPathForItem(path?: Path[] | undefined, item?: QuestionnaireItem, index?: number | undefined): Path[] {
+  let newPath: Path[];
   if (path === null || path === undefined) {
     newPath = [];
   } else {
     newPath = copyPath(path);
   }
 
-  index = item.repeats ? index : undefined;
-  if (item && responseItem) {
+  index = isRepeat(item) ? index : undefined;
+  if (item) {
     newPath.push({
-      linkId: responseItem.linkId,
-      ...(item.repeats && { index }),
+      linkId: item.linkId,
+      ...(isRepeat(item) && { index }),
     });
   }
 
   return newPath;
 }
 
-export function shouldRenderDeleteButton(item: QuestionnaireItem, index: number): boolean {
-  if (!item.repeats) {
+export function shouldRenderDeleteButton(item?: QuestionnaireItem, index?: number): boolean {
+  if (!isRepeat(item)) {
     return false;
   }
   if (index === 0) {
@@ -381,7 +577,7 @@ export function shouldRenderDeleteButton(item: QuestionnaireItem, index: number)
   }
   const minOccurs = getMinOccursExtensionValue(item);
   if (minOccurs) {
-    if (index >= minOccurs) {
+    if (index && index >= minOccurs) {
       return true;
     }
   } else {
@@ -390,8 +586,8 @@ export function shouldRenderDeleteButton(item: QuestionnaireItem, index: number)
   return false;
 }
 
-function copyPath(path: Array<Path>): Array<Path> {
-  const newPath: Array<Path> = [];
+export function copyPath(path: Path[]): Path[] {
+  const newPath: Path[] = [];
   for (let i = 0; i < path.length; i++) {
     newPath.push(Object.assign({}, path[i]));
   }
@@ -402,8 +598,8 @@ export function getResponseItemAndPathWithLinkId(
   linkId: string,
   item: QuestionnaireResponse | QuestionnaireResponseItem,
   currentPath: Path[] = []
-): Array<ItemAndPath> {
-  const response: Array<ItemAndPath> = [];
+): ItemAndPath[] {
+  const response: ItemAndPath[] = [];
   let index = 0;
   const seen: { [linkId: string]: number } = {};
   for (const i of item.item ?? []) {
@@ -440,10 +636,10 @@ function getResponseItemAndPathWithLinkIdTraverse(
   item: QuestionnaireResponseItem,
   currentPath: Path[],
   currentIndex: number
-): Array<ItemAndPath> {
+): ItemAndPath[] {
   currentPath.push({ linkId: item.linkId, index: currentIndex });
 
-  let response: Array<ItemAndPath> = [];
+  let response: ItemAndPath[] = [];
 
   if (item.linkId === linkId) {
     response = [{ item: item, path: copyPath(currentPath) }];
@@ -455,19 +651,15 @@ function getResponseItemAndPathWithLinkIdTraverse(
   return response;
 }
 
-function isOfTypeQuestionnaireResponseItem(item: QuestionnaireResponse | QuestionnaireResponseItem): item is QuestionnaireResponseItem {
-  return (item as QuestionnaireResponseItem).answer !== undefined;
-}
-
-export function getResponseItemWithPath(path: Array<Path>, formData: FormData): QuestionnaireResponseItem | undefined {
+export function getResponseItemWithPath(path: Path[], formData: FormData): QuestionnaireResponseItem | undefined {
   if (!path || path.length === 0) {
     return undefined;
   }
   if (!formData.Content || !formData.Content.item) {
     return undefined;
   }
+  const rootItems: QuestionnaireResponseItem[] | undefined = getRootQuestionnaireResponseItemFromData(path[0].linkId, formData);
 
-  const rootItems: Array<QuestionnaireResponseItem> | undefined = getRootQuestionnaireResponseItemFromData(path[0].linkId, formData);
   if (!rootItems || rootItems.length === 0) {
     return undefined;
   }
@@ -535,10 +727,7 @@ export function getQuestionnaireDefinitionItemWithLinkid(
   // linkId not found in items, check the answers for items
 }
 
-function getQuestionnaireItemWithIdFromArray(
-  linkId: string,
-  items: Array<QuestionnaireItem> | undefined
-): Array<QuestionnaireItem> | undefined {
+function getQuestionnaireItemWithIdFromArray(linkId: string, items: QuestionnaireItem[] | undefined): QuestionnaireItem[] | undefined {
   if (!items || items.length === 0) {
     return undefined;
   }
@@ -551,9 +740,9 @@ function getQuestionnaireItemWithIdFromArray(
 
 export function getQuestionnaireItemsWithType(
   type: string,
-  items: Array<QuestionnaireItem> | undefined,
-  itemsWithType?: Array<QuestionnaireItem>
-): Array<QuestionnaireItem> | undefined {
+  items: QuestionnaireItem[] | undefined,
+  itemsWithType?: QuestionnaireItem[]
+): QuestionnaireItem[] | undefined {
   if (items === undefined) return;
   if (!itemsWithType) itemsWithType = [];
 
@@ -562,7 +751,7 @@ export function getQuestionnaireItemsWithType(
   return itemsWithType;
 }
 
-function getItemLinkIdsWithType(type: string, items: QuestionnaireItem[] | undefined, itemsWithType: Array<QuestionnaireItem>): void {
+function getItemLinkIdsWithType(type: string, items: QuestionnaireItem[] | undefined, itemsWithType: QuestionnaireItem[]): void {
   if (items !== undefined) {
     items.filter(f => f.type === type).forEach(f => itemsWithType.push(f));
   }

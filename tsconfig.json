@@ -1,25 +1,10 @@
 {
-  "exclude": ["../**/node_modules", "../lib/**/*.*"],
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "extends": "./tsconfig.build.json",
   "compilerOptions": {
-    "resolveJsonModule": true,
-    "noUnusedLocals": true,
-    "strictNullChecks": true,
-    "target": "ES2015",
-    "module": "ES2020",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "jsx": "preserve",
-    "noImplicitAny": true,
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "newLine": "LF",
-    "allowUnreachableCode": false,
-    "skipLibCheck": true,
-    "lib": ["es5", "es2015.core", "es2015.promise", "es6", "dom", "scripthost"],
-    "noUnusedParameters": true,
-    "noEmit": true,
-    "importHelpers": true
-  }
+    "types": ["vite/client", "vitest/globals", "vitest/jsdom"],
+    "typeRoots": ["./node_modules/@types"],
+    "baseUrl": "."
+  },
+  "include": ["src", "test", "preview"],
+  "exclude": ["**/__mocks__/*", "**/__data__/*"]
 }

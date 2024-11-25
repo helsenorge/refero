@@ -1,111 +1,119 @@
-import * as React from 'react';
+import React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { Options } from '@/types/formTypes/radioGroupOptions';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/form/components/form/validation';
-import { Options } from '@helsenorge/form/components/radio-group';
-import SafeSelect from '@helsenorge/form/components/safe-select';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { shouldShowExtraChoice } from '../../../util/choice';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { isRequired, getId, getSublabelText } from '../../../util/index';
-import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
+import { shouldShowExtraChoice } from '@/util/choice';
 
-interface Props {
+import { getId, isReadOnly } from '@/util/index';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { getErrorMessage, required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { GlobalState } from '@/reducers';
+import { QuestionnaireItem } from 'fhir/r4';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
+
+type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
-  validateInput: (value: string) => boolean;
-  resources?: Resources;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
-  repeatButton: JSX.Element;
-  oneToTwoColumn?: boolean;
   renderOpenField: () => JSX.Element | undefined;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-  children?: JSX.Element;
+  pdfValue?: string | number;
+};
 
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-}
+const DropdownView = (props: Props): JSX.Element | null => {
+  const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, children, path, index, pdf, pdfValue } =
+    props;
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-class DropdownView extends React.Component<Props, {}> {
-  render(): JSX.Element | null {
-    const {
-      options,
-      item,
-      questionnaire,
-      id,
-      answer,
-      handleChange,
-      selected,
-      validateInput,
-      resources,
-      children,
-      repeatButton,
-      renderDeleteButton,
-      renderOpenField,
-      renderHelpButton,
-      renderHelpElement,
-      onRenderMarkdown,
-      ...other
-    } = this.props;
-    if (!options) {
-      return null;
-    }
-    const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
-      return new Option(o.label, o.type);
-    });
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const { resources } = useExternalRenderContext();
+  const answer = useGetAnswer(linkId, path);
 
-    let placeholder;
-    if (getPlaceholder(item)) {
-      placeholder = new Option(getPlaceholder(item), '');
-    } else if (resources) {
-      placeholder = new Option(resources.selectDefaultPlaceholder, '');
-    }
+  const getWith = (options: Array<Options> | undefined): number => {
+    const maxCharacters = options?.reduce((acc, option) => (option.label.length > acc ? option.label.length : acc), 0);
+    const placeholderLength = resources?.selectDefaultPlaceholder ? resources.selectDefaultPlaceholder.length : 0;
+    let width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
+    return (width = placeholderLength > width ? placeholderLength : width);
+  };
 
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: required({ item, resources }),
+    shouldUnregister: true,
+  };
+  const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+    handleChange(e.target.value);
+  };
+  const { onChange: handleFormChange, ...rest } = register(
+    idWithLinkIdAndItemIndex,
+    shouldValidate(item, pdf) ? validationRules : undefined
+  );
+
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
-        <Collapse isOpened>
-          <Validation {...other}>
-            <SafeSelect
-              id={getId(id)}
-              selectName={getId(id)}
-              showLabel={true}
-              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              isRequired={isRequired(item)}
-              onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
-              options={dropdownOptions}
-              selected={selected ? selected[0] : undefined}
-              placeholder={placeholder}
-              onChangeValidator={validateInput}
-              errorMessage={getValidationTextExtension(item)}
-              className="page_refero__input"
-              helpButton={renderHelpButton()}
-              helpElement={renderHelpElement()}
-            />
-          </Validation>
-          {shouldShowExtraChoice(answer) ? (
-            <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-          ) : (
-            <React.Fragment />
-          )}
-          {renderDeleteButton('page_refero__deletebutton--margin-top')}
-          {repeatButton}
-          {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-        </Collapse>
-      </div>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={selected}
+        pdfValue={pdfValue}
+        errors={error}
+      >
+        {children}
+      </ReadOnly>
     );
   }
-}
+  return (
+    <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
+      <FormGroup error={getErrorMessage(item, error)} onColor="ongrey">
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-open-choice-label`}
+          testId={`${getId(id)}-open-choice-label`}
+          sublabelId={`${getId(id)}-open-choice-sublabel`}
+        />
 
-export default layoutChange(DropdownView);
+        <Select
+          {...rest}
+          width={getWith(options)}
+          selectId={getId(id)}
+          className="page_refero__input"
+          testId={getId(id)}
+          onChange={(e): void => {
+            handleFormChange(e);
+            onChange(e);
+          }}
+          value={selected?.[0] || ''}
+        >
+          <option value={undefined}>{resources?.selectDefaultPlaceholder || ''}</option>
+          {options?.map(option => (
+            <option key={getId(id) + option.label} value={option.type}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
+        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+      </FormGroup>
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      <RenderRepeatButton path={path} item={item} index={index} />
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
+    </div>
+  );
+};
+
+export default DropdownView;

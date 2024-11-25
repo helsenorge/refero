@@ -26,18 +26,18 @@ interface Dictionary<T> {
   [linkId: string]: T[];
 }
 
-function createNewItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
-  const qrItem = createQuestionnaireResponseItem(qItem);
-  synQuestionnaireResponseItem(qItem, qrItem);
-  return qrItem;
+function copyItem(qItem: QuestionnaireItem, qrItem: QuestionnaireResponseItem): QuestionnaireResponseItem {
+  const newQrItem = synQuestionnaireResponseItem(qItem, qrItem);
+  return newQrItem;
 }
 
-function copyItem(qItem: QuestionnaireItem, qrItem: QuestionnaireResponseItem): QuestionnaireResponseItem {
-  synQuestionnaireResponseItem(qItem, qrItem);
-  return qrItem;
+function createNewItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+  const qrItem = createQuestionnaireResponseItem(qItem);
+  return synQuestionnaireResponseItem(qItem, qrItem);
 }
 
 export function syncQuestionnaireResponse(q: Questionnaire, qr: QuestionnaireResponse): QuestionnaireResponse {
+  const newQr: QuestionnaireResponse = { ...qr };
   const qrItemCopy: QuestionnaireResponseItem[] = [];
   const qrItems = createDictionary(qr.item || []);
   for (const qItem of q.item || []) {
@@ -56,11 +56,12 @@ export function syncQuestionnaireResponse(q: Questionnaire, qr: QuestionnaireRes
     }
   }
 
-  qr.item = qrItemCopy;
-  return qr;
+  newQr.item = qrItemCopy;
+  return newQr;
 }
 
-function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: QuestionnaireResponseItem): void {
+function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: QuestionnaireResponseItem): QuestionnaireResponseItem {
+  const newQrItem = JSON.parse(JSON.stringify(qrItem));
   const qrItemCopy: QuestionnaireResponseItem[] = [];
   const qrAnswerItemCopy: QuestionnaireResponseItem[] = [];
   const qrItems = createDictionary(qrItem.item || []);
@@ -85,33 +86,34 @@ function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: Question
         }
       }
     } else {
-      const newQrItem = createNewItem(subQItem);
+      const newQrSubItem = createNewItem(subQItem);
       if (qItem.type == ItemType.GROUP) {
-        qrItemCopy.push(newQrItem);
+        qrItemCopy.push(newQrSubItem);
       } else {
-        qrAnswerItemCopy.push(newQrItem);
+        qrAnswerItemCopy.push(newQrSubItem);
       }
     }
   }
 
   if (qrItemCopy.length > 0) {
-    qrItem.item = qrItemCopy;
+    newQrItem.item = qrItemCopy;
   } else {
-    delete qrItem.item;
+    delete newQrItem.item;
   }
   if (qrAnswerItemCopy.length > 0) {
-    if (!qrItem.answer) {
-      qrItem.answer = [];
+    if (!newQrItem.answer) {
+      newQrItem.answer = [];
     }
-    if (!qrItem.answer[0]) {
-      qrItem.answer.push({} as QuestionnaireResponseItemAnswer);
+    if (!newQrItem.answer[0]) {
+      newQrItem.answer.push({});
     }
-    qrItem.answer[0].item = qrAnswerItemCopy;
+    newQrItem.answer[0].item = qrAnswerItemCopy;
   } else {
-    if (qrItem.answer && qrItem.answer.length > 0) {
-      delete qrItem.answer[0].item;
+    if (newQrItem.answer && newQrItem.answer.length > 0) {
+      delete newQrItem.answer[0].item;
     }
   }
+  return newQrItem;
 }
 
 function hasChanged(qItem: QuestionnaireItem, qrItems: QuestionnaireResponseItem[]): boolean {

@@ -1,16 +1,22 @@
-import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { ValidationSummaryPlacement } from '@helsenorge/form/components/form/validationSummaryPlacement';
-import { Store } from 'react-redux';
 import { IActionRequester } from '../util/actionRequester';
 import { IQuestionnaireInspector } from '../util/questionnaireInspector';
 import { Resources } from '../util/resources';
 import { AutoSuggestProps } from './autoSuggestProps';
 import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { OrgenhetHierarki } from './orgenhetHierarki';
+import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
+import { Store } from 'redux';
+import {} from '@/actions/newValue';
 import { TextMessage } from './text-message';
+import { UseFormProps } from 'react-hook-form';
+import { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 export interface ReferoProps {
-  store?: Store<{}>;
+  /**
+   * The store prop is not used and is @deprecated.
+   * It will be removed in a future version.
+   */
+  store?: Store;
   authorized: boolean;
   blockSubmit?: boolean;
   onSave?: (questionnaireResponse: QuestionnaireResponse) => void;
@@ -22,13 +28,13 @@ export interface ReferoProps {
   promptLoginMessage?: () => void;
   attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
-  attachmentValidTypes?: Array<string>;
+  attachmentValidTypes?: MimeTypes[];
   onRequestAttachmentLink?: (fileId: string) => string;
   onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void; //TODO: add to context
   uploadAttachment?: (
-    files: File[],
-    onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
+    files: UploadFile[],
+    onSuccess: (attachment: Attachment) => void,
     onError: (errormessage: TextMessage | null) => void
   ) => void;
   questionnaire?: Questionnaire;
@@ -71,4 +77,10 @@ export interface ReferoProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
+  useFormProps?: UseFormProps<
+    {
+      [x: string]: any;
+    },
+    any
+  >;
 }

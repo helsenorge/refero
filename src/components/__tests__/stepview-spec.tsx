@@ -1,115 +1,75 @@
-import * as React from 'react';
+import { Questionnaire } from 'fhir/r4';
 
-import { mount } from 'enzyme';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import '../../util/__tests__/defineFetch';
 
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
-
-import '../../util/defineFetch';
-import rootReducer from '../../reducers';
-import { Resources } from '../../util/resources';
-import { ReferoContainer } from '../index';
 import StepViewQuestionnaire from './__data__/stepview';
-import StepView from '../stepView';
-import Form from '@helsenorge/form/components/form';
-import { act } from 'react-dom/test-utils';
+import { renderRefero, screen } from '../../../test/test-utils';
+import { ReferoProps } from '../../types/referoProps';
+import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from '../../../test/selectors';
+import { getResources } from '../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: jest.fn().mockImplementation(query => ({
-    matches: false,
-    media: query,
-    onchange: null,
-    addListener: jest.fn(),
-    removeListener: jest.fn(),
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
-});
+const resources = {
+  ...getResources(''),
+  formRequiredErrorMessage: 'Du må fylle ut dette feltet',
+  oppgiGyldigVerdi: 'ikke gyldig tall',
+  formSend: 'Send inn',
+  nextStep: 'Neste',
+  previousStep: 'Forrige',
+  formSave: 'Save',
+};
+const onSubmitMock = vi.fn();
+const onStepChangeMock = vi.fn();
 
-const onSubmitMock = jest.fn();
-const onStepChangeMock = jest.fn();
-function createWrapper(
-  questionnaire: Questionnaire,
-  helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
-  helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
-) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={onSubmitMock}
-        resources={{ formSend: 'Send inn', nextStep: 'Neste', previousStep: 'Forrige' } as Resources}
-        questionnaire={questionnaire}
-        onRequestHelpButton={helpButtonCb}
-        onRequestHelpElement={helpElementCb}
-        saveButtonDisabled={false}
-        onStepChange={onStepChangeMock}
-      />
-    </Provider>
-  );
-}
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return renderRefero({
+    questionnaire,
+    props: { ...props, resources, saveButtonDisabled: false, onSubmit: onSubmitMock, onStepChange: onStepChangeMock },
+  });
+};
 
 describe('Step-view', () => {
   it('Should render StepView if a top-level element has the code "step"', () => {
-    const wrapper = createWrapper(StepViewQuestionnaire);
-    wrapper.render();
-    expect(wrapper.find(StepView).length).toBe(1);
+    createWrapper(StepViewQuestionnaire);
+
+    expect(screen.getByText('Gruppe 1')).toBeInTheDocument();
+    expect(screen.queryByText('Gruppe 2')).not.toBeInTheDocument();
   });
 
-  it('Should call onStepChange if the step updates in step-view', () => {
-    const wrapper = createWrapper(StepViewQuestionnaire);
-    wrapper.render();
-    act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
-    });
-    wrapper.update();
+  it('Should call onStepChange if the step updates in step-view', async () => {
+    createWrapper(StepViewQuestionnaire);
+    await submitForm();
     expect(onStepChangeMock).toHaveBeenCalled();
   });
 
   // This test only works with 3-step questionnaires
-  it('Buttons in step-view: Should call right functions and display correct texts in step-view', () => {
-    const wrapper = createWrapper(StepViewQuestionnaire);
-    wrapper.render();
+  it('Buttons in step-view: Should call right functions and display correct texts in step-view', async () => {
+    createWrapper(StepViewQuestionnaire);
 
     // Step 1
-    expect(wrapper.find(Form).props().submitButtonText).toBe('Neste');
-    expect(wrapper.find(Form).props().pauseButtonText).toBe(undefined);
-    act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
-    });
-    wrapper.update();
+    expect(screen.getByText(resources.nextStep)).toBeInTheDocument();
+    await submitForm();
     // Step 2
-    expect(wrapper.find(Form).props().pauseButtonText).toBe('Forrige');
-    act(() => {
-      (wrapper.find(Form).prop('onPause') as () => void)();
-    });
-    wrapper.update();
+    expect(screen.getByText(resources.previousStep)).toBeInTheDocument();
+    await clickButtonTimes(/refero-pause-button/i, 1);
+
     // Step 1
-    expect(wrapper.find(Form).props().pauseButtonText).toBe(undefined);
-    act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
-    });
-    wrapper.update();
-    // Step 2
-    act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
-    });
-    wrapper.update();
+    expect(screen.queryByText(resources.previousStep)).not.toBeInTheDocument();
+    await submitForm();
+
+    // Step 2 - should get validation error
+    await submitForm();
+    expect(screen.queryAllByText(/Du må fylle ut dette feltet/i)).toHaveLength(2);
+    await selectCheckboxOption(/Mann/i);
+
+    await typeByLabelText(/String/i, 'epost@test.com');
+    await submitForm();
     // Step 3
-    expect(wrapper.find(Form).props().submitButtonText).toBe('Send inn');
-    act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
-    });
-    wrapper.update();
+    await typeByLabelText(/Hvor mange liter blod/i, '2.23');
+    await submitForm();
+
+    // Final assertion
     expect(onSubmitMock).toHaveBeenCalled();
   });
 });

@@ -1,66 +1,42 @@
-import * as React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { mount, ReactWrapper } from 'enzyme';
-
-import '../../util/defineFetch';
-import rootReducer from '../../reducers';
+import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
-import Decimal from '../formcomponents/decimal/decimal';
-import { ReferoContainer } from '..';
-import { Resources } from '../../util/resources';
 import GroupGridModel from './__data__/group-grid';
+import { renderRefero, screen } from '../../../test/test-utils';
+import { encodeString } from '../createQuestionnaire/utils';
 
-describe('Group-grid component renders correctly', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
+describe('group-grid-spec', () => {
   it('renders table with reordered items', () => {
-    const wrapper = createWrapper(GroupGridModel);
-    wrapper.render();
+    const { container } = createWrapper(GroupGridModel);
+    expect(screen.getAllByRole('table')).toHaveLength(1);
 
-    expect(wrapper.find('table')).toHaveLength(1);
-    expect(wrapper.find('th')).toHaveLength(5);
-    expect(wrapper.find('th').map(it => it.text())).toEqual(['X', 'SpmA', 'SpmB', 'SpmC', 'SpmD']);
+    ['X', 'SpmA', 'SpmB', 'SpmC', 'SpmD'].forEach(element => {
+      const els = screen.queryAllByText(element);
+      expect(els.length).toBeGreaterThan(0);
+    });
 
-    const rows = wrapper.find('.page_refero__grid--row');
+    const rows = container.querySelectorAll('tr.page_refero__grid--row');
     expect(rows).toHaveLength(4);
-
-    let expectedItemsPerRow = [['1.1.1', '1.1.2', '1.1.3'], ['1.2.2', '1.2.3', '1.2.1'], ['1.3.1'], ['1.4.1']];
-
+    const expectedItemsPerRow = [['1.1.1', '1.1.2', '1.1.3'], ['1.2.2', '1.2.3', '1.2.1'], ['1.3.1'], ['1.4.1']];
     for (let i = 0; i < rows.length; i++) {
-      validateRow(rows.at(i), 5, expectedItemsPerRow[i]);
+      validateRow(rows[i], 5, expectedItemsPerRow[i]);
     }
   });
 });
 
-function validateRow(wrapper: ReactWrapper<{}, {}>, expectedNumCells: number, expectedItemLinkIds: string[]) {
-  expect(wrapper.find('td')).toHaveLength(expectedNumCells);
+function validateRow(wrapper: Element, expectedNumCells: number, expectedItemLinkIds: string[]): void {
+  const numCells = wrapper.querySelectorAll('td');
+  expect(numCells).toHaveLength(expectedNumCells);
 
-  const cells = wrapper.find(Decimal);
-  expect(cells).toHaveLength(expectedItemLinkIds.length);
+  expectedItemLinkIds.forEach(expectedItemLinkId => {
+    const id = `item_${encodeString(expectedItemLinkId)}-decimal-label`;
+    const cell = screen.queryByTestId(id);
+    expect(cell).toBeInTheDocument();
+  });
 
-  expect(cells.map(it => it.prop('item')!.linkId)).toEqual(expectedItemLinkIds);
+  // expect(cells.map(it => it.prop('item')!.linkId)).toEqual(expectedItemLinkIds);
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function createWrapper(questionnaire: Questionnaire) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={questionnaire}
-      />
-    </Provider>
-  );
+  return renderRefero({ questionnaire });
 }

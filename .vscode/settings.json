@@ -2,14 +2,12 @@
   "window.title": "${activeEditorShort}${separator}refero",
   "typescript.tsdk": "./node_modules/typescript/lib",
   "editor.tabSize": 2,
-  "eslint.alwaysShowStatus": true,
   "eslint.lintTask.enable": true,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "prettier.singleQuote": true,
   "prettier.printWidth": 140,
   "prettier.trailingComma": "es5",
   "prettier.proseWrap": "always",
-  "jest.pathToConfig": "config/jest.config.js",
   "workbench.colorCustomizations": {
     "activityBar.background": "#88d7ea",
     "activityBar.activeBorder": "#de41bf",
@@ -31,5 +29,13 @@
     "statusBarItem.remoteForeground": "#15202b"
   },
   "peacock.color": "#5dc9e2",
-  "eslint.runtime": "node"
+  "eslint.runtime": "node",
+  "typescript.experimental.updateImportsOnPaste": true,
+  "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.formatOnType": false, // required
+  "editor.formatOnPaste": true, // optional
+  "editor.formatOnSave": true, // optional
+  "editor.formatOnSaveMode": "file", // required to format on save
+  "files.autoSave": "onFocusChange", // optional but recommended
+  "vs-code-prettier-eslint.prettierLast": false // set as "true" to run 'prettier' last not first
 }

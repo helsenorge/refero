@@ -8,30 +8,35 @@ import {
   Coding,
   Attachment,
 } from 'fhir/r4';
-import produce, { enableES5 } from 'immer';
 
-import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
+import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
-import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
-import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
+import { SetFormDefinitionAction, setSkjemaDefinitionAction } from '@/actions/form';
+import { generateQuestionnaireResponse } from '@/actions/generateQuestionnaireResponse';
 import {
-  NEW_VALUE,
-  REMOVE_CODING_VALUE,
-  ADD_REPEAT_ITEM,
-  DELETE_REPEAT_ITEM,
-  NewValueAction,
-  NEW_CODINGSTRING_VALUE,
-  REMOVE_CODINGSTRING_VALUE,
-  REMOVE_ATTACHMENT_VALUE,
-} from '../actions/newValue';
-import { syncQuestionnaireResponse } from '../actions/syncQuestionnaireResponse';
-import itemType from '../constants/itemType';
-import { GlobalState } from '../reducers/index';
-import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
-import { getMinOccursExtensionValue } from '../util/extension';
-import { isStringEmpty } from '../util/index';
+  addRepeatItemAction,
+  newCodingStringValueAction,
+  newValue,
+  NewValuePayload,
+  removeCodingStringValueAction,
+  removeCodingValueAction,
+  removeAttachmentAction,
+  DeleteRepeatItemPayload,
+  RepeatItemPayload,
+  deleteRepeatItemAction,
+  RemoveAttachmentPayload,
+  CodingStringPayload,
+  RemoveCodingStringPayload,
+  RemoveCodingValuePayload,
+} from '@/actions/newValue';
+import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
+import itemType from '@/constants/itemType';
+import { GlobalState } from '@/reducers/index';
+import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
+import { getMinOccursExtensionValue } from '@/util/extension';
+import { isStringEmpty } from '@/util/index';
 import {
   getResponseItemWithPath,
   getQuestionnaireDefinitionItem,
@@ -44,15 +49,16 @@ import {
   getResponseItemAndPathWithLinkId,
   getQuestionnaireDefinitionItemWithLinkid,
 } from '../util/refero-core';
-
-enableES5();
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
 export interface FormData {
   Content: QuestionnaireResponse | null | undefined;
+  isExternalUpdate?: boolean;
 }
 
 export interface FormDefinition {
   Content: Questionnaire | null | undefined;
+  isExternalUpdate?: boolean;
 }
 
 export interface Form {
@@ -72,42 +78,51 @@ const initialState: Form = {
   },
   FormDefinition: {
     Content: null,
+    isExternalUpdate: false,
   },
   Language: LanguageLocales.NORWEGIAN.toLowerCase(),
 };
-
-export default function reducer(state: Form = initialState, action: NewValueAction | FormAction): Form | undefined {
-  switch (action.type) {
-    case NEW_VALUE:
-      return processNewValueAction(action, state);
-
-    case REMOVE_ATTACHMENT_VALUE:
-      return processRemoveAttachmentValueAction(action, state);
-
-    case REMOVE_CODING_VALUE:
-      return processRemoveCodingValueAction(action, state);
-
-    case NEW_CODINGSTRING_VALUE:
-      return processNewCodingStringValueAction(action, state);
-
-    case REMOVE_CODINGSTRING_VALUE:
-      return processRemoveCodingStringValueAction(action, state);
-
-    case ADD_REPEAT_ITEM:
-      return processAddRepeatItemAction(action, state);
-
-    case DELETE_REPEAT_ITEM:
-      return processDeleteRepeatItemAction(action, state);
-
-    case SET_SKJEMA_DEFINITION:
-      return processSetSkjemaDefinition(action as FormAction, state);
-    default:
-      return state;
-  }
-}
+const formSlice = createSlice({
+  name: 'form',
+  initialState,
+  reducers: {
+    setIsExternalUpdateAction(state, action: PayloadAction<boolean>) {
+      state.FormData.isExternalUpdate = action.payload;
+    },
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(setSkjemaDefinitionAction, (state, action: PayloadAction<SetFormDefinitionAction>) => {
+        processSetSkjemaDefinition(action.payload, state);
+      })
+      .addCase(newValue, (state, action: PayloadAction<NewValuePayload>) => {
+        processNewValueAction(action.payload, state);
+      })
+      .addCase(newCodingStringValueAction, (state, action: PayloadAction<CodingStringPayload>) => {
+        processNewCodingStringValueAction(action.payload, state);
+      })
+      .addCase(removeCodingStringValueAction, (state, action: PayloadAction<RemoveCodingStringPayload>) => {
+        processRemoveCodingStringValueAction(action.payload, state);
+      })
+      .addCase(removeCodingValueAction, (state, action: PayloadAction<RemoveCodingValuePayload>) => {
+        processRemoveCodingValueAction(action.payload, state);
+      })
+      .addCase(removeAttachmentAction, (state, action: PayloadAction<RemoveAttachmentPayload>) => {
+        processRemoveAttachmentValueAction(action.payload, state);
+      })
+      .addCase(addRepeatItemAction, (state, action: PayloadAction<RepeatItemPayload>) => {
+        processAddRepeatItemAction(action.payload, state);
+      })
+      .addCase(deleteRepeatItemAction, (state, action: PayloadAction<DeleteRepeatItemPayload>) => {
+        processDeleteRepeatItemAction(action.payload, state);
+      });
+  },
+});
+export default formSlice.reducer;
+export const actions = formSlice.actions;
 
 export function getFormData(state: GlobalState): FormData | null {
-  if (!state.refero.form.FormData) {
+  if (!state.refero?.form?.FormData) {
     return null;
   }
   return state.refero.form.FormData;
@@ -124,105 +139,96 @@ function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined
   }
 }
 
-function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
+function processAddRepeatItemAction(action: NewValuePayload, state: Form): Form {
   const { parentPath, responseItems, item } = action;
-  return produce(state, draft => {
-    if (!parentPath) {
-      return state;
-    }
-
-    let arrayToAddItemTo: Array<QuestionnaireResponseItem> | undefined = [];
-    if (parentPath.length === 0 && draft.FormData.Content) {
-      arrayToAddItemTo = draft.FormData.Content.item;
-    } else if (parentPath.length > 0) {
-      // length >1 means group wrapped in group
-      const itemToAddTo = getResponseItemWithPath(parentPath, draft.FormData);
-      arrayToAddItemTo = getArrayToAddGroupTo(itemToAddTo);
-    }
-
-    if (!arrayToAddItemTo || arrayToAddItemTo.length === 0) {
-      return;
-    }
-
-    if (!responseItems || responseItems.length === 0) {
-      return;
-    }
-
-    const newItem = copyItem(
-      responseItems[0],
-      undefined,
-      draft.FormDefinition.Content as Questionnaire,
-      state.FormDefinition.Content as Questionnaire
-    );
-    if (!newItem) {
-      return;
-    }
-    if (item?.type === itemType.BOOLEAN) {
-      if (item.initial && item.initial.length > 0 && item.initial[0].valueBoolean !== undefined) {
-        newItem.answer = [{ valueBoolean: item.initial[0]?.valueBoolean }];
-      } else {
-        newItem.answer = [{ valueBoolean: false }];
-      }
-    }
-    const indexToInsert = arrayToAddItemTo.map(o => o.linkId).lastIndexOf(newItem.linkId);
-    arrayToAddItemTo.splice(indexToInsert + 1, 0, newItem);
-  });
-}
-
-function processDeleteRepeatItemAction(action: NewValueAction, state: Form): Form {
-  return produce(state, draft => {
-    if (!action.itemPath) {
-      return state;
-    }
-
-    let arrayToDeleteItem: Array<QuestionnaireResponseItem> | undefined = [];
-    if (action.itemPath.length === 1 && draft.FormData.Content) {
-      arrayToDeleteItem = draft.FormData.Content.item;
-    } else if (action.itemPath.length > 0) {
-      // length >1 means group wrapped in group
-      const parentPath = action.itemPath.slice(0, -1);
-      const itemToAddTo = getResponseItemWithPath(parentPath, draft.FormData);
-      arrayToDeleteItem = getArrayToAddGroupTo(itemToAddTo);
-    }
-
-    if (!arrayToDeleteItem || arrayToDeleteItem.length === 0) {
-      return;
-    }
-
-    if (!action.item) {
-      return;
-    }
-    const definitionLinkId = action.item.linkId;
-    const index = action.itemPath[action.itemPath.length - 1].index;
-    let itemIndexInArray = 0;
-    for (let i = 0; i <= arrayToDeleteItem.length - 1; i++) {
-      if (arrayToDeleteItem[i].linkId === definitionLinkId) {
-        if (itemIndexInArray === index) {
-          arrayToDeleteItem.splice(i, 1);
-          break;
-        }
-        itemIndexInArray++;
-      }
-    }
-  });
-}
-
-function addInitialValueToBooleanItem(definitionItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] | undefined {
-  if (definitionItem.initial && definitionItem.initial.length > 0 && definitionItem.initial[0].valueBoolean !== undefined) {
-    return [{ valueBoolean: definitionItem.initial[0].valueBoolean }];
-  } else {
-    return [{ valueBoolean: false }];
+  if (!parentPath) {
+    return state;
   }
+
+  let arrayToAddItemTo: Array<QuestionnaireResponseItem> | undefined = [];
+  if (parentPath.length === 0 && state.FormData.Content) {
+    arrayToAddItemTo = state.FormData.Content.item;
+  } else if (parentPath.length > 0) {
+    // length >1 means group wrapped in group
+    const itemToAddTo = getResponseItemWithPath(parentPath, state.FormData);
+    arrayToAddItemTo = getArrayToAddGroupTo(itemToAddTo);
+  }
+
+  if (!arrayToAddItemTo || arrayToAddItemTo.length === 0) {
+    return state;
+  }
+
+  if (!responseItems || responseItems.length === 0) {
+    return state;
+  }
+  if (state.FormDefinition.Content === undefined || state.FormDefinition.Content === null) {
+    return state;
+  }
+  if (state.FormDefinition.Content === undefined || state.FormDefinition.Content === null) {
+    return state;
+  }
+
+  const newItem = copyItem(responseItems[0], undefined, state.FormDefinition.Content, state.FormDefinition.Content);
+  if (!newItem) {
+    return state;
+  }
+  if (item?.type === itemType.BOOLEAN) {
+    if (item.initial && item.initial.length > 0 && item.initial[0].valueBoolean !== undefined) {
+      newItem.answer = [{ valueBoolean: item.initial[0]?.valueBoolean }];
+    } else {
+      newItem.answer = [{ valueBoolean: false }];
+    }
+  }
+  const indexToInsert = arrayToAddItemTo.map(o => o.linkId).lastIndexOf(newItem.linkId);
+  arrayToAddItemTo.splice(indexToInsert + 1, 0, newItem);
+  return state;
+}
+
+function processDeleteRepeatItemAction(action: NewValuePayload, state: Form): Form {
+  if (!action.itemPath) {
+    return state;
+  }
+
+  let arrayToDeleteItem: QuestionnaireResponseItem[] | undefined = [];
+
+  if (action.itemPath.length === 1 && state.FormData.Content) {
+    arrayToDeleteItem = state.FormData.Content.item;
+  } else if (action.itemPath.length > 1) {
+    const parentPath = action.itemPath.slice(0, -1);
+    const itemToAddTo = getResponseItemWithPath(parentPath, state.FormData);
+    arrayToDeleteItem = getArrayToAddGroupTo(itemToAddTo);
+  }
+
+  if (!arrayToDeleteItem || arrayToDeleteItem.length === 0 || !action.item) {
+    return state;
+  }
+
+  const definitionLinkId = action.item.linkId;
+  const index = action.itemPath[action.itemPath.length - 1].index;
+
+  let itemIndexInArray = 0;
+
+  for (let i = 0; i < arrayToDeleteItem.length; i++) {
+    if (arrayToDeleteItem[i].linkId === definitionLinkId) {
+      if (itemIndexInArray === index) {
+        arrayToDeleteItem.splice(i, 1);
+        break;
+      }
+      itemIndexInArray++;
+    }
+  }
+
+  return state;
 }
 
 function copyItem(
   source: QuestionnaireResponseItem,
   target: QuestionnaireResponseItem | undefined,
-  questionnaireDraft: Questionnaire,
+  questionnairestate: Questionnaire,
   questionnaire: Questionnaire
 ): QuestionnaireResponseItem {
   if (!target) {
-    target = { linkId: source.linkId } as QuestionnaireResponseItem;
+    target = { linkId: source.linkId };
 
     if (source.text) {
       target.text = source.text;
@@ -233,9 +239,9 @@ function copyItem(
     if (!target.item) {
       target.item = [];
     }
-    const newResponseItem = {
+    const newResponseItem: QuestionnaireResponseItem = {
       linkId: source.item[i].linkId,
-    } as QuestionnaireResponseItem;
+    };
     if (source.item[i].text) {
       newResponseItem.text = source.item[i].text;
     }
@@ -243,7 +249,7 @@ function copyItem(
     const numberOfItemsWithSameLinkId = target.item.filter(item => item.linkId === newResponseItem.linkId).length;
 
     if (numberOfItemsWithSameLinkId > 0) {
-      const defItem = getQuestionnaireDefinitionItem(newResponseItem.linkId, questionnaireDraft.item);
+      const defItem = getQuestionnaireDefinitionItem(newResponseItem.linkId, questionnairestate.item);
 
       const minOccurs = defItem ? getMinOccursExtensionValue(defItem) || 1 : 1;
       if (numberOfItemsWithSameLinkId >= minOccurs) {
@@ -252,9 +258,9 @@ function copyItem(
     }
 
     target.item.push(newResponseItem);
-    copyItem(source.item[i], newResponseItem, questionnaireDraft, questionnaire);
+    copyItem(source.item[i], newResponseItem, questionnairestate, questionnaire);
   }
-  const defItem = getQuestionnaireDefinitionItem(source.linkId, questionnaireDraft.item);
+  const defItem = getQuestionnaireDefinitionItem(source.linkId, questionnairestate.item);
   if (defItem?.type === itemType.BOOLEAN) {
     const answer = createQuestionnaireResponseAnswer(defItem);
     if (answer) {
@@ -270,19 +276,19 @@ function copyItem(
         target.answer = [];
       }
       const answer = source.answer[i];
-      const targetAnswer = {
-        item: [] as QuestionnaireResponseItem[],
-      } as QuestionnaireResponseItemAnswer;
+      const targetAnswer: QuestionnaireResponseItemAnswer = {
+        item: [],
+      };
 
       for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
-        const newResponseItem = {
+        const newResponseItem: QuestionnaireResponseItem = {
           linkId: answer.item[j].linkId,
           answer: getInitialAnswerForCopyItem(source, questionnaire, answer.item[j]),
           text: answer.item[j]?.text,
-        } as QuestionnaireResponseItem;
-        (targetAnswer.item as QuestionnaireResponseItem[]).push(newResponseItem);
+        };
+        targetAnswer.item?.push(newResponseItem);
         target.text = source.text;
-        copyItem(answer.item[j], newResponseItem, questionnaireDraft, questionnaire);
+        copyItem(answer.item[j], newResponseItem, questionnairestate, questionnaire);
       }
 
       target.answer.push(targetAnswer);
@@ -308,16 +314,16 @@ function getInitialAnswerForCopyItem(
   return initialAnswer !== undefined ? [initialAnswer] : [];
 }
 
-function runEnableWhen(action: NewValueAction, state: Form, draft: Form): void {
-  if (action.item && draft.FormData.Content) {
+function runEnableWhen(action: NewValuePayload, state: Form): void {
+  if (action.item && state.FormData.Content) {
     const qrItemsToClear: Array<QrItemsToClear> = [];
     /*
-     * immer lager javascript proxy-objekt av "draft"-variablen i produce, og dersom man oppretter nye variabler eller utleder
-     * noe fra draft, blir disse også proxy-objekter, og denne opprettelsen går tregt. Det beste er å bruke "state"-variablen
+     * immer lager javascript proxy-objekt av "state"-variablen i produce, og dersom man oppretter nye variabler eller utleder
+     * noe fra state, blir disse også proxy-objekter, og denne opprettelsen går tregt. Det beste er å bruke "state"-variablen
      * for beregninger der det lar seg gjøre, for det går raskt. Koden under regner ut hva som må endres ved å bruke state, og
-     * så gjøres endringen på draft. På skjema med mange enableWhen kan man da spare flere sekunder når noe fylles ut.
+     * så gjøres endringen på state. På skjema med mange enableWhen kan man da spare flere sekunder når noe fylles ut.
      */
-    const responseItems = getResponseItems(draft.FormData);
+    const responseItems = getResponseItems(state.FormData);
     // lag en kopi som kan oppdateres underveis, for å beregne multiple dependent enableWhen items
     const calculatedResponseItems = JSON.parse(JSON.stringify(responseItems));
     calculateEnableWhenItemsToClear(
@@ -342,7 +348,7 @@ function runEnableWhen(action: NewValueAction, state: Form, draft: Form): void {
           wipeAnswerItems(qrItemWithEnableWhen, qrItemsToClear[w].qItemWithEnableWhen);
         } else {
           // let gjennom hele skjema, og clear riktig item. Hvis vi havner her er item som skal cleares ikke et barn under action.itemPath
-          const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, draft.FormData.Content);
+          const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, state.FormData.Content);
           for (let r = 0; r < qrItemWithEnableWhen.length; r++) {
             removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen[r].item, responseItems);
             wipeAnswerItems(qrItemWithEnableWhen[r].item, qrItemsToClear[w].qItemWithEnableWhen);
@@ -353,222 +359,221 @@ function runEnableWhen(action: NewValueAction, state: Form, draft: Form): void {
   }
 }
 
-function processRemoveCodingValueAction(action: NewValueAction, state: Form): Form {
-  return produce(state, draft => {
-    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
-    if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
-      return;
-    }
-    if (action.valueCoding) {
-      responseItem.answer = responseItem.answer
-        .map(el => {
-          if (el && el.item && el.valueCoding && el.valueCoding.code && action.valueCoding) {
-            return {
-              // fjern valueCoding, men behold item
-              item: el.item,
-            };
-          }
-          return el;
-        })
-        .filter(el => {
-          if (el && el.valueCoding && el.valueCoding.code && action.valueCoding) {
-            return el.valueCoding.code !== action.valueCoding.code;
-          }
-          return true;
-        });
+function processRemoveCodingValueAction(action: NewValuePayload, state: Form): Form {
+  const responseItem = getResponseItemWithPath(action.itemPath || [], state.FormData);
+  if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
+    return state;
+  }
+  if (action.valueCoding) {
+    responseItem.answer = responseItem.answer
+      .map(el => {
+        if (el && el.item && el.valueCoding && el.valueCoding.code && action.valueCoding) {
+          return {
+            // fjern valueCoding, men behold item
+            item: el.item,
+          };
+        }
+        return el;
+      })
+      .filter(el => {
+        if (el && el.valueCoding && el.valueCoding.code && action.valueCoding) {
+          return el.valueCoding.code !== action.valueCoding.code;
+        }
+        return true;
+      });
 
-      if (responseItem.answer.length === 0) {
+    if (responseItem.answer.length === 0) {
+      delete responseItem.answer;
+    }
+  }
+
+  // run enableWhen to clear fields
+  runEnableWhen(action, state);
+  return state;
+}
+
+function processRemoveCodingStringValueAction(action: NewValuePayload, state: Form): Form {
+  const responseItem = getResponseItemWithPath(action.itemPath || [], state.FormData);
+  if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
+    return state;
+  }
+
+  responseItem.answer = responseItem.answer.filter(el => {
+    return el && el.valueString ? false : true;
+  });
+
+  if (responseItem.answer.length === 0) {
+    delete responseItem.answer;
+  }
+
+  // run enableWhen to clear fields
+  runEnableWhen(action, state);
+  return state;
+}
+
+function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form): Form {
+  const responseItem = getResponseItemWithPath(action.itemPath || [], state.FormData);
+  if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
+    return state;
+  }
+
+  if (action.valueAttachment) {
+    const index = responseItem.answer.findIndex(el => el && el.valueAttachment && el.valueAttachment.id === action.valueAttachment?.id);
+    if (index > -1) {
+      responseItem.answer.splice(index, 1);
+    }
+  }
+
+  if (responseItem.answer.length === 0) {
+    delete responseItem.answer;
+  }
+  return state;
+}
+
+function processNewValueAction(payload: NewValuePayload, state: Form): Form {
+  const responseItem = getResponseItemWithPath(payload.itemPath || [], state.FormData);
+
+  if (!responseItem) {
+    return state;
+  }
+
+  let hasAnswer = false;
+
+  if (!responseItem.answer) {
+    responseItem.answer = [];
+  }
+
+  let answer: QuestionnaireResponseItemAnswer = responseItem.answer[0];
+  if (!answer) {
+    answer = {};
+    responseItem.answer.push(answer);
+  }
+
+  if (payload.valueBoolean !== undefined) {
+    hasAnswer = true;
+    answer.valueBoolean = payload.valueBoolean;
+  }
+  if (payload.valueDecimal !== undefined && !isNaN(payload.valueDecimal)) {
+    hasAnswer = true;
+    answer.valueDecimal = payload.valueDecimal;
+  }
+  if (payload.valueInteger !== undefined && !isNaN(payload.valueInteger)) {
+    hasAnswer = true;
+    answer.valueInteger = payload.valueInteger;
+  }
+  if (!isStringEmpty(payload.valueDate)) {
+    hasAnswer = true;
+    answer.valueDate = payload.valueDate;
+  }
+  if (!isStringEmpty(payload.valueDateTime)) {
+    hasAnswer = true;
+    answer.valueDateTime = payload.valueDateTime;
+  }
+  if (!isStringEmpty(payload.valueTime)) {
+    hasAnswer = true;
+    answer.valueTime = payload.valueTime;
+  }
+  if (!isStringEmpty(payload.valueString)) {
+    hasAnswer = true;
+    answer.valueString = payload.valueString;
+  }
+  if (payload.valueQuantity && payload.valueQuantity.value !== undefined) {
+    hasAnswer = true;
+    answer.valueQuantity = payload.valueQuantity;
+  }
+  if (payload.valueCoding) {
+    hasAnswer = true;
+
+    const coding: Coding = {
+      code: payload.valueCoding.code,
+      display: payload.valueCoding.display,
+    };
+
+    if (payload.valueCoding.system !== undefined && payload.valueCoding.system !== null) {
+      coding.system = payload.valueCoding.system;
+    }
+
+    if (payload.multipleAnswers) {
+      if (Object.keys(answer).length === 0) {
+        answer.valueCoding = coding;
+      } else {
+        const newAnswer: QuestionnaireResponseItemAnswer = {};
+        newAnswer.valueCoding = coding;
+        responseItem.answer.push(newAnswer);
+      }
+    } else {
+      answer.valueCoding = coding;
+    }
+  }
+  if (payload.valueAttachment && Object.keys(payload.valueAttachment).length > 0) {
+    hasAnswer = true;
+
+    const attachment: Attachment = {
+      id: payload.valueAttachment.id,
+      url: payload.valueAttachment.url,
+      title: payload.valueAttachment.title,
+      data: payload.valueAttachment.data,
+      contentType: payload.valueAttachment.contentType,
+      creation: payload.valueAttachment.creation,
+      hash: payload.valueAttachment.hash,
+      size: payload.valueAttachment.size,
+      language: payload.valueAttachment.language,
+    };
+
+    if (payload.multipleAnswers) {
+      if (Object.keys(answer).length === 0) {
+        answer.valueAttachment = attachment;
+      } else {
+        const newAnswer: QuestionnaireResponseItemAnswer = {};
+        newAnswer.valueAttachment = attachment;
+        responseItem.answer.push(newAnswer);
+      }
+    } else {
+      answer.valueAttachment = attachment;
+    }
+  }
+  if (!hasAnswer) {
+    nullAnswerValue(answer);
+    if (Object.keys(answer).filter(prop => !prop.startsWith('value')).length === 0) {
+      if (responseItem.answer && responseItem.answer.length === 1) {
         delete responseItem.answer;
       }
     }
-
-    // run enableWhen to clear fields
-    runEnableWhen(action, state, draft);
-  });
+  }
+  runEnableWhen(payload, state);
+  return state;
 }
 
-function processRemoveCodingStringValueAction(action: NewValueAction, state: Form): Form {
-  return produce(state, draft => {
-    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
-    if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
-      return;
-    }
+function processNewCodingStringValueAction(action: NewValuePayload, state: Form): Form {
+  const responseItem = getResponseItemWithPath(action.itemPath || [], state.FormData);
+  if (!responseItem) {
+    return state;
+  }
 
-    responseItem.answer = responseItem.answer.filter(el => {
-      return el && el.valueString ? false : true;
-    });
+  if (!responseItem.answer) {
+    responseItem.answer = [];
+  }
 
-    if (responseItem.answer.length === 0) {
-      delete responseItem.answer;
-    }
-
-    // run enableWhen to clear fields
-    runEnableWhen(action, state, draft);
-  });
-}
-
-function processRemoveAttachmentValueAction(action: NewValueAction, state: Form): Form {
-  return produce(state, draft => {
-    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
-    if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
-      return;
-    }
-
-    if (action.valueAttachment) {
-      const attachmentToRemove = action.valueAttachment.url;
-      responseItem.answer = responseItem.answer.filter(el => el && el.valueAttachment && el.valueAttachment.url !== attachmentToRemove);
-    }
-
-    if (responseItem.answer.length === 0) {
-      delete responseItem.answer;
-    }
-  });
-}
-
-function processNewValueAction(action: NewValueAction, state: Form): Form {
-  return produce(state, draft => {
-    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
-    if (!responseItem) {
-      return;
-    }
-
-    let hasAnswer = false;
-
-    if (!responseItem.answer) {
-      responseItem.answer = [];
-    }
-
-    let answer = responseItem.answer[0];
-    if (!answer) {
-      answer = {} as QuestionnaireResponseItemAnswer;
-      responseItem.answer.push(answer);
-    }
-
-    if (action.valueBoolean !== undefined) {
-      hasAnswer = true;
-      answer.valueBoolean = action.valueBoolean;
-    }
-    if (action.valueDecimal !== undefined && !isNaN(action.valueDecimal)) {
-      hasAnswer = true;
-      answer.valueDecimal = action.valueDecimal;
-    }
-    if (action.valueInteger !== undefined && !isNaN(action.valueInteger)) {
-      hasAnswer = true;
-      answer.valueInteger = action.valueInteger;
-    }
-    if (!isStringEmpty(action.valueDate)) {
-      hasAnswer = true;
-      answer.valueDate = action.valueDate;
-    }
-    if (!isStringEmpty(action.valueDateTime)) {
-      hasAnswer = true;
-      answer.valueDateTime = action.valueDateTime;
-    }
-    if (!isStringEmpty(action.valueTime)) {
-      hasAnswer = true;
-      answer.valueTime = action.valueTime;
-    }
-    if (!isStringEmpty(action.valueString)) {
-      hasAnswer = true;
-      answer.valueString = action.valueString;
-    }
-    if (action.valueQuantity && action.valueQuantity.value !== undefined) {
-      hasAnswer = true;
-      answer.valueQuantity = action.valueQuantity;
-    }
-    if (action.valueCoding) {
-      hasAnswer = true;
-
-      const coding = {
-        code: action.valueCoding.code,
-        display: action.valueCoding.display,
-      } as Coding;
-
-      if (action.valueCoding.system !== undefined && action.valueCoding.system !== null) {
-        coding.system = action.valueCoding.system;
-      }
-
-      if (action.multipleAnswers) {
-        if (Object.keys(answer).length === 0) {
-          answer.valueCoding = coding;
-        } else {
-          const newAnswer = {} as QuestionnaireResponseItemAnswer;
-          newAnswer.valueCoding = coding;
-          responseItem.answer.push(newAnswer);
-        }
-      } else {
-        answer.valueCoding = coding;
+  if (!isStringEmpty(action.valueString)) {
+    let found = -1;
+    for (let i = 0; i < responseItem.answer.length; i++) {
+      if (!isStringEmpty(responseItem.answer[i].valueString)) {
+        found = i;
+        break;
       }
     }
-    if (action.valueAttachment && Object.keys(action.valueAttachment).length > 0) {
-      hasAnswer = true;
 
-      const attachment = {
-        url: action.valueAttachment.url,
-        title: action.valueAttachment.title,
-        data: action.valueAttachment.data,
-        contentType: action.valueAttachment.contentType,
-        creation: action.valueAttachment.creation,
-        hash: action.valueAttachment.hash,
-        size: action.valueAttachment.size,
-        language: action.valueAttachment.language,
-      } as Attachment;
+    const newAnswer: QuestionnaireResponseItemAnswer = {
+      valueString: action.valueString,
+    };
 
-      if (action.multipleAnswers) {
-        if (Object.keys(answer).length === 0) {
-          answer.valueAttachment = attachment;
-        } else {
-          const newAnswer = {} as QuestionnaireResponseItemAnswer;
-          newAnswer.valueAttachment = attachment;
-          responseItem.answer.push(newAnswer);
-        }
-      } else {
-        answer.valueAttachment = attachment;
-      }
+    if (found >= 0) {
+      responseItem.answer[found] = newAnswer;
+    } else {
+      responseItem.answer.push(newAnswer);
     }
-    if (!hasAnswer) {
-      nullAnswerValue(answer);
-      if (Object.keys(answer).filter(prop => !prop.startsWith('value')).length === 0) {
-        if (responseItem.answer && responseItem.answer.length === 1) {
-          delete responseItem.answer;
-        }
-      }
-    }
-    runEnableWhen(action, state, draft);
-  });
-}
-
-function processNewCodingStringValueAction(action: NewValueAction, state: Form): Form {
-  return produce(state, draft => {
-    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
-    if (!responseItem) {
-      return;
-    }
-
-    if (!responseItem.answer) {
-      responseItem.answer = [];
-    }
-
-    if (!isStringEmpty(action.valueString)) {
-      let found = -1;
-      for (let i = 0; i < responseItem.answer.length; i++) {
-        if (!isStringEmpty(responseItem.answer[i].valueString)) {
-          found = i;
-          break;
-        }
-      }
-
-      const newAnswer = {
-        valueString: action.valueString,
-      } as QuestionnaireResponseItemAnswer;
-
-      if (found >= 0) {
-        responseItem.answer[found] = newAnswer;
-      } else {
-        responseItem.answer.push(newAnswer);
-      }
-    }
-  });
+  }
+  return state;
 }
 
 function getResponseItemWithLinkIdPossiblyContainingRepeat(
@@ -828,30 +833,30 @@ function getItemEnableWhenQuestionMatchIdFromArray(linkId: string, definitionIte
   return matchedItems;
 }
 
-function processSetSkjemaDefinition(action: FormAction, state: Form): Form {
-  if (!action.questionnaire) {
+function processSetSkjemaDefinition(payload: SetFormDefinitionAction, state: Form): Form {
+  if (!payload) {
     return state;
   }
 
   const formDefinition: FormDefinition = {
-    Content: action.questionnaire,
+    Content: payload.questionnaire,
   };
+  const statetest = current(state.FormData);
 
   let formData: FormData;
-  if (action.questionnaireResponse && action.syncQuestionnaireResponse) {
-    formData = { Content: syncQuestionnaireResponse(action.questionnaire, action.questionnaireResponse) };
-  } else if (action.questionnaireResponse) {
-    formData = { Content: action.questionnaireResponse };
-  } else if (state.FormData === initialState.FormData) {
-    formData = { Content: generateQuestionnaireResponse(action.questionnaire) };
+
+  if (payload.questionnaireResponse && payload.syncQuestionnaireResponse) {
+    formData = { Content: syncQuestionnaireResponse(payload.questionnaire, payload.questionnaireResponse), isExternalUpdate: true };
+  } else if (payload.questionnaireResponse) {
+    formData = { Content: payload.questionnaireResponse, isExternalUpdate: true };
+  } else if (statetest?.Content === initialState.FormData.Content) {
+    formData = { Content: generateQuestionnaireResponse(payload.questionnaire) };
   } else {
     formData = state.FormData;
   }
+  state.FormDefinition = formDefinition;
 
-  return {
-    ...state,
-    FormDefinition: formDefinition,
-    FormData: formData,
-    Language: action.language || state.Language,
-  };
+  state.FormData = formData;
+  state.Language = payload.language || state.Language;
+  return state;
 }

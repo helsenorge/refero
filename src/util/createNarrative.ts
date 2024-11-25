@@ -1,8 +1,9 @@
+import { format } from 'date-fns';
 import { QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-
 import { OPEN_CHOICE_ID } from '../constants';
+
+import { DATEFORMATS } from '@/components/formcomponents/table/tables/constants';
 
 export const createNarrative = (qr: QuestionnaireResponse | null | undefined): string => {
   let narrative = '';
@@ -12,7 +13,7 @@ export const createNarrative = (qr: QuestionnaireResponse | null | undefined): s
   for (let i = 0; qr.item && i < qr.item.length; i++) {
     narrative += createNarrativeForItem(qr.item[i]);
   }
-  return `<div xmlns=\"http://www.w3.org/1999/xhtml\">${narrative}</div>`;
+  return `<div xmlns="http://www.w3.org/1999/xhtml">${narrative}</div>`;
 };
 
 const createNarrativeForItem = (qi: QuestionnaireResponseItem): string => {
@@ -76,10 +77,10 @@ const getAnswerAsString = (answer: QuestionnaireResponseItemAnswer): string => {
     return codingValue;
   }
   if (answer.valueDate) {
-    return parseDate(answer.valueDate).toISOString();
+    return format(answer.valueDate, DATEFORMATS.DATE);
   }
   if (answer.valueDateTime) {
-    return parseDate(answer.valueDateTime).toISOString();
+    return format(answer.valueDateTime, DATEFORMATS.DATE);
   }
   return '';
 };

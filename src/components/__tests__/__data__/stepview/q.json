@@ -4,14 +4,19 @@
   "status": "draft",
   "publisher": "NHN",
   "meta": {
-    "profile": [
-      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
-    ],
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
         "display": "Norsk Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
       }
     ]
   },
@@ -36,9 +41,7 @@
       "name": "http://www.nhn.no"
     }
   ],
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
@@ -90,6 +93,7 @@
           }
         }
       ],
+      "required": false,
       "item": [
         {
           "linkId": "f21daf96-658a-4591-808c-e64fe9b3ed28",
@@ -110,8 +114,7 @@
             }
           ]
         }
-      ],
-      "required": false
+      ]
     },
     {
       "linkId": "bc8b56ee-fc46-404d-dde4-2cfa4d3606db",
@@ -130,6 +133,7 @@
           }
         }
       ],
+      "required": false,
       "item": [
         {
           "linkId": "19ddaddc-3974-481f-c3fc-213d5790f5aa",
@@ -167,9 +171,81 @@
               }
             }
           ]
+        },
+        {
+          "linkId": "9f296680-528a-4496-daf8-89771bc1f19c",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "**String sublabel**"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+              "valueInteger": 10
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+              "valueInteger": 1
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+              "valueInteger": 4
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+              "valueString": "Legg til"
+            }
+          ],
+          "required": true,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "**String markdown**"
+              }
+            ]
+          },
+          "text": "String markdown",
+          "maxLength": 20,
+          "repeats": true,
+          "item": [
+            {
+              "linkId": "886ba9d4-e7cd-4c23-b581-46ea81a1deca",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": true,
+              "maxLength": 250,
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "Help text"
+                  }
+                ]
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                        "code": "help"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
         }
-      ],
-      "required": false
+      ]
     },
     {
       "linkId": "50a9ea8d-23b3-47db-97e5-ffdd16949594",
@@ -188,28 +264,37 @@
           }
         }
       ],
+      "required": false,
       "item": [
         {
-          "linkId": "96b69288-4450-4bcb-b6ec-725c4d2c749a",
-          "type": "date",
-          "text": "Når er første gangen du innså at livet er vanskelig? (Oppgi i år)",
+          "linkId": "4658bc33-4ca0-47e6-d0e9-f12fdaaf4d5b",
+          "type": "quantity",
+          "text": "Hvor mange liter blod mister du om dagen?",
           "extension": [
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "year"
-                  }
-                ]
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "Ltr",
+                "display": "Liter",
+                "system": "urn:uuid:fc361a68-2dd7-4982-875d-361e5cf51eb2"
               }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+              "valueInteger": 2
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 1
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
             }
           ],
-          "required": false
+          "required": true
         }
-      ],
-      "required": false
+      ]
     }
   ]
 }

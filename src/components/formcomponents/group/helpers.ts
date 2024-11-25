@@ -1,16 +1,18 @@
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
-import { RenderContextType } from '../../../constants/renderContextType';
-import { getText, renderPrefix } from '../../../util';
-import { getGroupItemControl } from '../../../util/group-item-control';
-import { Path } from '../../../util/refero-core';
-import { RenderContext } from '../../../util/renderContext';
-import { Resources } from '../../../util/resources';
+import { RenderContextType } from '@/constants/renderContextType';
+import { getText, renderPrefix } from '@/util';
+import { getGroupItemControl } from '@/util/group-item-control';
+import { Path } from '@/util/refero-core';
+import { RenderContext } from '@/util/renderContext';
+import { Resources } from '@/util/resources';
 
-export const getColumns = (item: QuestionnaireItem): Array<string> => {
-  const seenColumns = {};
-  const columns: Array<string> = [];
-  if (!item.item || item.item.length === 0) return columns;
+export const getColumns = (item?: QuestionnaireItem): string[] => {
+  const seenColumns: { [key: string]: number } = {};
+  const columns: string[] = [];
+
+  if (!item?.item || item.item.length === 0) return columns;
+
   for (const group of item.item) {
     if (group.item && group.item.length > 0) {
       for (const cell of group.item) {
@@ -26,7 +28,7 @@ export const getColumns = (item: QuestionnaireItem): Array<string> => {
   return columns;
 };
 
-export const getLocalRenderContextType = (item: QuestionnaireItem): RenderContextType => {
+export const getLocalRenderContextType = (item?: QuestionnaireItem): RenderContextType => {
   const coding = getGroupItemControl(item);
   if (coding.length > 0) {
     switch (coding[0].code) {
@@ -37,17 +39,17 @@ export const getLocalRenderContextType = (item: QuestionnaireItem): RenderContex
   return RenderContextType.None;
 };
 
-export const isDirectChildOfRenderContextOwner = (path: Path[], item: QuestionnaireItem, renderContext: RenderContext): boolean => {
-  const myIndex = path.findIndex(p => p.linkId === item.linkId);
+export const isDirectChildOfRenderContextOwner = (path: Path[], item?: QuestionnaireItem, renderContext?: RenderContext): boolean => {
+  const myIndex = path.findIndex(p => p.linkId === item?.linkId);
   if (myIndex > 0) {
     const directParentLinkId = path[myIndex - 1].linkId;
-    return directParentLinkId === renderContext.Owner;
+    return directParentLinkId === renderContext?.Owner;
   }
 
   return false;
 };
 
-export const getClassNames = (item: QuestionnaireItem): string => {
+export const getClassNames = (item?: QuestionnaireItem): string => {
   const classNames = ['page_refero__component', 'page_refero__component_group'];
   const coding = getGroupItemControl(item);
   if (coding.length > 0) {
@@ -58,8 +60,8 @@ export const getClassNames = (item: QuestionnaireItem): string => {
 };
 
 export const getHeaderText = (
-  item: QuestionnaireItem,
-  questionnaire?: Questionnaire,
+  item?: QuestionnaireItem,
+  questionnaire?: Questionnaire | null,
   resources?: Resources,
   onRenderMarkdown?: ((item: QuestionnaireItem, markdown: string) => string) | undefined
 ): string => {

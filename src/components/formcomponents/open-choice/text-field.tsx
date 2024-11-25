@@ -1,70 +1,107 @@
-import * as React from 'react';
+import React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import styles from '../common-styles.module.css';
+import { getPlaceholder } from '../../../util/extension';
+import { isReadOnly, getId, getStringValue } from '../../../util/index';
 
-import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';
-import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
-import Pdf from '../textview';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { QuestionnaireItem } from 'fhir/r4';
+import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
-interface Props {
-  id?: string;
-  pdf?: boolean;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  answer: QuestionnaireResponseItemAnswer;
-  handleStringChange: (event: React.FormEvent<{}>) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  resources?: Resources;
-}
-const textField: React.SFC<Props & ValidationProps> = ({
-  id,
-  pdf,
-  item,
-  questionnaire,
-  answer,
-  handleStringChange,
-  children,
-  onRenderMarkdown,
-  resources,
-  ...other
-}) => {
-  if (pdf) {
+type Props = QuestionnaireComponentItemProps & {
+  handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
+  handleChange: (value: string) => void;
+  pdfValue?: string | number;
+};
+const textField = (props: Props): JSX.Element | null => {
+  const { id, pdf, handleStringChange, handleChange, children, idWithLinkIdAndItemIndex, linkId, path, pdfValue } = props;
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const { validateScriptInjection, resources } = useExternalRenderContext();
+  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
+  const { error } = getFieldState(formName, formState);
+
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const answer = useGetAnswer(linkId, path);
+  const value = getStringValue(answer);
+  const errorMessage = getErrorMessage(item, error);
+
+  const handleOnBlur = (e: React.FocusEvent<HTMLInputElement, Element>): void => {
+    handleStringChange(e);
+  };
+
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: required({ item, resources }),
+    minLength: minLength({ item, resources }),
+    maxLength: maxLength({ item, resources }),
+    pattern: regexpPattern({ item, resources }),
+    validate: (value: string): string | true | undefined =>
+      scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
+    shouldUnregister: true,
+  };
+  const { onChange, onBlur, ...rest } = register(
+    `${idWithLinkIdAndItemIndex}-extra-field`,
+    shouldValidate(item, pdf) ? validationRules : undefined
+  );
+
+  if (pdf || isReadOnly(item)) {
     return (
-      <Pdf item={item} value={getPDFStringValue(answer)}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={value}
+        pdfValue={pdfValue}
+        errors={error}
+      >
         {children}
-      </Pdf>
+      </ReadOnly>
     );
   }
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
   return (
-    <Validation {...other}>
-      <SafeInputField
-        type="text"
-        id={getId(id)}
-        inputName={getId(id)}
-        value={getStringValue(answer)}
-        showLabel={false}
-        label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-        isRequired={isRequired(item)}
-        placeholder={getPlaceholder(item)}
-        minLength={getMinLengthExtensionValue(item)}
-        maxLength={getMaxLength(item)}
-        readOnly={isReadOnly(item)}
-        onBlur={handleStringChange}
-        pattern={getRegexExtension(item)}
-        errorMessage={getValidationTextExtension(item)}
-        validateOnExternalUpdate={true}
+    <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={`${getId(id)}-extra-field`}
+        labelId={`${getId(id)}-extra-field-label`}
+        testId={`${getId(id)}-label`}
+        sublabelId={`${getId(id)}-sublabel`}
       />
-    </Validation>
+
+      <Input
+        {...rest}
+        disabled={isReadOnly(item)}
+        type="text"
+        onColor="ongrey"
+        inputId={`${getId(id)}-extra-field`}
+        testId={`${getId(id)}-extra-field`}
+        value={value}
+        placeholder={getPlaceholder(item)}
+        readOnly={isReadOnly(item)}
+        onChange={(e): void => {
+          onChange(e);
+          handleChange(e.target.value);
+        }}
+        onBlur={(e): void => {
+          handleOnBlur(e);
+          onChange(e);
+          onBlur(e);
+        }}
+      />
+    </FormGroup>
   );
 };
 

@@ -1,5 +1,5 @@
 import { createQuestionnaireResponseAnswer } from '../createQuestionnaireResponseAnswer';
-import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireItemInitial } from 'fhir/r4';
+import { QuestionnaireItem } from 'fhir/r4';
 import itemType from '../../constants/itemType';
 
 describe('createQuestionnaireResponseAnswer', () => {
@@ -24,7 +24,7 @@ describe('createQuestionnaireResponseAnswer', () => {
           display: 'Option 2',
         },
       },
-    ] as QuestionnaireItemAnswerOption[],
+    ],
     initial: [
       {
         valueCoding: {
@@ -32,7 +32,7 @@ describe('createQuestionnaireResponseAnswer', () => {
           code: 'option-2',
         },
       },
-    ] as QuestionnaireItemInitial[],
+    ],
   };
 
   it('Choice initial without display', () => {
@@ -43,7 +43,7 @@ describe('createQuestionnaireResponseAnswer', () => {
           code: 'option-2',
         },
       },
-    ] as QuestionnaireItemInitial[];
+    ];
 
     const answer = createQuestionnaireResponseAnswer(item);
 
@@ -60,7 +60,7 @@ describe('createQuestionnaireResponseAnswer', () => {
           display: 'Option 3',
         },
       },
-    ] as QuestionnaireItemInitial[];
+    ];
 
     const answer = createQuestionnaireResponseAnswer(item);
 

@@ -3,7 +3,23 @@ export interface OrgenhetHierarki {
   Navn: string;
   EnhetType: EnhetType;
   EndepunktId: string | null;
-  UnderOrgenheter: Array<OrgenhetHierarki> | null;
+  UnderOrgenheter: OrgenhetHierarki[] | null;
+  VisningType: VisningsType;
+  ForelderId: number | null;
+  ExpectedChildCount: number;
+  StatusType: StatusType;
+}
+
+export enum VisningsType {
+  Standard = 1,
+  VisesKunVedFlereValg = 2,
+  VisesKunHvisAngitt = 3,
+}
+
+export enum StatusType {
+  UnderArbeid = 1,
+  Aktiv = 2,
+  Deaktivert = 3,
 }
 
 export enum EnhetType {

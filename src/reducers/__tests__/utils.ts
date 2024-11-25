@@ -1,29 +1,30 @@
-import '../../util/defineFetch';
+import '@/util/__tests__/defineFetch';
 import reducer, { Form } from '../form';
-import { Path, getResponseItemWithPath } from '../../util/refero-core';
+import { Path, getResponseItemWithPath } from '@/util/refero-core';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Quantity, Attachment } from 'fhir/r4';
 import {
-  newCodingValue,
-  addRepeatItem,
-  newStringValue,
-  newBooleanValue,
-  NewValueAction,
-  newIntegerValue,
-  newDecimalValue,
-  newQuantityValue,
-  newDateValue,
-  newTimeValue,
-  newDateTimeValue,
-  newAttachment,
-  removeAttachment,
-  removeCodingValue,
-  newCodingStringValue,
-  removeCodingStringValue,
-} from '../../actions/newValue';
+  newCodingValueAction,
+  addRepeatItemAction,
+  newStringValueAction,
+  newBooleanValueAction,
+  newIntegerValueAction,
+  newDecimalValueAction,
+  newQuantityValueAction,
+  newDateValueAction,
+  newTimeValueAction,
+  newDateTimeValueAction,
+  removeAttachmentAction,
+  removeCodingValueAction,
+  newCodingStringValueAction,
+  removeCodingStringValueAction,
+  NewValuePayload,
+  newAttachmentAction,
+} from '@/actions/newValue';
 import { GlobalState } from '..';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 export function pathify(...linkIds: string[]): Path[] {
-  return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) } as Path));
+  return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) }));
 }
 
 export function pathifyExpand(linkId: string): Path[] {
@@ -38,52 +39,52 @@ export function pathifyExpand(linkId: string): Path[] {
 }
 
 export function selectChoice(state: Form, path: Path[], coding: Coding, qItem: QuestionnaireItem, multi: boolean = false): Form {
-  const action = newCodingValue(path, coding, qItem, multi);
+  const action = newCodingValueAction({ itemPath: path, valueCoding: coding, item: qItem, multipleAnswers: multi });
   return reduce(state, action);
 }
 
 export function unselectChoice(state: Form, path: Path[], coding: Coding, qItem: QuestionnaireItem): Form {
-  const action = removeCodingValue(path, coding, qItem);
+  const action = removeCodingValueAction({ itemPath: path, valueCoding: coding, item: qItem });
   return reduce(state, action);
 }
 
 export function clickRepeat(state: Form, path: Path[], qItem: QuestionnaireItem, qrItems: QuestionnaireResponseItem[] | undefined): Form {
-  const action = addRepeatItem(path, qItem, qrItems);
+  const action = addRepeatItemAction({ parentPath: path, item: qItem, responseItems: qrItems });
   return reduce(state, action);
 }
 
 export function enterText(state: Form, path: Path[], text: string, qItem: QuestionnaireItem | undefined = undefined): Form {
-  const action = newStringValue(path, text, qItem);
+  const action = newStringValueAction({ itemPath: path, valueString: text, item: qItem });
   return reduce(state, action);
 }
 
 export function enterInteger(state: Form, path: Path[], integer: number, qItem: QuestionnaireItem | undefined = undefined): Form {
-  const action = newIntegerValue(path, integer, qItem);
+  const action = newIntegerValueAction({ itemPath: path, valueInteger: integer, item: qItem });
   return reduce(state, action);
 }
 
 export function enterDecimal(state: Form, path: Path[], decimal: number, qItem: QuestionnaireItem | undefined = undefined): Form {
-  const action = newDecimalValue(path, decimal, qItem);
+  const action = newDecimalValueAction({ itemPath: path, valueDecimal: decimal, item: qItem });
   return reduce(state, action);
 }
 
 export function enterQuantity(state: Form, path: Path[], quantity: Quantity, qItem: QuestionnaireItem | undefined = undefined): Form {
-  const action = newQuantityValue(path, quantity, qItem);
+  const action = newQuantityValueAction({ itemPath: path, valueQuantity: quantity, item: qItem });
   return reduce(state, action);
 }
 
 export function enterDate(state: Form, path: Path[], date: string, qItem: QuestionnaireItem | undefined = undefined): Form {
-  const action = newDateValue(path, date, qItem);
+  const action = newDateValueAction({ itemPath: path, valueDate: date, item: qItem });
   return reduce(state, action);
 }
 
 export function enterTime(state: Form, path: Path[], time: string, qItem: QuestionnaireItem | undefined = undefined): Form {
-  const action = newTimeValue(path, time, qItem);
+  const action = newTimeValueAction({ itemPath: path, valueTime: time, item: qItem });
   return reduce(state, action);
 }
 
 export function enterDateTime(state: Form, path: Path[], dateTime: string, qItem: QuestionnaireItem | undefined = undefined): Form {
-  const action = newDateTimeValue(path, dateTime, qItem);
+  const action = newDateTimeValueAction({ itemPath: path, valueDateTime: dateTime, item: qItem });
   return reduce(state, action);
 }
 
@@ -92,7 +93,7 @@ export function enterBoolean(state: Form, path: Path[], boolean: boolean, qItem:
 }
 
 export function clickCheckbox(state: Form, path: Path[], value: boolean, qItem: QuestionnaireItem | undefined = undefined): Form {
-  const action = newBooleanValue(path, value, qItem);
+  const action = newBooleanValueAction({ itemPath: path, valueBoolean: value, item: qItem });
   return reduce(state, action);
 }
 
@@ -103,7 +104,7 @@ export function uploadAttachment(
   qItem: QuestionnaireItem | undefined = undefined,
   multipleAnswers: boolean | undefined = undefined
 ): Form {
-  const action = newAttachment(path, attachment, qItem, multipleAnswers);
+  const action = newAttachmentAction({ itemPath: path, valueAttachment: attachment, item: qItem, multipleAnswers: multipleAnswers });
   return reduce(state, action);
 }
 
@@ -113,7 +114,7 @@ export function deleteAttachment(
   attachment: Attachment,
   qItem: QuestionnaireItem | undefined = undefined
 ): Form {
-  const action = removeAttachment(path, attachment, qItem);
+  const action = removeAttachmentAction({ itemPath: path, valueAttachment: attachment, item: qItem });
   return reduce(state, action);
 }
 
@@ -124,12 +125,12 @@ export function enterOpenChoiceText(
   qItem: QuestionnaireItem | undefined = undefined,
   multipleAnswers: boolean | undefined = undefined
 ): Form {
-  const action = newCodingStringValue(path, string, qItem, multipleAnswers);
+  const action = newCodingStringValueAction({ itemPath: path, valueString: string, item: qItem, multipleAnswers: multipleAnswers });
   return reduce(state, action);
 }
 
 export function removeOpenChoiceText(state: Form, path: Path[], qItem: QuestionnaireItem | undefined = undefined): Form {
-  const action = removeCodingStringValue(path, qItem);
+  const action = removeCodingStringValueAction({ itemPath: path, item: qItem });
   return reduce(state, action);
 }
 
@@ -156,7 +157,7 @@ export function createCoding(code: string, system: string): Coding {
   return { code: code, system: system } as Coding;
 }
 
-function reduce(state: Form, action: NewValueAction): Form {
+function reduce(state: Form, action: PayloadAction<NewValuePayload>): Form {
   const newState = reducer(state, action);
 
   if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
@@ -166,7 +167,7 @@ function reduce(state: Form, action: NewValueAction): Form {
   return newState;
 }
 
-export function getResponseItem(linkId: string, state: Form, path: Array<Path>): QuestionnaireResponseItem | undefined {
+export function getResponseItem(linkId: string, state: Form, path: Path[]): QuestionnaireResponseItem | undefined {
   const condition = linkId === path[path.length - 1].linkId;
   if (condition) return getResponseItemWithPath(path, state.FormData);
 }

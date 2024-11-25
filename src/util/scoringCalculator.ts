@@ -10,170 +10,180 @@ import { getExtension, getCalculatedExpressionExtension } from './extension';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
-import ExtensionConstants from '../constants/extensions';
+import { Extensions } from '../constants/extensions';
 import itemType from '../constants/itemType';
 import { ScoringItemType } from '../constants/scoringItemType';
 
-class CalculatedScores {
-  totalScores: Array<QuestionnaireItem> = [];
-  sectionScores: Array<QuestionnaireItem> = [];
-  questionScores: Array<QuestionnaireItem> = [];
+export interface AnswerPad {
+  [linkId: string]: number | undefined;
+}
 
-  public update(subRetVal: CalculatedScores): void {
-    this.totalScores.push(...subRetVal.totalScores);
-    this.sectionScores.push(...subRetVal.sectionScores);
-    this.questionScores.push(...subRetVal.questionScores);
+class CalculatedScores {
+  totalScores: QuestionnaireItem[] = [];
+  sectionScores: QuestionnaireItem[] = [];
+  questionScores: QuestionnaireItem[] = [];
+
+  update(scores: CalculatedScores): void {
+    this.totalScores.push(...scores.totalScores);
+    this.sectionScores.push(...scores.sectionScores);
+    this.questionScores.push(...scores.questionScores);
   }
 
-  public hasTotalScores(): boolean {
+  hasTotalScores(): boolean {
     return this.totalScores.length > 0;
   }
 
-  public hasSectionScores(): boolean {
+  hasSectionScores(): boolean {
     return this.sectionScores.length > 0;
   }
 
-  public hasQuestionScores(): boolean {
+  hasQuestionScores(): boolean {
     return this.questionScores.length > 0;
   }
 }
 
 export class ScoringCalculator {
-  private sectionScoreCache: { [linkId: string]: Array<QuestionnaireItem> } = {};
-  private totalScoreCache: Array<string> = [];
+  private sectionScoreCache: Map<string, QuestionnaireItem[]> = new Map<string, QuestionnaireItem[]>();
+  private totalScoreCache: Map<string, boolean> = new Map();
   private totalScoreItem: QuestionnaireItem | undefined;
-  private itemCache: { [linkId: string]: QuestionnaireItem } = {};
-  private fhirScoreCache: { [linkId: string]: QuestionnaireItem } = {};
+  private itemCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
+  private fhirScoreCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
+  private isScoringQuestionnaire: boolean = false;
 
   constructor(questionnaire: Questionnaire) {
-    this.updateQuestionnaire(questionnaire);
+    this.initializeCaches(questionnaire);
   }
 
-  private updateQuestionnaire(questionnaire: Questionnaire): void {
-    this.sectionScoreCache = {};
-    this.totalScoreCache = [];
-    this.itemCache = {};
-    this.fhirScoreCache = {};
-    this.totalScoreItem = undefined;
+  private initializeCaches(questionnaire: Questionnaire): void {
     this.traverseQuestionnaire(questionnaire);
+    this.isScoringQuestionnaire = this.hasScoring(questionnaire);
   }
 
   private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem, level: number = 0): CalculatedScores {
-    const retVal: CalculatedScores = new CalculatedScores();
+    const calculatedScores = new CalculatedScores();
 
     if (qItem.item) {
       for (const subItem of qItem.item) {
-        const subRetVal = this.traverseQuestionnaire(subItem, level + 1);
-        retVal.update(subRetVal);
+        const subScores = this.traverseQuestionnaire(subItem, level + 1);
+        calculatedScores.update(subScores);
       }
     }
 
-    // Inject dummy section score at top to simulate total score
     if (level === 0) {
       this.totalScoreItem = createDummySectionScoreItem();
-      const subRetVal = this.traverseQuestionnaire(this.totalScoreItem, level + 1);
-      retVal.update(subRetVal);
+      const subScores = this.traverseQuestionnaire(this.totalScoreItem, level + 1);
+      calculatedScores.update(subScores);
     }
 
-    if (retVal.hasTotalScores()) {
-      for (const totalScore of retVal.totalScores) {
-        this.totalScoreCache.push(totalScore.linkId);
-        this.itemCache[totalScore.linkId] = totalScore;
+    this.cacheScores(calculatedScores);
+
+    return this.processItem(qItem, calculatedScores);
+  }
+
+  private cacheScores(calculatedScores: CalculatedScores): void {
+    this.cacheTotalScores(calculatedScores);
+    this.cacheSectionScores(calculatedScores);
+  }
+  private cacheTotalScores(calculatedScores: CalculatedScores): void {
+    if (calculatedScores.hasTotalScores()) {
+      for (const totalScore of calculatedScores.totalScores) {
+        this.totalScoreCache.set(totalScore.linkId, true);
+        this.itemCache.set(totalScore.linkId, totalScore);
       }
     }
+  }
 
-    if (retVal.hasSectionScores()) {
-      // Define first sectionScore that is a child-item of us, in terms of all its siblings
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const firstSectionScore = retVal.sectionScores.shift()!;
-      this.sectionScoreCache[firstSectionScore.linkId] = retVal.questionScores;
-      this.itemCache[firstSectionScore.linkId] = firstSectionScore;
+  private cacheSectionScores(calculatedScores: CalculatedScores): void {
+    if (calculatedScores.hasSectionScores()) {
+      const firstSectionScore = calculatedScores.sectionScores.shift()!;
+      this.sectionScoreCache.set(firstSectionScore.linkId, calculatedScores.questionScores);
+      this.itemCache.set(firstSectionScore.linkId, firstSectionScore);
 
-      // Define subsequent sectionScores as aliases to the first sectionScore
-      for (const sectionScore of retVal.sectionScores) {
-        this.sectionScoreCache[sectionScore.linkId] = [firstSectionScore];
-        this.itemCache[sectionScore.linkId] = sectionScore;
-      }
-
-      const newRetVal = new CalculatedScores();
-      newRetVal.questionScores.push(firstSectionScore);
-      return newRetVal;
-    }
-
-    if (this.isOfTypeQuestionnaireItem(qItem)) {
-      const type = scoringItemType(qItem);
-      if (type === ScoringItemType.SECTION_SCORE) {
-        // A section score item, only return self, as it doesn't have any children
-        const newRetVal = new CalculatedScores();
-        newRetVal.sectionScores.push(qItem);
-        return newRetVal;
-      }
-
-      if (type === ScoringItemType.TOTAL_SCORE) {
-        // A total score item, only return self, as it doesn't have any children
-        const newRetVal = new CalculatedScores();
-        newRetVal.totalScores.push(qItem);
-        return newRetVal;
-      }
-
-      if (type === ScoringItemType.QUESTION_SCORE) {
-        const newRetVal = new CalculatedScores();
-        newRetVal.questionScores.push(qItem, ...retVal.questionScores);
-        return newRetVal;
-      }
-
-      if (type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
-        this.fhirScoreCache[qItem.linkId] = qItem;
+      for (const sectionScore of calculatedScores.sectionScores) {
+        this.sectionScoreCache.set(sectionScore.linkId, [firstSectionScore]);
+        this.itemCache.set(sectionScore.linkId, sectionScore);
       }
     }
+  }
+  private processItem(qItem: Questionnaire | QuestionnaireItem, calculatedScores: CalculatedScores): CalculatedScores {
+    if (!this.isOfTypeQuestionnaireItem(qItem)) {
+      return new CalculatedScores();
+    }
 
-    // Not an item than contributes to scoring, just pass through
-    const newRetVal = new CalculatedScores();
-    newRetVal.questionScores.push(...retVal.questionScores);
-    return newRetVal;
+    const type = scoringItemType(qItem);
+    const newScores = new CalculatedScores();
+
+    switch (type) {
+      case ScoringItemType.SECTION_SCORE:
+        newScores.sectionScores.push(qItem);
+        break;
+      case ScoringItemType.TOTAL_SCORE:
+        newScores.totalScores.push(qItem);
+        break;
+      case ScoringItemType.QUESTION_SCORE:
+        newScores.questionScores.push(qItem, ...calculatedScores.questionScores);
+        break;
+      case ScoringItemType.QUESTION_FHIRPATH_SCORE:
+        this.fhirScoreCache.set(qItem.linkId, qItem);
+        break;
+      default:
+        newScores.questionScores.push(...calculatedScores.questionScores);
+        break;
+    }
+
+    return newScores;
   }
 
   private isOfTypeQuestionnaireItem(item: Questionnaire | QuestionnaireItem): item is QuestionnaireItem {
-    return (item as QuestionnaireItem).type !== undefined;
+    return 'type' in item;
   }
 
-  public calculateScore(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
-    const answerPad: { [linkId: string]: number | undefined } = {};
+  public calculateScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
+    const answerPad: AnswerPad = {};
 
-    for (const sectionScoreLinkId in this.sectionScoreCache) {
-      answerPad[sectionScoreLinkId] = this.calculateSectionScore(sectionScoreLinkId, questionnaireResponse, answerPad);
+    const sectionScoresCalculated = this.calculateAllSectionScores(answerPad, questionnaireResponse);
+    const allScoresCalculated = this.calculateAllTotalScores(sectionScoresCalculated, questionnaireResponse);
+
+    delete allScoresCalculated[this.totalScoreItem!.linkId];
+
+    return allScoresCalculated;
+  }
+
+  private calculateAllSectionScores(answerPad: AnswerPad, questionnaireResponse: QuestionnaireResponse): AnswerPad {
+    const tempAnswerPad: AnswerPad = answerPad;
+    const keys = this.sectionScoreCache.keys();
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const result = keys.next();
+      if (result.done) break;
+      tempAnswerPad[result.value] = this.calculateSectionScore(result.value, questionnaireResponse, answerPad);
     }
+    return tempAnswerPad;
+  }
 
-    for (const totalScoreLinkId of this.totalScoreCache) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      answerPad[totalScoreLinkId] = this.calculateSectionScore(this.totalScoreItem!.linkId, questionnaireResponse, answerPad);
+  private calculateAllTotalScores(answerPad: AnswerPad, questionnaireResponse: QuestionnaireResponse): AnswerPad {
+    const tempAnswerPad: AnswerPad = answerPad;
+    this.totalScoreCache.forEach((_value, totalScoreLinkId) => {
+      tempAnswerPad[totalScoreLinkId] = this.calculateSectionScore(this.totalScoreItem!.linkId, questionnaireResponse, answerPad);
+    });
+    return tempAnswerPad;
+  }
+
+  public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
+    const answerPad: AnswerPad = {};
+
+    for (const [key, value] of this.fhirScoreCache) {
+      answerPad[key] = this.valueOfQuestionFhirpathScoreItem(value, questionnaireResponse);
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    delete answerPad[this.totalScoreItem!.linkId];
 
     return answerPad;
   }
 
-  public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
-    const answerPad: { [linkId: string]: number | undefined } = {};
-
-    for (const fhirScoreLinkId in this.fhirScoreCache) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      answerPad[fhirScoreLinkId] = this.valueOfQuestionFhirpathScoreItem(this.fhirScoreCache[fhirScoreLinkId], questionnaireResponse);
-    }
-
-    return answerPad;
-  }
-
-  private calculateSectionScore(
-    linkId: string,
-    questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number | undefined }
-  ): number | undefined {
+  private calculateSectionScore(linkId: string, questionnaireResponse: QuestionnaireResponse, answerPad: AnswerPad): number | undefined {
     let sum: number = 0;
     let hasCalculatedAtLeastOneAnswer = false;
-    const dependencies: Array<QuestionnaireItem> = this.sectionScoreCache[linkId];
+    const dependencies: QuestionnaireItem[] = this.sectionScoreCache.get(linkId) || [];
 
     for (const item of dependencies) {
       const result = this.valueOf(item, questionnaireResponse, answerPad);
@@ -186,43 +196,34 @@ export class ScoringCalculator {
     return hasCalculatedAtLeastOneAnswer ? sum : undefined;
   }
 
-  private valueOf(
-    item: QuestionnaireItem,
-    questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number | undefined }
-  ): number | undefined {
-    const scoringType = scoringItemType(item);
-    switch (scoringType) {
+  private valueOf(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse, answerPad: AnswerPad): number | undefined {
+    switch (scoringItemType(item)) {
       case ScoringItemType.SECTION_SCORE:
         return this.valueOfSectionScoreItem(item, questionnaireResponse, answerPad);
       case ScoringItemType.QUESTION_SCORE:
         return this.valueOfQuestionScoreItem(item, questionnaireResponse);
       default:
-        return;
+        return undefined;
     }
   }
 
   private valueOfQuestionFhirpathScoreItem(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse): number | undefined {
     const expressionExtension = getCalculatedExpressionExtension(item);
-    let value: number | undefined = undefined;
-    if (expressionExtension) {
-      const result = evaluateFhirpathExpressionToGetString(expressionExtension, questionnaireResponse);
-      if (result.length) {
-        value = (result[0] as number) ?? 0;
-        // Round up decimal to integer
-        value = item.type === itemType.INTEGER ? Math.round(value) : value;
-        if (isNaN(value) || !isFinite(value)) {
-          value = undefined;
-        }
-      }
-    }
+    if (!expressionExtension) return undefined;
 
-    return value;
+    const result = evaluateFhirpathExpressionToGetString(expressionExtension, questionnaireResponse);
+    if (!result.length) return undefined;
+
+    let value = (result[0] as number) ?? 0;
+    value = item.type === itemType.INTEGER ? Math.round(value) : value;
+
+    return isNaN(value) || !isFinite(value) ? undefined : value;
   }
 
   private valueOfQuestionScoreItem(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse): number | undefined {
-    let sum: number = 0;
+    let sum = 0;
     let hasCalculatedAtLeastOneAnswer = false;
+
     const qrItems = getQuestionnaireResponseItemsWithLinkId(item.linkId, questionnaireResponse.item || [], true);
     for (const qrItem of qrItems) {
       if (!qrItem.answer) continue;
@@ -242,41 +243,41 @@ export class ScoringCalculator {
   private valueOfSectionScoreItem(
     item: QuestionnaireItem,
     questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number | undefined }
+    answerPad: AnswerPad
   ): number | undefined {
-    if (item.linkId in answerPad) {
-      // return cached score
-      return answerPad[item.linkId];
-    }
-
-    // Don't already know the answer, so calculate it
-    return this.calculateSectionScore(item.linkId, questionnaireResponse, answerPad);
+    return item.linkId in answerPad ? answerPad[item.linkId] : this.calculateSectionScore(item.linkId, questionnaireResponse, answerPad);
   }
 
   private getOptionScore(option: QuestionnaireItemAnswerOption): number {
-    const extension = getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding);
-    if (extension?.valueDecimal) {
-      return extension?.valueDecimal as unknown as number;
-    }
-
-    return 0;
+    const extension = getExtension(Extensions.ORDINAL_VALUE_URL, option.valueCoding);
+    return extension?.valueDecimal ? (extension.valueDecimal as number) : 0;
   }
 
   private getAnswerMatch(answer: QuestionnaireResponseItemAnswer, item: QuestionnaireItem): QuestionnaireItemAnswerOption | undefined {
-    if (answer.valueCoding) {
-      if (item.answerOption) {
-        for (const o of item.answerOption) {
-          if (o.valueCoding?.code === answer.valueCoding.code && o.valueCoding?.system === answer.valueCoding.system) {
-            return o;
-          }
-        }
-      }
-    }
+    const valueCoding = answer.valueCoding;
+    if (!valueCoding || !item.answerOption) return undefined;
 
-    return;
+    return item.answerOption.find(o => o.valueCoding?.code === valueCoding.code && o.valueCoding?.system === valueCoding.system);
   }
 
   public getCachedTotalOrSectionItem(linkId: string): QuestionnaireItem | undefined {
-    return this.itemCache[linkId];
+    return this.itemCache.get(linkId);
   }
+
+  private hasScoring(questionnaire: Questionnaire): boolean {
+    const hasScoringInItem = (item: QuestionnaireItem): boolean => {
+      if (scoringItemType(item) !== ScoringItemType.NONE) {
+        return true;
+      }
+      if (item.item && item.item.length > 0) {
+        return item.item.some(nestedItem => hasScoringInItem(nestedItem));
+      }
+      return false;
+    };
+
+    return questionnaire?.item?.some(item => hasScoringInItem(item)) ?? false;
+  }
+  public getIsScoringQuestionnaire = (): boolean => {
+    return this.isScoringQuestionnaire;
+  };
 }

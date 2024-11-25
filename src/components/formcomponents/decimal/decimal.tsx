@@ -1,51 +1,53 @@
-import * as React from 'react';
+import React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import styles from '../common-styles.module.css';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
 
-import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
-import TextView from '../textview';
+import { newDecimalValueAsync } from '@/actions/newValue';
+import { GlobalState, useAppDispatch } from '@/reducers';
+import { getMaxDecimalPlacesExtensionValue, getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder } from '@/util/extension';
+import { isReadOnly, getId } from '@/util/index';
 
-export interface Props {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  responseItem: QuestionnaireItem;
-  answer: QuestionnaireResponseItemAnswer;
-  resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  path: Array<Path>;
-  id?: string;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
-  repeatButton: JSX.Element;
-  oneToTwoColumn: boolean;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-}
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useSelector } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { decimalPattern, getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
-class Decimal extends React.Component<Props & ValidationProps, {}> {
-  getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
+export type Props = QuestionnaireComponentItemProps;
+
+const Decimal = (props: Props): JSX.Element | null => {
+  const { id, linkId, pdf, children, idWithLinkIdAndItemIndex, path, index } = props;
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
+  const { error } = fieldState;
+  const dispatch = useAppDispatch();
+
+  const answer = useGetAnswer(linkId, path);
+
+  const getValue = (
+    item?: QuestionnaireItem,
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  ): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueDecimal);
+      return answer.map(m => m.valueDecimal).filter(f => f !== undefined);
     }
     if (answer && answer.valueDecimal !== undefined && answer.valueDecimal !== null) {
       return answer.valueDecimal;
@@ -54,13 +56,16 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
       return '';
     }
   };
+  const value = getValue(item, answer);
 
-  getPDFValue(): string | number {
-    const value = this.getValue(this.props.item, this.props.answer);
+  useResetFormField(idWithLinkIdAndItemIndex, value);
+
+  const getPDFValue = (): string | number => {
+    const value = getValue(item, answer);
     if (value === undefined || value === null || value === '') {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
@@ -68,15 +73,14 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
       return value.join(', ');
     }
     return value;
-  }
+  };
 
-  handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
-    const value = parseFloat((event.target as HTMLInputElement).value);
-    if (dispatch) {
-      dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer)
-      );
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = parseFloat(event.target.value);
+    if (item) {
+      dispatch(newDecimalValueAsync(path || [], value, item))?.then(newState => {
+        return onAnswerChange(newState, item, { valueDecimal: value });
+      });
     }
 
     if (promptLoginMessage) {
@@ -84,74 +88,70 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
+  const maxDecimals = getMaxDecimalPlacesExtensionValue(item) ? getMaxDecimalPlacesExtensionValue(item) : undefined;
+  const width = getInputWidth(maxCharacters, maxDecimals);
+  const baseIncrementValue = getMinValueExtensionValue(item);
+  const errorMessage = getErrorMessage(item, error);
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: required({ item, resources }),
+    max: maxValue({ item, resources }),
+    min: minValue({ item, resources }),
+    pattern: decimalPattern({ item, resources }),
+    shouldUnregister: true,
+  };
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
-  render(): JSX.Element | null {
-    const { id, item, pdf, onRenderMarkdown } = this.props;
-    const value = this.getValue(this.props.item, this.props.answer);
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
-
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_decimal">
-        <Validation {...this.props}>
-          <SafeInputField
-            type="number"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
-            value={value ? value + '' : ''}
-            showLabel={true}
-            label={
-              <Label
-                item={item}
-                onRenderMarkdown={onRenderMarkdown}
-                questionnaire={this.props.questionnaire}
-                resources={this.props.resources}
-              />
-            }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            placeholder={getPlaceholder(item)}
-            max={getMaxValueExtensionValue(item)}
-            min={getMinValueExtensionValue(item)}
-            errorMessage={getValidationTextExtension(item)}
-            pattern={getDecimalPattern(item)}
-            className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            onChange={this.handleChange}
-          />
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={value}
+        pdfValue={getPDFValue()}
+        errors={error}
+      >
+        {children}
+      </ReadOnly>
     );
   }
-}
+  return (
+    <div className="page_refero__component page_refero__component_decimal">
+      <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-label-decimal`}
+          testId={`${getId(id)}-decimal-label`}
+          sublabelId={`${getId(id)}-decimal-sublabel`}
+        />
 
-const withCommonFunctionsComponent = withCommonFunctions(Decimal);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
-export default connectedComponent;
+        <Input
+          {...rest}
+          type="number"
+          inputId={getId(id)}
+          value={Array.isArray(value) ? value.join(', ') : value}
+          placeholder={getPlaceholder(item)}
+          className="page_refero__input"
+          onChange={(e): void => {
+            handleChange(e);
+            onChange(e);
+          }}
+          inputMode="decimal"
+          width={width}
+          baseIncrementValue={baseIncrementValue}
+        />
+      </FormGroup>
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      <RenderRepeatButton path={path} item={item} index={index} />
+
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
+    </div>
+  );
+};
+
+export default Decimal;

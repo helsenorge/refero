@@ -1,58 +1,52 @@
-import * as React from 'react';
+import React from 'react';
+
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
 
 import RenderForm from './renderForm';
-import { NAVIGATOR_BLINDZONE_ID } from '../constants';
-import { FormDefinition } from '../reducers/form';
+import { FormDefinition, getFormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
 import { Resources } from '../util/resources';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnaireComponents';
 
 interface StepViewProps {
   isAuthorized: boolean;
   referoProps: ReferoProps;
   resources: Resources;
-  formItems: Array<JSX.Element> | undefined;
-  formDefinition: FormDefinition;
   onSave: () => void;
   onSubmit: () => void;
-  onStepChange?: (stepIndex: number) => void;
+  methods: UseFormReturn<FieldValues, unknown, undefined>;
 }
 
-const StepView = ({
-  isAuthorized,
-  referoProps,
-  resources,
-  formItems,
-  formDefinition,
-  onSave,
-  onSubmit,
-  onStepChange,
-}: StepViewProps): JSX.Element => {
-  const stepArray: Array<JSX.Element> | undefined = [];
+const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: StepViewProps): JSX.Element | null => {
+  const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
   const [stepIndex, setStepIndex] = React.useState(0);
+  const { onStepChange } = useExternalRenderContext();
 
-  const topLevelElements = getTopLevelElements(formDefinition);
-  formItems?.filter(formItem =>
-    topLevelElements?.find(element => {
-      if (formItem.props.id !== NAVIGATOR_BLINDZONE_ID && formItem.props.item.linkId === element.linkId) {
-        stepArray.push(formItem);
-      }
-    })
-  );
+  const topLevelElements = getTopLevelElements(formDefinition) || [];
 
-  const stepArrayLength = stepArray.length - 1;
   const nextStep = (): void => {
-    setStepIndex(stepIndex < stepArrayLength ? stepIndex + 1 : stepIndex);
+    setStepIndex(prevIndex => (prevIndex < topLevelElements.length - 1 ? prevIndex + 1 : prevIndex));
   };
+
   const previousStep = (): void => {
-    setStepIndex(stepIndex > 0 ? stepIndex - 1 : stepIndex);
+    setStepIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
   };
 
   React.useEffect(() => {
-    onStepChange && onStepChange(stepIndex);
-    window.scrollTo(0, 0);
+    if (onStepChange) {
+      onStepChange(stepIndex);
+      window.scrollTo(0, 0);
+    }
   }, [stepIndex]);
+
+  if (topLevelElements.length === 0) {
+    return null;
+  }
 
   return (
     <>
@@ -61,14 +55,16 @@ const StepView = ({
         isStepView={true}
         referoProps={referoProps}
         resources={resources}
-        formItemsToBeRendered={stepArray[stepIndex]}
-        onSave={onSave}
         onSubmit={onSubmit}
-        displayNextButton={stepIndex !== stepArrayLength}
+        displayNextButton={stepIndex !== topLevelElements.length - 1}
         displayPreviousButton={stepIndex > 0}
         nextStep={nextStep}
         previousStep={previousStep}
-      />
+        methods={methods}
+        onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
+      >
+        <RenderQuestionnaireItems items={[topLevelElements[stepIndex]]} pdf={false} />
+      </RenderForm>
     </>
   );
 };

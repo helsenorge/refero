@@ -1,0 +1,16 @@
+@import './formFillerSidebar.css';
+
+
+.preview-window {
+    font-family: Source Sans Pro, Arial, Verdana, sans-serif;
+    background-color: #fff;
+    width: 100%;
+    overflow: hidden;
+    scrollbar-width: 0;
+}
+
+
+
+.referoContainer-div {
+    text-align: initial;
+}

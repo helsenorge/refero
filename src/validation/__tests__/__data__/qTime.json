@@ -1,0 +1,85 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "1ce1a649-f81a-4f97-8c36-8a798a0e025a",
+  "name": "DefaultVerdi",
+  "title": "Default verdi",
+  "description": "Tester default verdi for validering",
+  "status": "active",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "3cbd1e1b-fa49-4b9b-871e-2598213ab393",
+      "type": "time",
+      "text": "Tom time",
+      "required": true
+    },
+    {
+      "linkId": "f46e79e5-bdd1-44e0-c2ee-89335756e834",
+      "type": "time",
+      "text": "Preutfylt time",
+      "required": false,
+      "initial": [
+        {
+          "valueTime": "14:30:00"
+        }
+      ]
+    }
+  ]
+}

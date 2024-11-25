@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 

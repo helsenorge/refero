@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 
 import state from './data/newValueAction';
 import { Form } from '../form';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { getDefinitionItems, getQuestionnaireDefinitionItem, Path } from '../../util/refero-core';
 import {
   getResponseItem,
@@ -25,8 +25,10 @@ import {
   enterOpenChoiceText,
   removeOpenChoiceText,
 } from './utils';
+import { Assertion, Mocked, vi } from 'vitest';
+import { fail } from 'assert';
 
-jest.mock('uuid');
+vi.mock('uuid');
 
 describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   let newState: Form;
@@ -40,7 +42,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
     }
     definitionItems = dItems;
 
-    const mockedUuid = uuid as jest.Mocked<typeof uuid>;
+    const mockedUuid = uuid as Mocked<typeof uuid>;
     //@ts-ignore
     mockedUuid.v4.mockReturnValue('uuid');
   });
@@ -154,32 +156,38 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user uploads a file, then removes the content of an attachment input field, answer should be undefined', () => {
-    const linkId = '1.10';
-    newState = uploadAttachment(newState, pathify('1', linkId), createAttachment('1', 'fil1'));
-    verifyAnswer(linkId, newState, pathify('1', linkId), it => it.toEqual([{ valueAttachment: createAttachment('1', 'fil1') }]));
+    const item =  {
+      linkId: "1.10",
+      type: "attachment",
+      text: "Attachment",
+      required: false
+    } as QuestionnaireItem;
+    newState = uploadAttachment(newState, pathify('1', item.linkId), createAttachment('1', 'fil1'), item);
+    verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId), 0, createAttachment('1', 'fil1'));
 
-    newState = uploadAttachment(newState, pathify('1', linkId), createAttachment('2', 'fil2'));
-    verifyAnswer(linkId, newState, pathify('1', linkId), it => it.toEqual([{ valueAttachment: createAttachment('2', 'fil2') }]));
-
-    newState = deleteAttachment(newState, pathify('1', linkId), createAttachment('2', 'fil2'));
-    verifyAnswer(linkId, newState, pathify('1', linkId), it => it.toBeUndefined());
+    newState = deleteAttachment(newState, pathify('1', item.linkId), createAttachment('1', 'fil1'), item);
+    verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId), 0, undefined);
   });
 
   it('When the user uploads many files, then removes the content of an attachment input field, answer should be undefined', () => {
-    const linkId = '1.10';
-    newState = uploadAttachment(newState, pathify('1', linkId), createAttachment('1', 'fil1'), undefined, true);
-    verifyAnswer(linkId, newState, pathify('1', linkId), it => it.toEqual([{ valueAttachment: createAttachment('1', 'fil1') }]));
+    const item =  {
+      linkId: "1.10",
+      type: "attachment",
+      text: "Attachment",
+      required: false,
+      repeats: true,
+    } as QuestionnaireItem;
+    newState = uploadAttachment(newState, pathify('1', item.linkId), createAttachment('1', 'fil1'), item, true);
+    verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId),0, createAttachment('1', 'fil1'));
 
-    newState = uploadAttachment(newState, pathify('1', linkId), createAttachment('2', 'fil2'), undefined, true);
-    verifyAnswer(linkId, newState, pathify('1', linkId), it =>
-      it.toEqual([{ valueAttachment: createAttachment('1', 'fil1') }, { valueAttachment: createAttachment('2', 'fil2') }])
-    );
+    newState = uploadAttachment(newState, pathify('1', item.linkId), createAttachment('2', 'fil2'), item, true);
+    verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId), 1, createAttachment('2', 'fil2'));
 
-    newState = deleteAttachment(newState, pathify('1', linkId), createAttachment('1', 'fil1'));
-    verifyAnswer(linkId, newState, pathify('1', linkId), it => it.toEqual([{ valueAttachment: createAttachment('2', 'fil2') }]));
+    newState = deleteAttachment(newState, pathify('1', item.linkId), createAttachment('1', 'fil1'));
+    verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId), 0, createAttachment('2', 'fil2'));
 
-    newState = deleteAttachment(newState, pathify('1', linkId), createAttachment('2', 'fil2'));
-    verifyAnswer(linkId, newState, pathify('1', linkId), it => it.toBeUndefined());
+    newState = deleteAttachment(newState, pathify('1', item.linkId), createAttachment('2', 'fil2'));
+    verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId), 0, undefined);
   });
 
   it('When the user selects a radio-button, the answer should be the selected item', () => {
@@ -269,9 +277,26 @@ function verifyAnswer(
   linkId: string,
   state: Form,
   path: Array<Path>,
-  test: (it: jest.Matchers<QuestionnaireResponseItemAnswer[] | undefined | void, undefined>) => unknown
+  test: (it: Assertion<QuestionnaireResponseItemAnswer[] | undefined | void>) => unknown
 ) {
   const r = getResponseItem(linkId, state, path);
   if (!r) return fail();
   return test(expect(r.answer));
+}
+
+function verifyAttachmentAnswer(
+  linkId: string,
+  state: Form,
+  path: Array<Path>,
+  expectedIndex: number,
+  expected: Attachment | undefined
+): void {
+  const r = getResponseItem(linkId, state, path);
+  const answer = r?.answer?.[expectedIndex].valueAttachment;
+  if (expected) {
+    expect((expected as Attachment).url).toBe((answer as Attachment).url);
+    expect((expected as Attachment).title).toBe((answer as Attachment).title);
+  } else {
+    expect(answer).toBeUndefined();
+  }
 }

@@ -1,0 +1,18 @@
+.formButtonsWrapper {
+  position: sticky;
+  bottom: 0px;
+  padding: 12px 0px 12px 0px;
+  background-color: white;
+}
+.formButtonInnerWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 24px;
+}
+
+@media (max-width: 359px) {
+  .formButtonInnerWrapper {
+    gap: 16px;
+  }
+}

@@ -1,374 +1,288 @@
-import * as React from 'react';
-import { mount } from 'enzyme';
-import { createStore } from 'redux';
-import { Store, Provider } from 'react-redux';
+import '../../util/__tests__/defineFetch';
 
-import rootReducer from '../../reducers';
-import '../../util/defineFetch';
-import { Resources } from '../../util/resources';
-import { ReferoContainer } from '../../components';
-import { Questionnaire, QuestionnaireItem, Extension, Reference } from 'fhir/r4';
-import Choice from '../formcomponents/choice/choice';
-import Boolean from '../formcomponents/boolean/boolean';
-import Decimal from '../formcomponents/decimal/decimal';
-import Integer from '../formcomponents/integer/integer';
-import Date from '../formcomponents/date/date';
-import Time from '../formcomponents/date/time';
-import DateTime from '../formcomponents/date/date-time';
-import StringComponent from '../formcomponents/string/string';
-import Text from '../formcomponents/text/text';
-import OpenChoice from '../formcomponents/open-choice/open-choice';
-import Attachment from '../formcomponents/attachment/attachment';
-import Quantity from '../formcomponents/quantity/quantity';
-import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
+import { Questionnaire, QuestionnaireItem, Extension } from 'fhir/r4';
+
+import { Valueset } from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createItemControlExtension } from '../__tests__/utils';
 import ItemType from '../../constants/itemType';
+import { renderRefero, waitFor } from '../../../test/test-utils';
+import { Extensions } from '../../constants/extensions';
 
 describe('Hidden components should not render', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
-  it('unhidden attachment renders', () => {
+  it('unhidden attachment renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.ATTATCHMENT, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Attachment)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden attachment does not render', () => {
+  it('hidden attachment does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.ATTATCHMENT, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Attachment)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden boolean renders', () => {
+  it('unhidden boolean renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.BOOLEAN, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Boolean)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden boolean does not render', () => {
+  it('hidden boolean does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.BOOLEAN, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Boolean)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden date renders', () => {
+  it('unhidden date renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.DATE, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Date)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden date does not render', () => {
+  it('hidden date does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.DATE, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Date)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden time renders', () => {
+  it('unhidden time renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Time)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden time does not render', () => {
+  it('hidden time does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Time)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden dateTime renders', () => {
+  it('unhidden dateTime renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.DATETIME, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(DateTime)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden dateTime does not render', () => {
+  it('hidden dateTime does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.DATETIME, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(DateTime)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden decimal renders', () => {
+  it('unhidden decimal renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.DECIMAL, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Decimal)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden decimal does not render', () => {
+  it('hidden decimal does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.DECIMAL, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Decimal)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden integer renders', () => {
+  it('unhidden integer renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.INTEGER, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Integer)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden integer does not render', () => {
+  it('hidden integer does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.INTEGER, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Integer)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden quantity renders', () => {
+  it('unhidden quantity renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.QUANTITY, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Quantity)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden quantity does not render', () => {
+  it('hidden quantity does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.QUANTITY, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Quantity)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden string renders', () => {
+  it('unhidden string renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.STRING, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(StringComponent)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden string does not render', () => {
+  it('hidden string does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.STRING, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(StringComponent)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden text renders', () => {
+  it('unhidden text renders', async () => {
     const q = createQuestionnaire(createItem(ItemType.TEXT, createQuestionnaireHiddenExtension(false)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Text)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden text does not render', () => {
+  it('hidden text does not render', async () => {
     const q = createQuestionnaire(createItem(ItemType.TEXT, createQuestionnaireHiddenExtension(true)));
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Text)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden radio-button choice renders', () => {
+  it('unhidden radio-button choice renders', async () => {
     const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
+    const { getByLabelText } = await createWrapper(q);
 
-    wrapper.render();
-
-    expect(wrapper.find(Choice)).toHaveLength(1);
+    expect(getByLabelText('Mann')).toBeInTheDocument();
   });
 
-  it('hidden radio-button choice does not render', () => {
+  it('hidden radio-button choice does not render', async () => {
     const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
+    const { queryByLabelText } = await createWrapper(q);
 
-    wrapper.render();
-
-    expect(wrapper.find(Choice)).toHaveLength(0);
+    expect(queryByLabelText('Mann')).not.toBeInTheDocument();
   });
 
-  it('unhidden check-box choice renders', () => {
+  it('unhidden check-box choice renders', async () => {
     const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
+    const { getByLabelText } = await createWrapper(q);
 
-    wrapper.render();
-
-    expect(wrapper.find(Choice)).toHaveLength(1);
+    expect(getByLabelText('Mann')).toBeInTheDocument();
   });
 
-  it('hidden check-box choice does not render', () => {
+  it('hidden check-box choice does not render', async () => {
     const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
+    const { queryByLabelText } = await createWrapper(q);
 
-    wrapper.render();
-
-    expect(wrapper.find(Choice)).toHaveLength(0);
+    expect(queryByLabelText('Mann')).not.toBeInTheDocument();
   });
 
-  it('unhidden drop-down choice renders', () => {
+  it('unhidden drop-down choice renders', async () => {
     const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Choice)).toHaveLength(1);
+    const labelRegex = new RegExp('1', 'i');
+    const { getByLabelText } = await createWrapper(q);
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden drop-down choice does not render', () => {
+  it('hidden drop-down choice does not render', async () => {
     const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(Choice)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
-  it('unhidden radio-button open-choice renders', () => {
+  it('unhidden radio-button open-choice renders', async () => {
     const item = createChoiceItem(
       ItemType.OPENCHOICE,
       createItemControlExtension('radio-button'),
       createQuestionnaireHiddenExtension(false)
     );
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
+    const { getByLabelText } = await createWrapper(q);
 
-    wrapper.render();
-
-    expect(wrapper.find(OpenChoice)).toHaveLength(1);
+    expect(getByLabelText('Mann')).toBeInTheDocument();
   });
 
-  it('hidden radio-button open-choice does not render', () => {
+  it('hidden radio-button open-choice does not render', async () => {
     const item = createChoiceItem(
       ItemType.OPENCHOICE,
       createItemControlExtension('radio-button'),
       createQuestionnaireHiddenExtension(true)
     );
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
+    const { queryByLabelText } = await createWrapper(q);
 
-    wrapper.render();
-
-    expect(wrapper.find(OpenChoice)).toHaveLength(0);
+    expect(queryByLabelText('Mann')).not.toBeInTheDocument();
   });
 
-  it('unhidden check-box open-choice renders', () => {
+  it('unhidden check-box open-choice renders', async () => {
     const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
+    const { getByLabelText } = await createWrapper(q);
 
-    wrapper.render();
-
-    expect(wrapper.find(OpenChoice)).toHaveLength(1);
+    expect(getByLabelText('Mann')).toBeInTheDocument();
   });
 
-  it('hidden check-box open-choice does not render', () => {
+  it('hidden check-box open-choice does not render', async () => {
     const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
+    const { queryByLabelText } = await createWrapper(q);
 
-    wrapper.render();
-
-    expect(wrapper.find(OpenChoice)).toHaveLength(0);
+    expect(queryByLabelText('Mann')).not.toBeInTheDocument();
   });
 
-  it('unhidden drop-down open-choice renders', () => {
+  it('unhidden drop-down open-choice renders', async () => {
     const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(OpenChoice)).toHaveLength(1);
+    const { getByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(getByLabelText(labelRegex)).toBeInTheDocument();
   });
 
-  it('hidden drop-down open-choice does not render', () => {
+  it('hidden drop-down open-choice does not render', async () => {
     const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
-    const wrapper = createWrapper(q);
-
-    wrapper.render();
-
-    expect(wrapper.find(OpenChoice)).toHaveLength(0);
+    const { queryByLabelText } = await createWrapper(q);
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 });
 
 function createQuestionnaireHiddenExtension(value: boolean): Extension {
   return {
-    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden',
+    url: Extensions.QUESTIONNAIRE_HIDDEN_URL,
     valueBoolean: value,
-  } as Extension;
+  };
 }
 
-function createItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
+function createItem(type: QuestionnaireItem['type'], ...withExtensions: Extension[]): QuestionnaireItem {
   return _createItem(type, '1', withExtensions, undefined);
 }
 
-function createChoiceItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
-  const reference = { reference: '#8459' } as Reference;
-  return _createItem(type, '1', withExtensions, reference);
+function createChoiceItem(type: QuestionnaireItem['type'], ...withExtensions: Extension[]): QuestionnaireItem {
+  return _createItem(type, '1', withExtensions, '#8459');
 }
 
 function createQuestionnaire(...items: QuestionnaireItem[]): Questionnaire {
   return {
+    resourceType: 'Questionnaire',
     status: 'draft',
     item: items,
     contained: [Valueset],
-  } as Questionnaire;
+  };
 }
 
 function _createItem(
-  type: string,
+  type: QuestionnaireItem['type'],
   text: string,
   extensions: Extension[],
-  options: Reference | undefined,
+  answerValueSet: string | undefined,
   ...children: QuestionnaireItem[]
 ): QuestionnaireItem {
   return {
@@ -377,24 +291,12 @@ function _createItem(
     text: text,
     item: children,
     extension: extensions,
-    options: options,
-  } as QuestionnaireItem;
+    answerValueSet,
+  };
 }
 
-function createWrapper(q: Questionnaire) {
-  const store: Store<{}> = createStore(rootReducer);
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={q}
-      />
-    </Provider>
-  );
+async function createWrapper(q: Questionnaire) {
+  return await waitFor(async () => {
+    return renderRefero({ questionnaire: q });
+  });
 }

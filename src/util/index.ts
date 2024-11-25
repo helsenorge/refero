@@ -1,10 +1,8 @@
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import marked from 'marked';
-import { ComponentClass } from 'react-redux';
+import { marked } from 'marked';
 import * as uuid from 'uuid';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import {
@@ -17,30 +15,16 @@ import {
   getHyperlinkExtensionValue,
   getCopyExtension,
 } from './extension';
-import Attachment from '../components/formcomponents/attachment/attachment';
-import Boolean from '../components/formcomponents/boolean/boolean';
-import Choice from '../components/formcomponents/choice/choice';
-import Date from '../components/formcomponents/date/date';
-import DateTime from '../components/formcomponents/date/date-time';
-import Time from '../components/formcomponents/date/time';
-import Decimal from '../components/formcomponents/decimal/decimal';
-import Display from '../components/formcomponents/display/display';
-import Group from '../components/formcomponents/group/group';
-import Integer from '../components/formcomponents/integer/integer';
-import OpenChoice from '../components/formcomponents/open-choice/open-choice';
-import Quantity from '../components/formcomponents/quantity/quantity';
-import StringComponent from '../components/formcomponents/string/string';
-import TableContainer from '../components/formcomponents/table/TableContainer';
-import Text from '../components/formcomponents/text/text';
-import { Props } from '../components/with-common-functions';
+
 import CodingSystemConstants from '../constants/codingsystems';
-import ExtensionConstants from '../constants/extensions';
+import { Extensions } from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
-import ItemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
-import { Resources } from '../util/resources';
+import { Resources } from '@/util/resources';
+import codeSystems from '../constants/codingsystems';
+import { VALIDATE_READONLY_CODE } from '@/constants/codes';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -62,85 +46,40 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getComponentForItem(type: string, extensionCode?: string | string[]) {
-  if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return TableContainer as ComponentClass<Omit<Props & ValidationProps & Props, keyof Props> & Props>;
-  } else if (String(type) === ItemType.GROUP) {
-    return Group;
-  }
-  if (String(type) === ItemType.DISPLAY) {
-    return Display;
-  }
-  if (String(type) === ItemType.BOOLEAN) {
-    return Boolean;
-  }
-  if (String(type) === ItemType.DECIMAL) {
-    return Decimal;
-  }
-  if (String(type) === ItemType.INTEGER) {
-    return Integer;
-  }
-  if (String(type) === ItemType.DATE) {
-    return Date;
-  }
-  if (String(type) === ItemType.DATETIME) {
-    return DateTime;
-  }
-  if (String(type) === ItemType.TIME) {
-    return Time;
-  }
-  if (String(type) === ItemType.STRING) {
-    return StringComponent;
-  }
-  if (String(type) === ItemType.TEXT) {
-    return Text;
-  }
-  if (String(type) === ItemType.CHOICE) {
-    return Choice;
-  }
-  if (String(type) === ItemType.OPENCHOICE) {
-    return OpenChoice;
-  }
-  if (String(type) === ItemType.ATTATCHMENT) {
-    return Attachment;
-  }
-  if (String(type) === ItemType.QUANTITY) {
-    return Quantity;
-  }
-  return undefined;
-}
-
 export function isStringEmpty(string: string | undefined): boolean {
   return string === '' || string === null || string === undefined;
 }
 
-export function isReadOnly(item: QuestionnaireItem): boolean {
+export function isReadOnly(item?: QuestionnaireItem): boolean {
   if (item && item.readOnly) {
     return item.readOnly;
   }
   return false;
 }
 
-export function isRequired(item: QuestionnaireItem): boolean {
+export function shouldValidateReadOnly(item?: QuestionnaireItem): boolean {
+  return getQuestionnaireItemCodeValue(item, codeSystems.ValidationOptions) === VALIDATE_READONLY_CODE;
+}
+
+export function isRequired(item?: QuestionnaireItem): boolean {
   if (item && item.required) {
     return item.required;
   }
   return false;
 }
 
-export function isRepeat(item: QuestionnaireItem): boolean {
+export function isRepeat(item?: QuestionnaireItem): boolean {
   if (item && item.repeats) {
     return item.repeats;
   }
   return false;
 }
 
-export function isDataReceiver(item: QuestionnaireItem): boolean {
+export function isDataReceiver(item?: QuestionnaireItem): boolean {
   return getCopyExtension(item) !== undefined;
 }
 
-export function isHiddenItem(item: QuestionnaireItem): boolean | undefined {
+export function isHiddenItem(item?: QuestionnaireItem): boolean | undefined {
   return (
     getQuestionnaireHiddenExtensionValue(item) ||
     getQuestionnaireItemCodeValue(item, CodingSystemConstants.RenderingOptions) === RenderOptionCode.KunPdf
@@ -154,7 +93,7 @@ export function getId(id?: string): string {
   return uuid.v4();
 }
 
-export function renderPrefix(item: QuestionnaireItem): string {
+export function renderPrefix(item?: QuestionnaireItem): string {
   if (!item || !item.prefix) {
     return '';
   }
@@ -162,7 +101,7 @@ export function renderPrefix(item: QuestionnaireItem): string {
 }
 
 export function getSublabelText(
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
   questionnaire?: Questionnaire | null,
   resources?: Resources
@@ -173,9 +112,16 @@ export function getSublabelText(
   }
   return '';
 }
-
+export function getLabelText(
+  item?: QuestionnaireItem,
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
+  questionnaire?: Questionnaire | null,
+  resources?: Resources
+): string {
+  return `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+}
 export function getText(
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
   questionnaire?: Questionnaire | null,
   resources?: Resources
@@ -200,9 +146,9 @@ function getMarkdownValue(
 ): string {
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
-
   const renderer = new marked.Renderer();
-  renderer.link = (href: string, title: string, text: string): string => {
+
+  renderer.link = ({ href, title, text }): string => {
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
     } target="_blank" rel="noopener noreferrer" class="external" aria-label=${
@@ -210,8 +156,9 @@ function getMarkdownValue(
     }>${text}</a>`;
     return urlString;
   };
+
   const rendererSameWindow = new marked.Renderer();
-  rendererSameWindow.link = (href: string, title: string, text: string): string => {
+  rendererSameWindow.link = ({ href, title, text }): string => {
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href
     )}" rel="noopener noreferrer" aria-label=${openNewIfAbsolute(href) === '_blank' ? srLinkText : ''}>${text}</a>`;
@@ -222,12 +169,10 @@ function getMarkdownValue(
     return onRenderMarkdown(item, markdownText.toString());
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
-    marked.setOptions({ renderer: rendererSameWindow });
-    return marked(markdownText.toString());
+    return marked(markdownText.toString(), { async: false, renderer: rendererSameWindow });
   }
 
-  marked.setOptions({ renderer: renderer });
-  return marked(markdownText.toString());
+  return marked(markdownText.toString(), { renderer: renderer, async: false });
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {
@@ -237,7 +182,7 @@ export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number):
   return hasHeader(item) ? headerTag + 1 : headerTag;
 }
 
-function hasHeader(item: QuestionnaireItem): boolean {
+function hasHeader(item?: QuestionnaireItem): boolean {
   if (!getText(item)) {
     return false;
   }
@@ -247,14 +192,14 @@ function hasHeader(item: QuestionnaireItem): boolean {
   return true;
 }
 
-export function getLinkId(item: QuestionnaireItem): string {
+export function getLinkId(item?: QuestionnaireItem): string {
   if (item && item.linkId) {
     return item.linkId;
   }
   return uuid.v4();
 }
 
-export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {
+export function getStringValue(answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {
   if (answer && Array.isArray(answer)) {
     const stringAnswer = answer.filter(f => f.valueString);
     return stringAnswer.length > 0 ? stringAnswer.map(m => m.valueString).join(', ') : '';
@@ -263,7 +208,7 @@ export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<Q
 }
 
 export function getPDFStringValue(
-  answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>,
+  answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>,
   resources?: Resources
 ): string {
   const value = getStringValue(answer);
@@ -277,14 +222,14 @@ export function getPDFStringValue(
   return value;
 }
 
-export function getMaxLength(item: QuestionnaireItem): number | undefined {
+export function getMaxLength(item?: QuestionnaireItem): number | undefined {
   if (!item || !item.maxLength) {
     return undefined;
   }
   return Number(item.maxLength);
 }
 
-export function repeats(item: QuestionnaireItem): boolean {
+export function repeats(item?: QuestionnaireItem): boolean {
   if (item && item.repeats) {
     return item.repeats;
   }
@@ -292,8 +237,8 @@ export function repeats(item: QuestionnaireItem): boolean {
 }
 
 export function shouldRenderRepeatButton(
-  item: QuestionnaireItem,
-  response: Array<QuestionnaireResponseItem> | undefined,
+  item?: QuestionnaireItem,
+  response?: Array<QuestionnaireResponseItem> | undefined,
   index?: number
 ): boolean {
   if (!repeats(item)) {
@@ -313,7 +258,7 @@ export function shouldRenderRepeatButton(
     return false;
   }
 
-  if (item.readOnly) {
+  if (item?.readOnly) {
     return false;
   }
 
@@ -337,15 +282,15 @@ export function getTextValidationErrorMessage(
     const invalid: string[] = invalidNodes(value);
 
     if (invalid && invalid.length > 0) {
-      return invalid.join(', ') + ' ' + (resources ? (resources as Resources).validationNotAllowed : 'er ikke tillatt');
+      return invalid.join(', ') + ' ' + (resources ? resources.validationNotAllowed : 'er ikke tillatt');
     }
   }
 
   return getValidationTextExtension(item) || '';
 }
 
-export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
-  const step = getExtension(ExtensionConstants.STEP_URL, item);
+export function getDecimalPattern(item?: QuestionnaireItem): string | undefined {
+  const step = getExtension(Extensions.STEP_URL, item);
 
   const integerPart = '[+-]?[0-9]+';
   if (step && step.valueInteger != null) {
@@ -366,8 +311,8 @@ export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
   }
 }
 
-export function getDecimalValue(item: QuestionnaireItem, value: number | undefined): number | undefined {
-  const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
+export function getDecimalValue(item?: QuestionnaireItem, value?: number | undefined): number | undefined {
+  const decimalPlacesExtension = getExtension(Extensions.STEP_URL, item);
   if (value && decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
     const places = Number(decimalPlacesExtension.valueInteger);
     return Number(value.toFixed(places));
@@ -376,6 +321,18 @@ export function getDecimalValue(item: QuestionnaireItem, value: number | undefin
 }
 
 export function isIE11(): boolean {
-  // tslint:disable-next-line:no-string-literal
+  // @ts-expect-error ie 11 stuff
   return !!window['MSInputMethodContext'] && !!document['documentMode'];
 }
+
+export const scriptInjectionValidation = (value: string, resources?: Resources): string | true => {
+  if (value && typeof value === 'string') {
+    const invalid: string[] = invalidNodes(value);
+
+    if (invalid && invalid.length > 0) {
+      return invalid.join(', ') + ' ' + (resources && resources.validationNotAllowed ? resources.validationNotAllowed : 'er ikke tillatt');
+    }
+    return true;
+  }
+  return true;
+};

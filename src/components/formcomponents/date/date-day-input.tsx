@@ -1,156 +1,175 @@
-import * as React from 'react';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
-import moment, { Moment } from 'moment';
+import { format, isValid } from 'date-fns';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import styles from '../common-styles.module.css';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
-import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
-import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import { Validation } from '@helsenorge/form/components/form/validation';
+import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
-import Constants from '../../../constants/index';
-import { getId, isRequired } from '../../../util';
-import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly } from '../../../util/index';
-import { Resources } from '../../../util/resources';
-import TextView from '../textview';
+import { getId, isReadOnly, isRequired } from '../../../util/index';
 
-interface Props {
-  id?: string;
-  pdf?: boolean;
-  item: QuestionnaireItem;
-  resources?: Resources;
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { getPDFValueForDate, parseStringToDate, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useMinMaxDate } from './useMinMaxDate';
+import { initialize } from '@/util/date-fns-utils';
+import { GlobalState } from '@/reducers';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { ReadOnly } from '../read-only/readOnly';
+import { DateFormat, defaultMaxDate, defaultMinDate } from '@/types/dateTypes';
+import { shouldValidate } from '@/components/validation/utils';
+import { getErrorMessage } from '@/components/validation/rules';
+import { useEffect, useState } from 'react';
+import { useResetFormField } from '@/hooks/useResetFormField';
+
+type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
-  label?: JSX.Element;
-  subLabel?: JSX.Element;
-  datepickerRef: React.RefObject<DateRangePicker>;
-  helpButton?: JSX.Element;
-  helpElement?: JSX.Element;
   onDateValueChange: (newValue: string) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  validationErrorRenderer?: JSX.Element;
-  className?: string;
-  maxDate?: Moment;
-  minDate?: Moment;
-  answer: QuestionnaireResponseItemAnswer;
-}
+};
 
-export class DateDayInput extends React.Component<Props, {}> {
-  getDatepickerErrorPhrases(): DatePickerErrorPhrases {
-    const { resources, item } = this.props;
-    // Vi får maks én valideringstekst, derfor settes alle til denne.
-    const validationErrorText = getValidationTextExtension(item);
+export const DateDayInput = ({
+  id,
+  idWithLinkIdAndItemIndex,
+  pdf,
+  linkId,
+  onDateValueChange,
+  children,
+  path,
+}: DateDayInputProps): JSX.Element | null => {
+  initialize();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-    return {
-      errorInvalidDate: validationErrorText ? validationErrorText : resources?.filterDateErrorDateFormat || '',
-      errorAfterMaxDate: resources?.errorAfterMaxDate || '',
-      errorBeforeMinDate: resources?.errorBeforeMinDate || '',
-      errorInvalidDateRange: '',
-      errorRequiredDate: resources?.dateRequired || '',
-      errorRequiredDateRange: '',
-      errorInvalidMinimumNights: '',
-    };
-  }
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+  const answer = useGetAnswer(linkId, path);
+  const { minDateTime, maxDateTime } = useMinMaxDate(item);
+  const { resources } = useExternalRenderContext();
 
-  getDateAnswerValue(answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined {
-    if (answer && answer.valueDate) {
-      return answer.valueDate;
+  const getDateAnswerValue = (
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
+  ): string | undefined => {
+    const answerValue = Array.isArray(answer) ? answer[0] : answer;
+    if (answerValue && answerValue.valueDate) {
+      return answerValue.valueDate;
     }
-    if (answer && answer.valueDateTime) {
-      return answer.valueDateTime;
+    if (answerValue && answerValue.valueDateTime) {
+      return answerValue.valueDateTime;
     }
-  }
-
-  getValue(): Date[] | undefined {
-    const { item, answer } = this.props;
-
-    if (answer && Array.isArray(answer)) {
-      return answer.map(m => parseDate(String(this.getDateAnswerValue(m))));
+    if (!item || !item.initial || item.initial.length === 0) {
+      return undefined;
     }
-
-    if (Array.isArray(item.initial)) {
-      return item.initial.map(m => parseDate(String(this.getDateAnswerValue(m))));
+    if (!item.initial[0].valueDate && !item.initial[0].valueDateTime) {
+      return undefined;
     }
+    if (item.initial[0].valueDateTime) {
+      return item.initial[0].valueDateTime;
+    }
+    return item.initial[0].valueDate;
+  };
 
-    if (answer) {
-      const parsedDate = [parseDate(String(this.getDateAnswerValue(answer)))];
-      if (this.isValidDate(parsedDate[0]) === true) {
-        return parsedDate;
+  const dateAnswerValue = getDateAnswerValue(answer);
+  const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
+  const [dateValue, setDateValue] = useState(dateAnswerValueParsed);
+  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMdd, DateFormat.dMMyyyy);
+  useResetFormField(idWithLinkIdAndItemIndex, dateAnswerValue);
+
+  useEffect(() => {
+    if (isValid(dateAnswerValueParsed)) {
+      setDateValue(dateAnswerValueParsed);
+    }
+  }, [dateAnswerValue]);
+
+  const handleChange = (newDate: string | Date | undefined): void => {
+    if (typeof newDate === 'string') {
+      const parsedDate = parseStringToDate(newDate);
+      if (parsedDate && isValid(parsedDate)) {
+        setDateValue(parsedDate);
+        onDateValueChange(format(parsedDate, DateFormat.yyyyMMdd));
       } else {
-        return undefined;
+        onDateValueChange(newDate);
+      }
+    } else {
+      if (newDate && isValid(newDate)) {
+        setDateValue(newDate);
+        onDateValueChange(format(newDate, DateFormat.yyyyMMdd));
       }
     }
-  }
-
-  isValidDate = (date: Date): boolean => {
-    if (date instanceof Date) {
-      const text = Date.prototype.toString.call(date);
-      return text !== 'Invalid Date';
-    }
-    return false;
   };
 
-  toLocaleDate(moment: Moment | undefined): Moment | undefined {
-    return moment ? moment.locale(this.props.locale) : undefined;
-  }
-
-  onDateChange = (value: Moment | null): void => {
-    const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
-    this.props.onDateValueChange(newValue);
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validDate: value => {
+        if (Array.isArray(value)) {
+          value = value[0];
+        }
+        if (typeof value === 'string') {
+          return value ? validateDate(parseStringToDate(value), resources) : true;
+        } else {
+          return value ? validateDate(value, resources) : true;
+        }
+      },
+      validMinDate: value => {
+        return validateMinDate(minDateTime, parseStringToDate(value), resources);
+      },
+      validMaxDate: value => {
+        return validateMaxDate(maxDateTime, parseStringToDate(value), resources);
+      },
+    },
+    shouldUnregister: true,
   };
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
-  getPDFValue = (): string => {
-    const date = this.getValue();
-    const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
-
-    return date ? date.map(m => moment(m).format('D. MMMM YYYY')).join(', ') : ikkeBesvartText;
-  };
-
-  getSingleDateValue = (): moment.Moment | undefined => {
-    const date = this.getValue();
-    return date ? this.toLocaleDate(moment(date[0])) : undefined;
-  };
-
-  render(): JSX.Element {
-    if (this.props.pdf || isReadOnly(this.props.item)) {
-      return (
-        <TextView
-          id={this.props.id}
-          item={this.props.item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={this.props.onRenderMarkdown}
-          helpButton={this.props.helpButton}
-          helpElement={this.props.helpElement}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-
+  if (pdf || isReadOnly(item)) {
     return (
-      <Validation {...this.props}>
-        <DateRangePicker
-          type="single"
-          id={`${getId(this.props.id)}-datepicker_input`}
-          locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
-          errorResources={this.getDatepickerErrorPhrases()}
-          resources={this.props.resources}
-          label={this.props.label}
-          subLabel={this.props.subLabel}
-          isRequired={isRequired(this.props.item)}
-          placeholder={getPlaceholder(this.props.item)}
-          ref={this.props.datepickerRef}
-          maximumDate={this.toLocaleDate(this.props.maxDate)}
-          minimumDate={this.toLocaleDate(this.props.minDate)}
-          singleDateValue={this.getSingleDateValue()}
-          className={this.props.className}
-          onDateChange={this.onDateChange}
-          validationErrorRenderer={this.props.validationErrorRenderer}
-          helpButton={this.props.helpButton}
-          helpElement={this.props.helpElement}
-        />
-      </Validation>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={dateAnswerValue}
+        pdfValue={pdfValue}
+        errors={error}
+      >
+        {children}
+      </ReadOnly>
     );
   }
-}
+  return (
+    <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={`${getId(id)}-datepicker`}
+        labelId={`${getId(id)}-label`}
+        testId={`${getId(id)}-label-test`}
+        sublabelId={`${getId(id)}-sublabel`}
+        dateLabel={resources?.dateFormat_ddmmyyyy}
+      />
+
+      <DatePicker
+        {...rest}
+        inputId={`${getId(id)}-datepicker`}
+        testId={`${getId(id)}-datepicker-test`}
+        autoComplete=""
+        dateButtonAriaLabel="Open datepicker"
+        dateFormat={'dd.MM.yyyy'}
+        minDate={minDateTime ?? defaultMinDate}
+        maxDate={maxDateTime ?? defaultMaxDate}
+        onChange={(e, newDate) => {
+          handleChange(newDate);
+          onChange(e);
+        }}
+        dateValue={isValid(dateValue) ? dateValue : undefined}
+      />
+    </FormGroup>
+  );
+};

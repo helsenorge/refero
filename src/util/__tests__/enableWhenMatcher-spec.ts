@@ -1,46 +1,57 @@
 import { enableWhenMatches } from '../enableWhenMatcher';
-import { QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
 describe('Given a Questionnaire item with type boolean', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerBoolean: true } as QuestionnaireItemEnableWhen,
-      { valueBoolean: true } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerBoolean: true },
+      {
+        valueBoolean: true,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "!=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '!=', answerBoolean: true } as QuestionnaireItemEnableWhen,
-      { valueBoolean: false } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '!=', answerBoolean: true },
+      {
+        valueBoolean: false,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerBoolean: true } as QuestionnaireItemEnableWhen,
-      { valueBoolean: true } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerBoolean: true },
+      {
+        valueBoolean: true,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is ">" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerBoolean: true } as QuestionnaireItemEnableWhen,
-      { valueBoolean: true } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerBoolean: true },
+      {
+        valueBoolean: true,
+      }
     );
     expect(result).toBe(false);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerBoolean: true } as QuestionnaireItemEnableWhen,
-      { valueBoolean: true } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerBoolean: true },
+      {
+        valueBoolean: true,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is "<" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerBoolean: true } as QuestionnaireItemEnableWhen,
-      { valueBoolean: true } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerBoolean: true },
+      {
+        valueBoolean: true,
+      }
     );
     expect(result).toBe(false);
   });
@@ -49,78 +60,100 @@ describe('Given a Questionnaire item with type boolean', () => {
 describe('Given a Questionnaire item with type decimal', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerDecimal: 1.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 1.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerDecimal: 1.1 },
+      {
+        valueDecimal: 1.1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "!=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '!=', answerDecimal: 1.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 2.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '!=', answerDecimal: 1.1 },
+      {
+        valueDecimal: 2.1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerDecimal: 1.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 2.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerDecimal: 1.1 },
+      {
+        valueDecimal: 2.1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerDecimal: 1.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 1.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerDecimal: 1.1 },
+      {
+        valueDecimal: 1.1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerDecimal: 1.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 2.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerDecimal: 1.1 },
+      {
+        valueDecimal: 2.1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is ">" when values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerDecimal: 1.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 1.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerDecimal: 1.1 },
+      {
+        valueDecimal: 1.1,
+      }
     );
     expect(result).toBe(false);
   });
   it('Should return true when operator is ">" and answerDecimal is 0', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerDecimal: 0 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 2.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerDecimal: 0 },
+      {
+        valueDecimal: 2.1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerDecimal: 2.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 1.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerDecimal: 2.1 },
+      {
+        valueDecimal: 1.1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerDecimal: 1.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 1.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerDecimal: 1.1 },
+      {
+        valueDecimal: 1.1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerDecimal: 2.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 1.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerDecimal: 2.1 },
+      {
+        valueDecimal: 1.1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is "<" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerDecimal: 1.1 } as QuestionnaireItemEnableWhen,
-      { valueDecimal: 1.1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerDecimal: 1.1 },
+      {
+        valueDecimal: 1.1,
+      }
     );
     expect(result).toBe(false);
   });
@@ -129,78 +162,100 @@ describe('Given a Questionnaire item with type decimal', () => {
 describe('Given a Questionnaire item with type integer', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerInteger: 1 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerInteger: 1 },
+      {
+        valueInteger: 1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "!=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '!=', answerInteger: 1 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 2 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '!=', answerInteger: 1 },
+      {
+        valueInteger: 2,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerInteger: 1 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 2 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerInteger: 1 },
+      {
+        valueInteger: 2,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerInteger: 1 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerInteger: 1 },
+      {
+        valueInteger: 1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerInteger: 1 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 2 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerInteger: 1 },
+      {
+        valueInteger: 2,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is ">" when values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerInteger: 1 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerInteger: 1 },
+      {
+        valueInteger: 1,
+      }
     );
     expect(result).toBe(false);
   });
   it('Should return true when operator is ">" when answerInteger is 0', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerInteger: 0 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerInteger: 0 },
+      {
+        valueInteger: 1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerInteger: 2 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerInteger: 2 },
+      {
+        valueInteger: 1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerInteger: 1 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerInteger: 1 },
+      {
+        valueInteger: 1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerInteger: 2 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerInteger: 2 },
+      {
+        valueInteger: 1,
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is "<" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerDecimal: 1 } as QuestionnaireItemEnableWhen,
-      { valueInteger: 1 } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerDecimal: 1 },
+      {
+        valueInteger: 1,
+      }
     );
     expect(result).toBe(false);
   });
@@ -213,8 +268,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '=',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } }
     );
     expect(result).toBe(true);
   });
@@ -224,8 +279,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '!=',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 2.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 2.1 } }
     );
     expect(result).toBe(true);
   });
@@ -235,8 +290,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '>=',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 2.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 2.1 } }
     );
     expect(result).toBe(true);
   });
@@ -246,8 +301,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '>=',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } }
     );
     expect(result).toBe(true);
   });
@@ -257,8 +312,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '>',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 2.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 2.1 } }
     );
     expect(result).toBe(true);
   });
@@ -268,8 +323,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '>',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } }
     );
     expect(result).toBe(false);
   });
@@ -279,8 +334,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '<=',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 2.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } }
     );
     expect(result).toBe(true);
   });
@@ -290,8 +345,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '<=',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } }
     );
     expect(result).toBe(true);
   });
@@ -301,8 +356,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '<',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 2.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } }
     );
     expect(result).toBe(true);
   });
@@ -312,8 +367,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '<',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 } }
     );
     expect(result).toBe(false);
   });
@@ -324,8 +379,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '=',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://othersystem.org', code: '39051', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://othersystem.org', code: '39051', value: 1.1 } }
     );
     expect(result).toBe(false);
   });
@@ -336,8 +391,8 @@ describe('Given a Questionnaire item with type quantity', () => {
         question: '1.0.0',
         operator: '=',
         answerQuantity: { system: 'http://loinc.org', code: '39051', value: 1.1 },
-      } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://loinc.org', code: '1111', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      },
+      { valueQuantity: { system: 'http://loinc.org', code: '1111', value: 1.1 } }
     );
     expect(result).toBe(false);
   });
@@ -346,78 +401,100 @@ describe('Given a Questionnaire item with type quantity', () => {
 describe('Given a Questionnaire item with type string', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerString: 'bbbb' } as QuestionnaireItemEnableWhen,
-      { valueString: 'bbbb' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerString: 'bbbb' },
+      {
+        valueString: 'bbbb',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "!=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '!=', answerString: 'bbbb' } as QuestionnaireItemEnableWhen,
-      { valueString: 'cccc' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '!=', answerString: 'bbbb' },
+      {
+        valueString: 'cccc',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerString: 'bbbb' } as QuestionnaireItemEnableWhen,
-      { valueString: 'cccc' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerString: 'bbbb' },
+      {
+        valueString: 'cccc',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerString: 'bbbb' } as QuestionnaireItemEnableWhen,
-      { valueString: 'bbbb' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerString: 'bbbb' },
+      {
+        valueString: 'bbbb',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerString: 'bbbb' } as QuestionnaireItemEnableWhen,
-      { valueString: 'cccc' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerString: 'bbbb' },
+      {
+        valueString: 'cccc',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">" and answerString is the empty string', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerString: '' } as QuestionnaireItemEnableWhen,
-      { valueString: 'cccc' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerString: '' },
+      {
+        valueString: 'cccc',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is ">" when values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerString: 'bbbb' } as QuestionnaireItemEnableWhen,
-      { valueString: 'bbbb' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerString: 'bbbb' },
+      {
+        valueString: 'bbbb',
+      }
     );
     expect(result).toBe(false);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerString: 'cccc' } as QuestionnaireItemEnableWhen,
-      { valueString: 'bbbb' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerString: 'cccc' },
+      {
+        valueString: 'bbbb',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerString: 'bbbb' } as QuestionnaireItemEnableWhen,
-      { valueString: 'bbbb' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerString: 'bbbb' },
+      {
+        valueString: 'bbbb',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerString: 'cccc' } as QuestionnaireItemEnableWhen,
-      { valueString: 'bbbb' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerString: 'cccc' },
+      {
+        valueString: 'bbbb',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is "<" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerString: 'bbbb' } as QuestionnaireItemEnableWhen,
-      { valueString: 'bbbb' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerString: 'bbbb' },
+      {
+        valueString: 'bbbb',
+      }
     );
     expect(result).toBe(false);
   });
@@ -426,71 +503,91 @@ describe('Given a Questionnaire item with type string', () => {
 describe('Given a Questionnaire item with type time', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerTime: '11:15' } as QuestionnaireItemEnableWhen,
-      { valueTime: '11:15' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerTime: '11:15' },
+      {
+        valueTime: '11:15',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "!=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '!=', answerTime: '11:15' } as QuestionnaireItemEnableWhen,
-      { valueTime: '14:00' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '!=', answerTime: '11:15' },
+      {
+        valueTime: '14:00',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerTime: '11:15' } as QuestionnaireItemEnableWhen,
-      { valueTime: '14:00' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerTime: '11:15' },
+      {
+        valueTime: '14:00',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerTime: '11:15' } as QuestionnaireItemEnableWhen,
-      { valueTime: '11:15' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerTime: '11:15' },
+      {
+        valueTime: '11:15',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerTime: '11:15' } as QuestionnaireItemEnableWhen,
-      { valueTime: '14:00' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerTime: '11:15' },
+      {
+        valueTime: '14:00',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is ">" when values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerTime: '11:15' } as QuestionnaireItemEnableWhen,
-      { valueTime: '11:15' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerTime: '11:15' },
+      {
+        valueTime: '11:15',
+      }
     );
     expect(result).toBe(false);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerTime: '14:00' } as QuestionnaireItemEnableWhen,
-      { valueTime: '11:15' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerTime: '14:00' },
+      {
+        valueTime: '11:15',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerTime: '11:15' } as QuestionnaireItemEnableWhen,
-      { valueTime: '11:15' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerTime: '11:15' },
+      {
+        valueTime: '11:15',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerTime: '14:00' } as QuestionnaireItemEnableWhen,
-      { valueTime: '11:15' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerTime: '14:00' },
+      {
+        valueTime: '11:15',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is "<" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerTime: '11:15' } as QuestionnaireItemEnableWhen,
-      { valueTime: '11:15' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerTime: '11:15' },
+      {
+        valueTime: '11:15',
+      }
     );
     expect(result).toBe(false);
   });
@@ -499,71 +596,91 @@ describe('Given a Questionnaire item with type time', () => {
 describe('Given a Questionnaire item with type date', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerDate: '2019-09-20' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-09-20' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerDate: '2019-09-20' },
+      {
+        valueDate: '2019-09-20',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "!=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '!=', answerDate: '2019-09-20' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-10-24' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '!=', answerDate: '2019-09-20' },
+      {
+        valueDate: '2019-10-24',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerDate: '2019-09-20' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-10-24' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerDate: '2019-09-20' },
+      {
+        valueDate: '2019-10-24',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerDate: '2019-09-20' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-09-20' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerDate: '2019-09-20' },
+      {
+        valueDate: '2019-09-20',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerDate: '2019-09-20' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-10-24' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerDate: '2019-09-20' },
+      {
+        valueDate: '2019-10-24',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is ">" when values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerDate: '2019-09-20' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-09-20' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerDate: '2019-09-20' },
+      {
+        valueDate: '2019-09-20',
+      }
     );
     expect(result).toBe(false);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerDate: '2019-10-24' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-09-20' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerDate: '2019-10-24' },
+      {
+        valueDate: '2019-09-20',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerDate: '2019-09-20' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-09-20' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerDate: '2019-09-20' },
+      {
+        valueDate: '2019-09-20',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerDate: '2019-10-24' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-09-20' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerDate: '2019-10-24' },
+      {
+        valueDate: '2019-09-20',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is "<" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerDate: '2019-09-20' } as QuestionnaireItemEnableWhen,
-      { valueDate: '2019-09-20' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerDate: '2019-09-20' },
+      {
+        valueDate: '2019-09-20',
+      }
     );
     expect(result).toBe(false);
   });
@@ -572,71 +689,91 @@ describe('Given a Questionnaire item with type date', () => {
 describe('Given a Questionnaire item with type dateTime', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerDateTime: '2019-09-20T10:28:45Z' },
+      {
+        valueDateTime: '2019-09-20T10:28:45Z',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "!=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '!=', answerDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-10-24T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '!=', answerDateTime: '2019-09-20T10:28:45Z' },
+      {
+        valueDateTime: '2019-10-24T10:28:45Z',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-10-24T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerDateTime: '2019-09-20T10:28:45Z' },
+      {
+        valueDateTime: '2019-10-24T10:28:45Z',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerDateTime: '2019-09-20T10:28:45Z' },
+      {
+        valueDateTime: '2019-09-20T10:28:45Z',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-10-24T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerDateTime: '2019-09-20T10:28:45Z' },
+      {
+        valueDateTime: '2019-10-24T10:28:45Z',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is ">" when values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerDateTime: '2019-09-20T10:28:45Z' },
+      {
+        valueDateTime: '2019-09-20T10:28:45Z',
+      }
     );
     expect(result).toBe(false);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerDateTime: '2019-10-24T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerDateTime: '2019-10-24T10:28:45Z' },
+      {
+        valueDateTime: '2019-09-20T10:28:45Z',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<=" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerDateTime: '2019-09-20T10:28:45Z' },
+      {
+        valueDateTime: '2019-09-20T10:28:45Z',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "<" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerDateTime: '2019-10-24T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerDateTime: '2019-10-24T10:28:45Z' },
+      {
+        valueDateTime: '2019-09-20T10:28:45Z',
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is "<" and values are equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireItemEnableWhen,
-      { valueDateTime: '2019-09-20T10:28:45Z' } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerDateTime: '2019-09-20T10:28:45Z' },
+      {
+        valueDateTime: '2019-09-20T10:28:45Z',
+      }
     );
     expect(result).toBe(false);
   });
@@ -645,51 +782,65 @@ describe('Given a Questionnaire item with type dateTime', () => {
 describe('Given a Questionnaire item with type coding', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireItemEnableWhen,
-      { valueCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerCoding: { system: 'http://loinc.org', code: 'ff' } },
+      {
+        valueCoding: { system: 'http://loinc.org', code: 'ff' },
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "!=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '!=', answerCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireItemEnableWhen,
-      { valueCoding: { system: 'http://loinc.org', code: 'zz' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '!=', answerCoding: { system: 'http://loinc.org', code: 'ff' } },
+      {
+        valueCoding: { system: 'http://loinc.org', code: 'zz' },
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireItemEnableWhen,
-      { valueCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerCoding: { system: 'http://loinc.org', code: 'ff' } },
+      {
+        valueCoding: { system: 'http://loinc.org', code: 'ff' },
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is ">" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireItemEnableWhen,
-      { valueCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerCoding: { system: 'http://loinc.org', code: 'ff' } },
+      {
+        valueCoding: { system: 'http://loinc.org', code: 'ff' },
+      }
     );
     expect(result).toBe(false);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireItemEnableWhen,
-      { valueCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerCoding: { system: 'http://loinc.org', code: 'ff' } },
+      {
+        valueCoding: { system: 'http://loinc.org', code: 'ff' },
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is "<" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireItemEnableWhen,
-      { valueCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerCoding: { system: 'http://loinc.org', code: 'ff' } },
+      {
+        valueCoding: { system: 'http://loinc.org', code: 'ff' },
+      }
     );
     expect(result).toBe(false);
   });
 
   it('Should return false when system are not equal', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerCoding: { system: 'http://loinc.org', code: 'ff' } } as QuestionnaireItemEnableWhen,
-      { valueQuantity: { system: 'http://othersystem.org', code: 'ff', value: 1.1 } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerCoding: { system: 'http://loinc.org', code: 'ff' } },
+      {
+        valueQuantity: { system: 'http://othersystem.org', code: 'ff', value: 1.1 },
+      }
     );
     expect(result).toBe(false);
   });
@@ -698,43 +849,55 @@ describe('Given a Questionnaire item with type coding', () => {
 describe('Given a Questionnaire item with type reference', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '=', answerReference: { reference: 'aaa' } } as QuestionnaireItemEnableWhen,
-      { valueReference: { reference: 'aaa' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '=', answerReference: { reference: 'aaa' } },
+      {
+        valueReference: { reference: 'aaa' },
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is "!=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '!=', answerReference: { reference: 'aaa' } } as QuestionnaireItemEnableWhen,
-      { valueReference: { reference: 'vvv' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '!=', answerReference: { reference: 'aaa' } },
+      {
+        valueReference: { reference: 'vvv' },
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return true when operator is ">=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>=', answerReference: { reference: 'aaa' } } as QuestionnaireItemEnableWhen,
-      { valueReference: { reference: 'aaa' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>=', answerReference: { reference: 'aaa' } },
+      {
+        valueReference: { reference: 'aaa' },
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is ">" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '>', answerReference: { reference: 'aaa' } } as QuestionnaireItemEnableWhen,
-      { valueReference: { reference: 'aaa' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '>', answerReference: { reference: 'aaa' } },
+      {
+        valueReference: { reference: 'aaa' },
+      }
     );
     expect(result).toBe(false);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<=', answerReference: { reference: 'aaa' } } as QuestionnaireItemEnableWhen,
-      { valueReference: { reference: 'aaa' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<=', answerReference: { reference: 'aaa' } },
+      {
+        valueReference: { reference: 'aaa' },
+      }
     );
     expect(result).toBe(true);
   });
   it('Should return false when operator is "<" ', () => {
     const result = enableWhenMatches(
-      { question: '1.0.0', operator: '<', answerReference: { reference: 'aaa' } } as QuestionnaireItemEnableWhen,
-      { valueReference: { reference: 'aaa' } } as QuestionnaireResponseItemAnswer
+      { question: '1.0.0', operator: '<', answerReference: { reference: 'aaa' } },
+      {
+        valueReference: { reference: 'aaa' },
+      }
     );
     expect(result).toBe(false);
   });

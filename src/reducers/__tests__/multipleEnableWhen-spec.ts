@@ -3,6 +3,7 @@ import { Form } from '../form';
 import { QuestionnaireItem } from 'fhir/r4';
 import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
 import { getResponseItem, pathify, clickCheckbox } from './utils';
+import { fail } from 'assert';
 
 describe('questionnaire with multiple dependent enable when items', () => {
   let newState: Form;

@@ -1,182 +1,173 @@
-import * as React from 'react';
+import { QuestionnaireResponseItemAnswer, Quantity as QuantityType, QuestionnaireItem } from 'fhir/r4';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import styles2 from '../common-styles.module.css';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import styles from './quantity.module.css';
+import { newQuantityValueAsync } from '@/actions/newValue';
+import { GlobalState, useAppDispatch } from '@/reducers';
+import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getQuestionnaireUnitExtensionValue } from '@/util/extension';
+import { isReadOnly, getId } from '@/util/index';
 
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Quantity as QuantityType,
-  QuestionnaireResponseItem,
-  Questionnaire,
-} from 'fhir/r4';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useSelector } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { decimalPattern, getErrorMessage, getInputWidth, isNumber, maxValue, minValue, required } from '@/components/validation/rules';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+export type Props = QuestionnaireComponentItemProps;
 
-import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import {
-  getValidationTextExtension,
-  getPlaceholder,
-  getMaxValueExtensionValue,
-  getMinValueExtensionValue,
-  getQuestionnaireUnitExtensionValue,
-} from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
-import TextView from '../textview';
+const Quantity = (props: Props): JSX.Element | null => {
+  const { path, id, pdf, idWithLinkIdAndItemIndex, index, children, linkId } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-export interface Props {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseItemAnswer;
-  resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  path: Array<Path>;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
-  id?: string;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-}
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
 
-class Quantity extends React.Component<Props & ValidationProps, {}> {
-  getValue(): number | number[] | undefined {
-    const { answer } = this.props;
+  const dispatch = useAppDispatch();
+  const answer = useGetAnswer(linkId, path);
+
+  const getValue = (
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  ): number | number[] | undefined | string => {
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueQuantity.value);
+      return answer.map(m => m.valueQuantity?.value).filter(f => f !== undefined);
     }
     if (answer && answer.valueQuantity !== undefined && answer.valueQuantity !== null) {
       return answer.valueQuantity.value;
     }
-  }
+  };
+  const answerValue = getValue(answer);
+  const value = isNumber(answerValue) ? answerValue : '';
 
-  getPDFValue(): string {
-    const value = this.getValue();
+  useResetFormField(idWithLinkIdAndItemIndex, value);
+  const getPDFValue = (): string => {
+    const value = getValue(answer);
     if (value === undefined || value === null) {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
     if (Array.isArray(value)) {
-      return value.map(m => `${m} ${this.getUnit()}`).join(', ');
+      return value.map(m => `${m} ${getUnit()}`).join(', ');
     }
-    return `${value} ${this.getUnit()}`;
-  }
+    return `${value} ${getUnit()}`;
+  };
 
-  handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
-    const extension = getQuestionnaireUnitExtensionValue(this.props.item);
-    if (extension) {
-      const quantity = {
-        unit: extension.display,
-        system: extension.system,
-        code: extension.code,
-      } as QuantityType;
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const extension = getQuestionnaireUnitExtensionValue(item);
+    const quantity: QuantityType = {
+      unit: extension?.display,
+      system: extension?.system,
+      code: extension?.code,
+    };
 
-      const value = Number(parseFloat((event.target as HTMLInputElement).value));
-      if (value != null && !isNaN(value) && isFinite(value)) {
-        quantity.value = value;
-      }
+    const newValue = parseFloat(event.target.value);
+    quantity.value = isNumber(newValue) ? newValue : undefined;
 
-      if (dispatch) {
-        dispatch(newQuantityValueAsync(this.props.path, quantity, this.props.item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
-        );
-      }
+    if (value !== null && !isNaN(newValue) && isFinite(newValue)) {
+      quantity.value = newValue;
+    }
 
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
+    if (dispatch && path && item) {
+      dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(newState =>
+        onAnswerChange(newState, item, { valueQuantity: quantity })
+      );
+    }
+
+    if (promptLoginMessage) {
+      promptLoginMessage();
     }
   };
 
-  getUnit = (): string => {
-    const valueCoding = getQuestionnaireUnitExtensionValue(this.props.item);
+  const getUnit = (): string => {
+    const valueCoding = getQuestionnaireUnitExtensionValue(item);
     if (valueCoding && valueCoding.display) {
       return valueCoding.display;
     }
     return '';
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
+  const baseIncrementValue = getMinValueExtensionValue(item);
+  const width = getInputWidth(maxCharacters);
+  const errorMessage = getErrorMessage(item, error);
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: required({ item, resources }),
+    max: maxValue({ item, resources }),
+    min: minValue({ item, resources }),
+    pattern: decimalPattern({ item, resources }),
+    shouldUnregister: true,
+  };
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
-  render(): JSX.Element | null {
-    const { id, item, questionnaire, onRenderMarkdown } = this.props;
-    if (this.props.pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={this.props.item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-    const value = this.getValue();
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, this.props.resources);
-
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_quantity">
-        <Validation {...this.props}>
-          <SafeInputField
-            size="xSmall"
-            type="number"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
-            value={value !== undefined ? value + '' : ''}
-            showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={this.props.resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            placeholder={getPlaceholder(item)}
-            max={getMaxValueExtensionValue(item)}
-            min={getMinValueExtensionValue(item)}
-            onChange={this.handleChange}
-            errorMessage={getValidationTextExtension(item)}
-            pattern={getDecimalPattern(item)}
-            className="page_refero__quantity"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-          >
-            <span className="page_refero__unit">{this.getUnit()}</span>
-          </SafeInputField>
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        <div>{this.props.repeatButton}</div>
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={value}
+        pdfValue={getPDFValue()}
+        errors={error}
+      >
+        {children}
+      </ReadOnly>
     );
   }
-}
+  return (
+    <div className="page_refero__component page_refero__component_quantity">
+      <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles2.paddingBottom}>
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-quantity-label`}
+          testId={`${getId(id)}-quantity-label`}
+          sublabelId={`${getId(id)}-quantity-sublabel`}
+        />
 
-const withCommonFunctionsComponent = withCommonFunctions(Quantity);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+        <div className={styles.inputWrapper}>
+          <Input
+            {...rest}
+            value={value}
+            type="number"
+            inputId={getId(id)}
+            testId={getId(id)}
+            placeholder={getPlaceholder(item)}
+            className="page_refero__quantity"
+            onChange={(e): void => {
+              onChange(e);
+              handleChange(e);
+            }}
+            width={width}
+            inputMode="decimal"
+            baseIncrementValue={baseIncrementValue}
+          />
+          <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
+        </div>
+
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path} item={item} index={index} />
+      </FormGroup>
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
+    </div>
+  );
+};
+
+export default Quantity;

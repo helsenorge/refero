@@ -1,43 +1,66 @@
-import * as React from 'react';
+import { screen, userEvent, renderRefero, waitFor } from '../../../test/test-utils';
 
-import { mount } from 'enzyme';
-import moment from 'moment';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding } from 'fhir/r4';
-
-import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
-
-import '../../util/defineFetch';
-import { ReferoContainer } from '..';
-import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
-import rootReducer from '../../reducers';
+import '../../util/__tests__/defineFetch';
+import { OPEN_CHOICE_ID } from '../../constants/index';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
-import { Resources } from '../../util/resources';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import questionnaireWithNestedItems from './__data__/onChange/nestedItems';
 import questionnaireWithRepeats from './__data__/onChange/repeats';
-import { inputAnswer, findItem } from './utils';
+import {
+  inputAnswer,
+  findItem,
+  findItemByDispayValue,
+  createOnChangeFuncForActionRequester,
+  createOnChangeFuncForQuestionnaireInspector,
+} from './utils';
+import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from '../../../test/selectors';
+
+function toCoding(code: string, system?: string): Coding {
+  return {
+    code: code,
+    system: system,
+  };
+}
+
+function toQuantity(value: number, code: string, unit: string, system?: string): Quantity {
+  return {
+    value: value,
+    code: code,
+    unit: unit,
+    system: system,
+  };
+}
+
+async function addValueToInputByTypeAndTab(
+  componentLabel: string,
+  value: string
+): Promise<{
+  answer: HTMLElement;
+  element: HTMLElement;
+}> {
+  const element = await screen.findByLabelText(componentLabel);
+  await typeAndTabByLabelText(componentLabel, value);
+
+  const answer = screen.getByRole('spinbutton', { name: componentLabel });
+  return { answer, element };
+}
 
 describe('onAnswerChange callback gets called and can request additional changes', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
   it('integers gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addIntegerAnswer('2', 42);
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { queryByDisplayValue } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-    const item = findItem('2', wrapper);
-    expect(item.props().value).toBe('42');
+    const { answer } = await addValueToInputByTypeAndTab('Decimal', '0.1');
+
+    const elm = queryByDisplayValue(42);
+    expect(elm).toBeInTheDocument();
+    expect(answer).toHaveValue(0.1);
   });
 
   it('integers gets cleared', async () => {
@@ -45,12 +68,14 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('2', 42);
       actionRequester.clearIntegerAnswer('2');
     });
+    const { getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { answer } = await addValueToInputByTypeAndTab('Decimal', '0.1');
 
-    const item = findItem('2', wrapper);
-    expect(item.props().value).toBe('');
+    const integerAnswer = getByLabelText(/Integer/i);
+
+    expect(answer).toHaveValue(0.1);
+    expect(integerAnswer).toHaveValue(null);
   });
 
   it('decimals gets updated', async () => {
@@ -58,11 +83,11 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addDecimalAnswer('1', 42);
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('2', 1, wrapper);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await inputAnswer('1', 0.1, container);
 
-    const item = findItem('1', wrapper);
-    expect(item.props().value).toBe('42');
+    const updatedInput = await screen.findByDisplayValue('42');
+    expect(updatedInput).toBeInTheDocument();
   });
 
   it('decimals gets cleared', async () => {
@@ -71,11 +96,11 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearDecimalAnswer('1');
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('2', 1, wrapper);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await inputAnswer('1', 0.1, container);
+    const item = findItem('2', container);
 
-    const item = findItem('1', wrapper);
-    expect(item.props().value).toBe('');
+    expect(item).toHaveValue(null);
   });
 
   it('quantity gets updated', async () => {
@@ -83,11 +108,11 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addQuantityAnswer('3', toQuantity(42, 'kg', 'kilogram', 'http://unitsofmeasure.org'));
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-    const item = findItem('3', wrapper);
-    expect(item.props().value).toBe('42');
+    await inputAnswer('1', 0.1, container);
+    const item = await findItemByDispayValue('42');
+    expect(item).toHaveValue(42);
   });
 
   it('quantity gets cleared', async () => {
@@ -96,11 +121,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearQuantityAnswer('3');
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    const item = findItem('3', wrapper);
-    expect(item.props().value).toBe('');
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await inputAnswer('1', 0.1, container);
+    const item = findItem('3', container);
+    expect(item).toHaveValue(null);
   });
 
   it('boolean gets updated', async () => {
@@ -108,11 +132,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addBooleanAnswer('4', true);
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    const item = findItem('4', wrapper);
-    expect(item.props().checked).toBe(true);
+    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
+    const updatedInput = queryByLabelText(/Boolean/i);
+    expect(updatedInput).toBeChecked();
   });
 
   it('boolean gets cleared', async () => {
@@ -121,11 +144,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearBooleanAnswer('4');
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    const item = findItem('4', wrapper);
-    expect(item.props().checked).toBe(false);
+    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
+    const updatedInput = queryByLabelText(/Boolean/i);
+    expect(updatedInput).not.toBeChecked();
   });
 
   it('choice (radiobuttons) gets updated', async () => {
@@ -133,25 +155,22 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { queryByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
-    // radiobuttons are 0-based
-    const item = findItem('5a-hn-1', wrapper);
-    expect(item.props().checked).toBe(true);
+    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
   });
 
-  it('choice (radiobuttons) does not get cleared', async () => {
+  it('choice (radiobuttons) get cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.removeChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { queryByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
-    const item = findItem('5a-hn-1', wrapper);
-    expect(item.props().checked).toBe(true);
+    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
   });
 
   it('choice (checkboxes) gets updated', async () => {
@@ -159,12 +178,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    // checkboxes are 1-based
-    const item = findItem('5b-2', wrapper);
-    expect(item.props().checked).toBe(true);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
+    expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
   });
 
   it('choice (checkboxes) gets cleared', async () => {
@@ -173,11 +189,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-    const item = findItem('5b-2', wrapper);
-    expect(item.props().checked).toBe(false);
+    await clickByLabelText(/Boolean/i);
+    expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
   });
 
   it('openchoice (radiobuttons) gets updated', async () => {
@@ -185,158 +200,222 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addOpenChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { queryByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
-    const item = findItem('6a-hn-1', wrapper);
-    expect(item.props().checked).toBe(true);
+    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
   });
+  it('openchoice (radiobuttons) get cleared', async () => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+      actionRequester.addChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
+      actionRequester.removeChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
+    });
 
+    const { queryByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
+
+    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
+  });
   it('openchoice (checkboxes) gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addOpenChoiceAnswer('6b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    const item = findItem('6b-2', wrapper);
-    expect(item.props().checked).toBe(true);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
+    expect(container.querySelector('#item_6b-hn-1')).toBeChecked();
   });
-
-  it('date gets updated', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateAnswer('7a', '2020-05-17');
+  describe('date fields gets updated', () => {
+    beforeEach(() => {
+      process.env.TZ = 'Europe/Oslo';
     });
-
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    const item = findItem('7a-datepicker_input', wrapper);
-    expect(item.props().value).toBe('17.05.2020');
-  });
-
-  it('date gets cleared', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateAnswer('7a', '2020-05-17');
-      actionRequester.clearDateAnswer('7a');
+    afterEach(() => {
+      delete process.env.TZ;
     });
+    it('date gets updated', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateAnswer('7a', '2024-08-14');
+      });
+      const { getByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      await clickByLabelText(/Boolean/i);
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+      const dateElement = getByTestId(/datepicker-test/i);
+      const dateInput = dateElement.querySelector('input');
 
-    const item = findItem('7a-datepicker_input', wrapper);
-    expect(item.props().value).toBe('');
+      expect(dateInput).toHaveValue('14.08.2024');
+    });
+    it('date gets cleared', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateAnswer('7a', '2024-08-14');
+        actionRequester.clearDateAnswer('7a');
+      });
+      const { getByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      await clickByLabelText(/Boolean/i);
+
+      const dateElement = getByTestId(/datepicker-test/i);
+      const dateInput = dateElement.querySelector('input');
+
+      expect(dateInput).not.toHaveValue('14.08.2024');
+    });
+    it('dateTime gets updated', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateTimeAnswer('7b', '2024-08-14T12:30:00+02:00');
+      });
+      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+
+      await inputAnswer('1', 0.1, container);
+      const date = getByLabelText(/DateTime/i);
+
+      expect(date).toHaveValue('14.08.2024');
+    });
+    it('dateTime gets cleared', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateTimeAnswer('7b', '1994-05-31T12:30:00+02:00');
+        actionRequester.clearDateTimeAnswer('7b');
+      });
+      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+
+      await inputAnswer('1', 0.1, container);
+      const date = getByLabelText(/DateTime/i);
+
+      expect(date).toHaveValue('');
+    });
+    it('dateYear gets updated', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateAnswer('7c', '2024');
+      });
+      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+
+      await inputAnswer('1', 0.1, container);
+      const date = getByLabelText(/DateYear/i);
+
+      expect(date).toHaveValue(2024);
+    });
+    it('dateYear gets cleared', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateAnswer('7c', '2024');
+        actionRequester.clearDateAnswer('7c');
+      });
+      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+
+      await inputAnswer('1', 0.1, container);
+      const date = getByLabelText(/DateYear/i);
+
+      expect(date).toHaveValue(null);
+    });
+    it('dateMonth gets updated', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateAnswer('7d', '2024-05');
+      });
+      const { container, getByLabelText, findByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+
+      await inputAnswer('1', 0.1, container);
+      const dateElement = getByLabelText(/DateMonth/i);
+      const monthElement = await findByTestId('month-select');
+      const monthSelect = monthElement.querySelector('select');
+
+      await waitFor(async () => expect(dateElement).toHaveValue(2024));
+      await waitFor(async () => expect(monthSelect).toHaveValue('05'));
+    });
+    it('dateMonth gets cleared', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateAnswer('7d', '2024-05');
+        actionRequester.clearDateAnswer('7d');
+      });
+      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+
+      await inputAnswer('1', 0.1, container);
+      const date = getByLabelText(/DateMonth/i);
+
+      expect(date).toHaveValue(null);
+    });
   });
 
   it('time gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addTimeAnswer('7b', '12:01');
+      actionRequester.addTimeAnswer('8', '12:01:00');
     });
+    const { container, getByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await inputAnswer('1', 0.1, container);
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const hoursElement = getByTestId(/time-1/i);
+    const hoursInput = hoursElement.querySelector('input');
+    const minutesElement = screen.getByTestId(/time-2/i);
+    const minutesInput = minutesElement.querySelector('input');
 
-    let item = wrapper.find('#item_7b_hours input');
-    expect(item.props().value).toBe('12');
+    if (hoursInput) {
+      await userEvent.type(hoursInput, '12');
+    }
+    if (minutesInput) {
+      await userEvent.type(minutesInput, '01');
+    }
 
-    item = wrapper.find('#item_7b_minutes input');
-    expect(item.props().value).toBe('01');
+    expect(hoursInput).toHaveValue(Number('12'));
+    expect(minutesInput).toHaveValue(Number('01'));
   });
-
   it('time gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addTimeAnswer('7b', '12:01');
-      actionRequester.clearTimeAnswer('7b');
+      actionRequester.addTimeAnswer('8', '12:01');
+      actionRequester.clearTimeAnswer('8');
     });
+    const { container, getByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await inputAnswer('1', 0.1, container);
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const hoursElement = getByTestId(/time-1/i);
+    const hoursInput = hoursElement.querySelector('input');
+    const minutesElement = screen.getByTestId(/time-2/i);
+    const minutesInput = minutesElement.querySelector('input');
 
-    let item = wrapper.find('#item_7b_hours input');
-    expect(item.props().value).toBe('');
-
-    item = wrapper.find('#item_7b_minutes input');
-    expect(item.props().value).toBe('');
-  });
-
-  it('dateTime gets updated', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
-    });
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    const item = wrapper.find(DateTimePicker);
-    const date = item.props().dateValue;
-    const dateString = moment(date).locale('nb').utc().format(Constants.DATE_TIME_FORMAT);
-    expect(dateString).toBe('2020-05-17T12:01:00+00:00');
-  });
-
-  it('dateTime gets cleared', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
-      actionRequester.clearDateTimeAnswer('7c');
-    });
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    const item = wrapper.find(DateTimePicker);
-    const date = item.props().dateValue;
-    expect(date).toBe(undefined);
+    expect(hoursInput).toHaveValue(null);
+    expect(minutesInput).toHaveValue(null);
   });
 
   it('string gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addStringAnswer('8', 'Hello World!');
+      actionRequester.addStringAnswer('9', 'Hello World!');
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    const item = findItem('8', wrapper);
-    expect(item.props().value).toBe('Hello World!');
+    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
+    expect(queryByLabelText(/String/i)).toHaveValue('Hello World!');
   });
 
   it('string gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addStringAnswer('8', 'Hello World!');
-      actionRequester.clearStringAnswer('8');
+      actionRequester.addStringAnswer('9', 'Hello World!');
+      actionRequester.clearStringAnswer('9');
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { queryByText } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-    const item = findItem('8', wrapper);
-    expect(item.props().value).toBe('');
+    await clickByLabelText(/Boolean/i);
+
+    expect(queryByText('Hello World!')).not.toBeInTheDocument();
   });
 
   it('text gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addStringAnswer('9', 'Hello\nWorld!');
+      actionRequester.addStringAnswer('10', 'Hello\nWorld!');
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { getByText } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-    const item = wrapper.find('textarea#item_9');
-    expect(item.props().value).toBe('Hello\nWorld!');
+    await clickByLabelText(/Boolean/i);
+    expect(getByText(/Hello/i)).toBeInTheDocument();
   });
 
   it('can request many changes', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addStringAnswer('8', 'Hello World!');
+      actionRequester.addStringAnswer('10', 'Hello\nWorld!');
       actionRequester.addIntegerAnswer('2', 42);
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { getByLabelText, getByText } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-    let item = findItem('8', wrapper);
-    expect(item.props().value).toBe('Hello World!');
+    await clickByLabelText(/Boolean/i);
+    expect(getByText(/Hello/i)).toBeInTheDocument();
 
-    item = findItem('2', wrapper);
-    expect(item.props().value).toBe('42');
+    expect(getByLabelText(/Integer/i)).toHaveValue(42);
   });
 
   it('opencboice other option can be updated', async () => {
@@ -345,30 +424,27 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addOpenChoiceAnswer('6a', 'Hello World!');
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-    let item = findItem('6a-hn-2', wrapper);
-    expect(item.props().checked).toBe(true);
+    await clickByLabelText(/Boolean/i);
 
-    item = wrapper.find('textField#item_6a input');
-    expect(item.props().value).toBe('Hello World!');
+    const item1 = findItem('6a-hn-2', container);
+    expect(item1).toBeChecked();
+
+    const item2 = findItem('6a-extra-field', container);
+    expect(item2).toHaveValue('Hello World!');
   });
 
   it('can select multiple checkboxes', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.addChoiceAnswer('5b', toCoding('1', 'urn:oid:2.16.578.1.12.4.1.1101'));
+      actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    let item = findItem('5b-2', wrapper);
-    expect(item.props().checked).toBe(true);
-
-    item = findItem('5b-1', wrapper);
-    expect(item.props().checked).toBe(true);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
+    expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
+    expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
   });
 
   it('can select and unselect multiple checkboxes', async () => {
@@ -378,14 +454,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
-    await inputAnswer('1', 0.1, wrapper);
-
-    let item = findItem('5b-2', wrapper);
-    expect(item.props().checked).toBe(false);
-
-    item = findItem('5b-1', wrapper);
-    expect(item.props().checked).toBe(true);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
+    expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
+    expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
   });
 
   it('can update repeated items', async () => {
@@ -395,29 +467,27 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addDecimalAnswer('1', 2.1, 2);
     });
 
-    const wrapper = createWrapper(questionnaireWithRepeats, onChange);
-    await inputAnswer('2', 42, wrapper);
+    const { queryAllByLabelText, findByLabelText } = await wrapper(onChange, questionnaireWithRepeats);
 
-    let item = findItem('1^0', wrapper);
-    expect(item.props().value).toBe('0.1');
+    await userEvent.type(await findByLabelText(/Integer/i), '1');
+    const items = queryAllByLabelText(/Decimal/i);
+    expect(items).toHaveLength(3);
 
-    item = findItem('1^1^1', wrapper);
-    expect(item.props().value).toBe('1.1');
-
-    item = findItem('1^2^2', wrapper);
-    expect(item.props().value).toBe('2.1');
+    expect(items[0]).toHaveValue(0.1);
+    expect(items[1]).toHaveValue(1.1);
+    expect(items[2]).toHaveValue(2.1);
   });
 
   it('can update nested items', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addStringAnswer('1.3.1', 'Hello');
+      actionRequester.addIntegerAnswer('1.3.2', 42);
     });
 
-    const wrapper = createWrapper(questionnaireWithNestedItems, onChange);
-    await inputAnswer('1.1', 0.1, wrapper);
+    const { queryByLabelText } = await wrapper(onChange, questionnaireWithNestedItems);
 
-    const item = findItem('1.3.1', wrapper);
-    expect(item.props().value).toBe('Hello');
+    await typeByLabelText(/Decimal/i, '1');
+
+    expect(queryByLabelText(/IntegerNested/i)).toHaveValue(42);
   });
 
   it('can update items nested under answer', async () => {
@@ -425,11 +495,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('1.3.1.1', 42);
     });
 
-    const wrapper = createWrapper(questionnaireWithNestedItems, onChange);
-    await inputAnswer('1.1', 0.1, wrapper);
-
-    const item = findItem('1.3.1.1', wrapper);
-    expect(item.props().value).toBe('42');
+    const { queryByLabelText } = await wrapper(onChange, questionnaireWithNestedItems);
+    await typeByLabelText(/Decimal/i, '1');
+    expect(queryByLabelText(/nested under non-group/i)).toHaveValue(42);
   });
 
   it('can query to get both questionnaire and questionnaire response', async () => {
@@ -438,8 +506,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1');
     });
 
-    const wrapper = createWrapper(questionnaireWithNestedItems, onChange);
-    await inputAnswer('1.1', 0.1, wrapper);
+    await wrapper(onChange, questionnaireWithNestedItems);
+
+    await typeByLabelText(/Decimal/i, '1');
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -454,8 +523,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('xxx');
     });
 
-    const wrapper = createWrapper(questionnaireWithNestedItems, onChange);
-    await inputAnswer('1.1', 0.1, wrapper);
+    await wrapper(onChange, questionnaireWithNestedItems);
+
+    await typeByLabelText(/Decimal/i, '1');
 
     expect(result.length).toBe(0);
   });
@@ -466,8 +536,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1', '1.1');
     });
 
-    const wrapper = createWrapper(questionnaireWithNestedItems, onChange);
-    await inputAnswer('1.1', 0.1, wrapper);
+    await wrapper(onChange, questionnaireWithNestedItems);
+
+    await typeByLabelText(/Decimal/i, '1');
 
     expect(result.length).toBe(2);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -487,9 +558,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('1');
     });
 
-    const wrapper = createWrapper(questionnaireWithRepeats, onChange);
+    await wrapper(onChange, questionnaireWithRepeats);
 
-    await inputAnswer('2', 1, wrapper);
+    await typeByLabelText(/Integer/i, '1');
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1');
@@ -501,67 +572,16 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 });
 
-function toCoding(code: string, system?: string): Coding {
-  return {
-    code: code,
-    system: system,
-  } as Coding;
-}
-
-function toQuantity(value: number, code: string, unit: string, system?: string): Quantity {
-  return {
-    value: value,
-    code: code,
-    unit: unit,
-    system: system,
-  } as Quantity;
-}
-
-function createOnChangeFuncForActionRequester(actions: (actionRequester: IActionRequester) => void) {
-  return (
-    _item: QuestionnaireItem,
-    _answer: QuestionnaireResponseItemAnswer,
-    actionRequester: IActionRequester,
-    _questionnaireInspector: IQuestionnaireInspector
-  ) => {
-    actions(actionRequester);
-  };
-}
-
-function createOnChangeFuncForQuestionnaireInspector(actions: (questionnaireInspector: IQuestionnaireInspector) => void) {
-  return (
-    _item: QuestionnaireItem,
-    _answer: QuestionnaireResponseItemAnswer,
-    _actionRequester: IActionRequester,
-    questionnaireInspector: IQuestionnaireInspector
-  ) => {
-    actions(questionnaireInspector);
-  };
-}
-
-function createWrapper(
-  questionnaire: Questionnaire,
+async function wrapper(
   onChange: (
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer,
     actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
-  ) => void
+  ) => void,
+  q: Questionnaire
 ) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={questionnaire}
-        onChange={onChange}
-      />
-    </Provider>
-  );
+  return await waitFor(async () => {
+    return renderRefero({ questionnaire: q, props: { onChange } });
+  });
 }

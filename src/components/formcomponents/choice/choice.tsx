@@ -1,332 +1,248 @@
-import * as React from 'react';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, ValueSet } from 'fhir/r4';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
-
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import { Options } from '@helsenorge/form/components/radio-group';
+import { Coding, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import SliderView from './slider-view';
-import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
-import { isReadOnly, isDataReceiver } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import { newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
+import itemControlConstants from '@/constants/itemcontrol';
+import { GlobalState, useAppDispatch } from '@/reducers';
+import {
+  getOptions,
+  getSystem,
+  getDisplay,
+  getItemControlValue,
+  hasCanonicalValueSet,
+  hasOptions,
+  isAboveDropdownThreshold,
+} from '@/util/choice';
+
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
-import TextView from '../textview';
+import { useSelector } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useCallback, useEffect, useMemo } from 'react';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { ReadOnly } from '../read-only/readOnly';
+import { isDataReceiver } from '@/util';
+import { useResetFormField } from '@/hooks/useResetFormField';
 
-export interface ChoiceProps {
-  item: QuestionnaireItem;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-  resources?: Resources;
-  containedResources?: Resource[];
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  path: Array<Path>;
-  id?: string;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  headerTag?: number;
-  responseItem: QuestionnaireResponseItem;
-  renderDeleteButton: () => JSX.Element | undefined;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  fetchValueSet?: (
-    searchString: string,
-    item: QuestionnaireItem,
-    successCallback: (valueSet: ValueSet) => void,
-    errorCallback: (error: string) => void
-  ) => void;
-  autoSuggestProps?: AutoSuggestProps;
-  fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
-}
+export type ChoiceProps = QuestionnaireComponentItemProps;
 
-interface ChoiceState {
-  valid: boolean;
-  validated: boolean;
-}
+export const Choice = (props: ChoiceProps): JSX.Element | null => {
+  const { containedResources, path, linkId, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const answer = useGetAnswer(linkId, path);
 
-export class Choice extends React.Component<ChoiceProps & ValidationProps, ChoiceState> {
-  constructor(props: ChoiceProps & ValidationProps) {
-    super(props);
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const dispatch = useAppDispatch();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
 
-    this.state = {
-      valid: true,
-      validated: false,
-    };
-  }
-
-  getValue = (
-    item: QuestionnaireItem,
-    answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
-  ): (string | undefined)[] | undefined => {
-    if (answer && Array.isArray(answer)) {
-      return answer.map((el: QuestionnaireResponseItemAnswer) => {
-        if (el && el.valueCoding && el.valueCoding.code) {
-          return el.valueCoding.code;
-        }
-      });
-    } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
-      if (answer.valueCoding?.code === item.initial?.[0]?.valueCoding?.code && answer.valueCoding?.display === undefined) {
-        this.resetInitialAnswer(answer.valueCoding.code);
+  useEffect(() => {
+    if (!Array.isArray(answer) && answer?.valueCoding?.code && !answer?.valueCoding?.display) {
+      if (answer?.valueCoding?.code === item?.initial?.[0]?.valueCoding?.code) {
+        resetInitialAnswer(answer?.valueCoding?.code);
       }
+    }
+  }, [answer]);
+
+  const getAnswerValue = useCallback((): string[] | undefined => {
+    if (Array.isArray(answer)) {
+      return answer.map(el => el?.valueCoding?.code).filter(Boolean) as string[];
+    } else if (answer?.valueCoding?.code) {
       return [answer.valueCoding.code];
     }
-    const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
-    if (initialSelectedOption && initialSelectedOption.length > 0) {
-      return [initialSelectedOption[0].valueCoding?.code];
+    return undefined;
+  }, [answer]);
+
+  const getInitialValue = useCallback((): string[] | undefined => {
+    const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
+
+    if (initialSelectedCode) {
+      return [initialSelectedCode];
     }
-    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueCoding || !!item.initial[0].valueCoding.code) {
-      return undefined;
-    }
-    return [String(item.initial[0].valueCoding.code)];
-  };
+    const code = item?.initial?.[0]?.valueCoding?.code;
+    return code ? [code] : undefined;
+  }, [item]);
 
-  getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
-    return answer.map((el: QuestionnaireResponseItemAnswer) => {
-      if (el && el.valueCoding && el.valueCoding.display) {
-        return el.valueCoding.display;
-      }
-    });
-  };
+  const getValue = () => getAnswerValue() || getInitialValue();
 
-  getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
-    const { resources, containedResources } = this.props;
-
+  const getPDFValue = (): string => {
+    const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
+      return answer.map((el: QuestionnaireResponseItemAnswer) => {
+        if (el && el.valueCoding && el.valueCoding.display) {
+          return el.valueCoding.display;
+        }
+      });
+    };
     if (isDataReceiver(item)) {
-      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+      return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
     }
-
-    const value = this.getValue(item, answer);
+    const value = getValue();
     if (!value) {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
+      return resources?.ikkeBesvart || '';
     }
-
-    return Array.isArray(value)
-      ? value.map(el => getDisplay(getOptions(this.props.resources, item, containedResources), el)).join(', ')
-      : value;
+    return value.map(code => getDisplay(getOptions(resources, item, containedResources), code)).join(', ');
   };
 
-  getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg
-      ? displayArg
-      : getDisplay(getOptions(this.props.resources, this.props.item, this.props.containedResources), code);
-    const system = systemArg ? systemArg : getSystem(this.props.item, code, this.props.containedResources);
-    return { code, display, system } as Coding;
+  const getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
+    const display = displayArg || getDisplay(getOptions(resources, item, containedResources), code);
+    const system = systemArg || getSystem(item, code, containedResources);
+    return { code, display, system };
   };
+  const answerContainsCode = useCallback(
+    (code: string): boolean => {
+      const codes = getAnswerValue();
+      return codes ? codes.includes(code) : false;
+    },
+    [getAnswerValue]
+  );
 
-  resetInitialAnswer = (code: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
-    if (dispatch && code) {
-      const coding = this.getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
-      if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
-        if (promptLoginMessage) {
-          promptLoginMessage();
+  const resetInitialAnswer = useCallback(
+    (code?: string): void => {
+      if (code && onAnswerChange && path && item) {
+        const coding = getAnswerValueCoding(code);
+        const responseAnswer = { valueCoding: coding };
+        if (answerContainsCode(code)) {
+          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
         }
+        dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        promptLoginMessage?.();
       }
-      dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
-      if (promptLoginMessage) {
-        promptLoginMessage();
+    },
+    [answerContainsCode, dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
+  );
+
+  const handleCheckboxChange = useCallback(
+    (code?: string): void => {
+      if (code && onAnswerChange && path && item) {
+        const coding = getAnswerValueCoding(code);
+        const responseAnswer = { valueCoding: coding };
+        if (answerContainsCode(code)) {
+          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        } else {
+          dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        }
+        promptLoginMessage?.();
       }
+    },
+    [answerContainsCode, dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
+  );
+
+  const clearCodingAnswer = useCallback(
+    (coding: Coding): void => {
+      if (onAnswerChange && path && item) {
+        const responseAnswer = { valueCoding: coding };
+        dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        promptLoginMessage?.();
+      }
+    },
+    [dispatch, item, onAnswerChange, path, promptLoginMessage]
+  );
+
+  const handleChange = useCallback(
+    (code?: string, systemArg?: string, displayArg?: string): void => {
+      if (code && onAnswerChange && path && item) {
+        const coding = getAnswerValueCoding(code, systemArg, displayArg);
+        const responseAnswer = { valueCoding: coding };
+        dispatch(newCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        promptLoginMessage?.();
+      }
+    },
+    [dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
+  );
+
+  const renderComponentBasedOnType = (): JSX.Element | null => {
+    const pdfValue = getPDFValue();
+    const itemControlValue = getItemControlValue(item);
+    if (!itemControlValue) return null;
+
+    const options = getOptions(resources, item, containedResources);
+    const commonProps = {
+      handleChange,
+      selected: getValue(),
+      pdfValue,
+      ...props,
+    };
+
+    switch (itemControlValue) {
+      case itemControlConstants.DROPDOWN:
+        return <DropdownView options={options} {...commonProps} />;
+      case itemControlConstants.CHECKBOX:
+        return <CheckboxView options={options} {...commonProps} handleChange={handleCheckboxChange} />;
+      case itemControlConstants.RADIOBUTTON:
+        return <RadioView options={options} {...commonProps} />;
+      case itemControlConstants.SLIDER:
+        return <SliderView {...commonProps} />;
+      case itemControlConstants.DATARECEIVER:
+        return (
+          <ReadOnly item={item} id={props.idWithLinkIdAndItemIndex} pdfValue={pdfValue}>
+            {children}
+          </ReadOnly>
+        );
+      default:
+        return null;
     }
   };
 
-  handleCheckboxChange = (code?: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
-    if (dispatch && code) {
-      const coding = this.getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
-      if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
-        if (promptLoginMessage) {
-          promptLoginMessage();
-        }
-      } else {
-        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
-        if (promptLoginMessage) {
-          promptLoginMessage();
-        }
-      }
-    }
-  };
+  const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
 
-  clearCodingAnswer = (coding: Coding): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
-    if (dispatch) {
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
-      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-    }
-  };
+  const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);
+  const value = useMemo(() => getValue(), [getAnswerValue, getInitialValue]);
+  useResetFormField(props.idWithLinkIdAndItemIndex, value);
+  const shouldRenderAutosuggest = useMemo(
+    () => hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE,
+    [item, itemControlValue]
+  );
 
-  handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
-    if (dispatch && code) {
-      const coding = this.getAnswerValueCoding(code, systemArg, displayArg);
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
-      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-    }
-  };
+  const isReceiverComponent = useMemo(() => itemControlValue === itemControlConstants.RECEIVERCOMPONENT, [itemControlValue]);
 
-  renderCheckbox = (options: Array<Options> | undefined): JSX.Element => {
-    return (
-      <CheckboxView
-        options={options}
-        id={this.props.id}
-        handleChange={this.handleCheckboxChange}
-        selected={this.getValue(this.props.item, this.props.answer)}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...this.props}
-      >
-        {this.props.children}
-      </CheckboxView>
-    );
-  };
+  const hasOptionsAndNoCanonicalValueSet = useMemo(
+    () => hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item),
+    [resources, item, containedResources]
+  );
 
-  renderDropdown = (options: Array<Options> | undefined): JSX.Element => {
-    return (
-      <DropdownView
-        options={options}
-        id={this.props.id}
-        handleChange={this.handleChange}
-        selected={this.getValue(this.props.item, this.props.answer)}
-        validateInput={(value: string): boolean =>
-          validateInput(this.props.item, value, this.props.containedResources, this.props.resources)
-        }
-        resources={this.props.resources}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...this.props}
-      >
-        {this.props.children}
-      </DropdownView>
-    );
-  };
+  const aboveDropdownThreshold = useMemo(() => isAboveDropdownThreshold(options), [options]);
 
-  renderRadio = (options: Array<Options> | undefined): JSX.Element => {
-    return (
-      <RadioView
-        options={options}
-        getErrorMessage={(value: string): string =>
-          getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)
-        }
-        handleChange={this.handleChange}
-        validateInput={(value: string): boolean =>
-          validateInput(this.props.item, value, this.props.containedResources, this.props.resources)
-        }
-        id={this.props.id}
-        selected={this.getValue(this.props.item, this.props.answer)}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...this.props}
-      >
-        {this.props.children}
-      </RadioView>
-    );
-  };
-
-  renderSlider = (): JSX.Element => {
-    return (
-      <SliderView
-        item={this.props.item}
-        answer={this.props.answer}
-        handleChange={this.handleChange}
-        selected={this.getValue(this.props.item, this.props.answer)}
-      >
-        {this.props.children}
-      </SliderView>
-    );
-  };
-
-  renderAutosuggest = (): JSX.Element => {
-    return (
-      <AutosuggestView
-        handleChange={this.handleChange}
-        id={this.props.id}
-        clearCodingAnswer={this.clearCodingAnswer}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...this.props}
-      >
-        {this.props.children}
-      </AutosuggestView>
-    );
-  };
-
-  renderReceiverComponent = (): JSX.Element => {
-    return (
-      <ReceiverComponentWrapper
-        handleChange={this.handleChange}
-        id={this.props.id}
-        selected={this.getValue(this.props.item, this.props.answer)}
-        clearCodingAnswer={this.clearCodingAnswer}
-        fetchReceivers={this.props.fetchReceivers}
-        {...this.props}
-      >
-        {this.props.children}
-      </ReceiverComponentWrapper>
-    );
-  };
-
-  shouldComponentUpdate(nextProps: ChoiceProps): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+  if (!hasOptionsAndNoCanonicalValueSet && !shouldRenderAutosuggest && !isReceiverComponent) {
+    return null;
   }
-
-  render(): JSX.Element | null {
-    const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView id={id} item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
+  return (
+    <>
+      {hasOptionsAndNoCanonicalValueSet &&
+        (itemControlValue ? (
+          renderComponentBasedOnType()
+        ) : aboveDropdownThreshold ? (
+          <DropdownView options={options} handleChange={handleChange} selected={value} pdfValue={getPDFValue()} {...props}>
+            {children}
+          </DropdownView>
+        ) : (
+          <RadioView options={options} handleChange={handleChange} selected={value} pdfValue={getPDFValue()} {...props}>
+            {children}
+          </RadioView>
+        ))}
+      {shouldRenderAutosuggest && (
+        <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} pdfValue={getPDFValue()} {...props}>
           {children}
-        </TextView>
-      );
-    }
-    return (
-      <React.Fragment>
-        {renderOptions(
-          item,
-          containedResources,
-          this.renderRadio,
-          this.renderCheckbox,
-          this.renderDropdown,
-          this.renderSlider,
-          this.props.resources,
-          this.renderAutosuggest,
-          this.renderReceiverComponent
-        )}
-      </React.Fragment>
-    );
-  }
-}
+        </AutosuggestView>
+      )}
+      {isReceiverComponent && (
+        <ReceiverComponentWrapper
+          item={item}
+          handleChange={handleChange}
+          selected={value}
+          clearCodingAnswer={clearCodingAnswer}
+          pdfValue={getPDFValue()}
+          {...props}
+        >
+          {children}
+        </ReceiverComponentWrapper>
+      )}
+    </>
+  );
+};
 
-const withCommonFunctionsComponent = withCommonFunctions(Choice);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+export default Choice;

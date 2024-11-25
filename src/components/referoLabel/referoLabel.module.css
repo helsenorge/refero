@@ -1,0 +1,29 @@
+.pageReferoLabel {
+  margin-bottom: 0rem;
+}
+.referoLabel_label_wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: flex-end;
+}
+.referoLabel_safetext {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.75rem;
+}
+.referoLabel_safetext > * {
+  margin: 0;
+}
+.referoLabel_extraLabel_and_helpButton_wrapper {
+  display: flex;
+  align-items: flex-end;
+}
+.referoLabel_extraLabel {
+  font-size: 1.125rem;
+  margin-right: 0.5rem;
+  line-height: 1.75rem;
+}
+.referoLabel_helpButton {
+  margin-left: 0.5rem;
+}

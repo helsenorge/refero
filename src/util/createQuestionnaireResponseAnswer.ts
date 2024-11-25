@@ -1,7 +1,7 @@
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): QuestionnaireResponseItemAnswer | undefined {
-  const answer = {} as QuestionnaireResponseItemAnswer;
+  const answer: QuestionnaireResponseItemAnswer = {};
   let hasInitialAnswer = false;
 
   if (item.initial && item.initial.length > 0 && item.initial[0].valueBoolean !== undefined) {

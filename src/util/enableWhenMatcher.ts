@@ -1,9 +1,9 @@
+import { isAfter, isBefore, isSameDay, isSameHour, parseISO } from 'date-fns';
 import { QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import moment from 'moment';
 
 import { QuestionnaireEnableOperator } from '../types/fhirEnums';
 
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
+import { safeParseJSON } from './date-fns-utils';
 
 const EPSILON = 0.0000001;
 const OPERATOR_EQUALS = QuestionnaireEnableOperator.Equals.code;
@@ -166,22 +166,22 @@ function enableWhenMatchesDateAnswer(
     return false;
   }
 
-  const aValueDate = parseDate(String(answerValueDate));
-  const ewAnswerDate = parseDate(String(enableWhenAnswerDate));
+  const aValueDate = safeParseJSON(answerValueDate) ?? (parseISO(answerValueDate) as Date);
+  const ewAnswerDate = safeParseJSON(enableWhenAnswerDate) ?? (parseISO(enableWhenAnswerDate) as Date);
 
   switch (operator) {
     case OPERATOR_EQUALS:
-      return moment(aValueDate).isSame(ewAnswerDate);
+      return isSameDay(aValueDate, ewAnswerDate);
     case OPERATOR_NOTEQUALS:
-      return !moment(aValueDate).isSame(ewAnswerDate);
+      return !isSameDay(aValueDate, ewAnswerDate);
     case OPERATOR_GREATEROREQUALS:
-      return moment(aValueDate).isSameOrAfter(ewAnswerDate);
+      return !isBefore(aValueDate, ewAnswerDate);
     case OPERATOR_GREATERTHAN:
-      return moment(aValueDate).isAfter(ewAnswerDate);
+      return isAfter(aValueDate, ewAnswerDate);
     case OPERATOR_LESSOREQUALS:
-      return moment(aValueDate).isSameOrBefore(ewAnswerDate);
+      return !isAfter(aValueDate, ewAnswerDate);
     case OPERATOR_LESSTHAN:
-      return moment(aValueDate).isBefore(ewAnswerDate);
+      return isBefore(aValueDate, ewAnswerDate);
     default:
       return false;
   }
@@ -196,22 +196,22 @@ function enableWhenMatchesDateTimeAnswer(
     return false;
   }
 
-  const aValueDateTime = parseDate(String(answerValueDateTime));
-  const ewAnswerDateTime = parseDate(String(enableWhenAnswerDateTime));
+  const aValueDateTime = safeParseJSON(String(answerValueDateTime)) ?? (parseISO(String(enableWhenAnswerDateTime)) as Date);
+  const ewAnswerDateTime = safeParseJSON(String(enableWhenAnswerDateTime)) ?? (parseISO(String(enableWhenAnswerDateTime)) as Date);
 
   switch (operator) {
     case OPERATOR_EQUALS:
-      return moment(aValueDateTime).isSame(ewAnswerDateTime);
+      return isSameHour(aValueDateTime, ewAnswerDateTime);
     case OPERATOR_NOTEQUALS:
-      return !moment(aValueDateTime).isSame(ewAnswerDateTime);
+      return !isSameHour(aValueDateTime, ewAnswerDateTime);
     case OPERATOR_GREATEROREQUALS:
-      return moment(aValueDateTime).isSameOrAfter(ewAnswerDateTime);
+      return !isBefore(aValueDateTime, ewAnswerDateTime);
     case OPERATOR_GREATERTHAN:
-      return moment(aValueDateTime).isAfter(ewAnswerDateTime);
+      return isAfter(aValueDateTime, ewAnswerDateTime);
     case OPERATOR_LESSOREQUALS:
-      return moment(aValueDateTime).isSameOrBefore(ewAnswerDateTime);
+      return !isAfter(aValueDateTime, ewAnswerDateTime);
     case OPERATOR_LESSTHAN:
-      return moment(aValueDateTime).isBefore(ewAnswerDateTime);
+      return isBefore(aValueDateTime, ewAnswerDateTime);
     default:
       return false;
   }

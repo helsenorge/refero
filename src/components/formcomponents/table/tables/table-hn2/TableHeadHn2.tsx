@@ -9,7 +9,7 @@ import { findCodeForColumnToSortBy, getHeaderColumns } from './utils';
 type Props = {
   tableCodesCoding: Coding[];
   sortDir?: SortDirection;
-  setSortDir: React.Dispatch<React.SetStateAction<SortDirection>>;
+  setSortDir?: React.Dispatch<React.SetStateAction<SortDirection | undefined>>;
   sortable: boolean;
 };
 
@@ -17,7 +17,7 @@ const TableHeadHn2 = ({ tableCodesCoding, sortDir, setSortDir, sortable }: Props
   const tableHeader = getHeaderColumns(tableCodesCoding);
   const codeForColumnToSortBy = findCodeForColumnToSortBy(tableCodesCoding);
   const handleSort = (): void => {
-    setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
+    setSortDir && setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
   };
 
   return (

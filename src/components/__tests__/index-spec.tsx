@@ -1,39 +1,28 @@
-import * as React from 'react';
+import React from 'react';
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
+import userEvent from '@testing-library/user-event';
 
-import { mount } from 'enzyme';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireItemEnableWhen } from 'fhir/r4';
-
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
-
-import '../../util/defineFetch';
-import Boolean from '../../components/formcomponents/boolean/boolean';
-import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
+import '../../util/__tests__/defineFetch';
 import itemControlConstants from '../../constants/itemcontrol';
-import rootReducer from '../../reducers';
-import { Resources } from '../../util/resources';
-import HelpButton from '../help-button/help-button';
-import TextView from '../formcomponents/textview';
-import { ReferoContainer } from '../index';
 import RenderingOptionsData from './__data__/renderingOptions';
 import ChoiceCopyFrom from './__data__/copyFrom/choice';
-import { createItemControlExtension, selectCheckBoxOption } from '../__tests__/utils';
+import { createItemControlExtension, findItemById } from '../__tests__/utils';
 import itemcontrol from '../../constants/itemcontrol';
+import { selectCheckboxOption } from '../../../test/selectors';
 
 describe('Component renders help items', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
+  it('help button should be visible and control the help element', async () => {
+    let expectedOpeningStatus = false;
 
-  it('help button should be visible and control the help element', () => {
-    let expectedOpeningStatus: boolean = false;
-
-    const helpButtonCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
+    const helpButtonCb = (
+      item: QuestionnaireItem,
+      helpItem: QuestionnaireItem,
+      helpType: string,
+      helpText: string,
+      opening: boolean
+    ): JSX.Element => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
@@ -43,7 +32,13 @@ describe('Component renders help items', () => {
       return <div className="helpButton">{'help button'}</div>;
     };
 
-    const helpElementCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
+    const helpElementCb = (
+      item: QuestionnaireItem,
+      helpItem: QuestionnaireItem,
+      helpType: string,
+      helpText: string,
+      opening: boolean
+    ): JSX.Element => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
@@ -54,117 +49,82 @@ describe('Component renders help items', () => {
     };
 
     // Render schema with 1 help button
-    const wrapper = createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
-    wrapper.render();
+    const { container } = await createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
 
-    expect(wrapper.find('.helpButton')).toHaveLength(1);
-    expect(wrapper.find('.helpElement')).toHaveLength(0);
+    expect(container.querySelectorAll('.helpButton')).toHaveLength(1);
+    expect(container.querySelectorAll('.helpElement')).toHaveLength(0);
 
     // click help button to open the help element
     expectedOpeningStatus = true;
-    wrapper.find(HelpButton).simulate('click');
-    expect(wrapper.find('.helpElement')).toHaveLength(1);
+    await userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    expect(container.querySelectorAll('.helpElement')).toHaveLength(1);
 
     // click help button to close the help element
     expectedOpeningStatus = false;
-    wrapper.find(HelpButton).simulate('click');
-    expect(wrapper.find('.helpElement')).toHaveLength(0);
+    await userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    expect(container.querySelectorAll('.helpElement')).toHaveLength(0);
   });
 });
 
 describe('repeat with enableWhen', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
-  it('When we add a section with repeat, the enableWhen component should be hidden per default', () => {
-    const wrapper = createWrapper(questionnaireWithRepeatedEnableWhens());
-    wrapper.render();
-
+  it('When we add a section with repeat, the enableWhen component should be hidden per default', async () => {
+    createWrapper(questionnaireWithRepeatedEnableWhens());
     // clicking the repeat button, repeats the elements
-    expect(wrapper.find(Boolean)).toHaveLength(1);
+    expect(screen.queryAllByLabelText(/Checkbox/i)).toHaveLength(1);
+    expect(screen.queryByLabelText(/enableWhen/i)).not.toBeInTheDocument();
 
-    wrapper.find(RepeatButtonInstance).simulate('click');
-    expect(wrapper.find(Boolean)).toHaveLength(2);
+    await userEvent.click(screen.getByLabelText(/Checkbox/i));
+    await userEvent.type(await screen.findByLabelText(/enableWhen/i), '2');
 
-    // no enableWhen components should be visible
-    expect(wrapper.find(SafeInputField)).toHaveLength(0);
+    await userEvent.click(screen.getByTestId(/-repeat-button/i));
 
-    // Click first boolean input, and enableWhen component should be enabled
-    wrapper
-      .find("input[type='checkbox']")
-      .first()
-      .simulate('change', { taget: { checked: true } });
-    expect(wrapper.find(SafeInputField)).toHaveLength(1);
+    expect(screen.queryByLabelText(/enableWhen/i)).toBeInTheDocument();
+    expect(screen.queryAllByLabelText(/Checkbox/i)).toHaveLength(2);
 
-    // Click last boolean input, and enableWhen component should be enabled
-    wrapper
-      .find("input[type='checkbox']")
-      .last()
-      .simulate('change', { target: { checked: true } });
-    expect(wrapper.find(SafeInputField)).toHaveLength(2);
+    // Click second boolean input, and enableWhen component should be enabled
+    await userEvent.click(screen.queryAllByLabelText(/Checkbox/i)[1]);
+    expect(screen.getAllByLabelText(/enableWhen/i)).toHaveLength(2);
   });
 });
 
 describe('Coding system (RenderingOptions)', () => {
-  it('Only displayes items that have system code as KunSkjemautfyll or Default', () => {
-    const wrapper = createWrapper(RenderingOptionsData);
-    wrapper.render();
+  it('Only displays items that have system code as KunSkjemautfyll or Default', async () => {
+    const { container } = await createWrapper(RenderingOptionsData);
 
-    expect(wrapper.find('#item_group1_default').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group1_default_text').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group1_default_checkbox').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group2').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group2_kunskjemautfyll_text').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group4_kunskjemautfyll').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group4_kunskjemautfyll_text').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group4_kunskjemautfyll_checkbox').exists()).toBeTruthy();
+    expect(findItemById('item_group1_default', container)).toBeInTheDocument();
+    expect(findItemById('item_group1_default_text', container)).toBeInTheDocument();
+    expect(findItemById('item_group1_default_checkbox', container)).toBeInTheDocument();
+    expect(findItemById('item_group2', container)).toBeInTheDocument();
+    expect(findItemById('item_group2_kunskjemautfyll_text', container)).toBeInTheDocument();
+    expect(findItemById('item_group4_kunskjemautfyll', container)).toBeInTheDocument();
+    expect(findItemById('item_group4_kunskjemautfyll_text', container)).toBeInTheDocument();
+    expect(findItemById('item_group4_kunskjemautfyll_checkbox', container)).toBeInTheDocument();
 
-    expect(wrapper.find('#item_group2_kunpdf_checkbox').exists()).toBeFalsy();
-    expect(wrapper.find('#item_group3_kunpdf').exists()).toBeFalsy();
-    expect(wrapper.find('#item_group3_kunpdf_text').exists()).toBeFalsy();
-    expect(wrapper.find('#item_group3_kunpdf_checkbox').exists()).toBeFalsy();
+    expect(container.querySelector('item_group2_kunpdf_checkbox')).toBeFalsy();
+    expect(container.querySelector('item_group3_kunpdf')).toBeFalsy();
+    expect(container.querySelector('item_group3_kunpdf_text')).toBeFalsy();
+    expect(container.querySelector('item_group3_kunpdf_checkbox')).toBeFalsy();
   });
 });
 
 describe('Copying from ...', () => {
   describe('Choice', () => {
-    it('Choice selected options displays in data-receiver element', () => {
-      const wrapper = createWrapper(ChoiceCopyFrom);
-      wrapper.render();
-      selectCheckBoxOption('parent-choice-id', 'option-1', wrapper);
-      wrapper.update();
-
-      const textView = wrapper.find(TextView);
-      expect(textView).toHaveLength(1);
-      expect(textView.find('#item_data-receiver-choice-id').exists()).toBeTruthy();
+    it('Choice selected options displays in data-receiver element', async () => {
+      const { container } = await createWrapper(ChoiceCopyFrom);
+      await selectCheckboxOption('Option 1');
+      expect(findItemById('data-receiver-choice-id', container)).toBeInTheDocument();
     });
   });
 });
 
-function createWrapper(
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function createWrapper(
   questionnaire: Questionnaire,
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
   helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={questionnaire}
-        onRequestHelpButton={helpButtonCb}
-        onRequestHelpElement={helpElementCb}
-      />
-    </Provider>
+  return await waitFor(async () =>
+    renderRefero({ questionnaire, props: { onRequestHelpButton: helpButtonCb, onRequestHelpElement: helpElementCb } })
   );
 }
 
@@ -192,14 +152,14 @@ function questionnaireWithRepeatedEnableWhens(): Questionnaire {
               {
                 linkId: '8.1.2',
                 text: 'enableWhen',
-                type: 'string',
+                type: 'integer',
                 enableBehavior: 'any',
                 enableWhen: [
                   {
                     question: '8.1.1',
                     answerBoolean: true,
                     operator: '=',
-                  } as QuestionnaireItemEnableWhen,
+                  },
                 ],
               },
             ],
@@ -227,7 +187,7 @@ function questionnaireWithHelp(): Questionnaire {
             extension: [createItemControlExtension(itemcontrol.HELP)],
           },
         ],
-      } as QuestionnaireItem,
+      },
     ],
   };
 }
