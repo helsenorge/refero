@@ -1,4 +1,7 @@
 ## 16.0.0 
+
+---
+
 - Removed and changed resources, removed unused.
 - Upgraded all packages, complete rehaul of the project.
 - Upgraded to v.33 of @helsenorge/xxx packages.
@@ -18,10 +21,6 @@
 - Removed all dependencies to @helserorge/form (deprecated)
 - Create new buttorow in refero to compensate for the missing buttonrow from form package
 
----
-
-- Rework of refero with new components
-- removed old components and added new from @helsenorge designsystem
 ## 15.0.11
 
 ---
