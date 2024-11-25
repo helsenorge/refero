@@ -151,7 +151,7 @@ When this property is `true`, the form renders the actionbar as sticky.
 
 Max file size in bytes allowed for attachments. Default is 25M.
 
-### `attachmentValidTypes: Array<string>`
+### `attachmentValidTypes: Array<MimeTypes>`
 
 List of allowed mime types for attachments. Default allowed types are image/jpeg, image/png, application/pdf
 
@@ -191,11 +191,11 @@ This callback is called when the user requests the current form to be saved.
 
 This callback is called when the user requests the current form to be cancled.
 
-### `uploadAttachment: (files: File[], onSuccess: (attachment: Attachment) => void) => void`
+### `uploadAttachment: (files: UploadFile[], onSuccess: (attachment: Attachment) => void) => void`
 
 This callback is called when the user requests uploading an attachment. The callback is called with the following arguments:
 
-- `files: File[]` An array of [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) objects to be be uploaded.
+- `files: UploadFile[]` An array of [`UploadFile`](https://developer.mozilla.org/en-US/docs/Web/API/File)  objects to be be uploaded.
 
 - `onSuccess: (attachment: Attachment) => void` Call this callback to indicate success
 
