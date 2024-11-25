@@ -61,6 +61,7 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: S
         nextStep={nextStep}
         previousStep={previousStep}
         methods={methods}
+        onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
       >
         <RenderQuestionnaireItems items={[topLevelElements[stepIndex]]} pdf={false} />
       </RenderForm>

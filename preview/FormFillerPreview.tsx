@@ -159,7 +159,7 @@ function getNumberOfAttachments(questionnaireResponse: QuestionnaireResponse): n
   return questionnaireResponse.item ? questionnaireResponse.item.reduce(reduceMaxAttachments, 0) : 0;
 }
 
-export function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | null | undefined): boolean {
+function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | null | undefined): boolean {
   if (!questionnaireResponse) {
     return false;
   }
@@ -284,6 +284,9 @@ const FormFillerPreview = (): JSX.Element => {
                   attachmentErrorMessage={hasTooManyAttachments(questionnaireResponse) ? 'For mange vedlegg' : undefined}
                   onRequestHelpButton={(_1, _2, _3, _4, opening) => {
                     return <HelpButton opening={opening} />;
+                  }}
+                  onFieldsNotCorrectlyFilledOut={() => {
+                    console.log('errors');
                   }}
                   // onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
                 />

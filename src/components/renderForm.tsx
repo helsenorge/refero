@@ -25,6 +25,7 @@ interface RenderFormProps {
   children?: React.ReactNode;
   validationSummaryPlacement?: ValidationSummaryPlacement;
   methods: UseFormReturn<FieldValues, unknown, undefined>;
+  onFieldsNotCorrectlyFilledOut: ReferoProps['onFieldsNotCorrectlyFilledOut'];
 }
 
 const RenderForm = ({
@@ -41,9 +42,15 @@ const RenderForm = ({
   methods,
   validationSummaryPlacement,
   isAuthorized,
+  onFieldsNotCorrectlyFilledOut,
 }: RenderFormProps): JSX.Element | null => {
   const onSubmitReactHookForm: SubmitHandler<FieldValues> = (): void => {
     onSubmit();
+  };
+  const onErrorReactHookForm = (errors: FieldValues): void => {
+    if (onFieldsNotCorrectlyFilledOut && errors) {
+      onFieldsNotCorrectlyFilledOut();
+    }
   };
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
@@ -61,7 +68,7 @@ const RenderForm = ({
   };
   return (
     <>
-      <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
+      <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
         {displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
         {children}
         {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
@@ -73,7 +80,11 @@ const RenderForm = ({
         pauseButtonText={displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave}
         submitButtonDisabled={referoProps.submitButtonDisabled}
         pauseButtonDisabled={referoProps.saveButtonDisabled}
-        onSubmitButtonClicked={displayNextButton ? methods.handleSubmit(handleNextStep) : methods.handleSubmit(onSubmitReactHookForm)}
+        onSubmitButtonClicked={
+          displayNextButton
+            ? methods.handleSubmit(handleNextStep, onErrorReactHookForm)
+            : methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)
+        }
         onCancelButtonClicked={(): void => {
           referoProps.onCancel && referoProps.onCancel();
         }}

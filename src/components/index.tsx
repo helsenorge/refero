@@ -182,6 +182,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
                 onSave={handleSave}
                 onSubmit={handleSubmit}
                 methods={methods}
+                onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
               >
                 <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
               </RenderForm>
