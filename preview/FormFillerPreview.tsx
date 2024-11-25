@@ -43,7 +43,7 @@ const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnai
     );
   }
 };
-const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void): any => {
+const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void): void => {
   successCallback([
     {
       OrgenhetId: 204,
@@ -175,7 +175,7 @@ const FormFillerPreview = (): JSX.Element => {
 
   const parsedQuestionnaireResponse = JSON.parse(JSON.stringify(qr ?? {}, emptyPropertyReplacer)) as QuestionnaireResponse;
 
-  const [questionnaire, setQuestionnaire] = useState<Questionnaire>(mainQuestionnaire);
+  const [questionnaire] = useState<Questionnaire>(mainQuestionnaire);
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(parsedQuestionnaireResponse);
   const [showResponse, setShowResponse] = useState<boolean>(false);
   const handleSubmit = (questionnaireResponse: QuestionnaireResponse): void => {
@@ -285,9 +285,7 @@ const FormFillerPreview = (): JSX.Element => {
                   onRequestHelpButton={(_1, _2, _3, _4, opening) => {
                     return <HelpButton opening={opening} />;
                   }}
-                  onFieldsNotCorrectlyFilledOut={() => {
-                    console.log('errors');
-                  }}
+                  onFieldsNotCorrectlyFilledOut={() => {}}
                   // onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
                 />
               </div>
