@@ -1,3 +1,9 @@
+## 16.0.1
+
+---
+
+- Date bugfix: Selecting month before selecting year added a year in the year field
+
 ## 16.0.0 
 
 ---
