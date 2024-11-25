@@ -3,6 +3,7 @@
 ---
 
 - Date bugfix: Selecting month before selecting year added a year in the year field
+- Date bugfix: Missing min and max values in time component
 
 ## 16.0.0 
 
