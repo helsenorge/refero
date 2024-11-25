@@ -214,6 +214,8 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
             {...restHours}
             inputId={`${getId(id)}-datetime-hours`}
             type="number"
+            min={0}
+            max={23}
             testId={`time-1`}
             onChange={e => {
               handleHoursChange(e.target.value);
@@ -228,6 +230,8 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
           <Input
             {...restMinutes}
             type="number"
+            min={0}
+            max={59}
             testId={`time-2`}
             onChange={e => {
               handleMinutesChange(e.target.value);
