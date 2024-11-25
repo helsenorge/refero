@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import styles2 from '../common-styles.module.css';
-import { getYear } from 'date-fns';
 import { QuestionnaireItem } from 'fhir/r4';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
@@ -67,11 +66,11 @@ export const DateYearMonthInput = ({
   };
   const dateValue = getDateValueFromAnswer();
 
-  const getYearAndMonth = (): { year: number; month: string | null } | undefined => {
+  const getYearAndMonth = (): { year: number | string; month: string | null } | undefined => {
     if (!dateValue) {
       return undefined;
     } else {
-      const yearValue = parseInt(dateValue.split('-')[0]) || 0;
+      const yearValue = parseInt(dateValue.split('-')[0]) || '';
       const monthValue = dateValue.split('-')[1];
       return {
         year: yearValue,
@@ -83,8 +82,8 @@ export const DateYearMonthInput = ({
   const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
   const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
   const monthOptions = getMonthOptions(resources);
-  const year: string | undefined = getYearAndMonth()?.year.toString() || '';
-  const month: string | undefined | null = getYearAndMonth()?.month || '';
+  const year = getYearAndMonth()?.year.toString() || '';
+  const month = getYearAndMonth()?.month || '';
   const pdfValue = getPDFValueForDate(dateValue, resources?.ikkeBesvart, DateFormat.yyyyMM, DateFormat.MMMMyyyy);
   useResetFormField(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
   useResetFormField(`${idWithLinkIdAndItemIndex}-yearmonth-month`, month);
@@ -100,27 +99,25 @@ export const DateYearMonthInput = ({
   };
 
   const getConcatinatedYearAndMonth = (newYear: string | undefined, newMonth: string | undefined | null): string => {
-    const newYearString = newYear?.padStart(2, '0');
-    const newMonthString = newMonth?.padStart(2, '0');
-    return `${newYearString}-${newMonthString}`;
+    return `${newYear}-${newMonth}`;
   };
 
   const handleYearChange = (newYear: string | undefined, newMonth: string | undefined | null): void => {
     let newValue = '';
-    if (newYear && newMonth) {
+    if (newMonth) {
       newValue = getConcatinatedYearAndMonth(newYear, newMonth);
-    } else if (newYear) {
-      newValue = newYear;
+    } else {
+      newValue = getConcatinatedYearAndMonth(newYear, '');
     }
     onDateValueChange(newValue);
   };
   const handleMonthChange = (newYear: string | undefined, newMonth: string | undefined | null): void => {
     trigger(idWithLinkIdAndItemIndex + '-yearmonth-year');
     let newValue = '';
-    if (newYear && newMonth) {
+    if (newYear) {
       newValue = getConcatinatedYearAndMonth(newYear, newMonth);
-    } else if (newMonth) {
-      newValue = `${getYear(new Date())}-${newMonth}`;
+    } else {
+      newValue = getConcatinatedYearAndMonth('', newMonth);
     }
     onDateValueChange(newValue);
   };
