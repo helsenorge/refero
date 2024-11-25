@@ -20,8 +20,7 @@ React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/que
 - [redux-thunk](https://www.npmjs.com/package/redux-thunk)
 - [date-fns](https://www.npmjs.com/package/date-fns)
 - [classnames](https://www.npmjs.com/package/classnames)
-- [@helsenorge/core-utils](https://www.npmjs.com/package/
-@helsenorge/core-utils)
+- [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
 - [@helsenorge/file-upload](https://www.npmjs.com/package/@helsenorge/file-upload)
 - [@helsenorge/datepicker](https://www.npmjs.com/package/@helsenorge/datepicker)
 - [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
@@ -31,9 +30,8 @@ React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/que
 
 ```tsx
 import React from 'react';
-import { applyMiddleware } from 'redux';
-import { Provider, configureStore } from '@reduxjs/toolkit';
-import { thunk } from 'redux-thunk';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import { Refero, rootReducer } from '@helsenorge/refero';
 
 const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
@@ -42,7 +40,6 @@ const App = () => {
     return (
       <Provider store={store}>
         <Refero
-          store={store}
           questionnaire={...}
           questionnaireResponse={...}
           resources={...}
@@ -87,7 +84,6 @@ const App = () => {
 
 | Name                          | Required | Type                       | Default | Description                                                                                                   |
 | ----------------------------- | -------- | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
-| store                         |          | Store<{}>                  | null    | Redux store                                                                                                   |
 | questionnaire                 |          | Questionnaire              | null    | FHIR Questionnaire object                                                                                     |
 | questionnaireResponse         |          | QuestionnaireResponse      | null    | FHIR QuestionnaireResponse object                                                                             |
 | resources                     |          | Resources                  | null    | Resources object                                                                                              |
