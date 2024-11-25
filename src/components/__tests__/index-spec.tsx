@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderRefero, screen } from '../../../test/test-utils';
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 import userEvent from '@testing-library/user-event';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
@@ -49,7 +49,7 @@ describe('Component renders help items', () => {
     };
 
     // Render schema with 1 help button
-    const { container } = createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
+    const { container } = await createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
 
     expect(container.querySelectorAll('.helpButton')).toHaveLength(1);
     expect(container.querySelectorAll('.helpElement')).toHaveLength(0);
@@ -88,8 +88,8 @@ describe('repeat with enableWhen', () => {
 });
 
 describe('Coding system (RenderingOptions)', () => {
-  it('Only displays items that have system code as KunSkjemautfyll or Default', () => {
-    const { container } = createWrapper(RenderingOptionsData);
+  it('Only displays items that have system code as KunSkjemautfyll or Default', async () => {
+    const { container } = await createWrapper(RenderingOptionsData);
 
     expect(findItemById('item_group1_default', container)).toBeInTheDocument();
     expect(findItemById('item_group1_default_text', container)).toBeInTheDocument();
@@ -110,7 +110,7 @@ describe('Coding system (RenderingOptions)', () => {
 describe('Copying from ...', () => {
   describe('Choice', () => {
     it('Choice selected options displays in data-receiver element', async () => {
-      const { container } = createWrapper(ChoiceCopyFrom);
+      const { container } = await createWrapper(ChoiceCopyFrom);
       await selectCheckboxOption('Option 1');
       expect(findItemById('data-receiver-choice-id', container)).toBeInTheDocument();
     });
@@ -118,12 +118,14 @@ describe('Copying from ...', () => {
 });
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function createWrapper(
+async function createWrapper(
   questionnaire: Questionnaire,
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
   helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
-  return renderRefero({ questionnaire, props: { onRequestHelpButton: helpButtonCb, onRequestHelpElement: helpElementCb } });
+  return await waitFor(async () =>
+    renderRefero({ questionnaire, props: { onRequestHelpButton: helpButtonCb, onRequestHelpElement: helpElementCb } })
+  );
 }
 
 function questionnaireWithRepeatedEnableWhens(): Questionnaire {

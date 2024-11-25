@@ -1,5 +1,3 @@
-import './init';
-
 import { useState } from 'react';
 import './styles/skjemautfyller.scss';
 import './styles/sidebar.scss';
