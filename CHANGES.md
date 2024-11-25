@@ -1,6 +1,8 @@
 ## 16.0.0 
 - Removed and changed resources, removed unused.
 - Upgraded all packages, complete rehaul of the project.
+- Upgraded to v.33 of @helsenorge/xxx packages.
+- Upgraded to v.9 of @helsenorge/designsystem.
 - Removed all old form components and added new components from @helsenorge/designsystem.
 - Rewrite from class to functional components.
 - Added vite and vitest for development and build. 
@@ -8,8 +10,13 @@
 - Updated redux to use redux toolkit.
 - Removed old form validation and added react-hook-form.
 - Updated preview mode to be able to test the library with questionnaires and questionnaire-responses.
-- Updated types in Attachment for File and MimeTypes
+- Updated types in Attachment for UploadFile and MimeTypes from File-upload
 - Update github actions to respect Beta versions
+- Removed moment.js and added date-fns
+- Added datepicker from @helsenorge/datepicker
+- Upgraded to react 18
+- Removed all dependencies to @helserorge/form (deprecated)
+- Create new buttorow in refero to compensate for the missing buttonrow from form package
 
 ---
 
