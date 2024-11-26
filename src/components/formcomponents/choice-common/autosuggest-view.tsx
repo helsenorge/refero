@@ -51,14 +51,12 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     pdfValue,
     children,
   } = props;
-  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(linkId, path);
   const { fetchValueSet, autoSuggestProps, resources } = useExternalRenderContext();
-
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;
@@ -72,7 +70,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   const [hasLoadError, setHasLoadError] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   useResetFormField(idWithLinkIdAndItemIndex, inputValue);
-
   useEffect(() => {
     if (initialInputValue) setInputValue(initialInputValue);
   }, [initialInputValue]);
@@ -139,6 +136,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     if (newValue === '') {
       clearCodingAnswerIfExists();
     }
+    setValue(idWithLinkIdAndItemIndex, '', { shouldValidate: !!lastSearchValue });
     setInputValue(newValue);
     setIsDirty(true);
     setNoSuggestionsToShow(false);
@@ -152,6 +150,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   );
 
   const onSuggestionSelected = (_event: FormEvent<HTMLInputElement>, { suggestion }: { suggestion: Suggestion }): void => {
+    setValue(idWithLinkIdAndItemIndex, suggestion.value, { shouldValidate: !!lastSearchValue });
     setLastSearchValue(suggestion.label);
     setIsDirty(false);
 
@@ -166,6 +165,8 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
       setNoSuggestionsToShow(false);
 
       handleChange(highlightedSuggestion.value, system, highlightedSuggestion.label);
+
+      setValue(idWithLinkIdAndItemIndex, highlightedSuggestion.value, { shouldValidate: !!lastSearchValue });
     } else if (isDirty && isOpenChoice() && handleStringChange) {
       setIsDirty(false);
       setNoSuggestionsToShow(false);
@@ -174,6 +175,8 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
 
       if (inputValue) {
         handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, resources?.openChoiceOption);
+        setValue(idWithLinkIdAndItemIndex, OPEN_CHOICE_ID, { shouldValidate: !!lastSearchValue });
+
         handleStringChange(inputValue);
       } else if (codingAnswer) {
         clearCodingAnswer(codingAnswer);
@@ -192,8 +195,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
-
   if (pdf || isReadOnly(item)) {
     return (
       <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
@@ -215,11 +216,10 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
 
         <Autosuggest
           inputProps={{
-            ...rest,
+            ...register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined),
             id: getId(id),
-            width: width,
+            width,
             onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
-              onChange(e);
               onChangeInput(e, AutosuggestChangeEvent);
             },
             value: inputValue,
@@ -236,11 +236,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           }}
           renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
           onSuggestionSelected={(e, data): void => {
-            onChange({
-              target: {
-                value: [data.suggestion.value],
-              },
-            });
             onSuggestionSelected(e, data);
           }}
           focusInputOnSuggestionClick={true}
