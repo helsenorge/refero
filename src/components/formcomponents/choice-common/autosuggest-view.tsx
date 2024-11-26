@@ -195,9 +195,18 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
+  const rest = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={codingAnswer}
+        pdfValue={pdfValue}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );
@@ -216,7 +225,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
 
         <Autosuggest
           inputProps={{
-            ...register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined),
+            ...rest,
             id: getId(id),
             width,
             onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
