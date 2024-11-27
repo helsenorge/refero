@@ -6,7 +6,13 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import styles from './quantity.module.css';
 import { newQuantityValueAsync } from '@/actions/newValue';
 import { GlobalState, useAppDispatch } from '@/reducers';
-import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getQuestionnaireUnitExtensionValue } from '@/util/extension';
+import {
+  getMaxDecimalPlacesExtensionValue,
+  getMaxValueExtensionValue,
+  getMinValueExtensionValue,
+  getPlaceholder,
+  getQuestionnaireUnitExtensionValue,
+} from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -102,8 +108,9 @@ const Quantity = (props: Props): JSX.Element | null => {
   };
 
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
+  const maxDecimals = getMaxDecimalPlacesExtensionValue(item) ? getMaxDecimalPlacesExtensionValue(item) : undefined;
   const baseIncrementValue = getMinValueExtensionValue(item);
-  const width = getInputWidth(maxCharacters);
+  const width = getInputWidth(maxCharacters, maxDecimals);
   const errorMessage = getErrorMessage(item, error);
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),

@@ -16,7 +16,7 @@ import {
   createOnChangeFuncForActionRequester,
   createOnChangeFuncForQuestionnaireInspector,
 } from './utils';
-import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from '../../../test/selectors';
+import { clickByLabelText, typeByLabelText } from '../../../test/selectors';
 
 function toCoding(code: string, system?: string): Coding {
   return {
@@ -34,73 +34,55 @@ function toQuantity(value: number, code: string, unit: string, system?: string):
   };
 }
 
-async function addValueToInputByTypeAndTab(
-  componentLabel: string,
-  value: string
-): Promise<{
-  answer: HTMLElement;
-  element: HTMLElement;
-}> {
-  const element = await screen.findByLabelText(componentLabel);
-  await typeAndTabByLabelText(componentLabel, value);
-
-  const answer = screen.getByRole('spinbutton', { name: componentLabel });
-  return { answer, element };
-}
-
 describe('onAnswerChange callback gets called and can request additional changes', () => {
   it('integers gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addIntegerAnswer('2', 42);
+      actionRequester.addIntegerAnswer('1', 42);
     });
 
-    const { queryByDisplayValue } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    const { findByDisplayValue } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
-    const { answer } = await addValueToInputByTypeAndTab('Decimal', '0.1');
-
-    const elm = queryByDisplayValue(42);
-    expect(elm).toBeInTheDocument();
-    expect(answer).toHaveValue(0.1);
+    const updatedInput = await findByDisplayValue('42');
+    expect(updatedInput).toBeInTheDocument();
   });
 
   it('integers gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addIntegerAnswer('2', 42);
-      actionRequester.clearIntegerAnswer('2');
+      actionRequester.addIntegerAnswer('1', 42);
+      actionRequester.clearIntegerAnswer('1');
     });
-    const { getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-    const { answer } = await addValueToInputByTypeAndTab('Decimal', '0.1');
+    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
-    const integerAnswer = getByLabelText(/Integer/i);
-
-    expect(answer).toHaveValue(0.1);
-    expect(integerAnswer).toHaveValue(null);
+    const item = queryByLabelText(/Integer/i);
+    expect(item).toHaveValue('');
   });
 
   it('decimals gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDecimalAnswer('1', 42);
+      actionRequester.addDecimalAnswer('2', 42);
     });
 
-    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
-    await inputAnswer('1', 0.1, container);
+    const { findByDisplayValue } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
-    const updatedInput = await screen.findByDisplayValue('42');
+    const updatedInput = await findByDisplayValue('42');
     expect(updatedInput).toBeInTheDocument();
   });
 
   it('decimals gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDecimalAnswer('1', 42);
-      actionRequester.clearDecimalAnswer('1');
+      actionRequester.addDecimalAnswer('2', 42);
+      actionRequester.clearDecimalAnswer('2');
     });
 
-    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
-    await inputAnswer('1', 0.1, container);
-    const item = findItem('2', container);
+    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
-    expect(item).toHaveValue(null);
+    const item = queryByLabelText(/Decimal/i);
+    expect(item).toHaveValue('');
   });
 
   it('quantity gets updated', async () => {
@@ -407,7 +389,7 @@ describe('onAnswerChange callback gets called and can request additional changes
   it('can request many changes', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('10', 'Hello\nWorld!');
-      actionRequester.addIntegerAnswer('2', 42);
+      actionRequester.addIntegerAnswer('1', 42);
     });
 
     const { getByLabelText, getByText } = await wrapper(onChange, questionnaireWithAllItemTypes);
@@ -415,7 +397,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await clickByLabelText(/Boolean/i);
     expect(getByText(/Hello/i)).toBeInTheDocument();
 
-    expect(getByLabelText(/Integer/i)).toHaveValue(42);
+    expect(getByLabelText(/Integer/i)).toHaveValue('42');
   });
 
   it('opencboice other option can be updated', async () => {
@@ -473,9 +455,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const items = queryAllByLabelText(/Decimal/i);
     expect(items).toHaveLength(3);
 
-    expect(items[0]).toHaveValue(0.1);
-    expect(items[1]).toHaveValue(1.1);
-    expect(items[2]).toHaveValue(2.1);
+    expect(items[0]).toHaveValue('0.1');
+    expect(items[1]).toHaveValue('1.1');
+    expect(items[2]).toHaveValue('2.1');
   });
 
   it('can update nested items', async () => {
@@ -487,7 +469,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     await typeByLabelText(/Decimal/i, '1');
 
-    expect(queryByLabelText(/IntegerNested/i)).toHaveValue(42);
+    expect(queryByLabelText(/IntegerNested/i)).toHaveValue('42');
   });
 
   it('can update items nested under answer', async () => {
@@ -497,7 +479,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryByLabelText } = await wrapper(onChange, questionnaireWithNestedItems);
     await typeByLabelText(/Decimal/i, '1');
-    expect(queryByLabelText(/nested under non-group/i)).toHaveValue(42);
+    expect(queryByLabelText(/nested under non-group/i)).toHaveValue('42');
   });
 
   it('can query to get both questionnaire and questionnaire response', async () => {

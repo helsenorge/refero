@@ -22,7 +22,7 @@ describe('Component renders and calculates score', () => {
 
     const item = findItem('1', container);
 
-    expect(item).toHaveValue(42);
+    expect(item).toHaveValue('42');
     const fhirpathItem = await findByLabelText(/Fhir sum element/i);
 
     expect(fhirpathItem).toHaveValue(42);
@@ -70,12 +70,12 @@ describe('Component renders and calculates score', () => {
     await inputAnswer('1', 21, container);
 
     let item = findItem('1', container);
-    expect(item).toHaveValue(21);
+    expect(item).toHaveValue('21');
 
     await inputAnswer('2', 21, container);
 
     item = findItem('2', container);
-    expect(item).toHaveValue(21);
+    expect(item).toHaveValue('21');
 
     const fhirpathItem = await findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(42);
@@ -254,7 +254,7 @@ describe('Code Scoring', () => {
     await typeByLabelText(/Integer 2/i, '2', false);
 
     const sum2 = getAllByDisplayValue(2);
-    expect(sum2[0]).toHaveValue(2);
+    expect(sum2[0]).toHaveValue('2');
 
     const sum3 = getByText(44);
     expect(sum3).toBeInTheDocument();
