@@ -1,3 +1,10 @@
+## 16.0.2
+
+---
+
+- Bugfix: It was possible to write period in integer fields. Fixed by using type="text". Did this in decimal as well.
+- Adjusted the calculation of the width of input fields.
+
 ## 16.0.1
 
 ---
