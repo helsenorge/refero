@@ -39,7 +39,7 @@ describe('Slider-view', () => {
           initial: [],
         })),
       };
-      const { container } = createWrapper(questionnaire);
+      const { container } = await createWrapper(questionnaire);
       await waitFor(async () => {
         const inputEl = container.querySelector(`input[name="${questionnaire?.item?.[0].linkId}"]`);
         expect(inputEl).toHaveAttribute('value', '1');
@@ -54,7 +54,7 @@ describe('Slider-view', () => {
           initial: [expectedAnswer],
         })),
       };
-      const { container } = createWrapper(questionnaire);
+      const { container } = await createWrapper(questionnaire);
       await waitFor(async () => {
         const inputEl = container.querySelector(`input[name="${questionnaire?.item?.[0].linkId}"]`);
         expect(inputEl).toHaveAttribute('value', '2');
@@ -66,7 +66,7 @@ describe('Slider-view', () => {
     it('Should update component with value from answer', async () => {
       const onChange = vi.fn();
 
-      const { container } = createWrapper(q, { onChange });
+      const { container } = await createWrapper(q, { onChange });
 
       await userEvent.click(screen.getByRole('slider'));
       await userEvent.keyboard('{ArrowRight}');
@@ -87,7 +87,7 @@ describe('Slider-view', () => {
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
       const onChange = vi.fn();
-      const { container } = createWrapper(questionnaire, { onChange });
+      const { container } = await createWrapper(questionnaire, { onChange });
       const JaElement = container.querySelectorAll('div.slider__track__step');
 
       await waitFor(async () => {
@@ -113,13 +113,13 @@ describe('Slider-view', () => {
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
       await waitFor(async () => {
         expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
       });
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
@@ -140,7 +140,7 @@ describe('Slider-view', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
 
-      const { getByTestId } = createWrapper(questionnaire);
+      const { getByTestId } = await createWrapper(questionnaire);
       const repeatButton = getByTestId(/-repeat-button/i);
       await waitFor(async () => {
         expect(repeatButton).toBeInTheDocument();
@@ -152,7 +152,7 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      const { queryByTestId } = await createWrapper(questionnaire);
       const repeatButton = queryByTestId(/-repeat-button/i);
       await waitFor(async () => {
         expect(repeatButton).not.toBeInTheDocument();
@@ -174,7 +174,7 @@ describe('Slider-view', () => {
         })),
       };
       await act(async () => {});
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
       await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 3);
       await waitFor(async () => {
@@ -189,7 +189,7 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = await createWrapper(questionnaire);
       await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
@@ -199,7 +199,7 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       waitFor(async () => {
         expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
       });
@@ -209,7 +209,7 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
       await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 1);
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
@@ -222,7 +222,7 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
       await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 1);
 
@@ -243,7 +243,7 @@ describe('Slider-view', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        createWrapper(questionnaire);
+        await createWrapper(questionnaire);
         waitFor(async () => {
           expect(screen.getByLabelText(/Slider view label/i)).toBeInTheDocument();
         });
@@ -257,7 +257,7 @@ describe('Slider-view', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        createWrapper(questionnaire);
+        await createWrapper(questionnaire);
         await clickSliderValue(`3dec9e0d-7b78-424e-8a59-f0909510985d`, 0);
         await submitForm();
 
@@ -268,7 +268,7 @@ describe('Slider-view', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        createWrapper(questionnaire);
+        await createWrapper(questionnaire);
         await submitForm();
         waitFor(async () => {
           expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -293,7 +293,7 @@ describe('Slider-view', () => {
             ],
           })),
         };
-        createWrapper(questionnaire);
+        await createWrapper(questionnaire);
         await submitForm();
 
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -416,6 +416,8 @@ describe('Slider-view', () => {
     });
   });
 });
-const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return renderRefero({ questionnaire, props: { ...props, resources } });
+const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return await waitFor(async () => {
+    return renderRefero({ questionnaire, props: { ...props, resources } });
+  });
 };

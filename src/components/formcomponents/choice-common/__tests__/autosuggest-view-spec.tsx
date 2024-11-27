@@ -9,6 +9,7 @@ import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
+import { ReferoProps } from '@/types/referoProps';
 
 vi.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
@@ -38,12 +39,12 @@ describe('autosuggest-view', () => {
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { container } = renderRefero({ questionnaire: q });
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container } = renderRefero({ questionnaire: q });
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
@@ -56,17 +57,17 @@ describe('autosuggest-view', () => {
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
 
-      const { getByTestId } = renderRefero({ questionnaire });
+      const { getByTestId } = await createWrapper(questionnaire);
       const repeatButton = getByTestId(/-repeat-button/i);
       expect(repeatButton).toBeInTheDocument();
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const { queryByTestId } = renderRefero({ questionnaire });
+      const { queryByTestId } = await createWrapper(questionnaire);
       const repeatButton = queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
@@ -89,10 +90,7 @@ describe('autosuggest-view', () => {
       ) => {
         successCallback(successReturnValueSet);
       };
-      renderRefero({
-        questionnaire,
-        props: { fetchValueSet: fetchValueSetFn },
-      });
+      await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
 
       await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'fyr');
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
@@ -121,10 +119,7 @@ describe('autosuggest-view', () => {
       ) => {
         successCallback(successReturnValueSet);
       };
-      renderRefero({
-        questionnaire,
-        props: { fetchValueSet: fetchValueSetFn },
-      });
+      await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
       await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'f');
 
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
@@ -137,7 +132,7 @@ describe('autosuggest-view', () => {
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { queryByTestId } = renderRefero({ questionnaire });
+      const { queryByTestId } = await createWrapper(questionnaire);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -151,10 +146,7 @@ describe('autosuggest-view', () => {
       ) => {
         successCallback(successReturnValueSet);
       };
-      renderRefero({
-        questionnaire,
-        props: { fetchValueSet: fetchValueSetFn },
-      });
+      await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
       await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'f');
 
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
@@ -175,10 +167,7 @@ describe('autosuggest-view', () => {
       ) => {
         successCallback(successReturnValueSet);
       };
-      renderRefero({
-        questionnaire,
-        props: { fetchValueSet: fetchValueSetFn },
-      });
+      await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
       await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'f');
 
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
@@ -198,7 +187,7 @@ describe('autosuggest-view', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
         const questionnaire = addPropertyToQuestionnaireItem(q, 'required', true);
-        const { getByText } = renderRefero({ questionnaire });
+        const { getByText } = await createWrapper(questionnaire);
         await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -213,10 +202,7 @@ describe('autosuggest-view', () => {
         ) => {
           successCallback(successReturnValueSet);
         };
-        const { getByLabelText, queryByText, getByText } = renderRefero({
-          questionnaire,
-          props: { fetchValueSet: fetchValueSetFn },
-        });
+        const { getByLabelText, queryByText, getByText } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
         await userEvent.type(getByLabelText(/Mistenkt legemiddel/i), 'fyr');
         await userEvent.click(getByText(/Fyrstekake/i));
 
@@ -236,10 +222,7 @@ describe('autosuggest-view', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByText, queryByText, getByLabelText } = renderRefero({
-          questionnaire,
-          props: { fetchValueSet: fetchValueSetFn },
-        });
+        const { getByText, queryByText, getByLabelText } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
         await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -249,6 +232,15 @@ describe('autosuggest-view', () => {
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('readOnly value should get validation error if error exist', async () => {
+        const fetchValueSetFn = (
+          _searchString: string,
+          _item: QuestionnaireItem,
+          successCallback: (valueSet: ValueSet) => void,
+          _errorCallback: (error: string) => void
+        ) => {
+          successCallback(successReturnValueSet);
+        };
+
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({
@@ -264,9 +256,7 @@ describe('autosuggest-view', () => {
             ],
           })),
         };
-        const { queryByText } = renderRefero({
-          questionnaire,
-        });
+        const { queryByText } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
         await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -275,7 +265,7 @@ describe('autosuggest-view', () => {
   });
   it('skal kalle fetchValueSet når input endres', async () => {
     const fetchValueSetFn = vi.fn();
-    const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
+    const { getByTestId, getByText } = await createWrapper(q, { fetchValueSet: fetchValueSetFn });
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
 
     await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'test');
@@ -292,7 +282,7 @@ describe('autosuggest-view', () => {
     ) => {
       successCallback(successReturnValueSet);
     };
-    const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
+    const { getByTestId, getByText } = await createWrapper(q, { fetchValueSet: fetchValueSetFn });
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
     expect(getByText('Fyrstekake')).toBeInTheDocument();
@@ -318,7 +308,7 @@ describe('autosuggest-view', () => {
         },
       });
     };
-    const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
+    const { getByTestId, getByText } = await createWrapper(q, { fetchValueSet: fetchValueSetFn });
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
 
@@ -345,10 +335,7 @@ describe('autosuggest-view', () => {
         },
       });
     };
-    const { getByText, queryByText, getByTestId } = renderRefero({
-      questionnaire: q,
-      props: { fetchValueSet: fetchValueSetFn },
-    });
+    const { getByText, queryByText, getByTestId } = await createWrapper(q, { fetchValueSet: fetchValueSetFn });
 
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'f');
@@ -367,7 +354,7 @@ describe('autosuggest-view', () => {
       ) => {
         successCallback(successReturnValueSet);
       };
-      const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { onChange, fetchValueSet } });
+      const { getByTestId, getByText } = await createWrapper(q, { onChange, fetchValueSet });
 
       expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
       await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
@@ -393,7 +380,7 @@ describe('autosuggest-view', () => {
     ) => {
       errorCallback('feil');
     };
-    const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet } });
+    const { getByTestId, getByText } = await createWrapper(q, { fetchValueSet });
 
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
@@ -436,10 +423,7 @@ describe('autosuggest-view', () => {
     ) => {
       successCallback(successReturnValueSet);
     };
-    const { getByDisplayValue } = renderRefero({
-      questionnaire,
-      props: { fetchValueSet: fetchValueSetFn, questionnaireResponse },
-    });
+    const { getByDisplayValue } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn, questionnaireResponse });
     await waitFor(() => expect(getByDisplayValue('Fyrstekake')).toBeDefined());
   });
 
@@ -479,10 +463,12 @@ describe('autosuggest-view', () => {
     ) => {
       successCallback(successReturnValueSet);
     };
-    const { getByDisplayValue } = renderRefero({
-      questionnaire,
-      props: { fetchValueSet: fetchValueSetFn, questionnaireResponse },
-    });
+    const { getByDisplayValue } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn, questionnaireResponse });
     await waitFor(async () => expect(getByDisplayValue('Fyrstekake')).toBeDefined());
   });
 });
+const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return await waitFor(async () => {
+    return renderRefero({ questionnaire, props: { ...props, resources } });
+  });
+};
