@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
@@ -9,7 +9,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { newDecimalValueAsync } from '@/actions/newValue';
 import { GlobalState, useAppDispatch } from '@/reducers';
-import { getMaxDecimalPlacesExtensionValue, getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder } from '@/util/extension';
+import { getMaxDecimalPlacesExtensionValue, getMaxValueExtensionValue, getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -30,17 +30,15 @@ export type Props = QuestionnaireComponentItemProps;
 
 const Decimal = (props: Props): JSX.Element | null => {
   const { id, linkId, pdf, children, idWithLinkIdAndItemIndex, path, index } = props;
-  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
-  const onAnswerChange = useOnAnswerChange(globalOnChange);
-
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
-  const dispatch = useAppDispatch();
-
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
+
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+  const dispatch = useAppDispatch();
 
   const getValue = (
     item?: QuestionnaireItem,
@@ -57,8 +55,12 @@ const Decimal = (props: Props): JSX.Element | null => {
     }
   };
   const value = getValue(item, answer);
+  const [valueState, setValueState] = useState(Array.isArray(value) ? value.join(', ') : value);
 
   useResetFormField(idWithLinkIdAndItemIndex, value);
+  useEffect(() => {
+    setValueState(Array.isArray(value) ? value.join(', ') : value);
+  }, [answer]);
 
   const getPDFValue = (): string | number => {
     const value = getValue(item, answer);
@@ -76,10 +78,14 @@ const Decimal = (props: Props): JSX.Element | null => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = parseFloat(event.target.value);
+    const newValue = event.target.value;
+    const newValueConverted = Number(event.target.value);
+
+    setValueState(newValue);
+
     if (item) {
-      dispatch(newDecimalValueAsync(path || [], value, item))?.then(newState => {
-        return onAnswerChange(newState, item, { valueDecimal: value });
+      dispatch(newDecimalValueAsync(path || [], newValueConverted, item))?.then(newState => {
+        return onAnswerChange(newState, item, { valueDecimal: newValueConverted });
       });
     }
 
@@ -91,7 +97,6 @@ const Decimal = (props: Props): JSX.Element | null => {
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const maxDecimals = getMaxDecimalPlacesExtensionValue(item) ? getMaxDecimalPlacesExtensionValue(item) : undefined;
   const width = getInputWidth(maxCharacters, maxDecimals);
-  const baseIncrementValue = getMinValueExtensionValue(item);
   const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
@@ -132,9 +137,10 @@ const Decimal = (props: Props): JSX.Element | null => {
 
         <Input
           {...rest}
-          type="number"
+          type="text"
           inputId={getId(id)}
-          value={Array.isArray(value) ? value.join(', ') : value}
+          testId={getId(id)}
+          value={valueState}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
           onChange={(e): void => {
@@ -143,7 +149,6 @@ const Decimal = (props: Props): JSX.Element | null => {
           }}
           inputMode="decimal"
           width={width}
-          baseIncrementValue={baseIncrementValue}
         />
       </FormGroup>
       <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />

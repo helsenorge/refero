@@ -138,10 +138,20 @@ export const scriptInjection = ({ value, resources, shouldValidate }: ValidateIn
   return shouldValidate ? scriptInjectionValidation(value, resources) : undefined;
 };
 
-export const getInputWidth = (maxCharacters: number | undefined, maxDecimals?: number): number => {
-  let width = maxCharacters ? maxCharacters + 2 : 20;
-  if (maxDecimals) {
-    width = width + 1 + maxDecimals;
+export const getInputWidth = (maxCharacters: number | undefined, maxDecimals?: number | undefined): number => {
+  if (!maxCharacters) {
+    const defaultLength = 20;
+    return defaultLength;
   }
+
+  let width = maxCharacters;
+
+  if (maxDecimals) {
+    const puncationLength = 1;
+    const defaultDecimalLength = 2;
+    const decimalLength = maxDecimals ? maxDecimals : defaultDecimalLength;
+    width = width + puncationLength + decimalLength;
+  }
+
   return width;
 };
