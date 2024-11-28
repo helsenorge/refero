@@ -1,24 +1,28 @@
 {
-  "title": "Title",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "name": "Techinal_boolean",
+  "id": "a7ecbce9-feea-4f2a-bea8-fed77a0e7bea",
+  "name": "Vedlegg_opplasting",
+  "title": "Test av vedleggs opplastning",
+  "description": "Opplasting av vedlegg med og uten gruppe",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
+    "versionId": "3",
+    "lastUpdated": "2024-08-14T06:35:28.022+00:00",
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "security": [
+      {
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
+        "code": "3",
+        "display": "Helsehjelp"
+      }
+    ],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
         "display": "Bokmål"
-      }
-    ],
-    "security": [
-      {
-        "code": "3",
-        "display": "Helsehjelp (Full)",
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
       }
     ]
   },
@@ -59,73 +63,175 @@
           }
         ]
       }
+    },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+      "valueReference": {
+        "reference": "Endpoint/1000"
+      }
+    }
+  ],
+  "date": "2023-04-14T00:00:00+02:00",
+  "url": "Questionnaire/a7ecbce9-feea-4f2a-bea8-fed77a0e7bea",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "item": [
     {
+      "linkId": "05d5e7fb-acd4-4eed-89f1-fb46d0b14374",
+      "text": "Dette skjemaet inneholder flere vedleggs opplastinger med og uten grupper, og som ligger i betinget visning",
+      "type": "display",
+      "required": false
+    },
+    {
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "autocomplete" }]
-          }
-        },
-        {
-          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "For eksempel Ibux Tab 400 mg. Skriv inn minst 3 tegn for å søke."
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
-          "valueInteger": 1
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-          "valueInteger": 4
+          "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+          "valueDecimal": 5
         }
       ],
-      "linkId": "af3cff52-5879-4db0-c671-1fb2bec90309",
-      "text": "Mistenkt legemiddel",
-      "type": "choice",
-      "required": true,
-      "repeats": false,
-      "readOnly": true,
-      "answerValueSet": "http://helsedirektoratet.no/ValueSet/legemiddeloppslag",
-      "code": [
+      "linkId": "fa009548-1f73-4d15-8343-f70362f68f52",
+      "text": "Vedlegg",
+      "type": "attachment",
+      "required": true
+    },
+    {
+      "extension": [
         {
-          "code": "ValidateReadOnly",
-          "display": "Valider skrivebeskyttet felt",
-          "system": "http://helsenorge.no/fhir/CodeSystem/ValidationOptions"
+          "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+          "valueDecimal": 5
         }
       ],
+      "linkId": "98a6514d-be82-4e06-85e7-bf6a8d2ae655",
+      "text": "Vedlegg med repetisjon",
+      "type": "attachment",
+      "required": false,
+      "repeats": true
+    },
+    {
+      "linkId": "12e7217a-b0ae-4700-8373-1f0e5ce48745",
+      "text": "Gruppe med vedlegg",
+      "type": "group",
+      "required": false,
       "item": [
         {
           "extension": [
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
-              }
-            },
-            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$" }
+              "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+              "valueDecimal": 5
+            }
           ],
-          "linkId": "af3cff52-5879-4db0-c671-1fb2bec90310",
-          "text": "Hvis du ikke finner legemiddelet (medisinen) eller vaksinen ved å søke på minimum 3 bokstaver, må du kontakte lege, tannlege eller farmasøyt for å få meldt bivirkningen.\r\n\r\nMange legemidler finnes i ulike legemiddelformer, for eksempel tabletter og stikkpiller. Finner du ikke riktig legemiddelform eller styrken, velger du øverste alternativ og krysser av for at du er usikker.",
-          "_text": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                "valueMarkdown": "Hvis du ikke finner legemiddelet (medisinen) eller vaksinen ved å søke på minimum 3 bokstaver, må du kontakte lege, tannlege eller farmasøyt for å få meldt bivirkningen.\n\nMange legemidler finnes i ulike legemiddelformer, for eksempel tabletter og stikkpiller. Finner du ikke riktig legemiddelform eller styrken, velger du øverste alternativ og krysser av for at du er usikker."
-              }
-            ]
-          },
-          "type": "text",
+          "linkId": "1135e85b-15b7-43e4-dc57-ae0f541d5c1c",
+          "text": "Vedlegg under gruppe",
+          "type": "attachment",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+              "valueDecimal": 5
+            }
+          ],
+          "linkId": "10194eec-da97-4971-8b8b-d146c8500dbe",
+          "text": "Vedlegg med repetisjon under gruppe",
+          "type": "attachment",
           "required": false,
-          "repeats": false,
-          "readOnly": false,
-          "maxLength": 250
+          "repeats": true
+        }
+      ]
+    },
+    {
+      "linkId": "c62806c7-ab37-4288-817a-fcf4c2ccccaa",
+      "text": "Se enda en vedleggsopplasting",
+      "type": "choice",
+      "required": false,
+      "answerValueSet": "#1101"
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+          "valueDecimal": 5
+        }
+      ],
+      "linkId": "22ccddf8-ec85-4d77-f3b4-a3a5a18ee731",
+      "text": "Vedlegg 2 uten gruppe",
+      "type": "attachment",
+      "enableWhen": [
+        {
+          "question": "c62806c7-ab37-4288-817a-fcf4c2ccccaa",
+          "operator": "=",
+          "answerCoding": {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "code": "1"
+          }
+        }
+      ],
+      "required": true
+    },
+    {
+      "linkId": "f70602ba-ec7a-4c9d-8a54-c682fe41fc0c",
+      "text": "Se enda en vedleggsopplastning med gruppe",
+      "type": "choice",
+      "required": false,
+      "answerValueSet": "#1101"
+    },
+    {
+      "linkId": "cb5f518d-61f8-4b11-818b-c10465c73de7",
+      "text": "Gruppe 2",
+      "type": "group",
+      "enableWhen": [
+        {
+          "question": "f70602ba-ec7a-4c9d-8a54-c682fe41fc0c",
+          "operator": "=",
+          "answerCoding": {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "code": "1"
+          }
+        }
+      ],
+      "required": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+              "valueDecimal": 5
+            }
+          ],
+          "linkId": "714183e8-261c-4a86-9440-c54e8206de2d",
+          "text": "Vedlegg",
+          "type": "attachment",
+          "required": true
         }
       ]
     }
-  ],
-  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c"
+  ]
 }

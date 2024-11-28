@@ -14,7 +14,7 @@ import {
   validateFileSize,
   validateTotalFileSize,
 } from '@helsenorge/file-upload/components/file-upload/validate-utils';
-import { getAttachmentMaxSizeBytesToUse, validateRequired } from './attachmentUtil';
+import { convertBytesToMBString, getAttachmentMaxSizeBytesToUse, validateRequired } from './attachmentUtil';
 import { VALID_FILE_TYPES } from '@/constants';
 import { getId, isReadOnly } from '@/util';
 import { Resources } from '@/util/resources';
@@ -90,7 +90,10 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const maxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
 
   const validFileTypes: MimeTypes[] = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
-
+  const filSizeErrorMessage = resources?.attachmentError_fileSize?.replace(
+    '{0}',
+    convertBytesToMBString(getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item))
+  );
   const {
     setAcceptedFiles,
     setRejectedFiles,
@@ -101,11 +104,11 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     internalRegister,
     [
       validateFileType(validFileTypes, validationFileTypesMessage),
-      validateFileSize(0, maxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize || 'total file size')),
+      validateFileSize(0, maxValueBytes, getCustomValidationText(item, filSizeErrorMessage || 'total file size')),
     ],
     [
       validateNumberOfFiles(minFiles ?? 0, maxFiles ?? 20, numberOfFilesMessage || 'Number of files'),
-      validateTotalFileSize(0, maxValueBytes, getCustomValidationText(item, resources?.attachmentError_fileSize || 'total file size')),
+      validateTotalFileSize(0, maxValueBytes, getCustomValidationText(item, filSizeErrorMessage || 'total file size')),
     ]
   );
 
