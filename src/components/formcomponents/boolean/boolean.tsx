@@ -4,12 +4,12 @@ import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Label from '@helsenorge/designsystem-react/components/Label';
 import styles from '../common-styles.module.css';
 import Pdf from './pdf';
 import { newBooleanValueAsync } from '@/actions/newValue';
 import { GlobalState, useAppDispatch } from '@/reducers';
-import { isReadOnly, getId, getSublabelText, getLabelText } from '@/util/index';
+import { isReadOnly, getId, getLabelText } from '@/util/index';
 import SafeText from '../../referoLabel/SafeText';
 import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -76,7 +76,6 @@ const Boolean = (props: Props): JSX.Element | null => {
     promptLoginMessage?.();
   };
 
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
@@ -123,13 +122,6 @@ const Boolean = (props: Props): JSX.Element | null => {
               labelTexts={[{ text: item?.text || '', type: 'normal' }]}
               htmlFor={getId(id)}
               className="page_refero__label label_helpButton_align"
-              sublabel={
-                <Sublabel
-                  testId={`${getId(id)}-sublabel-boolean`}
-                  id={`${getId(id)}-sublabel-boolean`}
-                  sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
-                />
-              }
               afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
             >
               <SafeText text={labelText} />
