@@ -3,7 +3,7 @@ import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
 import { getPlaceholder } from '@/util/extension';
-import { getId, isReadOnly, isRequired } from '@/util/index';
+import { getId, isReadOnly } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { Options } from '@/types/formTypes/radioGroupOptions';
@@ -43,7 +43,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
     placeholder = resources.selectDefaultPlaceholder;
   }
   const value = selected?.[0] || '';
-  const shouldShowPlaceholder = !isRequired(item) || value === '';
   const getWith = (options: Array<Options> | undefined): number => {
     const maxCharacters = options?.reduce((acc, option) => (option.label.length > acc ? option.label.length : acc), 0);
     const placeholderLength = placeholder ? placeholder.length : 0;
@@ -95,11 +94,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
           }}
           className="page_refero__input"
         >
-          {shouldShowPlaceholder && (
-            <option key={getId(id) + placeholder} value={''}>
-              {placeholder}
-            </option>
-          )}
+          <option value={''}>{resources?.selectDefaultPlaceholder || ''}</option>
           {options?.map(dropdownOption => (
             <option key={getId(id) + dropdownOption.label} value={dropdownOption.type}>
               {dropdownOption.label}
