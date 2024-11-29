@@ -252,7 +252,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
 
         {isLoading && (
           <div>
-            <Loader size={'tiny'} />
+            <Loader size={'tiny'} color="black" />
           </div>
         )}
         {noSuggestionsToShow && (

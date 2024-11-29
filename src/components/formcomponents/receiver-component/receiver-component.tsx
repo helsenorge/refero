@@ -276,7 +276,7 @@ const ReceiverComponent = ({
 
       {isLoading && (
         <div>
-          <Loader />
+          <Loader color="black" />
         </div>
       )}
       {hasLoadError && <NotificationPanel variant="error">{resources?.adresseKomponent_loadError}</NotificationPanel>}

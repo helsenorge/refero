@@ -58,7 +58,7 @@ const RenderForm = ({
     !validationSummaryPlacement || validationSummaryPlacement === ValidationSummaryPlacement.Top;
 
   if (referoProps.blockSubmit) {
-    return <Loader size={'medium'} overlay={'parent'} />;
+    return <Loader size={'medium'} overlay={'parent'} color="black" />;
   }
 
   const handleNextStep: SubmitHandler<FieldValues> = (): void => {
