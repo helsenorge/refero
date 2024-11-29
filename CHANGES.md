@@ -1,3 +1,10 @@
+## 16.0.3
+
+---
+
+- Bugfix: fix attachement error message shows correct max size
+
+
 ## 16.0.2
 
 ---
