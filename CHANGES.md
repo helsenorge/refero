@@ -2,7 +2,8 @@
 
 ---
 
-- Added placeholder in Choice dropdown that disappears after a selection is done
+- Bugfix: fix attachement error message shows correct max size
+
 
 ## 16.0.2
 
