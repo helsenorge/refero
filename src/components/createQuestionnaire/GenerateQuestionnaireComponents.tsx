@@ -15,7 +15,6 @@ export type QuestionnaireComponentItemProps = {
   headerTag?: number;
   pdf?: boolean;
   language?: string;
-  includeSkipLink?: boolean;
   blindzone?: JSX.Element | null;
   path: Path[];
   id: string;

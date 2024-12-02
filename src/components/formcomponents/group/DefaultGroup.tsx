@@ -1,9 +1,7 @@
 import { getId } from '@/util';
 import GroupHeader from './GroupHeader';
 import { getClassNames, getHeaderText } from './helpers';
-import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import styles from './group.module.css';
 import { Dispatch } from 'react';
 
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -20,7 +18,7 @@ type DefaultGroup = QuestionnaireComponentItemProps & {
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };
 const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: DefaultGroup): JSX.Element => {
-  const { headerTag, includeSkipLink, path, linkId, index, id } = rest;
+  const { headerTag, path, linkId, index, id } = rest;
 
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
@@ -37,11 +35,6 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
         item={item}
         resources={resources}
       />
-      {includeSkipLink && path?.length === 1 && (
-        <AnchorLink className={`${styles.page_refero__skiplink} page_refero__skiplink`} href="#navigator-button">
-          {resources?.skipLinkText}
-        </AnchorLink>
-      )}
       <div id={`${getId(id)}-navanchor`} className={getClassNames(item)}>
         {children}
       </div>
