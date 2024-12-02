@@ -94,7 +94,9 @@ const DropdownView = (props: Props): JSX.Element | null => {
           }}
           className="page_refero__input"
         >
-          <option value={''}>{resources?.selectDefaultPlaceholder || ''}</option>
+          <option value="" disabled hidden>
+            {resources?.selectDefaultPlaceholder || ''}
+          </option>
           {options?.map(dropdownOption => (
             <option key={getId(id) + dropdownOption.label} value={dropdownOption.type}>
               {dropdownOption.label}
