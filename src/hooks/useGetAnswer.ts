@@ -14,13 +14,10 @@ function getAnswerIfDataReceiver(
   item: QuestionnaireItem,
   extension: Extension
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined {
-  let result = evaluateFhirpathExpressionToGetString(extension, questionnaireResponse);
+  const result = evaluateFhirpathExpressionToGetString(extension, questionnaireResponse);
+  const processedResult = getCalculatedExpressionExtension(item) ? result.map((res: any) => res?.value ?? res) : result;
 
-  if (getCalculatedExpressionExtension(item)) {
-    result = result.map((m: any) => m.value as number);
-  }
-
-  return getQuestionnaireResponseItemAnswer(item.type, result);
+  return getQuestionnaireResponseItemAnswer(item.type, processedResult);
 }
 
 function getQuestionnaireResponseItemAnswer(
@@ -70,7 +67,9 @@ export const useGetAnswer = (
   );
   const dataRecieverExtension = item && getCopyExtension(item);
 
-  return dataRecieverExtension
+  const answer = dataRecieverExtension
     ? getAnswerIfDataReceiver(questionnaireResponse, item, dataRecieverExtension)
     : getAnswerFromResponseItem(responseItem);
+
+  return answer;
 };
