@@ -1,3 +1,9 @@
+## 16.0.3
+
+---
+
+- Added placeholder in Choice dropdown that disappears after a selection is done
+
 ## 16.0.2
 
 ---
