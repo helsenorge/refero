@@ -51,7 +51,6 @@ const ResponseItem = memo(function ResponseItem({
   const id = `item_${idWithLinkIdAndItemIndex}`;
 
   let blindzone: JSX.Element | null = null;
-  let includeSkipLink = false;
   let newHeaderTag = headerTag;
 
   if (item.type === ItemType.GROUP) {
@@ -65,7 +64,6 @@ const ResponseItem = memo(function ResponseItem({
   if (isNavigatorEnabled && !isNavigatorBlindzoneInitiatedRef.current) {
     isNavigatorBlindzoneInitiatedRef.current = true;
     blindzone = <section id={NAVIGATOR_BLINDZONE_ID} tabIndex={-1} />;
-    includeSkipLink = item.type === ItemType.GROUP;
   }
 
   return (
@@ -73,7 +71,6 @@ const ResponseItem = memo(function ResponseItem({
       key={id}
       idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
       language={language}
-      includeSkipLink={includeSkipLink}
       containedResources={containedResources}
       id={id}
       linkId={linkId}
