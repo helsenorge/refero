@@ -155,8 +155,10 @@ describe('Dropdown-view - choice', () => {
           repeats: false,
         })),
       };
+
       const { getByRole } = await createWrapper(questionnaire);
-      expect((getByRole('option', { name: 'Velg...' }) as HTMLOptionElement).selected).toBe(true);
+      const selectElement = getByRole('combobox') as HTMLSelectElement;
+      expect(selectElement.value).toBe('');
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
