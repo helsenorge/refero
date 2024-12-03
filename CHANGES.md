@@ -1,3 +1,7 @@
+## 16.0.5
+
+- Removed anchorlink to navigator
+
 ## 16.0.4
 
 - Added placeholder in Choice dropdown that disappears after a selection is done
