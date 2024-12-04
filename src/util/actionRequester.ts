@@ -1,4 +1,4 @@
-import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity } from 'fhir/r4';
+import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { getItemControlValue } from './choice';
 import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './refero-core';
@@ -16,6 +16,7 @@ import {
   removeCodingValueAction,
   removeCodingStringValueAction,
   NewValuePayload,
+  newAnswerValueAction,
 } from '@/actions/newValue';
 import itemControlConstants from '@/constants/itemcontrol';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -45,7 +46,7 @@ export interface IActionRequester {
   removeOpenChoiceAnswer(linkId: string, value: Coding | string, index?: number): void;
 }
 
-class ItemAndPath {
+class ItemAndPathInt {
   public item: QuestionnaireItem;
   public path: Path[];
 
@@ -76,7 +77,7 @@ export class ActionRequester implements IActionRequester {
     this.addIntegerAnswer(linkId, Number.NaN, index);
   }
 
-  public addDecimalAnswer(linkId: string, value: number, index: number = 0): void {
+  public addDecimalAnswer(linkId: string, value?: number, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newDecimalValueAction({ itemPath: itemAndPath.path, valueDecimal: value, item: itemAndPath.item }));
@@ -85,6 +86,19 @@ export class ActionRequester implements IActionRequester {
 
   public clearDecimalAnswer(linkId: string, index: number = 0): void {
     this.addDecimalAnswer(linkId, Number.NaN, index);
+  }
+
+  public setNewAnswer(linkId: string, value: QuestionnaireResponseItemAnswer[], index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
+    if (itemAndPath) {
+      this.actions.push(
+        newAnswerValueAction({
+          itemPath: itemAndPath.path,
+          newAnswer: value,
+          item: itemAndPath.item,
+        })
+      );
+    }
   }
 
   public addChoiceAnswer(linkId: string, value: Coding, index: number = 0): void {
@@ -207,7 +221,7 @@ export class ActionRequester implements IActionRequester {
     return this.actions;
   }
 
-  private getItemAndPath(linkId: string, index: number): ItemAndPath | undefined {
+  private getItemAndPath(linkId: string, index: number): ItemAndPathInt | undefined {
     const item = getQuestionnaireDefinitionItem(linkId, this.questionnaire.item);
     const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, this.questionnaireResponse);
 
@@ -215,10 +229,13 @@ export class ActionRequester implements IActionRequester {
       return;
     }
 
-    return new ItemAndPath(item, itemsAndPaths[index].path);
+    return new ItemAndPathInt(item, itemsAndPaths[index].path);
   }
 
-  private isCheckbox(item: QuestionnaireItem): boolean {
+  public isCheckbox(item: QuestionnaireItem): boolean {
     return getItemControlValue(item) === itemControlConstants.CHECKBOX;
+  }
+  public addManyActions(actions: PayloadAction<NewValuePayload, string>[]): void {
+    this.actions.push(...actions);
   }
 }
