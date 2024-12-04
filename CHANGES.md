@@ -1,3 +1,10 @@
+## 16.1.0-beta03
+
+---
+
+- Fix attempt to only import domPurify if not exists before
+
+
 ## 16.1.0-beta02
 
 ---
