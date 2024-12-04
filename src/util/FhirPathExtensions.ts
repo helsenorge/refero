@@ -6,6 +6,7 @@ import {
   QuestionnaireResponseItem,
   Extension,
   Coding,
+  Quantity,
 } from 'fhir/r4';
 
 import { getCalculatedExpressionExtension, getCopyExtension } from './extension';
@@ -17,7 +18,7 @@ import { getItemControlValue } from './choice';
 import ItemControlConstants from '@/constants/itemcontrol';
 
 export interface AnswerPad {
-  [linkId: string]: number | undefined | string | Coding | boolean | Coding[];
+  [linkId: string]: number | undefined | string | Coding | boolean | Coding[] | Quantity;
 }
 export enum FhirPathItemType {
   QUESTION_FHIRPATH_SCORE = 'QUESTION_FHIRPATH_SCORE',
@@ -102,7 +103,7 @@ export class FhirPathExtensions {
   private valueOfQuestionFhirpathItem(
     item: QuestionnaireItem,
     questionnaireResponse: QuestionnaireResponse
-  ): number | undefined | string | Coding | boolean | Coding[] {
+  ): number | undefined | string | Coding | boolean | Coding[] | Quantity {
     const expressionExtension = getCalculatedExpressionExtension(item) || getCopyExtension(item);
     if (!expressionExtension) return undefined;
 
