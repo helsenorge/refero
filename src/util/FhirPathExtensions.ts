@@ -9,13 +9,14 @@ import {
   Quantity,
 } from 'fhir/r4';
 
-import { getCalculatedExpressionExtension, getCopyExtension } from './extension';
+import { getCalculatedExpressionExtension, getCopyExtension, getQuestionnaireUnitExtensionValue } from './extension';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
 import itemType from '../constants/itemType';
 import { Extensions } from '@/constants/extensions';
 import { createDummySectionScoreItem } from './scoring';
 import { getItemControlValue } from './choice';
 import ItemControlConstants from '@/constants/itemcontrol';
+import { getDecimalValue } from '.';
 
 export interface AnswerPad {
   [linkId: string]: number | undefined | string | Coding | boolean | Coding[] | Quantity;
@@ -106,10 +107,8 @@ export class FhirPathExtensions {
   ): number | undefined | string | Coding | boolean | Coding[] | Quantity {
     const expressionExtension = getCalculatedExpressionExtension(item) || getCopyExtension(item);
     if (!expressionExtension) return undefined;
-
     const result = evaluateFhirpathExpressionToGetString(expressionExtension, questionnaireResponse);
     if (!result.length) return undefined;
-
     if (item.type === itemType.INTEGER) {
       return isNaN(result[0]) || !isFinite(result[0]) ? undefined : Math.round(result[0]);
     }
@@ -146,7 +145,6 @@ export class FhirPathExtensions {
         const result = evaluateFhirpathExpressionToGetString(expressionExtension, response);
         if (result.length > 0) {
           const calculatedValue = result[0];
-
           let newAnswer: QuestionnaireResponseItemAnswer = {};
           switch (qItem.type) {
             case itemType.BOOLEAN:
@@ -159,7 +157,12 @@ export class FhirPathExtensions {
               newAnswer = { valueInteger: Number(calculatedValue) };
               break;
             case itemType.QUANTITY:
-              newAnswer = { valueQuantity: calculatedValue };
+              newAnswer = {
+                valueQuantity:
+                  typeof calculatedValue === 'string' || typeof calculatedValue === 'number'
+                    ? this.createQuantity(qItem, result[0])
+                    : calculatedValue,
+              };
               break;
             case itemType.DATE:
               newAnswer = { valueDate: String(calculatedValue) };
@@ -255,5 +258,14 @@ export class FhirPathExtensions {
   }
   private isCheckbox(item: QuestionnaireItem): boolean {
     return getItemControlValue(item) === ItemControlConstants.CHECKBOX;
+  }
+  public createQuantity(item: QuestionnaireItem, value: number): Quantity {
+    const extension = getQuestionnaireUnitExtensionValue(item);
+    return {
+      unit: extension?.display,
+      system: extension?.system,
+      code: extension?.code,
+      value: getDecimalValue(item, value),
+    };
   }
 }

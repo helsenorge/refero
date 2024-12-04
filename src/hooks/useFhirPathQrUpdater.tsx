@@ -3,10 +3,10 @@ import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getDecimalValue } from '@/util';
 import { ActionRequester } from '@/util/actionRequester';
-import { getQuestionnaireUnitExtensionValue } from '@/util/extension';
+
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
-import { Coding, Quantity, Questionnaire, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
+import { Coding, Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -45,14 +45,7 @@ export const useFhirPathQrUpdater = (): {
 
     updateQuestionnaireResponseWithScore(fhirScores, questionnaire, updatedResponse, actionRequester);
   };
-  const createQuantity = (item: QuestionnaireItem, extension: Coding, value: number): Quantity => {
-    return {
-      unit: extension.display,
-      system: extension.system,
-      code: extension.code,
-      value: getDecimalValue(item, value),
-    };
-  };
+
   const updateQuestionnaireResponseWithScore = (
     scores: AnswerPad,
     questionnaire: Questionnaire,
@@ -66,14 +59,11 @@ export const useFhirPathQrUpdater = (): {
       const value = scores[linkId];
       switch (item.type) {
         case ItemType.QUANTITY: {
-          const extension = getQuestionnaireUnitExtensionValue(item);
-          if (!extension) continue;
-
           for (const itemAndPath of itemsAndPaths) {
             actionRequester.addQuantityAnswer(
               linkId,
               typeof value === 'string' || typeof value === 'number'
-                ? createQuantity(item, extension, value as number)
+                ? fhirPathUpdater!.createQuantity(item, Number(value))
                 : (value as Quantity),
               itemAndPath.path[0]?.index
             );
@@ -82,21 +72,21 @@ export const useFhirPathQrUpdater = (): {
         }
         case ItemType.DECIMAL: {
           for (const itemAndPath of itemsAndPaths) {
-            const decimalValue = getDecimalValue(item, value as number);
+            const decimalValue = getDecimalValue(item, Number(value));
             actionRequester.addDecimalAnswer(linkId, decimalValue, itemAndPath.path[0]?.index);
           }
           break;
         }
         case ItemType.INTEGER: {
           for (const itemAndPath of itemsAndPaths) {
-            actionRequester.addIntegerAnswer(linkId, value as number, itemAndPath.path[0]?.index);
+            actionRequester.addIntegerAnswer(linkId, Number(value), itemAndPath.path[0]?.index);
           }
 
           break;
         }
         case ItemType.BOOLEAN: {
           for (const itemAndPath of itemsAndPaths) {
-            actionRequester.addBooleanAnswer(linkId, value as boolean, itemAndPath.path[0]?.index);
+            actionRequester.addBooleanAnswer(linkId, Boolean(value), itemAndPath.path[0]?.index);
           }
           break;
         }
