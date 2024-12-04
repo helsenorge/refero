@@ -4,53 +4,52 @@
   "item": [
     {
       "linkId": "1",
-      "type": "open-choice",
-      "text": "open-choice-1",
+      "type": "quantity",
+      "text": "quantity-1",
       "item": [],
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "code": "check-box",
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control"
-              }
-            ]
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "kg",
+            "display": "kilo",
+            "system": "http://unitsofmeasure.org"
           }
         }
       ],
-      "readOnly": false,
-      "answerValueSet": "#8459"
+      "readOnly": false
     },
     {
       "linkId": "2",
-      "type": "open-choice",
-      "text": "open-choice-2",
+      "type": "quantity",
+      "text": "quantity-2",
       "item": [],
       "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueString": "QuestionnaireResponse.descendants().where(linkId='1').answer.value"
+        },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
           "valueCodeableConcept": {
             "coding": [
               {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "check-box"
-              },
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "data-receiver"
+                "code": "data-receiver",
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control"
               }
             ]
           }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-          "valueString": "QuestionnaireResponse.descendants().where(linkId='1').answer.value"
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "kg",
+            "display": "kilo",
+            "system": "http://unitsofmeasure.org"
+          }
         }
       ],
       "readOnly": true,
-      "answerValueSet": "#8459",
       "enableWhen": [
         {
           "answerBoolean": true,
