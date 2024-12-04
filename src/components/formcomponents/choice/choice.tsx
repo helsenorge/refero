@@ -83,8 +83,9 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
             ?.join(', ')
         : (answer && answer.valueCoding && answer.valueCoding.display) || resources?.ikkeBesvart || '';
     }
-    const value = getAnswerValue();
-    if (!value || value.length === 0) {
+
+    const value = getValue();
+    if (!value) {
       return resources?.ikkeBesvart || '';
     }
     return value.map(code => getDisplay(getOptions(resources, item, containedResources), code)).join(', ');
