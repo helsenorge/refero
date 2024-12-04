@@ -237,11 +237,10 @@ describe('Copy value from item', () => {
     });
   });
   describe('should copy OPEN-CHOICE value', () => {
-    it.only('should copy CHECKBOX value', async () => {
+    it('should copy CHECKBOX value', async () => {
       const sender = createSenderChoiceItem(ItemType.OPENCHOICE, createItemControlExtension(ItemControlConstants.CHECKBOX));
       const reciever = createReciverChoiceItem(ItemType.OPENCHOICE, ItemControlConstants.CHECKBOX);
       const q = createQuestionnaire(sender, reciever);
-      console.log(JSON.stringify(q, null, 2));
       const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
       expect(getByLabelText(/Mann/i)).toBeInTheDocument();

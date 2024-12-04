@@ -6,7 +6,7 @@ import { ActionRequester } from '@/util/actionRequester';
 import { getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
-import { Coding, Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import { Coding, Quantity, Questionnaire, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -45,7 +45,14 @@ export const useFhirPathQrUpdater = (): {
 
     updateQuestionnaireResponseWithScore(fhirScores, questionnaire, updatedResponse, actionRequester);
   };
-
+  const createQuantity = (item: QuestionnaireItem, extension: Coding, value: number): Quantity => {
+    return {
+      unit: extension.display,
+      system: extension.system,
+      code: extension.code,
+      value: getDecimalValue(item, value),
+    };
+  };
   const updateQuestionnaireResponseWithScore = (
     scores: AnswerPad,
     questionnaire: Questionnaire,
@@ -62,14 +69,14 @@ export const useFhirPathQrUpdater = (): {
           const extension = getQuestionnaireUnitExtensionValue(item);
           if (!extension) continue;
 
-          const quantity: Quantity = {
-            unit: extension.display,
-            system: extension.system,
-            code: extension.code,
-            value: getDecimalValue(item, value as number),
-          };
           for (const itemAndPath of itemsAndPaths) {
-            actionRequester.addQuantityAnswer(linkId, quantity as Quantity, itemAndPath.path[0]?.index);
+            actionRequester.addQuantityAnswer(
+              linkId,
+              typeof value === 'string' || typeof value === 'number'
+                ? createQuantity(item, extension, value as number)
+                : (value as Quantity),
+              itemAndPath.path[0]?.index
+            );
           }
           break;
         }
