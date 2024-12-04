@@ -1,7 +1,6 @@
 import { QuestionnaireItem, Coding } from 'fhir/r4';
 import * as uuid from 'uuid';
 
-import { getCalculatedExpressionExtension } from './extension';
 import { Extensions } from '../constants/extensions';
 import ItemType from '../constants/itemType';
 import { SCORING, SCORING_CODE, SCORING_FORMULAS, ScoringTypes, Type } from '../constants/scoring';
@@ -44,9 +43,6 @@ export function scoringItemType(item: QuestionnaireItem): ScoringItemType {
       default:
         return ScoringItemType.NONE;
     }
-  } else if (item.extension) {
-    const calculatedExpressionExtension = getCalculatedExpressionExtension(item);
-    return calculatedExpressionExtension ? ScoringItemType.QUESTION_FHIRPATH_SCORE : ScoringItemType.NONE;
   }
 
   return ScoringItemType.NONE;

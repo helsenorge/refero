@@ -72,15 +72,16 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   // }, [item]);
 
   const getPDFValue = (): string => {
-    const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
-      return answer.map((el: QuestionnaireResponseItemAnswer) => {
-        if (el && el.valueCoding && el.valueCoding.display) {
-          return el.valueCoding.display;
-        }
-      });
-    };
     if (isDataReceiver(item)) {
-      return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+      return Array.isArray(answer)
+        ? answer
+            .map((el: QuestionnaireResponseItemAnswer) => {
+              if (el && el.valueCoding && el.valueCoding.display) {
+                return el.valueCoding.display;
+              }
+            })
+            ?.join(', ')
+        : (answer && answer.valueCoding && answer.valueCoding.display) || resources?.ikkeBesvart || '';
     }
     const value = getAnswerValue();
     if (!value || value.length === 0) {
@@ -158,6 +159,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const renderComponentBasedOnType = (): JSX.Element | null => {
     const pdfValue = getPDFValue();
+
     const itemControlValue = getItemControlValue(item);
     if (!itemControlValue) return null;
 

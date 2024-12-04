@@ -57,6 +57,47 @@
           }
         ]
       }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons",
+        "code": "sticky"
+      }
+    }
+  ],
+  "id": "6f9db0cf-1d11-4e16-efa1-686d4fa90564",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1102",
+      "version": "1.0",
+      "name": "urn:oid:1102",
+      "title": "Ja / Nei / Vet ikke (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Mann"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Vet ikke"
+              }
+            ]
+          }
+        ]
+      }
     }
   ],
   "id": "a93bf3e9-d09c-4625-8b92-7c2b80e78ab2",
