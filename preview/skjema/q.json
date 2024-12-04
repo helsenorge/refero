@@ -85,9 +85,17 @@
             "concept": [
               {
                 "code": "1",
-                "display": "Mann"
-              },
-              {
+                "display": "Astma"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 25
+                  }
+                ],
                 "code": "2",
                 "display": "Nei"
               },
