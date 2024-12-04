@@ -1,3 +1,10 @@
+## 16.1.0-beta02
+
+---
+
+- Fix attempt on trusted types help method for sanitize
+- Return as string instead
+
 ## 16.1.0-beta01
 
 ---
