@@ -35,11 +35,14 @@ export const useFhirPathQrUpdater = (): {
 
     // Evaluate all expressions and get the updated response
     const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
+    //TODO: Figure out a way to not run this on all changes
     // if (JSON.stringify(updatedResponse) === JSON.stringify(questionnaireResponse)) {
     //   return;
     // }
     // Calculate FHIR scores using the same updated response
+
     const fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
+
     updateQuestionnaireResponseWithScore(fhirScores, questionnaire, updatedResponse, actionRequester);
   };
 
