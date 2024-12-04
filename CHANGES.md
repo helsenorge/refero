@@ -1,3 +1,10 @@
+## 16.1.0-beta04
+
+---
+
+- Dom Purify as perDep
+
+
 ## 16.1.0-beta03
 
 ---
