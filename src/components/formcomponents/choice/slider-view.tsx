@@ -109,6 +109,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
         />
         <Slider
           {...rest}
+          id={getId(id)}
           labelLeft={leftRightLabels?.leftLabel}
           labelRight={leftRightLabels?.rightLabel}
           steps={sliderSteps}
