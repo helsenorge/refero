@@ -1,4 +1,12 @@
+## 16.0.5
+
+---
+
+- Added id to slider-view component to make it possible for screenreaders to read the value of the slider
+
 ## 16.0.4
+
+---
 
 - Added placeholder in Choice dropdown that disappears after a selection is done
 
