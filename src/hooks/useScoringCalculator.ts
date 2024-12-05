@@ -3,6 +3,7 @@ import ItemType from '@/constants/itemType';
 import { GlobalState, useAppDispatch } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getDecimalValue } from '@/util';
+import { ActionRequester } from '@/util/actionRequester';
 import { getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
@@ -11,7 +12,11 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 export const useScoringCalculator = (): {
-  runScoringCalculator: (questionnaire?: Questionnaire | null, questionnaireResponse?: QuestionnaireResponse | null) => void;
+  runScoringCalculator: (
+    questionnaire?: Questionnaire | null,
+    questionnaireResponse?: QuestionnaireResponse | null,
+    actionRequester?: ActionRequester
+  ) => Promise<void>;
 } => {
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const dispatch = useAppDispatch();
@@ -23,20 +28,22 @@ export const useScoringCalculator = (): {
     }
   }, [formDefinition?.Content]);
 
-  const runScoringCalculator = (questionnaire?: Questionnaire | null, questionnaireResponse?: QuestionnaireResponse | null): void => {
-    if (!questionnaire || !questionnaireResponse || !scoringCalculator || !questionnaireHasScoring()) return;
+  const runScoringCalculator = async (
+    questionnaire?: Questionnaire | null,
+    questionnaireResponse?: QuestionnaireResponse | null,
+    actionRequester?: ActionRequester
+  ): Promise<void> => {
+    if (!questionnaire || !questionnaireResponse || !scoringCalculator || !questionnaireHasScoring() || !actionRequester) return;
 
+    // Calculate scores using the updated response
     const scores = scoringCalculator.calculateScore(questionnaireResponse);
-    updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
-
-    const fhirScores = scoringCalculator.calculateFhirScore(questionnaireResponse);
-    updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
+    updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse, actionRequester);
   };
-
   const updateQuestionnaireResponseWithScore = (
     scores: AnswerPad,
     questionnaire: Questionnaire,
-    questionnaireResponse: QuestionnaireResponse
+    questionnaireResponse: QuestionnaireResponse,
+    actionRequester: ActionRequester
   ): void => {
     for (const linkId in scores) {
       const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
@@ -56,6 +63,7 @@ export const useScoringCalculator = (): {
             value: getDecimalValue(item, value),
           };
           for (const itemAndPath of itemsAndPaths) {
+            actionRequester;
             dispatch(newQuantityValueAction({ itemPath: itemAndPath.path, valueQuantity: quantity, item }));
           }
           break;

@@ -6,12 +6,10 @@ import {
   QuestionnaireItemAnswerOption,
 } from 'fhir/r4';
 
-import { getExtension, getCalculatedExpressionExtension } from './extension';
-import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
+import { getExtension } from './extension';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
 import { Extensions } from '../constants/extensions';
-import itemType from '../constants/itemType';
 import { ScoringItemType } from '../constants/scoringItemType';
 
 export interface AnswerPad {
@@ -47,7 +45,6 @@ export class ScoringCalculator {
   private totalScoreCache: Map<string, boolean> = new Map();
   private totalScoreItem: QuestionnaireItem | undefined;
   private itemCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
-  private fhirScoreCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
   private isScoringQuestionnaire: boolean = false;
 
   constructor(questionnaire: Questionnaire) {
@@ -123,9 +120,6 @@ export class ScoringCalculator {
       case ScoringItemType.QUESTION_SCORE:
         newScores.questionScores.push(qItem, ...calculatedScores.questionScores);
         break;
-      case ScoringItemType.QUESTION_FHIRPATH_SCORE:
-        this.fhirScoreCache.set(qItem.linkId, qItem);
-        break;
       default:
         newScores.questionScores.push(...calculatedScores.questionScores);
         break;
@@ -137,18 +131,6 @@ export class ScoringCalculator {
   private isOfTypeQuestionnaireItem(item: Questionnaire | QuestionnaireItem): item is QuestionnaireItem {
     return 'type' in item;
   }
-
-  public calculateScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
-    const answerPad: AnswerPad = {};
-
-    const sectionScoresCalculated = this.calculateAllSectionScores(answerPad, questionnaireResponse);
-    const allScoresCalculated = this.calculateAllTotalScores(sectionScoresCalculated, questionnaireResponse);
-
-    delete allScoresCalculated[this.totalScoreItem!.linkId];
-
-    return allScoresCalculated;
-  }
-
   private calculateAllSectionScores(answerPad: AnswerPad, questionnaireResponse: QuestionnaireResponse): AnswerPad {
     const tempAnswerPad: AnswerPad = answerPad;
     const keys = this.sectionScoreCache.keys();
@@ -170,14 +152,15 @@ export class ScoringCalculator {
     return tempAnswerPad;
   }
 
-  public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
+  public calculateScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
     const answerPad: AnswerPad = {};
 
-    for (const [key, value] of this.fhirScoreCache) {
-      answerPad[key] = this.valueOfQuestionFhirpathScoreItem(value, questionnaireResponse);
-    }
+    const sectionScoresCalculated = this.calculateAllSectionScores(answerPad, questionnaireResponse);
+    const allScoresCalculated = this.calculateAllTotalScores(sectionScoresCalculated, questionnaireResponse);
 
-    return answerPad;
+    delete allScoresCalculated[this.totalScoreItem!.linkId];
+
+    return allScoresCalculated;
   }
 
   private calculateSectionScore(linkId: string, questionnaireResponse: QuestionnaireResponse, answerPad: AnswerPad): number | undefined {
@@ -205,19 +188,6 @@ export class ScoringCalculator {
       default:
         return undefined;
     }
-  }
-
-  private valueOfQuestionFhirpathScoreItem(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse): number | undefined {
-    const expressionExtension = getCalculatedExpressionExtension(item);
-    if (!expressionExtension) return undefined;
-
-    const result = evaluateFhirpathExpressionToGetString(expressionExtension, questionnaireResponse);
-    if (!result.length) return undefined;
-
-    let value = (result[0] as number) ?? 0;
-    value = item.type === itemType.INTEGER ? Math.round(value) : value;
-
-    return isNaN(value) || !isFinite(value) ? undefined : value;
   }
 
   private valueOfQuestionScoreItem(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse): number | undefined {
