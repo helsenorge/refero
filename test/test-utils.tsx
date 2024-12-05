@@ -2,13 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactElement, ReactNode } from 'react';
 
-import { render, RenderOptions, RenderResult } from '@testing-library/react';
+import { render, RenderOptions } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Questionnaire } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Provider } from 'react-redux';
 import { configureStore, Store } from '@reduxjs/toolkit';
-import configureMockStore from 'redux-mock-store';
 
 import { getResources } from '../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../src/actions/generateQuestionnaireResponse';
@@ -19,8 +18,6 @@ import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { AttachmentProvider } from '@/context/AttachmentContext';
-
-const mockStore = configureMockStore<Partial<GlobalState>>();
 
 export const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
   const methods = useForm({
@@ -73,28 +70,7 @@ const customRender = (
     ...renderOptions,
   });
 };
-const customRenderMockStore = (
-  ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
-    store?: Store;
-  }
-): {
-  renderResult: RenderResult;
-  store?: Store;
-} => {
-  const { initialState, defaultValues, store = mockStore(initialState || {}), ...renderOptions } = options || {};
-  return {
-    renderResult: render(ui, {
-      wrapper: ({ children }) => (
-        <AllTheProviders initialState={initialState} defaultValues={defaultValues} store={store}>
-          {children}
-        </AllTheProviders>
-      ),
-      ...renderOptions,
-    }),
-    store,
-  };
-};
+
 interface CustomRenderOptions extends Omit<RenderOptions, 'queries'> {
   initialState?: Partial<GlobalState>;
   store?: Store;
@@ -180,11 +156,4 @@ function renderRefero({ questionnaire, props, initialState, resources, defaultVa
 }
 export * from '@testing-library/react';
 const user = userEvent.setup();
-export {
-  customRender as render,
-  customRenderMockStore as renderMockStore,
-  renderWithRedux,
-  renderWithReduxAndHookFormMock,
-  renderRefero,
-  user as userEvent,
-};
+export { customRender as render, renderWithRedux, renderWithReduxAndHookFormMock, renderRefero, user as userEvent };
