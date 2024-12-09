@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
@@ -19,18 +19,25 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { decimalPattern, getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
+import {
+  decimalPattern,
+  getErrorMessage,
+  getInputWidth,
+  isValidDecimalInput,
+  maxValue,
+  minValue,
+  required,
+} from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
-import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 
 const Decimal = (props: Props): JSX.Element | null => {
   const { id, linkId, pdf, children, idWithLinkIdAndItemIndex, path, index } = props;
-  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register, getValues } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
@@ -54,37 +61,31 @@ const Decimal = (props: Props): JSX.Element | null => {
       return '';
     }
   };
-  const value = getValue(item, answer);
-  const [valueState, setValueState] = useState(Array.isArray(value) ? value.join(', ') : value);
-
-  useResetFormField(idWithLinkIdAndItemIndex, value);
-  useEffect(() => {
-    setValueState(Array.isArray(value) ? value.join(', ') : value);
-  }, [answer]);
+  const answerValue = getValue(item, answer);
+  const value = getValues(idWithLinkIdAndItemIndex) ? getValues(idWithLinkIdAndItemIndex) : answerValue;
 
   const getPDFValue = (): string | number => {
-    const value = getValue(item, answer);
-    if (value === undefined || value === null || value === '') {
+    const answerValue2 = getValue(item, answer);
+    const pdfValue = getValues(idWithLinkIdAndItemIndex) ? getValues(idWithLinkIdAndItemIndex) : answerValue2;
+    if (pdfValue === undefined || pdfValue === null || pdfValue === '') {
       let text = '';
       if (resources && resources.ikkeBesvart) {
         text = resources.ikkeBesvart;
       }
       return text;
     }
-    if (Array.isArray(value)) {
-      return value.join(', ');
+    if (Array.isArray(pdfValue)) {
+      return pdfValue.join(', ');
     }
-    return value;
+    return pdfValue;
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const newValue = event.target.value;
-    const newValueConverted = Number(event.target.value);
-
-    setValueState(newValue);
 
     if (item) {
-      dispatch(newDecimalValueAsync(path || [], newValueConverted, item))?.then(newState => {
+      const newValueConverted = parseFloat(newValue);
+      dispatch(newDecimalValueAsync(path || [], newValue, item))?.then(newState => {
         return onAnswerChange(newState, item, { valueDecimal: newValueConverted });
       });
     }
@@ -134,18 +135,19 @@ const Decimal = (props: Props): JSX.Element | null => {
           testId={`${getId(id)}-decimal-label`}
           sublabelId={`${getId(id)}-decimal-sublabel`}
         />
-
         <Input
           {...rest}
           type="text"
           inputId={getId(id)}
           testId={getId(id)}
-          value={valueState}
+          value={value}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
           onChange={(e): void => {
-            handleChange(e);
-            onChange(e);
+            if (isValidDecimalInput(e.target.value)) {
+              handleChange(e);
+              onChange(e);
+            }
           }}
           inputMode="decimal"
           width={width}
