@@ -175,7 +175,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
         <ReferoLabel
           item={item}
           resources={resources}
-          htmlFor={getId(id)}
+          htmlFor={`${getId(id)}-button`}
           labelId={`${getId(id)}-attachment-label`}
           testId={`${getId(id)}-attachment-label`}
           attachmentLabel={resources?.supportedFileFormats}
