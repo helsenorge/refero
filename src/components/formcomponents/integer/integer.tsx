@@ -68,11 +68,10 @@ const Integer = (props: Props): JSX.Element | null => {
   useResetFormField(idWithLinkIdAndItemIndex, value);
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
-    const valueString = (event.target as HTMLInputElement).value;
     const valueInt = parseInt((event.target as HTMLInputElement).value, 10);
 
     if (dispatch && path && item) {
-      dispatch(newIntegerValueAsync(path, valueString, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: valueInt }));
+      dispatch(newIntegerValueAsync(path, valueInt, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: valueInt }));
     }
 
     if (promptLoginMessage) {
@@ -121,7 +120,7 @@ const Integer = (props: Props): JSX.Element | null => {
 
         <Input
           {...rest}
-          type="text"
+          type="number"
           value={Array.isArray(value) ? value.join(', ') : value}
           inputId={getId(id)}
           testId={getId(id)}

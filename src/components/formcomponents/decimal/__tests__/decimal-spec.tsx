@@ -40,7 +40,7 @@ describe('Decimal', () => {
       };
       const { getByLabelText } = await createWrapper(questionnaire);
 
-      expect(getByLabelText(/Decimal/i)).toHaveValue('');
+      expect(getByLabelText(/Decimal/i)).toHaveValue(null);
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -57,7 +57,7 @@ describe('Decimal', () => {
       };
       const { getByLabelText } = await createWrapper(questionnaire);
 
-      expect(getByLabelText(/Decimal/i)).toHaveValue('12.3');
+      expect(getByLabelText(/Decimal/i)).toHaveValue(12.3);
     });
   });
   describe('help button', () => {
@@ -182,10 +182,10 @@ describe('Decimal', () => {
 
       const inputElement = getByLabelText(/Decimal/i);
       expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', 'text');
+      expect(inputElement).toHaveAttribute('type', 'number');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
       await userEvent.type(inputElement, '123');
-      expect(getByLabelText(/Decimal/i)).toHaveValue('123');
+      expect(getByLabelText(/Decimal/i)).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
@@ -195,7 +195,7 @@ describe('Decimal', () => {
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueDecimal: 1.2,
       };
-      expect(onChange).toHaveBeenCalledTimes(3);
+      expect(onChange).toHaveBeenCalledTimes(2);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });

@@ -19,15 +19,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import {
-  decimalPattern,
-  getErrorMessage,
-  getInputWidth,
-  isValidDecimalInput,
-  maxValue,
-  minValue,
-  required,
-} from '@/components/validation/rules';
+import { decimalPattern, getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
@@ -85,7 +77,7 @@ const Decimal = (props: Props): JSX.Element | null => {
 
     if (item) {
       const newValueConverted = parseFloat(newValue);
-      dispatch(newDecimalValueAsync(path || [], newValue, item))?.then(newState => {
+      dispatch(newDecimalValueAsync(path || [], newValueConverted, item))?.then(newState => {
         return onAnswerChange(newState, item, { valueDecimal: newValueConverted });
       });
     }
@@ -137,17 +129,15 @@ const Decimal = (props: Props): JSX.Element | null => {
         />
         <Input
           {...rest}
-          type="text"
+          type="number"
           inputId={getId(id)}
           testId={getId(id)}
           value={value}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
           onChange={(e): void => {
-            if (isValidDecimalInput(e.target.value)) {
-              handleChange(e);
-              onChange(e);
-            }
+            handleChange(e);
+            onChange(e);
           }}
           inputMode="decimal"
           width={width}

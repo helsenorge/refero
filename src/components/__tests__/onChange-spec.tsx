@@ -57,7 +57,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await clickByLabelText(/Boolean/i);
 
     const item = queryByLabelText(/Integer/i);
-    expect(item).toHaveValue('');
+    expect(item).toHaveValue(null);
   });
 
   it('decimals gets updated', async () => {
@@ -82,7 +82,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await clickByLabelText(/Boolean/i);
 
     const item = queryByLabelText(/Decimal/i);
-    expect(item).toHaveValue('');
+    expect(item).toHaveValue(null);
   });
 
   it('quantity gets updated', async () => {
@@ -396,7 +396,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await clickByLabelText(/Boolean/i);
     expect(getByText(/Hello/i)).toBeInTheDocument();
 
-    expect(getByLabelText(/Integer/i)).toHaveValue('42');
+    expect(getByLabelText(/Integer/i)).toHaveValue(42);
   });
 
   it('opencboice other option can be updated', async () => {
@@ -454,9 +454,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const items = queryAllByLabelText(/Decimal/i);
     expect(items).toHaveLength(3);
 
-    expect(items[0]).toHaveValue('0.1');
-    expect(items[1]).toHaveValue('1.1');
-    expect(items[2]).toHaveValue('2.1');
+    expect(items[0]).toHaveValue(0.1);
+    expect(items[1]).toHaveValue(1.1);
+    expect(items[2]).toHaveValue(2.1);
   });
 
   it('can update nested items', async () => {
@@ -468,7 +468,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     await typeByLabelText(/Decimal/i, '1');
 
-    expect(queryByLabelText(/IntegerNested/i)).toHaveValue('42');
+    expect(queryByLabelText(/IntegerNested/i)).toHaveValue(42);
   });
 
   it('can update items nested under answer', async () => {
@@ -478,7 +478,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryByLabelText } = await wrapper(onChange, questionnaireWithNestedItems);
     await typeByLabelText(/Decimal/i, '1');
-    expect(queryByLabelText(/nested under non-group/i)).toHaveValue('42');
+    expect(queryByLabelText(/nested under non-group/i)).toHaveValue(42);
   });
 
   it('can query to get both questionnaire and questionnaire response', async () => {
