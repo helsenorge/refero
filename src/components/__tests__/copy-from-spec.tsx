@@ -48,10 +48,11 @@ describe('Copy value from item', () => {
     expect(elm).toBeInTheDocument();
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123'));
   });
-  it('should copy DECIMAL value', async () => {
+  it.only('should copy DECIMAL value', async () => {
     const sender = createSenderItem(ItemType.DECIMAL);
     const reciever = createRecieverItem(ItemType.DECIMAL);
     const q = createQuestionnaire(sender, reciever);
+    console.log(JSON.stringify(q, null, 2));
     const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');

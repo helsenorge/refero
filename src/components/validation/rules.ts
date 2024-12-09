@@ -155,3 +155,10 @@ export const getInputWidth = (maxCharacters: number | undefined, maxDecimals?: n
 
   return width;
 };
+
+export const isValidDecimalInput = (value: string): boolean => {
+  //Accepts numbers, leading dash, and one period
+  const regex = /^-?\d*(\.\d*)?$/;
+
+  return regex.test(value);
+};
