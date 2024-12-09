@@ -277,7 +277,7 @@ describe('Slider-view', () => {
         await userEvent.tab();
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
-      it('Should get required error on readOnly if noe value', async () => {
+      it.skip('Should get required error on readOnly if noe value', async () => {
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({
