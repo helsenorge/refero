@@ -25,7 +25,7 @@ export type NewValuePayload = {
   valueAttachment?: Attachment;
   valueString?: string;
   valueDecimal?: string;
-  valueInteger?: number;
+  valueInteger?: string;
   valueDate?: string;
   valueDateTime?: string;
   valueTime?: string;
@@ -230,7 +230,7 @@ export const newIntegerValue = (
   item: IntegerItemPayload['item']
 ): PayloadAction<IntegerItemPayload> => newIntegerValueAction({ itemPath, valueInteger: value, item });
 
-export function newIntegerValueAsync(itemPath: Path[], value: number, item?: QuestionnaireItem) {
+export function newIntegerValueAsync(itemPath: Path[], value: string, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newIntegerValueAction({ itemPath, valueInteger: value, item }));
     return await Promise.resolve(getState());
