@@ -26,7 +26,6 @@ describe('Radio-view - choice', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
-
       const { queryByText } = await createWrapper(questionnaire);
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
