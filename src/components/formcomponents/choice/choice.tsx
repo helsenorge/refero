@@ -55,6 +55,9 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     } else if (answer?.valueCoding?.code) {
       return [answer.valueCoding.code];
     }
+    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueInteger) {
+      return [];
+    }
     return undefined;
   }, [answer]);
 
@@ -68,7 +71,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     return code ? [code] : undefined;
   }, [item]);
 
-  const getValue = () => getAnswerValue() || getInitialValue();
+  const getValue = () => getAnswerValue();
 
   const getPDFValue = (): string => {
     const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
@@ -82,7 +85,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
     }
     const value = getValue();
-    if (!value) {
+    if (!value || value.length === 0) {
       return resources?.ikkeBesvart || '';
     }
     return value.map(code => getDisplay(getOptions(resources, item, containedResources), code)).join(', ');
