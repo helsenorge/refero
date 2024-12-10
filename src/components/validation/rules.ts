@@ -153,5 +153,8 @@ export const getInputWidth = (maxCharacters: number | undefined, maxDecimals?: n
     width = width + puncationLength + decimalLength;
   }
 
-  return width;
+  //Adding extra width because of the increment arrows in the input field
+  const extraWidth = 2;
+
+  return width + extraWidth;
 };
