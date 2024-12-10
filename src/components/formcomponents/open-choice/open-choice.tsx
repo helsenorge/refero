@@ -82,7 +82,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     return undefined;
   }, [answer, item]);
 
-  const value = useMemo(() => getValue(), [getValue]);
+  const value = getValue();
   useResetFormField(props.idWithLinkIdAndItemIndex, value);
 
   const getPDFValue = useCallback((): string => {
