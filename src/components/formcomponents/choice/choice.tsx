@@ -61,17 +61,15 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     return undefined;
   }, [answer]);
 
-  const getInitialValue = useCallback((): string[] | undefined => {
-    const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
+  // const getInitialValue = useCallback((): string[] | undefined => {
+  //   const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
 
-    if (initialSelectedCode) {
-      return [initialSelectedCode];
-    }
-    const code = item?.initial?.[0]?.valueCoding?.code;
-    return code ? [code] : undefined;
-  }, [item]);
-
-  const getValue = () => getAnswerValue();
+  //   if (initialSelectedCode) {
+  //     return [initialSelectedCode];
+  //   }
+  //   const code = item?.initial?.[0]?.valueCoding?.code;
+  //   return code ? [code] : undefined;
+  // }, [item]);
 
   const getPDFValue = (): string => {
     const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
@@ -84,7 +82,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     if (isDataReceiver(item)) {
       return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
     }
-    const value = getValue();
+    const value = getAnswerValue();
     if (!value || value.length === 0) {
       return resources?.ikkeBesvart || '';
     }
@@ -166,7 +164,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     const options = getOptions(resources, item, containedResources);
     const commonProps = {
       handleChange,
-      selected: getValue(),
+      selected: getAnswerValue(),
       pdfValue,
       ...props,
     };
@@ -193,8 +191,8 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
 
-  const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);
-  const value = useMemo(() => getValue(), [getAnswerValue, getInitialValue]);
+  const options = getOptions(resources, item, containedResources);
+  const value = getAnswerValue();
   useResetFormField(props.idWithLinkIdAndItemIndex, value);
   const shouldRenderAutosuggest = useMemo(
     () => hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE,
