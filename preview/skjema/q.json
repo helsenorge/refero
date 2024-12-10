@@ -109,7 +109,7 @@
       "item": [
         {
           "linkId": "d342579c-2805-49f6-8c92-f4c8ecd07750",
-          "type": "choice",
+          "type": "open-choice",
           "text": "Choice 1",
           "required": true,
           "extension": [
@@ -138,7 +138,7 @@
         },
         {
           "linkId": "8cd87d20-1583-4f79-f238-c5c5607e314a",
-          "type": "choice",
+          "type": "open-choice",
           "text": "Choice 1",
           "required": false,
           "extension": [
@@ -182,7 +182,7 @@
       "item": [
         {
           "linkId": "8c4ec2fd-e05d-40d0-8c8e-5d6672ec34b7",
-          "type": "choice",
+          "type": "open-choice",
           "text": "Radio 1",
           "required": true,
           "answerValueSet": "#1102",
@@ -211,7 +211,7 @@
         },
         {
           "linkId": "282c6123-dd00-4786-9543-8605a22aca3e",
-          "type": "choice",
+          "type": "open-choice",
           "text": "radio 2",
           "required": false,
           "extension": [
