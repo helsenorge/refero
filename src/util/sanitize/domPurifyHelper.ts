@@ -5,6 +5,14 @@ export function SanitizeText(textToSanitize: string): string {
     RETURN_TRUSTED_TYPE: true,
     ADD_ATTR: ['target'],
   });
-
   return sanitizedResult as string;
+}
+
+export function StripHTML(textToStrip: string): string {
+  const strippedResult = DOMPurify.sanitize(textToStrip, {
+    ALLOWED_TAGS: [],
+    ALLOWED_ATTR: [],
+  });
+
+  return strippedResult;
 }

@@ -1,3 +1,11 @@
+## 16.1.0-beta08
+
+---
+
+- Adding extra util method to strip html with domPurify
+
+
+
 ## 16.1.0-beta07
 
 ---
