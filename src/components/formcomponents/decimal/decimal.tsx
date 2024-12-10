@@ -57,19 +57,17 @@ const Decimal = (props: Props): JSX.Element | null => {
   const value = getValues(idWithLinkIdAndItemIndex) ? getValues(idWithLinkIdAndItemIndex) : answerValue;
 
   const getPDFValue = (): string | number => {
-    const answerValue2 = getValue(item, answer);
-    const pdfValue = getValues(idWithLinkIdAndItemIndex) ? getValues(idWithLinkIdAndItemIndex) : answerValue2;
-    if (pdfValue === undefined || pdfValue === null || pdfValue === '') {
+    if (value === undefined || value === null || value === '') {
       let text = '';
       if (resources && resources.ikkeBesvart) {
         text = resources.ikkeBesvart;
       }
       return text;
     }
-    if (Array.isArray(pdfValue)) {
-      return pdfValue.join(', ');
+    if (Array.isArray(value)) {
+      return value.join(', ');
     }
-    return pdfValue;
+    return value;
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
