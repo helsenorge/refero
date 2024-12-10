@@ -1,3 +1,10 @@
+## 16.1.0-beta05
+
+---
+
+- Fix domPurifyHelper to string
+
+
 ## 16.1.0-beta04
 
 ---

@@ -6,5 +6,5 @@ export function SanitizeText(textToSanitize: string): string {
     ADD_ATTR: ['target'],
   });
 
-  return sanitizedResult as string;
+  return sanitizedResult?.toString();
 }
