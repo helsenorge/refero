@@ -39,7 +39,6 @@ const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
           rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
           rect.right <= (window.innerWidth || document.documentElement.clientWidth);
 
-        // If the element is not in the viewport, scroll it into view
         if (!isInViewport) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
