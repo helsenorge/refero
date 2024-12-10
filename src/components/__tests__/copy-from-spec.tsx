@@ -52,7 +52,6 @@ describe('Copy value from item', () => {
     const sender = createSenderItem(ItemType.DECIMAL);
     const reciever = createRecieverItem(ItemType.DECIMAL);
     const q = createQuestionnaire(sender, reciever);
-    console.log(JSON.stringify(q, null, 2));
     const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
