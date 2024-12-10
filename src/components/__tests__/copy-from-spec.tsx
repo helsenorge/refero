@@ -48,7 +48,7 @@ describe('Copy value from item', () => {
     expect(elm).toBeInTheDocument();
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123'));
   });
-  it.only('should copy DECIMAL value', async () => {
+  it('should copy DECIMAL value', async () => {
     const sender = createSenderItem(ItemType.DECIMAL);
     const reciever = createRecieverItem(ItemType.DECIMAL);
     const q = createQuestionnaire(sender, reciever);
