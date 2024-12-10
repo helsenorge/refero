@@ -1,3 +1,9 @@
+## 16.0.7
+
+---
+
+- UU bugfix: Grouped form controls missing an accessible name in Radiobuttons and Checkboxes
+
 ## 16.0.6
 
 ---
