@@ -223,8 +223,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
       const dateElement = getByTestId(/datepicker-test/i);
       const dateInput = dateElement.querySelector('input');
-
-      expect(dateInput).toHaveValue('14.08.2024');
+      await waitFor(async () => await expect(dateInput).toHaveValue('14.08.2024'));
     });
     it('date gets cleared', async () => {
       const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
