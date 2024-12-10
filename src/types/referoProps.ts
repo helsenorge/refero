@@ -83,4 +83,8 @@ export interface ReferoProps {
     },
     any
   >;
+  customNavigationCallBack?: (navDirection: string, navContent?: Record<string, string> | undefined) => void;
+  customProps?: {
+    [key: string]: any;
+  };
 }

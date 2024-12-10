@@ -1,3 +1,11 @@
+## 16.1.0-beta06
+
+---
+
+- Added custom refero props for Microweb step and callback
+- Added formbutton section which is show spesific for Microweb step
+- Dom Purify is moved from dev deps to peer deps
+
 ## 16.0.6
 
 ---

@@ -2,7 +2,7 @@ import { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
 
-import { ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../types/formTypes/formButton';
+import { ButtonOrder, ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../types/formTypes/formButton';
 
 import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';
@@ -23,6 +23,8 @@ interface FormButtonsInterface {
   isStepView?: boolean;
   isAuthorized?: boolean;
   loginButton?: JSX.Element;
+  overrideButtonOrder?: ButtonOrder;
+  showSaveButtonAsBackButton?: boolean;
 }
 
 const FormButtons = ({
@@ -37,8 +39,13 @@ const FormButtons = ({
   onPauseButtonClicked,
   isAuthorized,
   loginButton,
+  overrideButtonOrder,
+  showSaveButtonAsBackButton,
 }: FormButtonsInterface): JSX.Element | null => {
-  const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
+  let buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
+  if (overrideButtonOrder) {
+    buttonOrder = overrideButtonOrder;
+  }
 
   return (
     <div className={`${styles.formButtonsWrapper} page_refero__buttons`}>
@@ -52,7 +59,7 @@ const FormButtons = ({
                 return (
                   <PauseFormButton
                     key={buttonType}
-                    isStepView={isStepView}
+                    isStepView={isStepView || showSaveButtonAsBackButton}
                     pauseButtonText={pauseButtonText}
                     onPauseButtonClicked={onPauseButtonClicked}
                     pauseButtonDisabled={pauseButtonDisabled}
