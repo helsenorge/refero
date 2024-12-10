@@ -1,3 +1,11 @@
+## 16.0.6
+
+---
+
+- Bugfix: Initial value was reset in Choice and Open-Choice
+- Bugfix: Decimal field accepted all characters and some characters wiped the field
+- Bugfix: Input fields width was too small
+
 ## 16.0.5
 
 ---
