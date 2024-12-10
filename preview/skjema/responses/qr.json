@@ -3,11 +3,73 @@
   "status": "in-progress",
   "item": [
     {
-      "linkId": "ef5f832e-f959-41f1-a589-d784f61600ec",
-      "text": "Vennligst velg en dato og en tid",
-      "answer": [
+      "linkId": "62314607-656b-47bb-8b8a-a3bcbd579eb7",
+      "text": "Initial",
+      "item": [
         {
-          "valueDateTime": "2024-11-14T12:12:00+01:00"
+          "linkId": "d342579c-2805-49f6-8c92-f4c8ecd07750",
+          "text": "Choice 1",
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                "code": "2",
+                "display": "Nei"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "3",
+                "display": "Vet ikke",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "8cd87d20-1583-4f79-f238-c5c5607e314a",
+          "text": "Choice 1",
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                "code": "2",
+                "display": "Nei"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "f3ca60d7-678b-49c5-812d-d76b30a5cccb",
+      "text": "Initial - radio",
+      "item": [
+        {
+          "linkId": "8c4ec2fd-e05d-40d0-8c8e-5d6672ec34b7",
+          "text": "Radio 1",
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                "code": "2",
+                "display": "Nei"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "282c6123-dd00-4786-9543-8605a22aca3e",
+          "text": "radio 2",
+          "answer": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                "code": "2",
+                "display": "Nei"
+              }
+            }
+          ]
         }
       ]
     }

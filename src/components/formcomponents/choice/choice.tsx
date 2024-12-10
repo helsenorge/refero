@@ -55,20 +55,21 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     } else if (answer?.valueCoding?.code) {
       return [answer.valueCoding.code];
     }
+    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueInteger) {
+      return [];
+    }
     return undefined;
   }, [answer]);
 
-  const getInitialValue = useCallback((): string[] | undefined => {
-    const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
+  // const getInitialValue = useCallback((): string[] | undefined => {
+  //   const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
 
-    if (initialSelectedCode) {
-      return [initialSelectedCode];
-    }
-    const code = item?.initial?.[0]?.valueCoding?.code;
-    return code ? [code] : undefined;
-  }, [item]);
-
-  const getValue = () => getAnswerValue() || getInitialValue();
+  //   if (initialSelectedCode) {
+  //     return [initialSelectedCode];
+  //   }
+  //   const code = item?.initial?.[0]?.valueCoding?.code;
+  //   return code ? [code] : undefined;
+  // }, [item]);
 
   const getPDFValue = (): string => {
     const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
@@ -81,8 +82,8 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     if (isDataReceiver(item)) {
       return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
     }
-    const value = getValue();
-    if (!value) {
+    const value = getAnswerValue();
+    if (!value || value.length === 0) {
       return resources?.ikkeBesvart || '';
     }
     return value.map(code => getDisplay(getOptions(resources, item, containedResources), code)).join(', ');
@@ -163,7 +164,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     const options = getOptions(resources, item, containedResources);
     const commonProps = {
       handleChange,
-      selected: getValue(),
+      selected: getAnswerValue(),
       pdfValue,
       ...props,
     };
@@ -190,8 +191,8 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
 
-  const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);
-  const value = useMemo(() => getValue(), [getAnswerValue, getInitialValue]);
+  const options = getOptions(resources, item, containedResources);
+  const value = getAnswerValue();
   useResetFormField(props.idWithLinkIdAndItemIndex, value);
   const shouldRenderAutosuggest = useMemo(
     () => hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE,

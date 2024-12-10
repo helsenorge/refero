@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
@@ -24,13 +24,12 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
-import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 
 const Decimal = (props: Props): JSX.Element | null => {
   const { id, linkId, pdf, children, idWithLinkIdAndItemIndex, path, index } = props;
-  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register, getValues } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
@@ -54,16 +53,10 @@ const Decimal = (props: Props): JSX.Element | null => {
       return '';
     }
   };
-  const value = getValue(item, answer);
-  const [valueState, setValueState] = useState(Array.isArray(value) ? value.join(', ') : value);
-
-  useResetFormField(idWithLinkIdAndItemIndex, value);
-  useEffect(() => {
-    setValueState(Array.isArray(value) ? value.join(', ') : value);
-  }, [answer]);
+  const answerValue = getValue(item, answer);
+  const value = getValues(idWithLinkIdAndItemIndex) ? getValues(idWithLinkIdAndItemIndex) : answerValue;
 
   const getPDFValue = (): string | number => {
-    const value = getValue(item, answer);
     if (value === undefined || value === null || value === '') {
       let text = '';
       if (resources && resources.ikkeBesvart) {
@@ -79,11 +72,9 @@ const Decimal = (props: Props): JSX.Element | null => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const newValue = event.target.value;
-    const newValueConverted = Number(event.target.value);
-
-    setValueState(newValue);
 
     if (item) {
+      const newValueConverted = parseFloat(newValue);
       dispatch(newDecimalValueAsync(path || [], newValueConverted, item))?.then(newState => {
         return onAnswerChange(newState, item, { valueDecimal: newValueConverted });
       });
@@ -134,13 +125,12 @@ const Decimal = (props: Props): JSX.Element | null => {
           testId={`${getId(id)}-decimal-label`}
           sublabelId={`${getId(id)}-decimal-sublabel`}
         />
-
         <Input
           {...rest}
-          type="text"
+          type="number"
           inputId={getId(id)}
           testId={getId(id)}
-          value={valueState}
+          value={value}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
           onChange={(e): void => {

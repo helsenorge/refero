@@ -41,7 +41,7 @@ describe('Integer', () => {
       };
       const { getByLabelText } = await createWrapper(questionnaire);
 
-      expect(getByLabelText(/Integer/i)).toHaveValue('');
+      expect(getByLabelText(/Integer/i)).toHaveValue(null);
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -58,7 +58,7 @@ describe('Integer', () => {
       };
       const { getByLabelText } = await createWrapper(questionnaire);
 
-      expect(getByLabelText(/Integer/i)).toHaveValue('123');
+      expect(getByLabelText(/Integer/i)).toHaveValue(123);
     });
   });
   describe('help button', () => {
@@ -175,11 +175,11 @@ describe('Integer', () => {
 
       const inputElement = getByLabelText(/Integer/i);
       expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', 'text');
+      expect(inputElement).toHaveAttribute('type', 'number');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
       await userEvent.type(inputElement, '123');
 
-      expect(getByLabelText(/Integer/i)).toHaveValue('123');
+      expect(getByLabelText(/Integer/i)).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
