@@ -84,7 +84,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         : (answer && answer.valueCoding && answer.valueCoding.display) || resources?.ikkeBesvart || '';
     }
 
-    const value = getValue();
+    const value = getAnswerValue();
     if (!value) {
       return resources?.ikkeBesvart || '';
     }
