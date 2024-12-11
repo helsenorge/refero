@@ -1,3 +1,10 @@
+
+## 16.0.9
+
+---
+- add dompurify to peerdependencies and remove from dependencies
+- Bugfix: fix decimal field to only accept numbers and one period
+
 ## 16.0.8
 
 ---
