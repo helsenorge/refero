@@ -2,7 +2,6 @@ import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from 'fh
 
 import { SidebarItem } from '../types/sidebar';
 
-import { SanitizeText } from './sanitize/domPurifyHelper';
 import { Extensions } from '../constants/extensions';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
@@ -16,7 +15,7 @@ export function getValidationTextExtension(item?: QuestionnaireItem): string | u
   if (!validationTextExtension || !validationTextExtension.valueString) {
     return undefined;
   }
-  return SanitizeText(validationTextExtension.valueString);
+  return validationTextExtension.valueString;
 }
 
 export function getPresentationButtonsExtension(questionniare: Questionnaire): PresentationButtonsType | null {
