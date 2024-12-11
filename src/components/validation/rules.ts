@@ -138,7 +138,7 @@ export const scriptInjection = ({ value, resources, shouldValidate }: ValidateIn
   return shouldValidate ? scriptInjectionValidation(value, resources) : undefined;
 };
 
-export const getInputWidth = (maxCharacters: number | undefined, maxDecimals?: number | undefined): number => {
+export const getInputWidth = (maxCharacters: number | undefined, allowDecimals?: boolean, maxDecimals?: number | undefined): number => {
   if (!maxCharacters) {
     const defaultLength = 20;
     return defaultLength;
@@ -146,7 +146,7 @@ export const getInputWidth = (maxCharacters: number | undefined, maxDecimals?: n
 
   let width = maxCharacters;
 
-  if (maxDecimals) {
+  if (allowDecimals) {
     const puncationLength = 1;
     const defaultDecimalLength = 2;
     const decimalLength = maxDecimals ? maxDecimals : defaultDecimalLength;
