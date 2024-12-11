@@ -101,7 +101,7 @@ export function createQuestionnaireResponseItem(item: QuestionnaireItem): Questi
 
   return responseItem;
 }
-function evaluateCalculatedExpressions(questionnaire: Questionnaire, response: QuestionnaireResponse): QuestionnaireResponse {
+export function evaluateCalculatedExpressions(questionnaire: Questionnaire, response: QuestionnaireResponse): QuestionnaireResponse {
   function traverseItems(qItems: QuestionnaireItem[], qrItems: QuestionnaireResponseItem[]): void {
     qItems.forEach((qItem, index) => {
       const qrItem = qrItems[index];

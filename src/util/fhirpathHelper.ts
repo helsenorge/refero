@@ -23,8 +23,8 @@ export async function getAnswerFromResponseItem(responseItem?: QuestionnaireResp
   }
 }
 
-export async function getResonseItem(linkId: string, responseItem: QuestionnaireResponseItem): Promise<any[] | undefined> {
-  if (!linkId || !responseItem) {
+export async function getResonseItem(linkId: string, response: QuestionnaireResponse): Promise<any[] | undefined> {
+  if (!linkId || !response) {
     return undefined;
   }
   try {
@@ -32,7 +32,7 @@ export async function getResonseItem(linkId: string, responseItem: Questionnaire
       `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`,
       fhirpath_r4_model
     );
-    return compiledExpression(responseItem);
+    return compiledExpression(response);
   } catch (e) {
     console.log(e);
     return undefined;
@@ -81,7 +81,15 @@ export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, 
     return [];
   }
 }
-
+export async function evaluateFhirpathExpression(expression: string, context: any): Promise<any[]> {
+  try {
+    const compiledExpression = fhirpath.compile(expression, fhirpath_r4_model);
+    return compiledExpression(context);
+  } catch (error) {
+    console.error(`Error evaluating FHIRPath expression "${expression}":`, error);
+    return [];
+  }
+}
 export function evaluateExtension(path: string | fhirpath.Path, questionnare?: QuestionnaireResponse | null, context?: Context): unknown {
   const qCopy = structuredClone(questionnare);
   /**
