@@ -1,3 +1,9 @@
+## 16.0.8
+
+---
+
+- Bugfix: remove tostring from SanitizeText, return trustedHtml. Remove sanitazion from errorMessage
+
 ## 16.0.7
 
 ---
