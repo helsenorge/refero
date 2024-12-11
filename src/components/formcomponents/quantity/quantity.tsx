@@ -110,7 +110,7 @@ const Quantity = (props: Props): JSX.Element | null => {
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const maxDecimals = getMaxDecimalPlacesExtensionValue(item) ? getMaxDecimalPlacesExtensionValue(item) : undefined;
   const baseIncrementValue = getMinValueExtensionValue(item);
-  const width = getInputWidth(maxCharacters, maxDecimals);
+  const width = getInputWidth(maxCharacters, true, maxDecimals);
   const errorMessage = getErrorMessage(item, error);
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
