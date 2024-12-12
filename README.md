@@ -7,10 +7,10 @@ React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/que
 - [react-dom](https://www.npmjs.com/package/react-dom)
 - [redux](https://www.npmjs.com/package/redux)
 - [react-redux](https://www.npmjs.com/package/react-redux)
+- [dompurify](https://www.npmjs.com/package/dompurify)
 
 
 ## Dependencies
-- [dompurify](https://www.npmjs.com/package/dompurify)
 - [firepath](https://www.npmjs.com/package/firepath)
 - [immer](https://www.npmjs.com/package/immer)
 - [marked](https://www.npmjs.com/package/marked)

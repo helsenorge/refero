@@ -73,25 +73,37 @@ const RenderForm = ({
         {children}
         {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
       </form>
-      <FormButtons
-        isStepView={isStepView}
-        submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
-        cancelButtonText={resources.formCancel}
-        pauseButtonText={displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave}
-        submitButtonDisabled={referoProps.submitButtonDisabled}
-        pauseButtonDisabled={referoProps.saveButtonDisabled}
-        onSubmitButtonClicked={
-          displayNextButton
-            ? methods.handleSubmit(handleNextStep, onErrorReactHookForm)
-            : methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)
-        }
-        onCancelButtonClicked={(): void => {
-          referoProps.onCancel && referoProps.onCancel();
-        }}
-        onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
-        isAuthorized={isAuthorized}
-        loginButton={referoProps.loginButton}
-      />
+      {referoProps.renderCustomActionButtons ? (
+        referoProps.renderCustomActionButtons({
+          isStepView,
+          referoProps,
+          displayNextButton,
+          displayPreviousButton,
+          nextStep,
+          previousStep,
+          reactHookFormMethods: methods,
+        })
+      ) : (
+        <FormButtons
+          isStepView={isStepView}
+          submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
+          cancelButtonText={resources.formCancel}
+          pauseButtonText={displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave}
+          submitButtonDisabled={referoProps.submitButtonDisabled}
+          pauseButtonDisabled={referoProps.saveButtonDisabled}
+          onSubmitButtonClicked={
+            displayNextButton
+              ? methods.handleSubmit(handleNextStep, onErrorReactHookForm)
+              : methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)
+          }
+          onCancelButtonClicked={(): void => {
+            referoProps.onCancel && referoProps.onCancel();
+          }}
+          onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
+          isAuthorized={isAuthorized}
+          loginButton={referoProps.loginButton}
+        />
+      )}
     </>
   );
 };
