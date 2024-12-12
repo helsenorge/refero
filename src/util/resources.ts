@@ -335,4 +335,16 @@ export interface Resources {
    * tegn
    */
   maxCharactersText: string;
+  /**
+   * Avbryt
+   */
+  microwebstep_navigasjon_avbryt_button: string;
+  /**
+   * Neste
+   */
+  microwebstep_navigasjon_neste_button: string;
+  /**
+   * Tilbake
+   */
+  microwebstep_navigasjon_tilbake_button: string;
 }

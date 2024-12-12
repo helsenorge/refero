@@ -10,6 +10,7 @@ import Loader from '@helsenorge/designsystem-react/components/Loader';
 import FormButtons from './formButtons/formButtons';
 import { ValidationSummary } from './validation/validation-summary';
 import { Resources } from '@/util/resources';
+import { buttonOrderMicrowebStep } from '@/types/formTypes/formButton';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -66,6 +67,19 @@ const RenderForm = ({
       nextStep();
     }
   };
+
+  const cancelButtonClicked = (): void => {
+    if (referoProps.customNavigationCallBack) {
+      referoProps.customNavigationCallBack('cancel', undefined);
+    }
+  };
+
+  const backButtonClicked = (): void => {
+    if (referoProps.customNavigationCallBack) {
+      referoProps.customNavigationCallBack('back', undefined);
+    }
+  };
+
   return (
     <>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
@@ -73,25 +87,44 @@ const RenderForm = ({
         {children}
         {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
       </form>
-      <FormButtons
-        isStepView={isStepView}
-        submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
-        cancelButtonText={resources.formCancel}
-        pauseButtonText={displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave}
-        submitButtonDisabled={referoProps.submitButtonDisabled}
-        pauseButtonDisabled={referoProps.saveButtonDisabled}
-        onSubmitButtonClicked={
-          displayNextButton
-            ? methods.handleSubmit(handleNextStep, onErrorReactHookForm)
-            : methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)
-        }
-        onCancelButtonClicked={(): void => {
-          referoProps.onCancel && referoProps.onCancel();
-        }}
-        onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
-        isAuthorized={isAuthorized}
-        loginButton={referoProps.loginButton}
-      />
+
+      {referoProps.customProps?.isMicroweb && (
+        <FormButtons
+          isStepView={false}
+          submitButtonText={resources?.microwebstep_navigasjon_neste_button || 'Neste'}
+          cancelButtonText={resources?.microwebstep_navigasjon_avbryt_button || 'Avbryt'}
+          pauseButtonText={resources?.microwebstep_navigasjon_tilbake_button || 'Tilbake'}
+          onSubmitButtonClicked={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}
+          onCancelButtonClicked={cancelButtonClicked}
+          onPauseButtonClicked={backButtonClicked}
+          isAuthorized={isAuthorized}
+          loginButton={referoProps.loginButton}
+          overrideButtonOrder={buttonOrderMicrowebStep}
+          isMicrowebStep={true}
+        />
+      )}
+
+      {referoProps.customProps?.isMicroweb === undefined && (
+        <FormButtons
+          isStepView={isStepView}
+          submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
+          cancelButtonText={resources.formCancel}
+          pauseButtonText={displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave}
+          submitButtonDisabled={referoProps.submitButtonDisabled}
+          pauseButtonDisabled={referoProps.saveButtonDisabled}
+          onSubmitButtonClicked={
+            displayNextButton
+              ? methods.handleSubmit(handleNextStep, onErrorReactHookForm)
+              : methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)
+          }
+          onCancelButtonClicked={(): void => {
+            referoProps.onCancel && referoProps.onCancel();
+          }}
+          onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
+          isAuthorized={isAuthorized}
+          loginButton={referoProps.loginButton}
+        />
+      )}
     </>
   );
 };
