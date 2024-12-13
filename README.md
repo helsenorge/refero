@@ -7,24 +7,22 @@ React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/que
 - [react-dom](https://www.npmjs.com/package/react-dom)
 - [redux](https://www.npmjs.com/package/redux)
 - [react-redux](https://www.npmjs.com/package/react-redux)
-
-
-## Dependencies
 - [dompurify](https://www.npmjs.com/package/dompurify)
-- [firepath](https://www.npmjs.com/package/firepath)
-- [immer](https://www.npmjs.com/package/immer)
-- [marked](https://www.npmjs.com/package/marked)
-- [uuid](https://www.npmjs.com/package/uuid)
-- [react-collapse](https://www.npmjs.com/package/react-collapse)
-- [react-hook-form](https://www.npmjs.com/package/react-hook-form)
-- [redux-thunk](https://www.npmjs.com/package/redux-thunk)
-- [date-fns](https://www.npmjs.com/package/date-fns)
-- [classnames](https://www.npmjs.com/package/classnames)
-- [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
 - [@helsenorge/file-upload](https://www.npmjs.com/package/@helsenorge/file-upload)
 - [@helsenorge/datepicker](https://www.npmjs.com/package/@helsenorge/datepicker)
 - [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
 - [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
+
+
+## Dependencies
+- [firepath](https://www.npmjs.com/package/firepath)
+- [marked](https://www.npmjs.com/package/marked)
+- [uuid](https://www.npmjs.com/package/uuid)
+- [react-collapse](https://www.npmjs.com/package/react-collapse)
+- [react-hook-form](https://www.npmjs.com/package/react-hook-form)
+- [date-fns](https://www.npmjs.com/package/date-fns)
+- [classnames](https://www.npmjs.com/package/classnames)
+- [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
 
 ## Example usage
 
@@ -119,6 +117,12 @@ const App = () => {
 | fetchReceivers                |          | callback                   |         | Callback when the receiver component is mounted                                                               |
 | onFieldsNotCorrectlyFilledOut |          | callback                   |         | Callback when a field is incorrectly filled out                                                               |
 | onStepChange                  |          | callback                   |         | Callback when the current step in step-views changes                                                          |
+| useFormProps                  |          | UseFormProps               |         | Additional options passed to `react-hook-form`'s `useForm` hook.                                              |
+| renderCustomActionButtons     |          | callback                   |         | A callback function that allows consumers to render their own custom buttons.                                 |
+| customNavigationCallBack      |          | callback                   |         | A callback function that allows consumers to listen to navigation changes.                                    |
+| customProps                   |          | any                        |         | Any custom props that consumers want to pass to the Refero component.                                         |
+
+
 
 ### `questionnaire: Questionnaire`
 

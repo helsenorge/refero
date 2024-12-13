@@ -1,4 +1,11 @@
 
+## 16.2.0-beta.1
+
+---
+- Support for accepting a prop for rendering your own action buttons in the form component
+- Updated props description for form component
+
+
 ## 16.1.0
 
 ---
