@@ -39,7 +39,8 @@ jobs:
         env:
           SARIF_ESLINT_IGNORE_SUPPRESSED: "true"
         run: npx eslint .
-          --ignore-pattern ["**/*-spec.*", "test/**"]
+          --ignore-pattern '**/*-spec.*' \
+          --ignore-pattern 'test/**' \
           --config .eslintrc.json
           --ext .js,.jsx,.ts,.tsx
           --format @microsoft/eslint-formatter-sarif
