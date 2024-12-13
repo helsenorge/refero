@@ -20,3 +20,9 @@ export const buttonOrderNormalView: ButtonOrder = {
   2: ButtonType.pauseButton,
   3: ButtonType.cancelButton,
 };
+
+export const buttonOrderMicrowebStep: ButtonOrder = {
+  1: ButtonType.pauseButton,
+  2: ButtonType.submitButton,
+  3: ButtonType.cancelButton,
+};

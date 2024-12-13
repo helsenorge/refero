@@ -38,7 +38,6 @@ type Props = QuestionnaireComponentItemProps & {
   resources?: Resources;
   isRequired?: boolean;
   multiple?: boolean;
-  errorText?: string;
   onRequestAttachmentLink?: (file: string) => string;
   maxFiles?: number;
   minFiles?: number;

@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "16.0.6",
+  "version": "16.2.0",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
@@ -45,7 +45,8 @@
     "dev:preview": "vite -- --host",
     "build:lib": "vite build",
     "tsc:b": "tsc -b",
-    "prepare": "npm run build:lib"
+    "prepare": "npm run build:lib",
+    "analyze": "vite build --mode analyze"
   },
   "sideEffects": [
     "*.css",
@@ -61,6 +62,7 @@
     "@helsenorge/datepicker": "^9.0.0",
     "@helsenorge/designsystem-react": "^9.0.0",
     "@helsenorge/file-upload": "^33.0.0",
+    "dompurify": "^3.1.7",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-redux": "^9.0.0",
@@ -93,6 +95,7 @@
     "browserslist": "^4.23.1",
     "core-js": "^3.37.1",
     "cssnano": "^7.0.3",
+    "dompurify": "^3.1.7",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
@@ -112,6 +115,7 @@
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-generate-package-json": "^3.2.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.77.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
@@ -126,16 +130,15 @@
     "@helsenorge/core-utils": "^33.0.0",
     "classnames": "^2.3.2",
     "date-fns": "^3.6.0",
-    "dompurify": "^3.1.6",
-    "fhirpath": "3.15.1",
+    "fhirpath": "3.15.2",
     "marked": "^14.0.0",
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",
     "uuid": "^10.0.0"
   },
   "optionalDependencies": {
-    "@ast-grep/napi-linux-x64-gnu": "0.26.2",
-    "@rollup/rollup-linux-x64-gnu": "4.9.5",
+    "@ast-grep/napi-linux-x64-gnu": "0.31.1",
+    "@rollup/rollup-linux-x64-gnu": "4.28.1",
     "@swc/core-linux-x64-gnu": "^1.7.14"
   }
 }

@@ -7,7 +7,7 @@ import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import AttachmentHtml from './attachmenthtml';
 import { newAttachmentAsync, removeAttachmentAsync } from '@/actions/newValue';
 import { GlobalState, useAppDispatch } from '@/reducers';
-import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '@/util/extension';
+import { getMaxOccursExtensionValue, getMinOccursExtensionValue } from '@/util/extension';
 import { isRequired, getId, isRepeat } from '@/util/index';
 import { useSelector } from 'react-redux';
 import { useAttachmentContext } from '@/context/AttachmentContext';
@@ -100,7 +100,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
         resources={resources}
         isRequired={isRequired(item)}
         multiple={isRepeat(item)}
-        errorText={getValidationTextExtension(item)}
         customErrorMessage={customErrorMessage}
         onRequestAttachmentLink={onRequestAttachmentLink}
         maxFiles={getMaxOccursExtensionValue(item)}

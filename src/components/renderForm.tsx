@@ -10,6 +10,7 @@ import Loader from '@helsenorge/designsystem-react/components/Loader';
 import FormButtons from './formButtons/formButtons';
 import { ValidationSummary } from './validation/validation-summary';
 import { Resources } from '@/util/resources';
+import { buttonOrderMicrowebStep } from '@/types/formTypes/formButton';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -66,6 +67,46 @@ const RenderForm = ({
       nextStep();
     }
   };
+
+  const cancelButtonClicked = (): void => {
+    if (referoProps.customNavigationCallBack) {
+      referoProps.customNavigationCallBack('cancel', undefined);
+    }
+  };
+
+  const backButtonClicked = (): void => {
+    if (referoProps.customNavigationCallBack) {
+      referoProps.customNavigationCallBack('back', undefined);
+    }
+  };
+  const pauseButtonText = referoProps.customProps?.isMicroweb
+    ? resources?.microwebstep_navigasjon_tilbake_button || 'Tilbake'
+    : displayPreviousButton && isStepView
+      ? resources.previousStep || 'Lagre'
+      : resources.formSave;
+  const onSubmitButtonClicked = referoProps.customProps?.isMicroweb
+    ? methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)
+    : displayNextButton
+      ? methods.handleSubmit(handleNextStep, onErrorReactHookForm)
+      : methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm);
+  const cancelButtonText = referoProps.customProps?.isMicroweb
+    ? resources?.microwebstep_navigasjon_avbryt_button || 'Avbryt'
+    : resources.formCancel;
+  const submitButtonText = referoProps.customProps?.isMicroweb
+    ? resources?.microwebstep_navigasjon_neste_button || 'Neste'
+    : displayNextButton && resources.nextStep
+      ? resources.nextStep
+      : resources.formSend;
+  const onPauseButtonClicked = referoProps.customProps?.isMicroweb
+    ? backButtonClicked
+    : isStepView
+      ? displayPauseButtonInStepView
+      : displayPauseButtonInNormalView;
+  const isStepViewProp = referoProps.customProps?.isMicroweb ? false : isStepView;
+  const submitButtonDisabled = referoProps.customProps?.isMicroweb ? undefined : referoProps.submitButtonDisabled;
+  const pauseButtonDisabled = referoProps.customProps?.isMicroweb ? undefined : referoProps.saveButtonDisabled;
+  const onCancelButtonClicked = referoProps.customProps?.isMicroweb ? cancelButtonClicked : referoProps.onCancel;
+  const overrideButtonOrder = referoProps.customProps?.isMicroweb ? buttonOrderMicrowebStep : undefined;
   return (
     <>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
@@ -73,25 +114,33 @@ const RenderForm = ({
         {children}
         {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
       </form>
-      <FormButtons
-        isStepView={isStepView}
-        submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
-        cancelButtonText={resources.formCancel}
-        pauseButtonText={displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave}
-        submitButtonDisabled={referoProps.submitButtonDisabled}
-        pauseButtonDisabled={referoProps.saveButtonDisabled}
-        onSubmitButtonClicked={
-          displayNextButton
-            ? methods.handleSubmit(handleNextStep, onErrorReactHookForm)
-            : methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)
-        }
-        onCancelButtonClicked={(): void => {
-          referoProps.onCancel && referoProps.onCancel();
-        }}
-        onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
-        isAuthorized={isAuthorized}
-        loginButton={referoProps.loginButton}
-      />
+      {referoProps.renderCustomActionButtons ? (
+        referoProps.renderCustomActionButtons({
+          isStepView,
+          referoProps,
+          displayNextButton,
+          displayPreviousButton,
+          nextStep,
+          previousStep,
+          reactHookFormMethods: methods,
+        })
+      ) : (
+        <FormButtons
+          isStepView={isStepViewProp}
+          submitButtonText={submitButtonText}
+          cancelButtonText={cancelButtonText}
+          pauseButtonText={pauseButtonText}
+          submitButtonDisabled={submitButtonDisabled}
+          pauseButtonDisabled={pauseButtonDisabled}
+          onSubmitButtonClicked={onSubmitButtonClicked}
+          onCancelButtonClicked={onCancelButtonClicked}
+          onPauseButtonClicked={onPauseButtonClicked}
+          isAuthorized={isAuthorized}
+          loginButton={referoProps.loginButton}
+          overrideButtonOrder={overrideButtonOrder}
+          isMicrowebStep={!!referoProps.customProps?.isMicroweb}
+        />
+      )}
     </>
   );
 };

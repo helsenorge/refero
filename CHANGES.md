@@ -1,3 +1,36 @@
+
+## 16.2.0
+
+---
+- Support for accepting a prop for rendering your own action buttons in the form component
+- Updated props description for form component
+
+
+## 16.1.0
+
+---
+- Support for Microweb Step in refero
+- Callbacks and override for formbuttons
+
+
+## 16.0.9
+
+---
+- add dompurify to peerdependencies and remove from dependencies
+- Bugfix: fix decimal field to only accept numbers and one period
+
+## 16.0.8
+
+---
+
+- Bugfix: remove tostring from SanitizeText, return trustedHtml. Remove sanitazion from errorMessage
+
+## 16.0.7
+
+---
+
+- UU bugfix: Grouped form controls missing an accessible name in Radiobuttons and Checkboxes
+
 ## 16.0.6
 
 ---

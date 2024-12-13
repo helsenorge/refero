@@ -286,6 +286,7 @@ const FormFillerPreview = (): JSX.Element => {
                     return <HelpButton opening={opening} />;
                   }}
                   onFieldsNotCorrectlyFilledOut={() => {}}
+
                   // onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
                 />
               </div>

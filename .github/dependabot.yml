@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # Check for updates to npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    target-branch: "master"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+    ignore:
+      # Ignore major version updates for all dependencies
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
