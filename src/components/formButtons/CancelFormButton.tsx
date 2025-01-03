@@ -4,14 +4,14 @@ type Props = {
   onCancelButtonClicked?: () => void;
   cancelButtonText: string;
   isMicroweb?: boolean;
-  avbryturl?: string;
+  cancelUrl?: string;
 };
 
-export const CancelFormButton = ({ cancelButtonText, onCancelButtonClicked, isMicroweb, avbryturl }: Props): JSX.Element | null => {
-  if (isMicroweb && avbryturl) {
+export const CancelFormButton = ({ cancelButtonText, onCancelButtonClicked, isMicroweb, cancelUrl }: Props): JSX.Element | null => {
+  if (isMicroweb && cancelUrl) {
     return (
       <div>
-        <Button variant="borderless" href={avbryturl} htmlMarkup="a" testId="refero-cancel-button">
+        <Button variant="borderless" href={cancelUrl} htmlMarkup="a" testId="refero-cancel-button">
           {cancelButtonText}
         </Button>
       </div>
