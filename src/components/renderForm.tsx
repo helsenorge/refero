@@ -114,33 +114,53 @@ const RenderForm = ({
         {children}
         {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
       </form>
-      {referoProps.renderCustomActionButtons ? (
-        referoProps.renderCustomActionButtons({
-          isStepView,
-          referoProps,
-          displayNextButton,
-          displayPreviousButton,
-          nextStep,
-          previousStep,
-          reactHookFormMethods: methods,
-        })
-      ) : (
+
+      {referoProps.customProps?.isMicroweb && referoProps.renderCustomActionButtons === undefined && (
         <FormButtons
-          isStepView={isStepViewProp}
-          submitButtonText={submitButtonText}
-          cancelButtonText={cancelButtonText}
-          pauseButtonText={pauseButtonText}
-          submitButtonDisabled={submitButtonDisabled}
-          pauseButtonDisabled={pauseButtonDisabled}
-          onSubmitButtonClicked={onSubmitButtonClicked}
-          onCancelButtonClicked={onCancelButtonClicked}
-          onPauseButtonClicked={onPauseButtonClicked}
+          isStepView={false}
+          submitButtonText={'Neste'}
+          cancelButtonText={'Avbryt'}
+          pauseButtonText={'Tilbake'}
+          onSubmitButtonClicked={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}
+          onCancelButtonClicked={cancelButtonClicked}
+          onPauseButtonClicked={backButtonClicked}
           isAuthorized={isAuthorized}
           loginButton={referoProps.loginButton}
-          overrideButtonOrder={overrideButtonOrder}
-          isMicrowebStep={!!referoProps.customProps?.isMicroweb}
+          overrideButtonOrder={buttonOrderMicrowebStep}
+          isMicrowebStep={true}
+          avbryturl={referoProps.customProps?.avbryturl}
+          hidebackbutton={referoProps.customProps?.hidebackbutton}
         />
       )}
+
+      {!referoProps.customProps?.isMicroweb &&
+        (referoProps.renderCustomActionButtons ? (
+          referoProps.renderCustomActionButtons({
+            isStepView,
+            referoProps,
+            displayNextButton,
+            displayPreviousButton,
+            nextStep,
+            previousStep,
+            reactHookFormMethods: methods,
+          })
+        ) : (
+          <FormButtons
+            isStepView={isStepViewProp}
+            submitButtonText={submitButtonText}
+            cancelButtonText={cancelButtonText}
+            pauseButtonText={pauseButtonText}
+            submitButtonDisabled={submitButtonDisabled}
+            pauseButtonDisabled={pauseButtonDisabled}
+            onSubmitButtonClicked={onSubmitButtonClicked}
+            onCancelButtonClicked={onCancelButtonClicked}
+            onPauseButtonClicked={onPauseButtonClicked}
+            isAuthorized={isAuthorized}
+            loginButton={referoProps.loginButton}
+            overrideButtonOrder={overrideButtonOrder}
+            isMicrowebStep={!!referoProps.customProps?.isMicroweb}
+          />
+        ))}
     </>
   );
 };
