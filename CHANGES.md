@@ -1,5 +1,5 @@
 
-## 16.2.1-beta01
+## 16.2.1
 
 ---
 - Support for Microweb Form buttons override in case custom props is set
