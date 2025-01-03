@@ -115,7 +115,7 @@ const RenderForm = ({
         {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
       </form>
 
-      {referoProps.customProps?.isMicroweb && referoProps.renderCustomActionButtons === undefined && (
+      {referoProps.customProps?.isMicroweb && !referoProps.renderCustomActionButtons && (
         <FormButtons
           isStepView={false}
           submitButtonText={'Neste'}
@@ -128,8 +128,8 @@ const RenderForm = ({
           loginButton={referoProps.loginButton}
           overrideButtonOrder={buttonOrderMicrowebStep}
           isMicrowebStep={true}
-          avbryturl={referoProps.customProps?.avbryturl}
-          hidebackbutton={referoProps.customProps?.hidebackbutton}
+          cancelUrl={referoProps.customProps?.cancelUrl}
+          hideBackButton={referoProps.customProps?.hidebackbutton}
         />
       )}
 

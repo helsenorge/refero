@@ -25,8 +25,8 @@ interface FormButtonsInterface {
   loginButton?: JSX.Element;
   overrideButtonOrder?: ButtonOrder;
   isMicrowebStep?: boolean;
-  avbryturl?: string;
-  hidebackbutton?: boolean;
+  cancelUrl?: string;
+  hideBackButton?: boolean;
 }
 
 const FormButtons = ({
@@ -43,8 +43,8 @@ const FormButtons = ({
   loginButton,
   overrideButtonOrder,
   isMicrowebStep,
-  avbryturl,
-  hidebackbutton,
+  cancelUrl: cancelUrl,
+  hideBackButton: hidebackbutton,
 }: FormButtonsInterface): JSX.Element | null => {
   let buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
   if (overrideButtonOrder) {
@@ -80,7 +80,7 @@ const FormButtons = ({
                     cancelButtonText={cancelButtonText}
                     onCancelButtonClicked={onCancelButtonClicked}
                     isMicroweb={isMicrowebStep}
-                    avbryturl={avbryturl}
+                    cancelUrl={cancelUrl}
                   />
                 );
               case ButtonType.submitButton:
