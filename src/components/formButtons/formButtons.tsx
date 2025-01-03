@@ -43,8 +43,8 @@ const FormButtons = ({
   loginButton,
   overrideButtonOrder,
   isMicrowebStep,
-  cancelUrl: cancelUrl,
-  hideBackButton: hidebackbutton,
+  cancelUrl,
+  hideBackButton,
 }: FormButtonsInterface): JSX.Element | null => {
   let buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
   if (overrideButtonOrder) {
@@ -60,7 +60,7 @@ const FormButtons = ({
           {Object.values(buttonOrder).map((buttonType: ButtonType): JSX.Element | null => {
             switch (buttonType) {
               case ButtonType.pauseButton:
-                if (isMicrowebStep && hidebackbutton) {
+                if (isMicrowebStep && hideBackButton) {
                   return <></>;
                 }
 
