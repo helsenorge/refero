@@ -2,7 +2,7 @@
 ## 16.2.2
 
 ---
-- Support for Microweb Form buttons override in case custom props is set
+- Formatted code
 
 
 ## 16.2.1
