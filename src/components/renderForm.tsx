@@ -129,7 +129,7 @@ const RenderForm = ({
           overrideButtonOrder={buttonOrderMicrowebStep}
           isMicrowebStep={true}
           cancelUrl={referoProps.customProps?.cancelUrl}
-          hideBackButton={referoProps.customProps?.hidebackbutton}
+          hideBackButton={referoProps.customProps?.hideBackButton}
         />
       )}
 
