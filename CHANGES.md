@@ -1,4 +1,10 @@
 
+## 16.3.0
+
+---
+- Changed default validation mode to onTouched
+
+
 ## 16.2.2
 
 ---
