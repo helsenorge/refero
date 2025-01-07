@@ -5,6 +5,5 @@ export function SanitizeText(textToSanitize: string): TrustedHTML {
     RETURN_TRUSTED_TYPE: true,
     ADD_ATTR: ['target'],
   });
-
   return sanitizedResult;
 }
