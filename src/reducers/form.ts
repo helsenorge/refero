@@ -28,8 +28,10 @@ import {
   deleteRepeatItemAction,
   RemoveAttachmentPayload,
   CodingStringPayload,
+  AnswerValueItemPayload,
   RemoveCodingStringPayload,
   RemoveCodingValuePayload,
+  newAnswerValueAction,
 } from '@/actions/newValue';
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
 import itemType from '@/constants/itemType';
@@ -97,6 +99,9 @@ const formSlice = createSlice({
       })
       .addCase(newValue, (state, action: PayloadAction<NewValuePayload>) => {
         processNewValueAction(action.payload, state);
+      })
+      .addCase(newAnswerValueAction, (state, action: PayloadAction<AnswerValueItemPayload>) => {
+        processNewAnswerValueAction(action.payload, state);
       })
       .addCase(newCodingStringValueAction, (state, action: PayloadAction<CodingStringPayload>) => {
         processNewCodingStringValueAction(action.payload, state);
@@ -427,6 +432,18 @@ function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form
   if (responseItem.answer.length === 0) {
     delete responseItem.answer;
   }
+  return state;
+}
+function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: Form): Form {
+  const responseItem = getResponseItemWithPath(payload.itemPath || [], state.FormData);
+
+  if (!responseItem) {
+    return state;
+  }
+  const answer = payload.newAnswer;
+  responseItem.answer = answer;
+  runEnableWhen(payload, state);
+
   return state;
 }
 
