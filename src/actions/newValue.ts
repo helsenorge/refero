@@ -115,15 +115,6 @@ export function newBooleanValueAsync(itemPath: Array<Path>, value: boolean, item
   };
 }
 export const newAnswerValueAction = createAction<AnswerValueItemPayload>(NEW_ANSWER_VALUE);
-// /*
-//  * @deprecated this will be removed in a future version, use newCodingValueAction instead
-//  */
-// export const newCodingsValue = (
-//   itemPath: CodingValueItemPayload['itemPath'],
-//   value: CodingValueItemPayload['valueCoding'],
-//   item: CodingValueItemPayload['item'],
-//   multipleAnswers?: CodingValueItemPayload['multipleAnswers']
-// ): PayloadAction<AnswerValueItemPayload> => newCodingsValueAction({ itemPath, valueCodings: value, item, multipleAnswers });
 
 export const newCodingValueAction = createAction<CodingValueItemPayload>(NEW_VALUE);
 /*
