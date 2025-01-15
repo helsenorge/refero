@@ -7,7 +7,7 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import FileUpload, { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
-import { getCustomValidationText } from './attachment-validation';
+import { getNumberOfFilesValidationText, getValidationTextForAttachment } from './attachment-validation';
 import {
   validateNumberOfFiles,
   validateFileType,
@@ -20,12 +20,12 @@ import { getId, isReadOnly } from '@/util';
 import { Resources } from '@/util/resources';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { TextMessage } from '@/types/text-message';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReadOnly } from '../read-only/readOnly';
 import { getErrorMessage } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useAttachmentSync } from './useAttachmentSync';
+import { TextMessage } from '@/types/text-message';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -78,18 +78,12 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
 
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const numberOfFilesMessage = getCustomValidationText(
-    item,
-    (minFiles && !maxFiles && resources?.attachmentError_minFiles) ||
-      (maxFiles && !minFiles && resources?.attachmentError_maxFiles) ||
-      (maxFiles && minFiles && resources?.attachmentError_minFiles) ||
-      undefined
-  );
-  const validationFileTypesMessage = getCustomValidationText(item, resources?.attachmentError_fileType);
+  const numberOfFilesValidationText = getNumberOfFilesValidationText(item, minFiles, maxFiles, resources);
+  const fileTypesValidationText = getValidationTextForAttachment(item, resources?.attachmentError_fileType);
   const maxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
 
   const validFileTypes: MimeTypes[] = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
-  const filSizeErrorMessage = resources?.attachmentError_fileSize?.replace(
+  const filSizeValidationText = resources?.attachmentError_fileSize?.replace(
     '{0}',
     convertBytesToMBString(getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item))
   );
@@ -102,12 +96,12 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   } = useFileUpload(
     internalRegister,
     [
-      validateFileType(validFileTypes, validationFileTypesMessage),
-      validateFileSize(0, maxValueBytes, getCustomValidationText(item, filSizeErrorMessage || 'total file size')),
+      validateFileType(validFileTypes, fileTypesValidationText),
+      validateFileSize(0, maxValueBytes, getValidationTextForAttachment(item, filSizeValidationText || 'total file size')),
     ],
     [
-      validateNumberOfFiles(minFiles ?? 0, maxFiles ?? 20, numberOfFilesMessage || 'Number of files'),
-      validateTotalFileSize(0, maxValueBytes, getCustomValidationText(item, filSizeErrorMessage || 'total file size')),
+      validateNumberOfFiles(minFiles ?? 0, maxFiles ?? 20, numberOfFilesValidationText || 'Number of files'),
+      validateTotalFileSize(0, maxValueBytes, getValidationTextForAttachment(item, filSizeValidationText || 'total file size')),
     ]
   );
 

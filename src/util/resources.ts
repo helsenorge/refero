@@ -244,9 +244,13 @@ export interface Resources {
    */
   attachmentError_minFiles?: string;
   /**
-   * Maks {0} fil(er) er tillatt
+   * Maks {1} fil(er) er tillatt
    */
   attachmentError_maxFiles?: string;
+  /**
+   * Minst {0} fil(er) og maks {1} fil(er) er tillatt
+   */
+  attachmentError_minFiles_and_maxFiles?: string;
   /**
    * Filstørrelse må være mindre enn {0}MB
    */
