@@ -1,4 +1,9 @@
 
+## 16.2.3
+
+---
+- Bugfix in attachment: Wrong validation texts were displayed on error
+
 ## 16.2.2
 
 ---
