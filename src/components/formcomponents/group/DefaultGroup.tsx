@@ -25,9 +25,9 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const { onRenderMarkdown, resources } = useExternalRenderContext();
+
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
-
   return (
     <section id={getId(id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
       <GroupHeader
@@ -47,6 +47,7 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
       </div>
 
       <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      {item?.repeats && path.length > 0 && <div className="page__refero__group__seperator" />}
       <RenderRepeatButton item={item} index={index} path={path} resources={resources} />
     </section>
   );
