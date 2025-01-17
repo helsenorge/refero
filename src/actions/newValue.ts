@@ -1,4 +1,4 @@
-import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from 'fhir/r4';
+import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { createAction, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppDispatch, GlobalState } from '../reducers';
@@ -11,6 +11,8 @@ export const NEW_CODINGSTRING_VALUE: NEW_CODINGSTRING_VALUE = 'refero/NEW_CODING
 export type REMOVE_CODINGSTRING_VALUE = 'refero/REMOVE_CODINGSTRING_VALUE';
 export const REMOVE_CODINGSTRING_VALUE: REMOVE_CODINGSTRING_VALUE = 'refero/REMOVE_CODINGSTRING_VALUE';
 export const REMOVE_CODING_VALUE = 'refero/REMOVE_CODING_VALUE';
+export type NEW_ANSWER_VALUE = 'refero/NEW_ANSWER_VALUE';
+export const NEW_ANSWER_VALUE: NEW_ANSWER_VALUE = 'refero/NEW_ANSWER_VALUE';
 export type ADD_REPEAT_ITEM = 'refero/ADD_REPEAT_ITEM';
 export const ADD_REPEAT_ITEM: ADD_REPEAT_ITEM = 'refero/ADD_REPEAT_ITEM';
 export type DELETE_REPEAT_ITEM = 'refero/DELETE_REPEAT_ITEM';
@@ -34,6 +36,7 @@ export type NewValuePayload = {
   item?: QuestionnaireItem;
   responseItems?: Array<QuestionnaireResponseItem>;
   multipleAnswers?: boolean;
+  newAnswer?: QuestionnaireResponseItemAnswer[];
 };
 export type RemoveAttachmentPayload = Pick<NewValuePayload, 'itemPath' | 'valueAttachment' | 'item'>;
 export type NewAttachmentPayload = Pick<NewValuePayload, 'itemPath' | 'valueAttachment' | 'item' | 'multipleAnswers'>;
@@ -51,6 +54,8 @@ export type DateItemPayload = Pick<NewValuePayload, 'itemPath' | 'valueDate' | '
 export type TimeItemPayload = Pick<NewValuePayload, 'itemPath' | 'valueTime' | 'item'>;
 export type DateTimeItemPayload = Pick<NewValuePayload, 'itemPath' | 'valueDateTime' | 'item'>;
 export type DeleteRepeatItemPayload = Pick<NewValuePayload, 'itemPath' | 'item'>;
+export type AnswerValueItemPayload = Pick<NewValuePayload, 'itemPath' | 'item' | 'newAnswer'>;
+
 export const newValue = createAction<NewValuePayload>(NEW_VALUE);
 
 export const newAttachmentAction = createAction<NewAttachmentPayload>(NEW_VALUE);
@@ -109,6 +114,7 @@ export function newBooleanValueAsync(itemPath: Array<Path>, value: boolean, item
     return await Promise.resolve(getState());
   };
 }
+export const newAnswerValueAction = createAction<AnswerValueItemPayload>(NEW_ANSWER_VALUE);
 
 export const newCodingValueAction = createAction<CodingValueItemPayload>(NEW_VALUE);
 /*
@@ -307,6 +313,13 @@ export function newDateTimeValueAsync(itemPath: Array<Path>, value: string, item
 }
 
 export const addRepeatItemAction = createAction<RepeatItemPayload>(ADD_REPEAT_ITEM);
+
+export const addRepeatItemAsync = (parentPath?: Path[], item?: QuestionnaireItem, responseItems?: QuestionnaireResponseItem[]) => {
+  return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
+    dispatch(addRepeatItemAction({ parentPath, item, responseItems }));
+    return await Promise.resolve(getState());
+  };
+};
 /*
  * @deprecated this will be removed in a future version, use addRepeatItemAction instead
  */
