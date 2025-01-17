@@ -1,33 +1,51 @@
+## 16.3.1
+
+---
+
+- Included bugfix from version 16.2.3 in current version
+
+## 16.3.0
+
+---
+
+- Changed default validation mode to onTouched
+
+## 16.2.3
+
+---
+
+- Bugfix in attachment: Wrong validation texts were displayed on error
 
 ## 16.2.2
 
 ---
-- Formatted code
 
+- Formatted code
 
 ## 16.2.1
 
 ---
-- Support for Microweb Form buttons override in case custom props is set
 
+- Support for Microweb Form buttons override in case custom props is set
 
 ## 16.2.0
 
 ---
+
 - Support for accepting a prop for rendering your own action buttons in the form component
 - Updated props description for form component
-
 
 ## 16.1.0
 
 ---
+
 - Support for Microweb Step in refero
 - Callbacks and override for formbuttons
-
 
 ## 16.0.9
 
 ---
+
 - add dompurify to peerdependencies and remove from dependencies
 - Bugfix: fix decimal field to only accept numbers and one period
 

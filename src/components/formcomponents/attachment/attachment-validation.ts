@@ -4,6 +4,7 @@ import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import { convertBytesToMBString } from './attachmentUtil';
 import { getValidationTextExtension } from '@/util/extension';
+import { Resources } from '@/util/resources';
 
 export const validateMinFiles = (
   files: UploadFile[],
@@ -15,8 +16,8 @@ export const validateMinFiles = (
   if (!minFiles || (files && files.length >= minFiles)) {
     return true;
   }
-  if (getCustomValidationText(item, genericErrorText)) {
-    return getCustomValidationText(item, genericErrorText);
+  if (getValidationTextForAttachment(item, genericErrorText)) {
+    return getValidationTextForAttachment(item, genericErrorText);
   }
   return errorMessage ? errorMessage.replace('{0}', minFiles.toString()) : '';
 };
@@ -31,8 +32,8 @@ export const validateMaxFiles = (
   if (!maxFiles || (files && files.length <= maxFiles)) {
     return true;
   }
-  if (getCustomValidationText(item, genericErrorText)) {
-    return getCustomValidationText(item, genericErrorText);
+  if (getValidationTextForAttachment(item, genericErrorText)) {
+    return getValidationTextForAttachment(item, genericErrorText);
   }
   return errorMessage ? errorMessage.replace('{0}', maxFiles.toString()) : '';
 };
@@ -47,8 +48,8 @@ export const validateFileSize = (
   if (sizeIsValid(file, maxSize)) {
     return true;
   }
-  if (getCustomValidationText(item, genericErrorText)) {
-    return getCustomValidationText(item, genericErrorText);
+  if (getValidationTextForAttachment(item, genericErrorText)) {
+    return getValidationTextForAttachment(item, genericErrorText);
   }
   return errorMessage ? errorMessage.replace('{0}', convertBytesToMBString(maxSize)) : '';
 };
@@ -63,8 +64,8 @@ export const validateFileType = (
   if (mimeTypeIsValid(file, validTypes)) {
     return true;
   }
-  if (getCustomValidationText(item, genericErrorText)) {
-    return getCustomValidationText(item, genericErrorText);
+  if (getValidationTextForAttachment(item, genericErrorText)) {
+    return getValidationTextForAttachment(item, genericErrorText);
   }
   return errorMessage ? errorMessage + ` ${validTypes.join(', ')}.` : '';
 };
@@ -83,14 +84,36 @@ const sizeIsValid = (file: UploadFile, size: number): boolean => {
   return true;
 };
 
-export const getCustomValidationText = (item?: QuestionnaireItem, genericErrorText?: string): string => {
-  const validationText = getValidationTextExtension(item);
-  if (validationText) {
-    return validationText;
+export const getNumberOfFilesValidationText = (
+  item: QuestionnaireItem | undefined,
+  minFiles: number | undefined,
+  maxFiles: number | undefined,
+  resources: Resources | undefined
+): string => {
+  let validationText =
+    (minFiles && !maxFiles && resources?.attachmentError_minFiles) ||
+    (maxFiles && !minFiles && resources?.attachmentError_maxFiles) ||
+    (maxFiles && minFiles && resources?.attachmentError_minFiles_and_maxFiles) ||
+    undefined;
+
+  if (minFiles) {
+    validationText = validationText?.replace('{0}', minFiles?.toString());
+  }
+  if (maxFiles) {
+    validationText = validationText?.replace('{1}', maxFiles?.toString());
   }
 
-  if (genericErrorText) {
-    return genericErrorText;
+  return getValidationTextForAttachment(item, validationText);
+};
+
+export const getValidationTextForAttachment = (item?: QuestionnaireItem, validationText?: string): string => {
+  const validationTextExtension = getValidationTextExtension(item);
+  if (validationTextExtension) {
+    return validationTextExtension;
+  }
+
+  if (validationText) {
+    return validationText;
   }
   return '';
 };
