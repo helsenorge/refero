@@ -1,3 +1,9 @@
+## 16.3.2
+
+---
+
+- Added horizontal separation line between repeated groups
+
 ## 16.3.1
 
 ---

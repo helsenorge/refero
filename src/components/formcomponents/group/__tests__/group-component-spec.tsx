@@ -1,12 +1,14 @@
 import '../../../../util/__tests__/defineFetch';
 import { queryByText, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
-import { repeatQ, q } from './__data__';
+import { repeatQ, q, repeatQ2 } from './__data__';
 import Constants from '../../../../constants';
 import { Questionnaire } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, repeatGroupNTimes } from '../../../../../test/selectors';
+import { render } from '@testing-library/react';
+import DefaultGroup from '../DefaultGroup';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
@@ -124,6 +126,26 @@ describe('group', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+    });
+
+    it('Should show horizontal separation line between repeated groups', async () => {
+      const questionnaire: Questionnaire = {
+        ...repeatQ2,
+        item: repeatQ2.item?.map(x => ({
+          ...x,
+          repeats: true,
+          readOnly: false,
+        })),
+      };
+      createWrapper(questionnaire);
+      const input = '5';
+
+      //Type in the first integer field
+      await userEvent.type(screen.queryAllByLabelText(/REPEATABLE INT/i)[0], input);
+      //Click the second repeat button to repeat the group
+      await userEvent.click(screen.queryAllByTestId(/-repeat-button/i)[1]);
+
+      expect(screen.getByTestId('group-seperator')).toBeInTheDocument();
     });
   });
 });
