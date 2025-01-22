@@ -28,7 +28,7 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
 
   return (
     <section id={getId(id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
-      {item?.repeats && path.length > 0 && index > 0 && <div className="page__refero__group__seperator" />}
+      {item?.repeats && path.length > 1 && index > 0 && <div className="page__refero__group__seperator" />}
 
       <GroupHeader
         headerTag={headerTag}
