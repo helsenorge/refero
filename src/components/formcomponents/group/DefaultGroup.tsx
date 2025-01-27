@@ -21,15 +21,15 @@ type DefaultGroup = QuestionnaireComponentItemProps & {
 };
 const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: DefaultGroup): JSX.Element => {
   const { headerTag, includeSkipLink, path, linkId, index, id } = rest;
-
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-
   const { onRenderMarkdown, resources } = useExternalRenderContext();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
   return (
     <section id={getId(id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
+      {item?.repeats && path.length > 1 && index > 0 && <div data-testid="group-seperator" className="page__refero__group__seperator" />}
+
       <GroupHeader
         headerTag={headerTag}
         isHelpVisible={isHelpVisible}
