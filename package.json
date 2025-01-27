@@ -132,7 +132,7 @@
     "@helsenorge/core-utils": "^33.0.0",
     "classnames": "^2.3.2",
     "date-fns": "^3.6.0",
-    "fhirpath": "3.15.2",
+    "fhirpath": "3.16.3",
     "marked": "^14.0.0",
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",
