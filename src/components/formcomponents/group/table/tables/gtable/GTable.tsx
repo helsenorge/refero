@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
@@ -14,12 +14,11 @@ interface Props {
   tableCodesCoding: Coding[];
 }
 
-const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): JSX.Element => {
+const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): React.JSX.Element | null => {
   const linkIdToSortBy = getLinkIdToSortBy(tableCodesCoding);
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
 
   const gTable = getGtablebodyObject(items, questionnaireResponse, sortDir, linkIdToSortBy);
-
   return gTable && gTable.rows.length > 0 ? (
     <HnTable className="page_refero__table__gtable">
       <GTableHeader headerRow={gTable.headerRow} sortDir={sortDir} setSortDir={setSortDir} linkIdToSortBy={linkIdToSortBy} />
@@ -41,9 +40,7 @@ const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): JSX.
         })}
       </TableBody>
     </HnTable>
-  ) : (
-    <></>
-  );
+  ) : null;
 };
 
 export default GTable;

@@ -1,4 +1,4 @@
-import { IItemType } from '../../../../../constants/itemType';
+import { IItemType } from '@/constants/itemType';
 
 export interface IGTable {
   id: string;

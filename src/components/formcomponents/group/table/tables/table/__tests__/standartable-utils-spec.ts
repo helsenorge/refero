@@ -1,4 +1,4 @@
-import ItemType from '../../../../../../constants/itemType';
+import ItemType from '@/constants/itemType';
 import {
   createBodyRows,
   createColumnsFromAnswers,
@@ -12,7 +12,7 @@ import {
   needsExtraColumn,
 } from '../utils';
 
-import * as choiceUtils from '../../../../../../util/choice';
+import * as choiceUtils from '@/util/choice';
 
 import * as tableUtils from '../../utils';
 import { QuestionnaireItemWithAnswers } from '../../interface';
@@ -21,7 +21,7 @@ import { Mock, vi } from 'vitest';
 import { IStandardTableColumn } from '../interface';
 import { Options } from '@/types/formTypes/radioGroupOptions';
 vi.mock('../../utils');
-vi.mock('../../../../../../util/choice');
+vi.mock('@/util/choice');
 
 describe('emptyTable', () => {
   it('should return an empty table', () => {

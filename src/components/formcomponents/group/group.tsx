@@ -12,6 +12,9 @@ import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { isTableCode } from '@/util';
+import { getCodingTextTableValues } from '@/util/extension';
+import TableContainer from './table/TableContainer';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -25,21 +28,27 @@ export const Group = (props: Props): JSX.Element | null => {
 
   const isLocalRenderContextTypeGrid = getLocalRenderContextType(item) === RenderContextType.Grid;
   const isRenderContextTypeGrid = renderContext.RenderContextType === RenderContextType.Grid;
-  return (
-    <AsPdf pdf={!!pdf}>
-      {isLocalRenderContextTypeGrid ? (
-        <ContextTypeGrid {...props} item={item} responseItem={responseItem} />
-      ) : isRenderContextTypeGrid ? (
-        isDirectChildOfRenderContextOwner(path || [], item, renderContext) ? (
-          <ContextTypeGridRow {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
-        ) : (
-          <DefaultGroup {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
-        )
-      ) : (
-        <DefaultGroup {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
-      )}
-    </AsPdf>
-  );
+  const isTableComponent = isTableCode(getCodingTextTableValues(item));
+  function renderContent(): JSX.Element | null {
+    if (isTableComponent) {
+      return <TableContainer {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />;
+    }
+
+    if (isLocalRenderContextTypeGrid) {
+      return <ContextTypeGrid {...props} item={item} responseItem={responseItem} />;
+    }
+
+    if (isRenderContextTypeGrid) {
+      if (isDirectChildOfRenderContextOwner(path ?? [], item, renderContext)) {
+        return <ContextTypeGridRow {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />;
+      }
+      return <DefaultGroup {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />;
+    }
+
+    return <DefaultGroup {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />;
+  }
+
+  return <AsPdf pdf={!!pdf}>{renderContent()}</AsPdf>;
 };
 
 export default Group;

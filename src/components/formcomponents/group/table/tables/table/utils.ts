@@ -1,13 +1,13 @@
 import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 
-import { Options } from '../../../../../types/formTypes/radioGroupOptions';
+import { Options } from '@/types/formTypes/radioGroupOptions';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { IStandardTable, IStandardTableColumn, IStandardTableRow } from './interface';
-import codeSystems from '../../../../../constants/codingsystems';
-import ItemType, { IItemType } from '../../../../../constants/itemType';
-import { getContainedOptions, getSystemForItem } from '../../../../../util/choice';
+import codeSystems from '@/constants/codingsystems';
+import ItemType, { IItemType } from '@/constants/itemType';
+import { getContainedOptions, getSystemForItem } from '@/util/choice';
 import { QuestionnaireItemWithAnswers } from '../interface';
 import {
   getDisplayFromCodingSystem,

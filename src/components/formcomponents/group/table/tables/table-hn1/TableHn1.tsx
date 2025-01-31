@@ -11,8 +11,11 @@ interface Props {
   items: QuestionnaireItem[];
   questionnaireResponse?: QuestionnaireResponse | null;
 }
-const TableHn1 = ({ items, questionnaireResponse }: Props): JSX.Element => {
+const TableHn1 = ({ items, questionnaireResponse }: Props): React.JSX.Element | null => {
   const answerValues = getTableHN1bodyObject(items, questionnaireResponse);
+  if (!answerValues || answerValues.length === 0) {
+    return null;
+  }
   return (
     <HnTable className="page_refero__table_hn1">
       <TableBody className="page_refero__table_hn1__body">

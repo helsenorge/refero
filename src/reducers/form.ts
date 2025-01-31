@@ -50,6 +50,7 @@ import {
   Path,
   getResponseItemAndPathWithLinkId,
   getQuestionnaireDefinitionItemWithLinkid,
+  getAllQuestionnaireResponseItemsWithLinkId,
 } from '../util/refero-core';
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
@@ -600,7 +601,7 @@ function getResponseItemWithLinkIdPossiblyContainingRepeat(
 ): QuestionnaireResponseItem | undefined {
   const findResponseItem = (linkId: string, items: Array<QuestionnaireResponseItem>): QuestionnaireResponseItem | undefined => {
     for (const item of items) {
-      const result = getQuestionnaireResponseItemWithLinkid(linkId, item, path || []);
+      const result = getQuestionnaireResponseItemWithLinkid(linkId, { item: [item], linkId: 'dette er ikke en gyldig id' }, path || []);
       if (result) return result;
     }
   };

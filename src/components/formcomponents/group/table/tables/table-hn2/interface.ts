@@ -1,4 +1,4 @@
-import { IItemType } from '../../../../../constants/itemType';
+import { IItemType } from '@/constants/itemType';
 
 export interface ITableH2Column {
   id: string;

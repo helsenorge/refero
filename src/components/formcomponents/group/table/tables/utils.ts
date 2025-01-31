@@ -10,25 +10,25 @@ import {
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
 
-import { QuestionnaireItemEnableBehaviorCodes } from '../../../../types/fhirEnums';
+import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { DATEFORMATS } from './constants';
 import { QuestionnaireItemWithAnswers } from './interface';
-import { OPEN_CHOICE_SYSTEM } from '../../../../constants';
-import codeSystems, { CodeSystems } from '../../../../constants/codingsystems';
-import ItemType, { IItemType } from '../../../../constants/itemType';
-import { getQuestionnaireItemCodeValue } from '../../../../util/codingsystem';
-import { getCalculatedExpressionExtension, getCopyExtension } from '../../../../util/extension';
-import { evaluateFhirpathExpressionToGetString } from '../../../../util/fhirpathHelper';
+import { OPEN_CHOICE_SYSTEM } from '@/constants';
+import codeSystems, { CodeSystems } from '@/constants/codingsystems';
+import ItemType, { IItemType } from '@/constants/itemType';
+import { getQuestionnaireItemCodeValue } from '@/util/codingsystem';
+import { getCalculatedExpressionExtension, getCopyExtension } from '@/util/extension';
+import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
 import {
   Path,
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemsWithLinkId,
   getResponseItemAndPathWithLinkId,
   isInGroupContext,
-} from '../../../../util/refero-core';
+} from '@/util/refero-core';
 
 import { TIME_SEPARATOR } from '@/constants/dateTimeConstants';
 type QuantityKeys = keyof Pick<Quantity, 'value' | 'code' | 'system' | 'unit'> | 'display';

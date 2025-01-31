@@ -15,15 +15,17 @@ interface Props {
   items: QuestionnaireItem[];
   questionnaireResponse?: QuestionnaireResponse | null;
 }
-const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JSX.Element => {
+const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): React.JSX.Element | null => {
   const sortIndex = getIndexToSortBy(tableCodesCoding);
   const tableHeader = getHeaderColumns(tableCodesCoding);
+
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
   const [rows, setRows] = useState<ITableH2Row[]>(getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir));
 
   useEffect(() => {
     setRows(getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir));
   }, [sortDir, items, questionnaireResponse]);
+
   return rows.length ? (
     <HnTable className="page_refero__table_hn2">
       <TableHeadHn2 sortable={sortIndex !== undefined} setSortDir={setSortDir} sortDir={sortDir} tableCodesCoding={tableCodesCoding} />
@@ -45,9 +47,7 @@ const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JS
         })}
       </TableBody>
     </HnTable>
-  ) : (
-    <></>
-  );
+  ) : null;
 };
 
 export default TableHn2;

@@ -14,11 +14,10 @@ import Integer from '@formcomponents/integer/integer';
 import OpenChoice from '@formcomponents/open-choice/open-choice';
 import Quantity from '@formcomponents/quantity/quantity';
 import StringComponent from '@formcomponents/string/string';
-import TableContainer from '@formcomponents/table/TableContainer';
 
 import { ComponentType } from 'react';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { isRepeat, isTableCode } from '@/util';
+import { isRepeat } from '@/util';
 import { createIdSuffix, getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
 import { FormData } from '@/reducers/form';
 import ItemType from '@/constants/itemType';
@@ -80,13 +79,8 @@ function getResponseItemWithPath(path: Path[] = [], items: QuestionnaireResponse
 
   return responseItem;
 }
-export function getComponentForItem(
-  type: string,
-  extensionCode?: string | string[]
-): ComponentType<QuestionnaireComponentItemProps> | undefined {
-  if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return TableContainer;
-  } else if (String(type) === ItemType.GROUP) {
+export function getComponentForItem(type: string): ComponentType<QuestionnaireComponentItemProps> | undefined {
+  if (String(type) === ItemType.GROUP) {
     return Group;
   }
   if (String(type) === ItemType.DISPLAY) {
