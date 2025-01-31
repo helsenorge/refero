@@ -50,7 +50,6 @@ import {
   Path,
   getResponseItemAndPathWithLinkId,
   getQuestionnaireDefinitionItemWithLinkid,
-  getAllQuestionnaireResponseItemsWithLinkId,
 } from '../util/refero-core';
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
