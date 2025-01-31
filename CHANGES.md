@@ -1,3 +1,11 @@
+## 16.4.0
+
+---
+
+- Split scoring into custom scoring and fhirpath scoring
+- EnableWhen for items on the first level
+- Moved logic for Table into group component 
+
 ## 16.3.2
 
 ---
