@@ -4,7 +4,7 @@ import * as uuid from 'uuid';
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { IGTable, IGTableColumn, IGTableHeaderItem, IGTableRow } from './interface';
-import codeSystems from '../../../../../constants/codingsystems';
+import codeSystems from '@/constants/codingsystems';
 import { QuestionnaireItemWithAnswers } from '../interface';
 import { getCodeFromCodingSystem, getEnabledQuestionnaireItemsWithAnswers, getPrimitiveValueFromItemType, sortByItemType } from '../utils';
 

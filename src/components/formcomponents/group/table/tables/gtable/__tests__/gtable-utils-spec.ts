@@ -7,10 +7,10 @@ import {
   getNumberOfRowsGTable,
   getValueFromAnswer,
 } from '../utils';
-import ItemType, { IItemType } from '../../../../../../constants/itemType';
+import ItemType, { IItemType } from '@/constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../../interface';
-import { Extensions } from '../../../../../../constants/extensions';
-import { QUESTIONNAIRE_ITEM_CONTROL_SYSTEM } from '../../../../../../constants/valuesets';
+import { Extensions } from '@/constants/extensions';
+import { QUESTIONNAIRE_ITEM_CONTROL_SYSTEM } from '@/constants/valuesets';
 
 type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;
 type MockResponseItemProps = Partial<QuestionnaireResponseItem>;

@@ -2,7 +2,6 @@ import { memo } from 'react';
 import { QuestionnaireItem, Resource } from 'fhir/r4';
 import { RenderContext } from '@/util/renderContext';
 import { isHiddenItem } from '@/util/index';
-import { getCodingTextTableValues } from '@/util/extension';
 import { isHelpItem } from '@/util/help';
 import { createPathForItem, Path } from '@/util/refero-core';
 import { getComponentForItem } from './utils';
@@ -45,7 +44,7 @@ const ItemRenderer = memo(function ItemRenderer({
     return null;
   }
 
-  const ItemComponent = getComponentForItem(item.type, getCodingTextTableValues(item));
+  const ItemComponent = getComponentForItem(item.type);
   if (!ItemComponent) {
     return null;
   }

@@ -1,22 +1,28 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "id": "211f35d2-700c-4e0c-81dd-a020d17c728b",
+  "name": "NHN_Test_Tabell_Repeterendegrupper",
+  "title": "Testskjema tabell repeterende grupper",
+  "version": "0.1",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
+    "versionId": "2",
+    "lastUpdated": "2024-12-12T08:12:37.684+00:00",
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "security": [
+      {
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
+        "code": "3",
+        "display": "Helsehjelp (Full)"
+      }
+    ],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
         "display": "Bokmål"
-      }
-    ],
-    "security": [
-      {
-        "code": "3",
-        "display": "Helsehjelp (Full)",
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
       }
     ]
   },
@@ -57,30 +63,72 @@
           }
         ]
       }
+    },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+      "valueReference": {
+        "reference": "Endpoint/1000"
+      }
     }
   ],
-  "id": "8eb85cb6-b384-43f3-ae49-7f6b263f26bf",
+  "date": "2024-12-10T00:00:00+01:00",
+  "url": "Questionnaire/211f35d2-700c-4e0c-81dd-a020d17c728b",
   "item": [
     {
-      "linkId": "6aa0c52a-67e4-4122-86ac-f45e454fbb87",
-      "type": "attachment",
-      "text": "Last opp et vedlegg",
-      "extension": [
+      "linkId": "1234",
+      "text": "JEG ER PARENT CHOICE",
+      "type": "choice",
+      "required": false,
+      "answerOption": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
-          "valueDecimal": 5
+          "valueCoding": {
+            "id": "6f8d98cb-d4b8-416f-caee-6449bdf1ecb8",
+            "code": "ja",
+            "system": "urn:uuid:81b780e4-d254-46d2-8c48-75e6ca378d58",
+            "display": "ja"
+          }
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
-          "valueInteger": 2
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-          "valueInteger": 3
+          "valueCoding": {
+            "id": "39a0e590-92af-4983-9dcf-7fb626ba2cf5",
+            "code": "nei",
+            "system": "urn:uuid:81b780e4-d254-46d2-8c48-75e6ca378d58",
+            "display": "nei"
+          }
         }
       ],
-      "required": true,
-      "repeats": true
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "radio-button"
+              }
+            ]
+          }
+        }
+      ],
+      "repeats": true,
+      "item": [
+        {
+          "linkId": "56789",
+          "text": "HEI HEI JEG ER CHILD",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "1234",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:81b780e4-d254-46d2-8c48-75e6ca378d58",
+                "code": "ja"
+              }
+            }
+          ],
+          "required": false
+        }
+      ]
     }
   ]
 }

@@ -1,16 +1,16 @@
 import { QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
-import ItemType from '../../../../../constants/itemType';
 import { extractValuesFromAnswer, getPrimitiveValueFromItemType, getQuestionnaireResponseItemAnswer, isConditionEnabled } from '../utils';
 import * as questionnaireFunctions from '../utils';
 
-import * as fhirUtils from '../../../../../util/refero-core';
-import { QuestionnaireItemEnableBehaviorCodes } from '../../../../../types/fhirEnums';
-import { Extensions } from '../../../../../constants/extensions';
-import valueSet from '../../../../../constants/valuesets';
-import codeSystems from '../../../../../constants/codingsystems';
+import * as fhirUtils from '@/util/refero-core';
 import { Mock, vi } from 'vitest';
+import ItemType from '@/constants/itemType';
+import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
+import { Extensions } from '@/constants/extensions';
+import valueSet from '@/constants/valuesets';
+import codeSystems from '@/constants/codingsystems';
 
-vi.mock('../../../../../util/refero-core');
+vi.mock('@/util/refero-core');
 
 describe('getPrimitiveValueFromItemType', () => {
   it('Should return value based on type', () => {

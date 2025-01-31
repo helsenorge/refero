@@ -1,5 +1,5 @@
 import '../../../../util/__tests__/defineFetch';
-import { queryByText, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
+import { renderRefero, screen, userEvent } from '@test/test-utils.tsx';
 import { repeatQ, q, repeatQ2 } from './__data__';
 import Constants from '../../../../constants';
 import { Questionnaire } from 'fhir/r4';
@@ -7,8 +7,6 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, repeatGroupNTimes } from '../../../../../test/selectors';
-import { render } from '@testing-library/react';
-import DefaultGroup from '../DefaultGroup';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 

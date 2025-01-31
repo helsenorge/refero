@@ -2,8 +2,7 @@ import { format } from 'date-fns';
 import { QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { OPEN_CHOICE_ID } from '../constants';
-
-import { DATEFORMATS } from '@/components/formcomponents/table/tables/constants';
+import { DATEFORMATS } from '@/components/formcomponents/group/table/tables/constants';
 
 export const createNarrative = (qr: QuestionnaireResponse | null | undefined): string => {
   let narrative = '';

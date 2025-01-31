@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 
@@ -26,7 +26,7 @@ interface Props {
   questionnaireResponse?: QuestionnaireResponse | null;
 }
 
-export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): JSX.Element => {
+export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): React.JSX.Element | null => {
   const displayToSortBy = getDisplayToSortBy(tableCodesCoding);
   const resource = useSelector<GlobalState, Resource[] | undefined>(containedResourceSelector);
 
@@ -73,7 +73,5 @@ export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }
         ))}
       </TableBody>
     </HnTable>
-  ) : (
-    <></>
-  );
+  ) : null;
 };
