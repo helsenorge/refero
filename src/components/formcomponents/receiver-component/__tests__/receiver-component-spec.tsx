@@ -1,12 +1,13 @@
-import { q } from './__data__';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { renderRefero, screen } from '@test/test-utils.tsx';
+import { Questionnaire } from 'fhir/r4';
+import { vi } from 'vitest';
 
 import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
 
-import { renderRefero } from '@test/test-utils.tsx';
-import { selectDropdownOptionByName, submitForm } from '../../../../../test/selectors';
+import { q } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { vi } from 'vitest';
-import { Questionnaire } from 'fhir/r4';
+import { selectDropdownOptionByName, submitForm } from '../../../../../test/selectors';
 
 const receivers = [
   {
@@ -47,16 +48,16 @@ describe('ReceiverComponent', () => {
     const fetchReceiversFn = (_successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => {
       errorCallback();
     };
-    const { findByRole } = renderRefero({ questionnaire: q, props: { fetchReceivers: fetchReceiversFn }, resources: resources });
-    expect(await findByRole('alert')).toBeInTheDocument();
+    renderRefero({ questionnaire: q, props: { fetchReceivers: fetchReceiversFn }, resources: resources });
+    expect(await screen.findByRole('alert')).toBeInTheDocument();
   });
 
   it('Should set selected receiver after load', async () => {
     const fetchReceiversFn = (successCallback: (receivers: OrgenhetHierarki[]) => void) => {
-      successCallback(receivers);
+      successCallback(receivers as OrgenhetHierarki[]);
     };
     const onChange = vi.fn();
-    const { findByText } = renderRefero({
+    renderRefero({
       questionnaire: q,
       props: { fetchReceivers: fetchReceiversFn, onChange },
       resources: resources,
@@ -64,39 +65,39 @@ describe('ReceiverComponent', () => {
     await selectDropdownOptionByName(resources.adresseKomponent_velgHelseregion, /region 1/i);
     await selectDropdownOptionByName(resources.adresseKomponent_velgHelseforetak, 'Receiver 1');
 
-    expect(await findByText(/Region 1 \/ Receiver 1/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Region 1 \/ Receiver 1/i)).toBeInTheDocument();
   });
 
   it('Should show selects after loading receivers', async () => {
     const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
-      successCallback(receivers);
+      successCallback(receivers as OrgenhetHierarki[]);
     };
-    const { findAllByRole } = renderRefero({
+    renderRefero({
       questionnaire: q,
       props: { fetchReceivers },
       resources: resources,
     });
-    expect(await findAllByRole('combobox')).toHaveLength(2);
+    expect(await screen.findAllByRole('combobox')).toHaveLength(2);
   });
   it('Should show correct headers for select components after loading receivers', async () => {
     const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
-      successCallback(receivers);
+      successCallback(receivers as OrgenhetHierarki[]);
     };
-    const { queryByText } = renderRefero({
+    renderRefero({
       questionnaire: q,
       props: { fetchReceivers },
       resources: resources,
     });
-    expect(queryByText('Velg region')).toBeInTheDocument();
+    expect(screen.getByText('Velg region')).toBeInTheDocument();
     await selectDropdownOptionByName('Velg region', /region 1/i);
-    expect(queryByText('Velg helseforetak')).toBeInTheDocument();
+    expect(screen.getByText('Velg helseforetak')).toBeInTheDocument();
   });
   it('Should call clearCodingAnswer when dropdown value is changed to a non-leaf node', async () => {
     const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
-      successCallback(receivers);
+      successCallback(receivers as OrgenhetHierarki[]);
     };
     const onChange = vi.fn();
-    const { queryByText } = renderRefero({
+    renderRefero({
       questionnaire: q,
       props: { fetchReceivers, onChange },
       resources: resources,
@@ -105,15 +106,15 @@ describe('ReceiverComponent', () => {
 
     await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
 
-    expect(queryByText(/Region 1 \/ Receiver 11/i)).toBeInTheDocument();
+    expect(screen.getByText(/Region 1 \/ Receiver 11/i)).toBeInTheDocument();
 
     await selectDropdownOptionByName('Velg region', /region 1/i);
-    expect(queryByText(/Region 1 \/ Receiver 11/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Region 1 \/ Receiver 11/i)).not.toBeInTheDocument();
   });
 
   it('Should call handleChange when a leaf node is selected', async () => {
     const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
-      successCallback(receivers);
+      successCallback(receivers as OrgenhetHierarki[]);
     };
     const onChange = vi.fn();
     renderRefero({
@@ -130,7 +131,7 @@ describe('ReceiverComponent', () => {
 
   it('readOnly value should get validation error if error exist', async () => {
     const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
-      successCallback(receivers);
+      successCallback(receivers as OrgenhetHierarki[]);
     };
     const onChange = vi.fn();
 
@@ -150,7 +151,7 @@ describe('ReceiverComponent', () => {
       })),
     };
 
-    const { queryByText } = renderRefero({
+    renderRefero({
       questionnaire: questionnaire,
       props: { fetchReceivers, onChange },
       resources: resources,
@@ -158,6 +159,6 @@ describe('ReceiverComponent', () => {
 
     await submitForm();
 
-    expect(queryByText(resources.adresseKomponent_feilmelding)).toBeInTheDocument();
+    expect(screen.getByText(resources.adresseKomponent_feilmelding)).toBeInTheDocument();
   });
 });

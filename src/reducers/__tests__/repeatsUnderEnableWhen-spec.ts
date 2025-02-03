@@ -1,9 +1,12 @@
-import enableWhenDataModel from './__data__/repeatsUnderEnableWhen';
-import { Form } from '../form';
-import { Coding, QuestionnaireItem } from 'fhir/r4';
-import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
-import { pathify, selectChoice, getResponseItem, enterText, clickRepeat } from './utils';
 import { fail } from 'assert';
+
+import { Coding, QuestionnaireItem } from 'fhir/r4';
+
+import { Form } from '../form';
+import enableWhenDataModel from './__data__/repeatsUnderEnableWhen';
+import { pathify, selectChoice, getResponseItem, enterText, clickRepeat } from './utils';
+import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
+
 
 describe('update enable when action', () => {
   let newState: Form;

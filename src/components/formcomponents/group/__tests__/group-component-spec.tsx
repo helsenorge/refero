@@ -1,29 +1,31 @@
 import '../../../../util/__tests__/defineFetch';
-import { renderRefero, screen, userEvent } from '@test/test-utils.tsx';
-import { repeatQ, q, repeatQ2 } from './__data__';
-import Constants from '../../../../constants';
+import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire } from 'fhir/r4';
+
 import { ReferoProps } from '../../../../types/referoProps';
-import { Extensions } from '../../../../constants/extensions';
+
+import { repeatQ, q, repeatQ2 } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, repeatGroupNTimes } from '../../../../../test/selectors';
+import Constants from '../../../../constants';
+import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
 describe('group', () => {
-  it('should render correct tag', () => {
-    const { queryByRole } = renderRefero({ questionnaire: q });
-    const group = queryByRole('heading', { name: 'Overskrift', level: Constants.DEFAULT_HEADER_TAG });
+  it('should render correct tag', async () => {
+    await createWrapper(q);
+    const group = screen.queryByRole('heading', { name: 'Overskrift', level: Constants.DEFAULT_HEADER_TAG });
     expect(group).toBeInTheDocument();
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
@@ -37,24 +39,24 @@ describe('group', () => {
     });
   });
   describe('repeat button', () => {
-    it('Should render repeat button if item repeats', () => {
+    it('Should render repeat button if item repeats', async () => {
       const questionnaire: Questionnaire = {
         ...repeatQ,
         item: repeatQ.item?.map(x => ({ ...x, repeats: true })),
       };
 
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       const repeatButton = screen.getAllByTestId(/-repeat-button/i);
       expect(repeatButton).toHaveLength(2);
     });
 
-    it('Should not render repeat button if item does not repeats', () => {
+    it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire: Questionnaire = {
         ...repeatQ,
         item: repeatQ.item?.map(x => ({ ...x, repeats: false, item: x.item?.map(y => ({ ...y, repeats: false })) })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
-      const repeatButton = queryByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = screen.queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
@@ -68,7 +70,7 @@ describe('group', () => {
             : [{ url: Extensions.MAX_OCCURS_URL, valueInteger: 4 }],
         })),
       };
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       const input = '5';
       await repeatGroupNTimes(input, 4, /REPEATABLE INT/i);
 
@@ -89,11 +91,11 @@ describe('group', () => {
             : [{ url: Extensions.MIN_OCCURS_URL, valueInteger: 2 }],
         })),
       };
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       const input = '5';
       await repeatGroupNTimes(input, 3, /REPEATABLE INT/i);
 
-      expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+      expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire: Questionnaire = {
@@ -107,7 +109,7 @@ describe('group', () => {
             : [{ url: Extensions.MIN_OCCURS_URL, valueInteger: 2 }],
         })),
       };
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       const input = '5';
       await repeatGroupNTimes(input, 1, /REPEATABLE INT/i);
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
@@ -118,7 +120,7 @@ describe('group', () => {
         ...repeatQ,
         item: repeatQ.item?.map(x => ({ ...x, repeats: true })),
       };
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       const input = '5';
       await repeatGroupNTimes(input, 1, /REPEATABLE INT/i);
       await clickButtonTimes(/-delete-button/i, 1);
@@ -135,7 +137,7 @@ describe('group', () => {
           readOnly: false,
         })),
       };
-      createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       const input = '5';
 
       //Type in the first integer field
@@ -147,6 +149,7 @@ describe('group', () => {
     });
   });
 });
-const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return renderRefero({ questionnaire, props: { ...props, resources } });
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return await waitFor(async () => await renderRefero({ questionnaire, props: { ...props, resources } }));
 };

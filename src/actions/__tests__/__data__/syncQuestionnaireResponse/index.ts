@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 export const q: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/q.json').toString());

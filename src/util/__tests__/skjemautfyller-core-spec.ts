@@ -1,3 +1,7 @@
+import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItem } from 'fhir/r4';
+
+import { dataModel } from './__data__/testDataModel';
+import { pathify } from '../../reducers/__tests__/utils';
 import {
   getRootQuestionnaireResponseItemFromData,
   getQuestionnaireResponseItemWithLinkid,
@@ -8,9 +12,6 @@ import {
   createPathForItem,
   Path,
 } from '../refero-core';
-import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItem } from 'fhir/r4';
-import { pathify } from '../../reducers/__tests__/utils';
-import { dataModel } from './__data__/testDataModel';
 
 describe('getQuestionnaireResponseItemFromData', () => {
   it('should not fail on empty form', () => {
@@ -88,7 +89,7 @@ describe('get questionnaireResponse item', () => {
     }
     const repeatingData = { item: [data, dataCopy], linkId: '1' };
 
-    let item = getQuestionnaireResponseItemWithLinkid('testId', repeatingData, [
+    const item = getQuestionnaireResponseItemWithLinkid('testId', repeatingData, [
       { linkId: '1' },
       { linkId: '123', index: 1 },
       { linkId: '456' },

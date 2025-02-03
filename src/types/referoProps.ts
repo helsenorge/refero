@@ -1,14 +1,16 @@
+import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
+import { FieldValues, UseFormProps, UseFormReturn } from 'react-hook-form';
+import { Store } from 'redux';
+
+import { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
+
+import { AutoSuggestProps } from './autoSuggestProps';
+import { OrgenhetHierarki } from './orgenhetHierarki';
 import { IActionRequester } from '../util/actionRequester';
 import { IQuestionnaireInspector } from '../util/questionnaireInspector';
 import { Resources } from '../util/resources';
-import { AutoSuggestProps } from './autoSuggestProps';
-import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
-import { OrgenhetHierarki } from './orgenhetHierarki';
 import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
-import { Store } from 'redux';
 import { TextMessage } from './text-message';
-import { FieldValues, UseFormProps, UseFormReturn } from 'react-hook-form';
-import { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 export interface RenderCustomButtonsArgs {
   /**
@@ -307,6 +309,7 @@ export interface ReferoProps {
    * Additional options passed to `react-hook-form`'s `useForm` hook.
    * This can be used to configure validation modes or default values at initialization.
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useFormProps?: UseFormProps<{ [x: string]: any }, any>;
 
   /**
@@ -322,6 +325,6 @@ export interface ReferoProps {
    * Any custom props that consumers want to pass to the Refero component.
    */
   customProps?: {
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }

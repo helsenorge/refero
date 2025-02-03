@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 
 import { Attachment, QuestionnaireItem } from 'fhir/r4';
+import { useSelector } from 'react-redux';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import AttachmentHtml from './attachmenthtml';
+
 import { newAttachmentAsync, removeAttachmentAsync } from '@/actions/newValue';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useAttachmentContext } from '@/context/AttachmentContext';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { GlobalState, useAppDispatch } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { TextMessage } from '@/types/text-message';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue } from '@/util/extension';
 import { isRequired, getId, isRepeat } from '@/util/index';
-import { useSelector } from 'react-redux';
-import { useAttachmentContext } from '@/context/AttachmentContext';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { TextMessage } from '@/types/text-message';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;

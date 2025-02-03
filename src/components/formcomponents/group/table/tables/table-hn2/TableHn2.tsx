@@ -24,7 +24,7 @@ const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): Re
 
   useEffect(() => {
     setRows(getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir));
-  }, [sortDir, items, questionnaireResponse]);
+  }, [sortDir, items, questionnaireResponse, sortIndex]);
 
   return rows.length ? (
     <HnTable className="page_refero__table_hn2">

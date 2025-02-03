@@ -1,31 +1,33 @@
 import React, { useState } from 'react';
 
+import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
+
 import styles from '../common-styles.module.css';
 import Pdf from './pdf';
-import { newBooleanValueAsync } from '@/actions/newValue';
-import { GlobalState, useAppDispatch } from '@/reducers';
-import { isReadOnly, getId, getLabelText } from '@/util/index';
 import SafeText from '../../referoLabel/SafeText';
-import { useSelector } from 'react-redux';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
+import { newBooleanValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { getFormDefinition } from '@/reducers/form';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { getErrorMessage, required } from '@/components/validation/rules';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { QuestionnaireItem } from 'fhir/r4';
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
+import { GlobalState, useAppDispatch } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { isReadOnly, getId, getLabelText } from '@/util/index';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -66,11 +68,10 @@ const Boolean = (props: Props): JSX.Element | null => {
 
   const handleChange = (): void => {
     const newValue = !getValue();
-    if (dispatch && item) {
-      path &&
-        dispatch(newBooleanValueAsync(path, newValue, item))?.then(
-          newState => onAnswerChange && onAnswerChange(newState, item, { valueBoolean: newValue })
-        );
+    if (dispatch && item && path) {
+      dispatch(newBooleanValueAsync(path, newValue, item))?.then(
+        newState => onAnswerChange && onAnswerChange(newState, item, { valueBoolean: newValue })
+      );
     }
 
     promptLoginMessage?.();

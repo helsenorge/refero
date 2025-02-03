@@ -1,5 +1,5 @@
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Action, createAction, PayloadAction } from '@reduxjs/toolkit';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 export type SET_SKJEMA_DEFINITION = 'refero/SET_SKJEMA_DEFINITION';
 export const SET_SKJEMA_DEFINITION: SET_SKJEMA_DEFINITION = 'refero/SET_SKJEMA_DEFINITION';

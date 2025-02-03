@@ -1,20 +1,22 @@
-import AsPdf from './AsPdf';
-import { getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
-import { RenderContextType } from '@/constants/renderContextType';
-
 import { useState } from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { useSelector } from 'react-redux';
+
+import AsPdf from './AsPdf';
 import ContextTypeGrid from './ContextTypeGrid';
 import ContextTypeGridRow from './ContextTypeGridRow';
 import DefaultGroup from './DefaultGroup';
+import { getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
+import TableContainer from './table/TableContainer';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useSelector } from 'react-redux';
+import { RenderContextType } from '@/constants/renderContextType';
 import { GlobalState } from '@/reducers';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { isTableCode } from '@/util';
 import { getCodingTextTableValues } from '@/util/extension';
-import TableContainer from './table/TableContainer';
+
 
 export type Props = QuestionnaireComponentItemProps;
 

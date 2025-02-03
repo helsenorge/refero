@@ -1,26 +1,23 @@
 import React from 'react';
 
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
-
 import { FormProvider, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
-import { ReferoProps } from '@/types/referoProps';
 
+import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
 import RenderForm from './renderForm';
 import StepView from './stepView';
 
+import { setSkjemaDefinitionAction } from '@/actions/form';
+import { AttachmentProvider } from '@/context/AttachmentContext';
+import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { GlobalState, useAppDispatch } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { FormDefinition, FormData } from '@/reducers/form';
-
+import { ReferoProps } from '@/types/referoProps';
 import { getPresentationButtonsExtension } from '@/util/extension';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
-
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
-import { ExternalRenderProvider } from '@/context/externalRenderContext';
-import { setSkjemaDefinitionAction } from '@/actions/form';
-import { AttachmentProvider } from '@/context/AttachmentContext';
-import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {

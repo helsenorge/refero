@@ -3,14 +3,16 @@ import React from 'react';
 import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
-import { ReferoProps } from '@/types/referoProps';
+
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 import FormButtons from './formButtons/formButtons';
 import { ValidationSummary } from './validation/validation-summary';
-import { Resources } from '@/util/resources';
+
 import { buttonOrderMicrowebStep } from '@/types/formTypes/formButton';
+import { ReferoProps } from '@/types/referoProps';
+import { Resources } from '@/util/resources';
 
 interface RenderFormProps {
   isAuthorized: boolean;

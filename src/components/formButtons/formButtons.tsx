@@ -7,6 +7,7 @@ import { ButtonOrder, ButtonType, buttonOrderNormalView, buttonOrderStepView } f
 import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';
 import { SubmitFormButton } from './SubmitFormButton';
+
 import styles from './formButtons.module.css';
 
 interface FormButtonsInterface {
@@ -17,6 +18,7 @@ interface FormButtonsInterface {
   pauseButtonDisabled?: boolean;
   onSubmitButtonClicked?:
     | (() => void)
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     | ((e: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined) => void);
   onCancelButtonClicked?: () => void;
   onPauseButtonClicked?: (questionnaireResponse?: QuestionnaireResponse) => void;

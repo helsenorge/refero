@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import { QuestionnaireItem } from 'fhir/r4';
 
 import { renderPrefix, getText } from '../../../util/index';
+
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
   children?: ReactNode;
 }
 
-const pdf = ({ item, checked, children }: Props): JSX.Element => {
+const Pdf = ({ item, checked, children }: Props): JSX.Element => {
   const { onRenderMarkdown } = useExternalRenderContext();
   return (
     <div>
@@ -34,4 +35,4 @@ const pdf = ({ item, checked, children }: Props): JSX.Element => {
   );
 };
 
-export default pdf;
+export default Pdf;

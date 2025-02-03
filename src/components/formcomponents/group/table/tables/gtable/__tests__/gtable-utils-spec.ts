@@ -1,4 +1,6 @@
 import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+
+import { QuestionnaireItemWithAnswers } from '../../interface';
 import {
   columnsForRowIndex,
   createTableHeader,
@@ -7,9 +9,9 @@ import {
   getNumberOfRowsGTable,
   getValueFromAnswer,
 } from '../utils';
-import ItemType, { IItemType } from '@/constants/itemType';
-import { QuestionnaireItemWithAnswers } from '../../interface';
+
 import { Extensions } from '@/constants/extensions';
+import ItemType, { IItemType } from '@/constants/itemType';
 import { QUESTIONNAIRE_ITEM_CONTROL_SYSTEM } from '@/constants/valuesets';
 
 type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;

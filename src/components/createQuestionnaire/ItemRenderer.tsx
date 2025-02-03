@@ -1,18 +1,19 @@
 import { memo } from 'react';
-import { QuestionnaireItem, Resource } from 'fhir/r4';
-import { RenderContext } from '@/util/renderContext';
-import { isHiddenItem } from '@/util/index';
-import { isHelpItem } from '@/util/help';
-import { createPathForItem, Path } from '@/util/refero-core';
-import { getComponentForItem } from './utils';
-import { RenderResponseItems } from './RenderResponseItems';
 
+import { QuestionnaireItem, Resource } from 'fhir/r4';
+import { createSelector } from 'reselect';
+
+import { RenderResponseItems } from './RenderResponseItems';
+import { getComponentForItem } from './utils';
+
+import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { useAppSelector } from '@/reducers';
 import { FormData } from '@/reducers/form';
 import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
-import { createSelector } from 'reselect';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { isHelpItem } from '@/util/help';
+import { isHiddenItem } from '@/util/index';
+import { createPathForItem, Path } from '@/util/refero-core';
+import { RenderContext } from '@/util/renderContext';
 
 type ItemRendererProps = {
   item: QuestionnaireItem;
@@ -39,6 +40,7 @@ const ItemRenderer = memo(function ItemRenderer({
   headerTag,
 }: ItemRendererProps) {
   const isEnabled = useIsEnabled(item, createPathForItem(path, item, 0));
+  const responseItems = useAppSelector(state => responseItemsSelector(state, item.linkId, path));
 
   if (isHelpItem(item) || isHiddenItem(item)) {
     return null;
@@ -48,8 +50,6 @@ const ItemRenderer = memo(function ItemRenderer({
   if (!ItemComponent) {
     return null;
   }
-
-  const responseItems = useSelector((state: GlobalState) => responseItemsSelector(state, item.linkId, path));
 
   if (!responseItems || responseItems.length === 0) {
     return null;

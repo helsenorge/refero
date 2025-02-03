@@ -1,18 +1,25 @@
+import { useState } from 'react';
+
 import { QuestionnaireItem } from 'fhir/r4';
-import styles from './referoLabel.module.css';
+import { useSelector } from 'react-redux';
+
 import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
 
 import SafeText from './SafeText';
 import SubLabel from './sublabel';
-import { getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
-import { Resources } from '@/util/resources';
+import RenderHelpButton from '../formcomponents/help-button/RenderHelpButton';
+import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
+
+import styles from './referoLabel.module.css';
+
+
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
-import RenderHelpButton from '../formcomponents/help-button/RenderHelpButton';
-import { useState } from 'react';
-import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
+import { getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
+import { Resources } from '@/util/resources';
+
+
 
 type Props = {
   item?: QuestionnaireItem;

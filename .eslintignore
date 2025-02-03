@@ -1,7 +1,0 @@
-**/__tests__/*
-**/__mocks__/*
-node_modules/*
-config/*
-**/types/*
-*.d.ts
-lib/*

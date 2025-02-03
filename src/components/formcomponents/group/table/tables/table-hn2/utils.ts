@@ -3,9 +3,6 @@ import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { HeaderColumn, ITableH2Column, ITableH2Row } from './interface';
-import CodingSystems, { TableColumnName, TableOrderingColum } from '@/constants/codingsystems';
-import codeSystems from '@/constants/codingsystems';
-import ItemType from '@/constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../interface';
 import {
   findCodeBySystem,
@@ -15,6 +12,10 @@ import {
   sortByItemType,
   transformAnswersToListOfStrings,
 } from '../utils';
+
+import CodingSystems, { TableColumnName, TableOrderingColum } from '@/constants/codingsystems';
+import codeSystems from '@/constants/codingsystems';
+import ItemType from '@/constants/itemType';
 
 export const groupItemsByColumn = (items: QuestionnaireItem[]): Map<number, QuestionnaireItem[]> =>
   items.reduce((acc, item) => {

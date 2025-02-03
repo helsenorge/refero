@@ -1,9 +1,11 @@
+import { QuestionnaireItem } from 'fhir/r4';
+import { createSelector } from 'reselect';
+
+import LanguageLocales from '@helsenorge/core-utils/constants/languages';
+
 import { GlobalState } from '@/reducers';
 import { findQuestionnaireItem, questionnaireSelector } from '@/reducers/selectors';
 import { getCodingTextTableValues } from '@/util/extension';
-import LanguageLocales from '@helsenorge/core-utils/constants/languages';
-import { QuestionnaireItem } from 'fhir/r4';
-import { createSelector } from 'reselect';
 
 export const childItemsSelector = createSelector(
   [(state: GlobalState, linkId: string): QuestionnaireItem | undefined | null => findQuestionnaireItem(state, linkId)],

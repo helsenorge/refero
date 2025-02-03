@@ -1,13 +1,16 @@
-import { QuestionnaireItem } from 'fhir/r4';
-import GroupHeader from './GroupHeader';
-import { RenderContext } from '@/util/renderContext';
 import React, { Dispatch } from 'react';
+
+import { QuestionnaireItem } from 'fhir/r4';
+import { useSelector } from 'react-redux';
+
+import GroupHeader from './GroupHeader';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import GenerateQuestionnaireComponents from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useSelector } from 'react-redux';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { GlobalState } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { RenderContext } from '@/util/renderContext';
 
 type ContextTypeGridRowProps = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { format, isAfter, isBefore, isValid, parse } from 'date-fns';
 import {
   Attachment,
@@ -10,15 +11,16 @@ import {
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
 
-import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
-
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { DATEFORMATS } from './constants';
 import { QuestionnaireItemWithAnswers } from './interface';
+
 import { OPEN_CHOICE_SYSTEM } from '@/constants';
 import codeSystems, { CodeSystems } from '@/constants/codingsystems';
+import { TIME_SEPARATOR } from '@/constants/dateTimeConstants';
 import ItemType, { IItemType } from '@/constants/itemType';
+import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { getQuestionnaireItemCodeValue } from '@/util/codingsystem';
 import { getCalculatedExpressionExtension, getCopyExtension } from '@/util/extension';
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
@@ -30,7 +32,6 @@ import {
   isInGroupContext,
 } from '@/util/refero-core';
 
-import { TIME_SEPARATOR } from '@/constants/dateTimeConstants';
 type QuantityKeys = keyof Pick<Quantity, 'value' | 'code' | 'system' | 'unit'> | 'display';
 type Codingkeys = keyof Pick<Coding, 'code' | 'display' | 'system'>;
 type AttachmentKeys = keyof Pick<Attachment, 'data' | 'url' | 'title' | 'size' | 'contentType' | 'language' | 'id' | 'hash' | 'creation'>;

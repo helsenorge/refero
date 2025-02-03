@@ -2,11 +2,12 @@ import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Qu
 
 import Constants from '../constants/index';
 import itemType from '../constants/itemType';
+import ItemType from '../constants/itemType';
 import StatusConstants from '../constants/status';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 import { getCalculatedExpressionExtension, getCopyExtension, getMinOccursExtensionValue } from '../util/extension';
+
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
-import ItemType from '../constants/itemType';
 
 export function generateQuestionnaireResponse(questionnaire: Questionnaire): QuestionnaireResponse | undefined {
   const response: QuestionnaireResponse = {

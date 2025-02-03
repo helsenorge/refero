@@ -1,18 +1,21 @@
+import { memo } from 'react';
+
+import { QuestionnaireItem } from 'fhir/r4';
+import { useSelector } from 'react-redux';
+
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import SafeText from '@/components/referoLabel/SafeText';
 import itemControlConstants from '@/constants/itemcontrol';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { GlobalState } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '@/util/extension';
 import { renderPrefix, getText, getId } from '@/util/index';
 
-import SafeText from '@/components/referoLabel/SafeText';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { getFormDefinition } from '@/reducers/form';
-import { QuestionnaireItem } from 'fhir/r4';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { memo } from 'react';
 
 export type Props = QuestionnaireComponentItemProps;
 

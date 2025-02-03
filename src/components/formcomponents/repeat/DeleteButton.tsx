@@ -9,6 +9,7 @@ import Modal from '@helsenorge/designsystem-react/components/Modal';
 
 import { deleteRepeatItemAsync } from '../../../actions/newValue';
 import { Path } from '../../../util/refero-core';
+
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useAppDispatch } from '@/reducers';

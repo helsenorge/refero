@@ -1,14 +1,15 @@
 import { QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
+import { Mock, vi } from 'vitest';
+
 import { extractValuesFromAnswer, getPrimitiveValueFromItemType, getQuestionnaireResponseItemAnswer, isConditionEnabled } from '../utils';
 import * as questionnaireFunctions from '../utils';
 
-import * as fhirUtils from '@/util/refero-core';
-import { Mock, vi } from 'vitest';
-import ItemType from '@/constants/itemType';
-import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
-import { Extensions } from '@/constants/extensions';
-import valueSet from '@/constants/valuesets';
 import codeSystems from '@/constants/codingsystems';
+import { Extensions } from '@/constants/extensions';
+import ItemType from '@/constants/itemType';
+import valueSet from '@/constants/valuesets';
+import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
+import * as fhirUtils from '@/util/refero-core';
 
 vi.mock('@/util/refero-core');
 
@@ -21,7 +22,7 @@ describe('getPrimitiveValueFromItemType', () => {
 });
 describe('getQuestionnaireResponseItemAnswer', () => {
   it('Should return QuestionnaireResponseItemAnswer based on type and result', () => {
-    // @ts-ignore
+    // @ts-expect-error Testing invalid input
     const answer: never[] = ['test'];
     const response = getQuestionnaireResponseItemAnswer(ItemType.TEXT, answer);
     const expected: QuestionnaireResponseItemAnswer[] = [{ valueString: 'test' }];

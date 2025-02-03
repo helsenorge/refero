@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+
 import styles from './safetext.module.css';
 
 import { SanitizeText } from '@/util/sanitize/domPurifyHelper';

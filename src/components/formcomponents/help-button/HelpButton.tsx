@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+
 import { QuestionnaireItem } from 'fhir/r4';
 interface Props {
   item: QuestionnaireItem | undefined;
@@ -18,7 +19,14 @@ const HelpButton = ({ item, padding, children, callback }: Props): JSX.Element |
   if (!item) return null;
 
   return (
-    <span data-testid={`${item.linkId}-help-button`} className={`page_refero__helpButton ${padding && 'padding'}`} onClick={handleToggle}>
+    <span
+      data-testid={`${item.linkId}-help-button`}
+      className={`page_refero__helpButton ${padding && 'padding'}`}
+      onClick={handleToggle}
+      onKeyDown={e => e.key === 'Enter' && handleToggle()}
+      role="button"
+      tabIndex={0}
+    >
       {children}
     </span>
   );

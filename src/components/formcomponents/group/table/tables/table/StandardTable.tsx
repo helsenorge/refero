@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
+import { useSelector } from 'react-redux';
 
 import {
   Table as HnTable,
@@ -15,10 +16,11 @@ import {
 import { IStandardTable } from './interface';
 import { StandardTableHeader } from './StandardTableHeader';
 import { getDisplayToSortBy, getStandardTableObject } from './utils';
-import { transformCodingToSortDirection } from '../utils';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
 import { containedResourceSelector } from '../../tableSelector';
+import { transformCodingToSortDirection } from '../utils';
+
+import { GlobalState } from '@/reducers';
+
 
 interface Props {
   items: QuestionnaireItem[];

@@ -1,192 +1,193 @@
 import '../../util/__tests__/defineFetch';
 
 import { Questionnaire, QuestionnaireItem, Extension } from 'fhir/r4';
-import { Valueset } from '../../util/__tests__/__data__/valuesets/valueset-8459';
-import { createItemControlExtension } from '../__tests__/utils';
+
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 import itemControlConstants from '../../constants/itemcontrol';
 import itemType, { IItemType } from '../../constants/itemType';
-import { renderRefero, waitFor } from '../../../test/test-utils';
+import { Valueset } from '../../util/__tests__/__data__/valuesets/valueset-8459';
+import { createItemControlExtension } from '../__tests__/utils';
 
 describe('Components render children', () => {
   it('attachments with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.ATTATCHMENT));
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('booleans with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.BOOLEAN));
-    const { queryByLabelText, findByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = await findByLabelText(secondChildLabel);
+    const secondChild = await screen.findByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('date with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DATE));
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('time with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.TIME));
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('dateTime with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DATETIME));
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('decimal with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DECIMAL));
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('integer with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.INTEGER));
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('quantity with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.QUANTITY));
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('string with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.STRING));
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('text with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.TEXT));
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('radio-button choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.RADIOBUTTON));
     const q = createQuestionnaire(item);
-    const { queryByText } = await createWrapper(q);
-    const firstChild = queryByText('2');
+    await createWrapper(q);
+    const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByText('3');
+    const secondChild = screen.queryByText('3');
     expect(secondChild).toBeInTheDocument();
   });
 
   it('check-box choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.CHECKBOX));
     const q = createQuestionnaire(item);
-    const { queryByText } = await createWrapper(q);
-    const firstChild = queryByText('2');
+    await createWrapper(q);
+    const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByText('3');
+    const secondChild = screen.queryByText('3');
     expect(secondChild).toBeInTheDocument();
   });
 
   it('drop-down choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.DROPDOWN));
     const q = createQuestionnaire(item);
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
   it('sliderchoice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.SLIDER));
     const q = createQuestionnaire(item);
-    const { queryByText } = await createWrapper(q);
-    const firstChild = queryByText('2');
+    await createWrapper(q);
+    const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByText('3');
+    const secondChild = screen.queryByText('3');
     expect(secondChild).toBeInTheDocument();
   });
   it('radio-button open-choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.RADIOBUTTON));
     const q = createQuestionnaire(item);
-    const { queryByText } = await createWrapper(q);
-    const firstChild = queryByText('2');
+    await createWrapper(q);
+    const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByText('3');
+    const secondChild = screen.queryByText('3');
     expect(secondChild).toBeInTheDocument();
   });
 
   it('check-box open-choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.CHECKBOX));
     const q = createQuestionnaire(item);
-    const { queryByText } = await createWrapper(q);
-    const firstChild = queryByText('2');
+    await createWrapper(q);
+    const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByText('3');
+    const secondChild = screen.queryByText('3');
     expect(secondChild).toBeInTheDocument();
   });
 
   it('drop-down open-choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.DROPDOWN));
     const q = createQuestionnaire(item);
-    const { queryByLabelText } = await createWrapper(q);
+    await createWrapper(q);
     const firstChildLabel = new RegExp('2', 'i');
-    const firstChild = queryByLabelText(firstChildLabel);
+    const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
     const secondChildLabel = new RegExp('3', 'i');
-    const secondChild = queryByLabelText(secondChildLabel);
+    const secondChild = screen.queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 });
@@ -238,6 +239,7 @@ function createItem(
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(q: Questionnaire) {
   return await waitFor(async () => {
     return renderRefero({ questionnaire: q });

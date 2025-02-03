@@ -1,12 +1,26 @@
+import { useCallback, useEffect, useMemo } from 'react';
+
 import { Coding, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useSelector } from 'react-redux';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import SliderView from './slider-view';
+import AutosuggestView from '../choice-common/autosuggest-view';
+import { ReadOnly } from '../read-only/readOnly';
+import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
+
 import { newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import itemControlConstants from '@/constants/itemcontrol';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useResetFormField } from '@/hooks/useResetFormField';
 import { GlobalState, useAppDispatch } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { isDataReceiver } from '@/util';
 import {
   getOptions,
   getSystem,
@@ -16,19 +30,6 @@ import {
   hasOptions,
   isAboveDropdownThreshold,
 } from '@/util/choice';
-
-import AutosuggestView from '../choice-common/autosuggest-view';
-import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
-import { useSelector } from 'react-redux';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { useCallback, useEffect, useMemo } from 'react';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import { ReadOnly } from '../read-only/readOnly';
-import { isDataReceiver } from '@/util';
-import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type ChoiceProps = QuestionnaireComponentItemProps;
 

@@ -1,4 +1,5 @@
 import * as fs from 'fs';
+
 import { Questionnaire } from 'fhir/r4';
 
 const checkboxView: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/checkbox-view.json').toString());

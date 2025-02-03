@@ -1,7 +1,9 @@
+import { PayloadAction } from '@reduxjs/toolkit';
 import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { getItemControlValue } from './choice';
 import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './refero-core';
+
 import {
   newIntegerValueAction,
   newDecimalValueAction,
@@ -19,7 +21,6 @@ import {
   newAnswerValueAction,
 } from '@/actions/newValue';
 import itemControlConstants from '@/constants/itemcontrol';
-import { PayloadAction } from '@reduxjs/toolkit';
 
 export interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;

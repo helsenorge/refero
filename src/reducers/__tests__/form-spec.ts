@@ -1,8 +1,12 @@
 /* tslint:disable */
 
 import '../../util/__tests__/defineFetch';
-import reducer, { Form } from '../form';
+import { fail } from 'assert';
+
+import { PayloadAction } from '@reduxjs/toolkit';
 import { QuestionnaireResponseItem } from 'fhir/r4';
+
+import dataModel from './__data__/dummy-data-model';
 import {
   newStringValueAction,
   newBooleanValueAction,
@@ -24,9 +28,7 @@ import {
   getQuestionnaireResponseItemWithLinkid,
   getItemWithIdFromResponseItemArray,
 } from '../../util/refero-core';
-import dataModel from './__data__/dummy-data-model';
-import { fail } from 'assert';
-import { PayloadAction } from '@reduxjs/toolkit';
+import reducer, { Form } from '../form';
 
 describe('new value action', () => {
   it('should update string value', () => {
@@ -51,7 +53,7 @@ describe('new value action', () => {
       return fail();
     }
     item = newState.FormData.Content.item[0];
-    expect(item.answer).toBeUndefined;
+    expect(item.answer).toBeUndefined();
   });
 
   it('should update boolean value', () => {
@@ -465,7 +467,7 @@ describe('new value action', () => {
 
     expect(items[0].linkId).toEqual('addGroupTest111');
     // also check answer items are copied but not answer value
-    expect(items[0].answer).toBeUndefined;
+    expect(items[0].answer).toBeUndefined();
     expect(addedGroup.item[1].linkId).toEqual('addGroupTest12');
   });
   it('should add nested group', () => {

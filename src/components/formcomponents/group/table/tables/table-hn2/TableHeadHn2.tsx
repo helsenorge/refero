@@ -17,7 +17,7 @@ const TableHeadHn2 = ({ tableCodesCoding, sortDir, setSortDir, sortable }: Props
   const tableHeader = getHeaderColumns(tableCodesCoding);
   const codeForColumnToSortBy = findCodeForColumnToSortBy(tableCodesCoding);
   const handleSort = (): void => {
-    setSortDir && setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
+    setSortDir?.(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
   };
 
   return (

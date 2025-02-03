@@ -135,7 +135,7 @@ export class ScoringCalculator {
     const tempAnswerPad: AnswerPad = answerPad;
     const keys = this.sectionScoreCache.keys();
 
-    // eslint-disable-next-line no-constant-condition
+     
     while (true) {
       const result = keys.next();
       if (result.done) break;

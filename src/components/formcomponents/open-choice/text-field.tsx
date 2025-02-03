@@ -4,35 +4,34 @@ import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-import styles from '../common-styles.module.css';
+
 import { getPlaceholder } from '../../../util/extension';
 import { isReadOnly, getId, getStringValue } from '../../../util/index';
-
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { QuestionnaireItem } from 'fhir/r4';
+import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 type Props = QuestionnaireComponentItemProps & {
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   handleChange: (value: string) => void;
   pdfValue?: string | number;
 };
-const textField = (props: Props): JSX.Element | null => {
+const ExtraTextField = (props: Props): JSX.Element | null => {
   const { id, pdf, handleStringChange, handleChange, children, idWithLinkIdAndItemIndex, linkId, path, pdfValue } = props;
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { validateScriptInjection, resources } = useExternalRenderContext();
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { error } = getFieldState(formName, formState);
 
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
   const value = getStringValue(answer);
   const errorMessage = getErrorMessage(item, error);
@@ -105,4 +104,4 @@ const textField = (props: Props): JSX.Element | null => {
   );
 };
 
-export default textField;
+export default ExtraTextField;

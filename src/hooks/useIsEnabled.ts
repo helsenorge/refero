@@ -1,10 +1,13 @@
+import { useCallback } from 'react';
+
+import { QuestionnaireItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItem } from 'fhir/r4';
+import { useSelector } from 'react-redux';
+
 import { GlobalState } from '@/reducers';
 import { getResponseItemsSelector } from '@/reducers/selectors';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, Path } from '@/util/refero-core';
-import { QuestionnaireItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItem } from 'fhir/r4';
-import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+
 
 export function isEnableWhenEnabled(
   enableWhen: QuestionnaireItemEnableWhen[],

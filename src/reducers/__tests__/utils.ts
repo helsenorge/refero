@@ -1,7 +1,10 @@
 import '@/util/__tests__/defineFetch';
-import reducer, { Form } from '../form';
-import { Path, getResponseItemWithPath } from '@/util/refero-core';
+import { PayloadAction } from '@reduxjs/toolkit';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Quantity, Attachment } from 'fhir/r4';
+
+import { GlobalState } from '..';
+import reducer, { Form } from '../form';
+
 import {
   newCodingValueAction,
   addRepeatItemAction,
@@ -20,18 +23,19 @@ import {
   NewValuePayload,
   newAttachmentAction,
 } from '@/actions/newValue';
-import { GlobalState } from '..';
-import { PayloadAction } from '@reduxjs/toolkit';
+import { Path, getResponseItemWithPath } from '@/util/refero-core';
+
+
 
 export function pathify(...linkIds: string[]): Path[] {
   return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) }));
 }
 
 export function pathifyExpand(linkId: string): Path[] {
-  let paths = [];
-  let currentPath = [];
-  let parts = linkId.split('.');
-  for (let part of parts) {
+  const paths = [];
+  const currentPath = [];
+  const parts = linkId.split('.');
+  for (const part of parts) {
     currentPath.push(part);
     paths.push({ linkId: currentPath.join('.'), index: 0 });
   }

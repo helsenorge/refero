@@ -1,8 +1,6 @@
-import Group from '@components/formcomponents/group/group';
-import Display from '@formcomponents/display/display';
-import Text from '@formcomponents/text/text';
-import { QuestionnaireResponseItem, QuestionnaireItem } from 'fhir/r4';
+import { ComponentType } from 'react';
 
+import Group from '@components/formcomponents/group/group';
 import Attachment from '@formcomponents/attachment/attachment';
 import Boolean from '@formcomponents/boolean/boolean';
 import Choice from '@formcomponents/choice/choice';
@@ -10,17 +8,19 @@ import Date from '@formcomponents/date/date';
 import DateTimeInput from '@formcomponents/date/date-time';
 import Time from '@formcomponents/date/time';
 import Decimal from '@formcomponents/decimal/decimal';
+import Display from '@formcomponents/display/display';
 import Integer from '@formcomponents/integer/integer';
 import OpenChoice from '@formcomponents/open-choice/open-choice';
 import Quantity from '@formcomponents/quantity/quantity';
 import StringComponent from '@formcomponents/string/string';
+import Text from '@formcomponents/text/text';
+import { QuestionnaireResponseItem, QuestionnaireItem } from 'fhir/r4';
 
-import { ComponentType } from 'react';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import ItemType from '@/constants/itemType';
+import { FormData } from '@/reducers/form';
 import { isRepeat } from '@/util';
 import { createIdSuffix, getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
-import { FormData } from '@/reducers/form';
-import ItemType from '@/constants/itemType';
 
 export const getResponseItems = (
   item?: QuestionnaireItem,

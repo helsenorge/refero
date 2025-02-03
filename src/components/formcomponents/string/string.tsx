@@ -1,30 +1,30 @@
 import React from 'react';
 
+import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
+import styles from '../common-styles.module.css';
+import { ReadOnly } from '../read-only/readOnly';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
 import { newStringValueAsync } from '@/actions/newValue';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useResetFormField } from '@/hooks/useResetFormField';
 import { GlobalState, useAppDispatch } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getPDFStringValue, getMaxLength } from '@/util/index';
-
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { QuestionnaireItem } from 'fhir/r4';
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import { ReadOnly } from '../read-only/readOnly';
-import { shouldValidate } from '@/components/validation/utils';
-import { useResetFormField } from '@/hooks/useResetFormField';
 
 export type Props = QuestionnaireComponentItemProps;
 

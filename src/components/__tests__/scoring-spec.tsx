@@ -1,61 +1,63 @@
 import '../../util/__tests__/defineFetch';
-import ChoiceRadioButtonDataModel from './__data__/scoring/choice-radio-button';
+import { performance } from 'perf_hooks';
+
+import { Questionnaire } from 'fhir/r4';
+
+import { encodeString } from '../createQuestionnaire/utils';
 import ChoiceCheckBoxDataModel from './__data__/scoring/choice-check-box';
+import ChoiceRadioButtonDataModel from './__data__/scoring/choice-radio-button';
+import CodeScoreDataModel from './__data__/scoring/code-scoring';
+import FhirpathScoreDataModel from './__data__/scoring/fhirpath-score';
 import OpenChoiceDataModel from './__data__/scoring/open-choice';
 import SectionScoreDataModel from './__data__/scoring/section-score';
-import FhirpathScoreDataModel from './__data__/scoring/fhirpath-score';
-import CodeScoreDataModel from './__data__/scoring/code-scoring';
-import { Questionnaire } from 'fhir/r4';
-import { getCalculatedExpressionExtension } from '../../util/extension';
 import { inputAnswer, findQuestionnaireItem, findItem } from './utils';
-import { renderRefero } from '../../../test/test-utils';
 import { clickByLabelText, clickByTestId, typeByLabelText } from '../../../test/selectors';
-import { performance } from 'perf_hooks';
-import { encodeString } from '../createQuestionnaire/utils';
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
+import { getCalculatedExpressionExtension } from '../../util/extension';
 
 describe('Component renders and calculates score', () => {
   it('fhirpath score should be updated when decimal questions are answered', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='1').answer.value", FhirpathScoreDataModel);
-    const { container, findByLabelText } = createWrapper(questionnaire);
+    const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('1', 42, container);
 
     const item = findItem('1', container);
 
     expect(item).toHaveValue(42);
-    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
+    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
 
     expect(fhirpathItem).toHaveValue(42);
   });
 
   it('fhirpath score should be updated when integer questions are answered', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", FhirpathScoreDataModel);
-    const { container, findByLabelText } = createWrapper(questionnaire);
+    const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('2', 42, container);
 
-    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
+    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(42);
   });
   it('fhirpath score should be updated when integer questions are answered - should work with zeros', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", FhirpathScoreDataModel);
-    const { container, findByLabelText } = createWrapper(questionnaire);
+    const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('2', 0, container);
 
-    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
+    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(0);
   });
   it('fhirpath score should be updated when quantity questions are answered', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='3').answer.value.value", FhirpathScoreDataModel);
-    const { container, findByLabelText } = createWrapper(questionnaire);
+    const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('3', 42, container);
 
     const item = findItem('3', container);
     expect(item).toHaveValue(42);
 
-    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
+    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(42);
   });
 
@@ -65,7 +67,7 @@ describe('Component renders and calculates score', () => {
       "QuestionnaireResponse.item.where(linkId='1').answer.value + QuestionnaireResponse.item.where(linkId='2').answer.value",
       FhirpathScoreDataModel
     );
-    const { container, findByLabelText } = createWrapper(questionnaire);
+    const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('1', 21, container);
 
@@ -77,23 +79,23 @@ describe('Component renders and calculates score', () => {
     item = findItem('2', container);
     expect(item).toHaveValue(21);
 
-    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
+    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(42);
   });
 
   it('fhirpath score should update with blank score when answer is NaN', async () => {
     const questionnaire = setFhirpath('4', '0 / 0', FhirpathScoreDataModel);
-    const { container, findByLabelText } = createWrapper(questionnaire);
+    const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('1', 42, container);
 
-    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
+    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(null);
   });
 
   it('fhirpath score should update with blank score when answer is infinite', async () => {
     const questionnaire = setFhirpath('4', '42 / 0', FhirpathScoreDataModel);
-    const { container } = createWrapper(questionnaire);
+    const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('1', 42, container);
 
@@ -102,50 +104,50 @@ describe('Component renders and calculates score', () => {
   });
 
   it('total score should be updated when options in choice item as radio-button is selected', async () => {
-    const { getByLabelText } = createWrapper(ChoiceRadioButtonDataModel);
-    const sum = getByLabelText(/Sum/i);
+    await createWrapper(ChoiceRadioButtonDataModel);
+    const sum = screen.getByLabelText(/Sum/i);
     expect(sum).toHaveValue(null);
 
     await clickByLabelText('Mer enn halvparten av dagene');
-    const sum2 = getByLabelText(/Sum/i);
+    const sum2 = screen.getByLabelText(/Sum/i);
     expect(sum2).toHaveValue(2);
 
     await clickByLabelText('Noen dager');
-    const sum3 = getByLabelText(/Sum/i);
+    const sum3 = screen.getByLabelText(/Sum/i);
     expect(sum3).toHaveValue(1);
   });
 
   it('total score should be updated when options in choice item as check-box is selected', async () => {
-    const { getByLabelText } = createWrapper(ChoiceCheckBoxDataModel);
+    await createWrapper(ChoiceCheckBoxDataModel);
 
-    const sum = getByLabelText(/Sum/i);
+    const sum = screen.getByLabelText(/Sum/i);
     expect(sum).toHaveValue(null);
 
     await clickByLabelText('Mer enn halvparten av dagene');
-    const sum2 = getByLabelText(/Sum/i);
+    const sum2 = screen.getByLabelText(/Sum/i);
     expect(sum2).toHaveValue(2);
 
     await clickByLabelText('Nesten hver dag');
-    const sum3 = getByLabelText(/Sum/i);
+    const sum3 = screen.getByLabelText(/Sum/i);
     expect(sum3).toHaveValue(5);
 
     await clickByLabelText('Mer enn halvparten av dagene');
-    const sum4 = getByLabelText(/Sum/i);
+    const sum4 = screen.getByLabelText(/Sum/i);
     expect(sum4).toHaveValue(3);
   });
 
   it('total score should be updated when options in open-choice item is selected', async () => {
-    const { getByLabelText } = createWrapper(OpenChoiceDataModel);
+    await createWrapper(OpenChoiceDataModel);
 
-    const sum = getByLabelText(/Sum/i);
+    const sum = screen.getByLabelText(/Sum/i);
     expect(sum).toHaveValue(null);
 
     await clickByLabelText('Mer enn halvparten av dagene');
-    const sum2 = getByLabelText(/Sum/i);
+    const sum2 = screen.getByLabelText(/Sum/i);
     expect(sum2).toHaveValue(2);
 
     await clickByLabelText('Nesten hver dag');
-    const sum3 = getByLabelText(/Sum/i);
+    const sum3 = screen.getByLabelText(/Sum/i);
     expect(sum3).toHaveValue(3);
   });
   function expectScores(scores: { [linkId: string]: number | null }, container: HTMLElement): void {
@@ -156,7 +158,7 @@ describe('Component renders and calculates score', () => {
     }
   }
   it('total score and section score should be updated', async () => {
-    const { container } = createWrapper(SectionScoreDataModel);
+    const { container } = await createWrapper(SectionScoreDataModel);
     const startScoreCalculation = performance.now();
     const expectedScores: { [linkId: string]: number | null } = {
       totalscore_31: null,
@@ -206,104 +208,104 @@ describe('Component renders and calculates score', () => {
 
 describe('Code Scoring', () => {
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer less than 5', async () => {
-    const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
+    await createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Decimal 1/i, '42.451', false);
 
-    const sum1 = getByDisplayValue(42.451);
+    const sum1 = screen.getByDisplayValue(42.451);
     expect(sum1).toBeInTheDocument();
 
     await typeByLabelText(/Decimal 2/i, '1.041', false);
 
-    const sum2 = getByDisplayValue(1.041);
+    const sum2 = screen.getByDisplayValue(1.041);
     expect(sum2).toBeInTheDocument();
 
-    const sum3 = getByText(43);
+    const sum3 = screen.getByText(43);
     expect(sum3).toBeInTheDocument();
 
-    const sum4 = getByText(43.49);
+    const sum4 = screen.getByText(43.49);
     expect(sum4).toBeInTheDocument();
   });
 
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer more than 5', async () => {
-    const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
+    await createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Decimal 1/i, '42.551', false);
-    const sum = getByDisplayValue(42.551);
+    const sum = screen.getByDisplayValue(42.551);
     expect(sum).toBeInTheDocument();
 
     await typeByLabelText(/Decimal 2/i, '1.041', false);
 
-    const sum2 = getByDisplayValue(1.041);
+    const sum2 = screen.getByDisplayValue(1.041);
     expect(sum2).toBeInTheDocument();
 
-    const sum3 = getByText(44);
+    const sum3 = screen.getByText(44);
     expect(sum3).toBeInTheDocument();
 
-    const sum4 = getByText(43.59);
+    const sum4 = screen.getByText(43.59);
     expect(sum4).toBeInTheDocument();
   });
 
   it('Section scoring on integer grouping', async () => {
-    const { getByDisplayValue, getByText, getAllByDisplayValue } = createWrapper(CodeScoreDataModel);
+    await createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Integer 1/i, '42', false);
-    const sum = getByDisplayValue(42);
+    const sum = screen.getByDisplayValue(42);
     expect(sum).toBeInTheDocument();
 
     await typeByLabelText(/Integer 2/i, '2', false);
 
-    const sum2 = getAllByDisplayValue(2);
+    const sum2 = screen.getAllByDisplayValue(2);
     expect(sum2[0]).toHaveValue(2);
 
-    const sum3 = getByText(44);
+    const sum3 = screen.getByText(44);
     expect(sum3).toBeInTheDocument();
   });
 
   it('Section scoring on quantity grouping', async () => {
-    const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
+    await createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Quantity 1/i, '165.234', false);
-    const sum = getByDisplayValue(165.234);
+    const sum = screen.getByDisplayValue(165.234);
     expect(sum).toBeInTheDocument();
 
     await typeByLabelText(/Nytt quantityfelt med en egen enhet der man feks skal regne sammen to cm felt/i, '45.234', false);
 
-    const sum2 = getByDisplayValue(45.234);
+    const sum2 = screen.getByDisplayValue(45.234);
     expect(sum2).toBeInTheDocument();
-    const sectionScoreItem = getByText('210.47 centimeter');
+    const sectionScoreItem = screen.getByText('210.47 centimeter');
     expect(sectionScoreItem).toBeInTheDocument();
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select one', async () => {
-    const { getByText } = createWrapper(CodeScoreDataModel);
+    await createWrapper(CodeScoreDataModel);
     await clickByLabelText(/Svært medtatt, vansker med å ta til deg væske eller næring/i);
-    expect(getByText('50 kilo')).toBeInTheDocument();
+    expect(screen.getByText('50 kilo')).toBeInTheDocument();
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select multiple', async () => {
-    const { getByText } = createWrapper(CodeScoreDataModel);
+    await createWrapper(CodeScoreDataModel);
     await clickByLabelText(/Svært medtatt, vansker med å ta til deg væske eller næring/i);
     await clickByLabelText(/utslett som ikke lar seg avbleke/i);
-    expect(getByText('100 kilo')).toBeInTheDocument();
+    expect(screen.getByText('100 kilo')).toBeInTheDocument();
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity without extension. Select multiple', async () => {
-    const { getAllByText } = createWrapper(CodeScoreDataModel);
+    await createWrapper(CodeScoreDataModel);
 
     await clickByLabelText(/Astma/i);
     await clickByLabelText(/Kols/i);
 
-    expect(getAllByText('50 score')).toHaveLength(2);
+    expect(screen.getAllByText('50 score')).toHaveLength(2);
   });
 
   it('Total QS scoring', async () => {
-    const { getByText } = createWrapper(CodeScoreDataModel);
+    await createWrapper(CodeScoreDataModel);
 
     await clickByLabelText(/Astma/i);
     await clickByLabelText(/Feber/i);
 
-    expect(getByText('35 score')).toBeInTheDocument();
+    expect(screen.getByText('35 score')).toBeInTheDocument();
   });
 });
 
@@ -320,6 +322,6 @@ export function setFhirpath(linkId: string, expression: string, q: Questionnaire
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function createWrapper(questionnaire: Questionnaire) {
-  return renderRefero({ questionnaire, props: { authorized: true } });
+async function createWrapper(questionnaire: Questionnaire) {
+  return await waitFor(async () => await renderRefero({ questionnaire, props: { authorized: true } }));
 }
