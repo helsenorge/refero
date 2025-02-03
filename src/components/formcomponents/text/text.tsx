@@ -32,8 +32,6 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getPlaceholder, getItemControlExtensionValue } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getMaxLength, getPDFStringValue } from '@/util/index';
 
-
-
 export type Props = QuestionnaireComponentItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 };
@@ -60,7 +58,7 @@ export const Text = (props: Props): JSX.Element | null => {
       promptLoginMessage();
     }
   };
-
+  //@ts-expect-error - debounce is not typed
   const debouncedHandleChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void = debounce(handleChange, 250, false);
   const onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     event.persist();

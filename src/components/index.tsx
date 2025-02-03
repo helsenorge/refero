@@ -52,7 +52,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const formData = useSelector<GlobalState, FormData | null>((state: GlobalState) => getFormData(state));
   const questionnaire = formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
-  const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item?.length]);
+  const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item]);
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,

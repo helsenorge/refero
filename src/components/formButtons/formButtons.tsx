@@ -47,7 +47,7 @@ const FormButtons = ({
   isMicrowebStep,
   cancelUrl,
   hideBackButton,
-}: FormButtonsInterface): JSX.Element | null => {
+}: FormButtonsInterface): JSX.Element => {
   let buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
   if (overrideButtonOrder) {
     buttonOrder = overrideButtonOrder;
