@@ -23,8 +23,6 @@ import { Options } from '@/types/formTypes/radioGroupOptions';
 import { shouldShowExtraChoice } from '@/util/choice';
 import { getId, isReadOnly } from '@/util/index';
 
-
-
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
   handleChange: (radioButton: string) => void;
@@ -87,7 +85,9 @@ const RadioView = (props: Props): JSX.Element | null => {
               handleChange(option.type);
               onChange(e);
             }}
-            label={<Label testId={`${getId(id)}-${index}-radio-open-choice-label`} labelTexts={[{ text: option.label }]} />}
+            label={
+              <Label testId={`${getId(id)}-${index}-radio-open-choice-label`} labelTexts={[{ text: option.label, type: 'subdued' }]} />
+            }
             checked={selectedValue === option?.type}
           />
         ))}

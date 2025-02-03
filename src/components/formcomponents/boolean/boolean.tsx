@@ -95,7 +95,7 @@ const Boolean = (props: Props): JSX.Element | null => {
           label={
             <Label
               testId={`${getId(id)}-label-readonly`}
-              labelTexts={[{ text: item?.text || '' }]}
+              labelTexts={[{ text: item?.text || '', type: 'subdued' }]}
               afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
             />
           }
@@ -120,7 +120,7 @@ const Boolean = (props: Props): JSX.Element | null => {
             <Label
               labelId={`${getId(id)}-label-boolean`}
               testId={`${getId(id)}-label-boolean`}
-              labelTexts={[{ text: item?.text || '', type: 'normal' }]}
+              labelTexts={[{ text: item?.text || '', type: 'subdued' }]}
               htmlFor={getId(id)}
               className="page_refero__label label_helpButton_align"
               afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}

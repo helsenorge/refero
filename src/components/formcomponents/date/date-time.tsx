@@ -5,7 +5,6 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-
 import { DateFormat, DateTimeUnit, defaultMaxDate, defaultMinDate, TimeUnit } from '../../../types/dateTypes';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -13,7 +12,6 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
 import { DatePicker } from '@helsenorge/datepicker/components/DatePicker';
-
 
 import { useMinMaxDate } from './useMinMaxDate';
 import { newDateTimeValueAsync } from '../../../actions/newValue';

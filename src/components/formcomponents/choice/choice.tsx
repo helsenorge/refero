@@ -48,7 +48,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         resetInitialAnswer(answer?.valueCoding?.code);
       }
     }
-  }, [answer]);
+  }, [answer, item]);
 
   const getAnswerValue = useCallback((): string[] | undefined => {
     if (Array.isArray(answer)) {
@@ -60,7 +60,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       return [];
     }
     return undefined;
-  }, [answer]);
+  }, [answer, item]);
 
   // const getInitialValue = useCallback((): string[] | undefined => {
   //   const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;

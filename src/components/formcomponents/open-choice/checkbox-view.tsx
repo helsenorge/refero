@@ -23,8 +23,6 @@ import { Options } from '@/types/formTypes/radioGroupOptions';
 import { shouldShowExtraChoice } from '@/util/choice';
 import { getId, isReadOnly } from '@/util/index';
 
-
-
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
   handleChange: (radioButton: string) => void;
@@ -83,7 +81,9 @@ const CheckboxView = (props: Props): JSX.Element | null => {
             key={`${option.type}-${index}`}
             inputId={`${getId(id)}-hn-${index}`}
             testId={`${getId(id)}-${index}-checkbox-openchoice`}
-            label={<Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label }]} />}
+            label={
+              <Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label, type: 'subdued' }]} />
+            }
             checked={selected?.some((val: string | undefined) => val === option?.type)}
             value={option.type}
             onChange={(e): void => {
