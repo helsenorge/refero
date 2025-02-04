@@ -1,9 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from 'react';
+
+import { QuestionnaireItem } from 'fhir/r4';
+import { useFormContext } from 'react-hook-form';
+
 import ItemControlConstants from '@/constants/itemcontrol';
 import { useAppSelector } from '@/reducers';
 import { getItemControlExtensionValue } from '@/util/extension';
-import { QuestionnaireItem } from 'fhir/r4';
-import { useEffect, useState } from 'react';
-import { useFormContext } from 'react-hook-form';
 
 export const useResetFormField = <T>(id: string, defaultValue?: T, item?: QuestionnaireItem): void => {
   const { resetField } = useFormContext();

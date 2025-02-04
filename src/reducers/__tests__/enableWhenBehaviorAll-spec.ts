@@ -1,9 +1,12 @@
-import enableWhenDataModel from './__data__/enableWhenBehaviorAll';
-import { Form } from '../form';
-import { QuestionnaireItem } from 'fhir/r4';
-import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
-import { getResponseItem, pathify, clickCheckbox } from './utils';
 import { fail } from 'assert';
+
+import { QuestionnaireItem } from 'fhir/r4';
+
+import { Form } from '../form';
+import enableWhenDataModel from './__data__/enableWhenBehaviorAll';
+import { getResponseItem, pathify, clickCheckbox } from './utils';
+import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
+
 
 describe('questionnaire with enableWhen behavior all', () => {
   let newState: Form;

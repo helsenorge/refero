@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 import { useFormContext } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { getItemTextFromErrors } from './utils';
 import { Resources } from '../../util/resources';
@@ -10,7 +11,6 @@ import styles from './validationSummary.module.css';
 
 import { GlobalState } from '@/reducers';
 import { FormData, FormDefinition, getFormData, getFormDefinition } from '@/reducers/form';
-import { useSelector } from 'react-redux';
 
 type Props = {
   resources: Resources;

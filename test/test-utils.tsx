@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactElement, ReactNode } from 'react';
 
+import { configureStore, Store } from '@reduxjs/toolkit';
 import { render, RenderOptions } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Questionnaire } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Provider } from 'react-redux';
-import { configureStore, Store } from '@reduxjs/toolkit';
 
 import { getResources } from '../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../src/actions/generateQuestionnaireResponse';
@@ -16,8 +16,9 @@ import rootReducer, { GlobalState } from '../src/reducers';
 import { ReferoProps } from '../src/types/referoProps';
 import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
-import { ExternalRenderProvider } from '@/context/externalRenderContext';
+
 import { AttachmentProvider } from '@/context/AttachmentContext';
+import { ExternalRenderProvider } from '@/context/externalRenderContext';
 
 export const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
   const methods = useForm({
@@ -118,7 +119,7 @@ interface InputProps {
   defaultValues?: DefaultValues;
 }
 
-function renderRefero({ questionnaire, props, initialState, resources, defaultValues }: InputProps) {
+async function renderRefero({ questionnaire, props, initialState, resources, defaultValues }: InputProps) {
   const resourcesDefault = {
     ...getResources(''),
     ...resources,

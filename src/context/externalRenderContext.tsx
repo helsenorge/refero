@@ -1,3 +1,7 @@
+import { createContext, useContext, ReactNode, useMemo } from 'react';
+
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
+
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { actions } from '@/reducers/form';
 import { AutoSuggestProps } from '@/types/autoSuggestProps';
@@ -5,8 +9,6 @@ import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 import { IActionRequester } from '@/util/actionRequester';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { Resources } from '@/util/resources';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
-import { createContext, useContext, ReactNode, useMemo } from 'react';
 
 type ExternalRenderType = {
   onRequestHelpElement?: (
@@ -101,6 +103,7 @@ export const ExternalRenderProvider = ({
 }: ExternalRenderProviderProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const isExternalUpdate = useAppSelector(state => state.refero.form.FormData.isExternalUpdate);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleOnChange = (
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer,

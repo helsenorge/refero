@@ -1,8 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
+
 import { Attachment, QuestionnaireItem } from 'fhir/r4';
-import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
-import { getAttachmentsFromAnswer } from './helpers';
 import { useFormContext } from 'react-hook-form';
+
+import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+
+import { getAttachmentsFromAnswer } from './helpers';
+
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { Path } from '@/util/refero-core';
 
@@ -66,7 +70,7 @@ export const useAttachmentSync = ({
     } else {
       setDisableButton(false);
     }
-  }, [acceptedFiles]);
+  }, [acceptedFiles, item?.repeats]);
   useEffect(() => {
     if (internalUpdateRef.current) {
       internalUpdateRef.current = false;

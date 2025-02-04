@@ -6,17 +6,19 @@ type Props = {
   submitButtonDisabled?: boolean;
   onSubmitButtonClicked?:
     | (() => void)
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     | ((e: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined) => void);
   submitButtonText: string;
 };
 
 export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSubmitButtonClicked }: Props): JSX.Element | null => {
   const handleSubmit = (
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     e?: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined
   ): void => {
     if (e) {
       e.preventDefault();
-      onSubmitButtonClicked && onSubmitButtonClicked(e);
+      onSubmitButtonClicked?.(e);
     }
   };
   return (

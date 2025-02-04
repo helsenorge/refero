@@ -1,9 +1,12 @@
-import { useScoringCalculator } from './useScoringCalculator';
-import { ActionRequester, IActionRequester } from '@/util/actionRequester';
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { IQuestionnaireInspector, QuestionniareInspector } from '@/util/questionnaireInspector';
-import { GlobalState, useAppDispatch } from '@/reducers';
+
 import { useFhirPathQrUpdater } from './useFhirPathQrUpdater';
+import { useScoringCalculator } from './useScoringCalculator';
+
+import { GlobalState, useAppDispatch } from '@/reducers';
+import { ActionRequester, IActionRequester } from '@/util/actionRequester';
+import { IQuestionnaireInspector, QuestionniareInspector } from '@/util/questionnaireInspector';
 
 const useOnAnswerChange = (
   onChange?: (

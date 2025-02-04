@@ -1,19 +1,23 @@
-import { getId } from '@/util';
-import GroupHeader from './GroupHeader';
-import { getClassNames, getHeaderText } from './helpers';
-import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
-import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import styles from './group.module.css';
 import { Dispatch } from 'react';
 
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { QuestionnaireItem } from 'fhir/r4';
 import { useSelector } from 'react-redux';
+
+import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
+
+import GroupHeader from './GroupHeader';
+import { getClassNames, getHeaderText } from './helpers';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
+import styles from './group.module.css';
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
-import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
+import { getId } from '@/util';
 
 type DefaultGroup = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;

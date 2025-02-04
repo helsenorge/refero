@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import {
   Questionnaire,
   QuestionnaireResponseItem,
@@ -9,9 +11,20 @@ import {
   Attachment,
 } from 'fhir/r4';
 
-import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
+
+import {
+  getResponseItemWithPath,
+  getQuestionnaireDefinitionItem,
+  getQuestionnaireResponseItemWithLinkid,
+  getResponseItems,
+  getDefinitionItems,
+  enableWhenMatchesAnswer,
+  getArrayContainingResponseItemFromItems,
+  Path,
+  getResponseItemAndPathWithLinkId,
+  getQuestionnaireDefinitionItemWithLinkid,
+} from '../util/refero-core';
 
 import { SetFormDefinitionAction, setSkjemaDefinitionAction } from '@/actions/form';
 import { generateQuestionnaireResponse } from '@/actions/generateQuestionnaireResponse';
@@ -36,22 +49,10 @@ import {
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
 import itemType from '@/constants/itemType';
 import { GlobalState } from '@/reducers/index';
+import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '@/util/extension';
 import { isStringEmpty } from '@/util/index';
-import {
-  getResponseItemWithPath,
-  getQuestionnaireDefinitionItem,
-  getQuestionnaireResponseItemWithLinkid,
-  getResponseItems,
-  getDefinitionItems,
-  enableWhenMatchesAnswer,
-  getArrayContainingResponseItemFromItems,
-  Path,
-  getResponseItemAndPathWithLinkId,
-  getQuestionnaireDefinitionItemWithLinkid,
-} from '../util/refero-core';
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 
 export interface FormData {
   Content: QuestionnaireResponse | null | undefined;

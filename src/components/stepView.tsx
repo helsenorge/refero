@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { ReferoProps } from '../types/referoProps';
 
@@ -8,10 +9,11 @@ import RenderForm from './renderForm';
 import { FormDefinition, getFormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
 import { Resources } from '../util/resources';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
 import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnaireComponents';
+
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { GlobalState } from '@/reducers';
+
 
 interface StepViewProps {
   isAuthorized: boolean;

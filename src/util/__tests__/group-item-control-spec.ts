@@ -1,8 +1,9 @@
 import { QuestionnaireItem } from 'fhir/r4';
-import { getGroupItemControl } from '../group-item-control';
-import ItemType from '../../constants/itemType';
-import itemControlConstants from '../../constants/itemcontrol';
+
 import { Extensions } from '../../constants/extensions';
+import itemControlConstants from '../../constants/itemcontrol';
+import ItemType from '../../constants/itemType';
+import { getGroupItemControl } from '../group-item-control';
 
 describe('getGroupItemControl', () => {
   it('should return an empty array if item type is not GROUP', () => {

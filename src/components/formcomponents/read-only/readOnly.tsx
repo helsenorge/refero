@@ -1,10 +1,14 @@
-import { Attachment, QuestionnaireItem } from 'fhir/r4';
-import TextView from '../textview';
-import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
-import { getId, shouldValidateReadOnly } from '@/util';
 import { useEffect } from 'react';
+
+import { Attachment, QuestionnaireItem } from 'fhir/r4';
+import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
+
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+
+import TextView from '../textview';
+
 import { getErrorMessage } from '@/components/validation/rules';
+import { getId, shouldValidateReadOnly } from '@/util';
 
 type Props = {
   pdf?: boolean;

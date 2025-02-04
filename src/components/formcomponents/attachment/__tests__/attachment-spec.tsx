@@ -1,55 +1,17 @@
-import { userEvent, Matcher, renderRefero, screen } from '@test/test-utils.tsx';
-import { q } from './__data__/';
-
-import { createMockFile } from './__data__/mockUtil';
-import { convertMBToBytes } from '../attachmentUtil';
+import { userEvent, Matcher, renderRefero, screen, waitFor } from '@test/test-utils.tsx';
+import { Questionnaire } from 'fhir/r4';
 import { vi } from 'vitest';
-import { Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { ReferoProps } from '@/types/referoProps';
+
+import { q } from './__data__/';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { submitForm } from '@test/selectors';
-import { ExtensionConstants } from '@/index';
+
+import { ReferoProps } from '@/types/referoProps';
 import { MimeType } from '@/util/attachmentHelper';
-import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
-import {
-  validateFileSize,
-  validateFileType,
-  validateNumberOfFiles,
-  validateTotalFileSize,
-} from '@helsenorge/file-upload/components/file-upload/validate-utils';
-
-const mockFileName = 'testFile.txt';
-const defaulMockSize = 3;
-const PLAIN_TEXT_3_MB = createMockFile(mockFileName, MimeType.PlainText, convertMBToBytes(defaulMockSize));
-const PLAIN_TEXT_6_MB = createMockFile(mockFileName, MimeType.PlainText, convertMBToBytes(6));
-
-async function uploadMockFile(
-  mockFile: File | File[],
-  testId = 'item_5fece702-bf32-445b-979d-862ade17306a-attachment-label'
-): Promise<void> {
-  const input = screen.getByTestId(testId);
-
-  await userEvent.upload(input, mockFile);
-}
 
 export const expectNotToFindByText = (text: Matcher): void => {
   expect(screen.queryByText(text)).toBeNull();
 };
-const addOReplaceMaxSizeExtension = (item: QuestionnaireItem, maxSize: number | undefined): QuestionnaireItem => ({
-  ...item,
-  extension: item.extension?.map(e => (e.url === ExtensionConstants.MAX_SIZE_URL ? { ...e, valueDecimal: maxSize } : e)),
-});
-const removeExtensionFromItemByUrl = (extension?: Extension[], url?: Extension['url'] | undefined): Extension[] | undefined =>
-  extension?.filter(e => e.url !== url);
 
-const hasFiletypeError = (hasError: boolean): void => {
-  if (hasError) expect(screen.getByText(/Tillatte filtyper er:/i)).toBeInTheDocument();
-  else expect(screen.queryByText(/Tillatte filtyper er:/i)).not.toBeInTheDocument();
-};
-const hasFileSizeError = (hasError: boolean): void => {
-  if (hasError) expect(screen.getByText(/Filstørrelse må være mindre enn/i)).toBeInTheDocument();
-  else expect(screen.queryByText(/Filstørrelse må være mindre enn/i)).not.toBeInTheDocument();
-};
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', ikkeBesvart: 'ikkeBesvart' };
 
 // class MockDataTransfer {
@@ -62,44 +24,44 @@ const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle
 
 describe('Attachment', () => {
   describe('Render', () => {
-    it('Should render as text if props.pdf', () => {
+    it('Should render as text if props.pdf', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { getByText } = createWrapper(questionnaire, { pdf: true });
-      expect(getByText(resources.ikkeBesvart)).toBeInTheDocument();
+      await createWrapper(questionnaire, { pdf: true });
+      expect(screen.getByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
 
-    it('Should render text if item is readonly', () => {
+    it('Should render text if item is readonly', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true, repeats: false })),
       };
 
-      const { getByText } = createWrapper(questionnaire);
-      expect(getByText(resources.ikkeBesvart)).toBeInTheDocument();
+      await createWrapper(questionnaire);
+      expect(screen.getByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
 
-    it('Should render as input if props.pdf === false && item is not readonly', () => {
+    it('Should render as input if props.pdf === false && item is not readonly', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByText } = createWrapper(questionnaire);
-      expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
+      await createWrapper(questionnaire);
+      expect(screen.queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
     });
   });
 
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
     });
 
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container } = createWrapper(q);
+      const { container } = await createWrapper(q);
 
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
@@ -130,9 +92,9 @@ describe('Attachment', () => {
     //       ],
     //     })),
     //   };
-    //   const { getByText } = createWrapper(questionnaire);
+    //   await createWrapper(questionnaire);
     //   await submitForm();
-    //   expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+    //   expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
     // });
     //   describe('File Type validation', () => {
     // it('When uploading a file - Do NOT show error file type error message when valid mime', async () => {
@@ -202,7 +164,7 @@ describe('Attachment', () => {
 });
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}, resource = resources) {
+async function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}, resource = resources) {
   const attahchmentProps: Partial<ReferoProps> = {
     attachmentErrorMessage: undefined,
     attachmentMaxFileSize: 20,
@@ -212,5 +174,5 @@ function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps>
     onDeleteAttachment: vi.fn(),
     uploadAttachment: vi.fn(),
   };
-  return renderRefero({ questionnaire, props: { ...attahchmentProps, ...props }, resources: resource });
+  return await waitFor(async () => await renderRefero({ questionnaire, props: { ...attahchmentProps, ...props }, resources: resource }));
 }

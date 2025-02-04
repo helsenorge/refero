@@ -1,31 +1,32 @@
 import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import styles from '../common-styles.module.css';
+
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import FileUpload, { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
-
-import { getNumberOfFilesValidationText, getValidationTextForAttachment } from './attachment-validation';
 import {
   validateNumberOfFiles,
   validateFileType,
   validateFileSize,
   validateTotalFileSize,
 } from '@helsenorge/file-upload/components/file-upload/validate-utils';
-import { convertBytesToMBString, getAttachmentMaxSizeBytesToUse, validateRequired } from './attachmentUtil';
-import { VALID_FILE_TYPES } from '@/constants';
-import { getId, isReadOnly } from '@/util';
-import { Resources } from '@/util/resources';
 
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { getNumberOfFilesValidationText, getValidationTextForAttachment } from './attachment-validation';
+import styles from '../common-styles.module.css';
+import { convertBytesToMBString, getAttachmentMaxSizeBytesToUse, validateRequired } from './attachmentUtil';
+import { useAttachmentSync } from './useAttachmentSync';
 import { ReadOnly } from '../read-only/readOnly';
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
-import { useAttachmentSync } from './useAttachmentSync';
+import { VALID_FILE_TYPES } from '@/constants';
 import { TextMessage } from '@/types/text-message';
+import { getId, isReadOnly } from '@/util';
+import { Resources } from '@/util/resources';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;

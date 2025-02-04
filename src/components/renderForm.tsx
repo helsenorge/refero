@@ -3,14 +3,15 @@ import React from 'react';
 import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
-import { ReferoProps } from '@/types/referoProps';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 import FormButtons from './formButtons/formButtons';
 import { ValidationSummary } from './validation/validation-summary';
-import { Resources } from '@/util/resources';
+
 import { buttonOrderMicrowebStep } from '@/types/formTypes/formButton';
+import { ReferoProps } from '@/types/referoProps';
+import { Resources } from '@/util/resources';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -108,14 +109,14 @@ const RenderForm = ({
   const onCancelButtonClicked = referoProps.customProps?.isMicroweb ? cancelButtonClicked : referoProps.onCancel;
   const overrideButtonOrder = referoProps.customProps?.isMicroweb ? buttonOrderMicrowebStep : undefined;
   return (
-    <>
+    <React.Fragment>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
         {displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
         {children}
         {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
       </form>
 
-      {referoProps.customProps?.isMicroweb && !referoProps.renderCustomActionButtons && (
+      {referoProps.customProps?.isMicroweb && !referoProps.renderCustomActionButtons ? (
         <FormButtons
           isStepView={false}
           submitButtonText={'Neste'}
@@ -128,10 +129,10 @@ const RenderForm = ({
           loginButton={referoProps.loginButton}
           overrideButtonOrder={buttonOrderMicrowebStep}
           isMicrowebStep={true}
-          cancelUrl={referoProps.customProps?.cancelUrl}
-          hideBackButton={referoProps.customProps?.hideBackButton}
+          cancelUrl={referoProps.customProps?.cancelUrl as string | undefined}
+          hideBackButton={referoProps.customProps?.hideBackButton as boolean | undefined}
         />
-      )}
+      ) : null}
 
       {!referoProps.customProps?.isMicroweb &&
         (referoProps.renderCustomActionButtons ? (
@@ -161,7 +162,7 @@ const RenderForm = ({
             isMicrowebStep={!!referoProps.customProps?.isMicroweb}
           />
         ))}
-    </>
+    </React.Fragment>
   );
 };
 

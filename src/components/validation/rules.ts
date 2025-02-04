@@ -1,3 +1,6 @@
+import { QuestionnaireItem } from 'fhir/r4';
+import { FieldError, ValidationRule, ValidationValue } from 'react-hook-form';
+
 import { getDecimalPattern, getMaxLength, isRequired, scriptInjectionValidation } from '@/util';
 import {
   getMaxValueExtensionValue,
@@ -7,8 +10,6 @@ import {
   getMinLengthExtensionValue,
 } from '@/util/extension';
 import { Resources } from '@/util/resources';
-import { QuestionnaireItem } from 'fhir/r4';
-import { FieldError, ValidationRule, ValidationValue } from 'react-hook-form';
 
 type ValidationRuleInput = {
   item?: QuestionnaireItem;

@@ -1,27 +1,27 @@
+import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
-import { Options } from '@/types/formTypes/radioGroupOptions';
-import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
-import { shouldShowExtraChoice } from '@/util/choice';
-import { getId, isReadOnly } from '@/util/index';
-
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
+import styles from '../common-styles.module.css';
+import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { QuestionnaireItem } from 'fhir/r4';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { GlobalState } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { Options } from '@/types/formTypes/radioGroupOptions';
+import { shouldShowExtraChoice } from '@/util/choice';
+import { getId, isReadOnly } from '@/util/index';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -85,7 +85,9 @@ const RadioView = (props: Props): JSX.Element | null => {
               handleChange(option.type);
               onChange(e);
             }}
-            label={<Label testId={`${getId(id)}-${index}-radio-open-choice-label`} labelTexts={[{ text: option.label }]} />}
+            label={
+              <Label testId={`${getId(id)}-${index}-radio-open-choice-label`} labelTexts={[{ text: option.label, type: 'subdued' }]} />
+            }
             checked={selectedValue === option?.type}
           />
         ))}

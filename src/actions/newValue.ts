@@ -1,5 +1,5 @@
-import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { createAction, PayloadAction } from '@reduxjs/toolkit';
+import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { AppDispatch, GlobalState } from '../reducers';
 import { Path } from '../util/refero-core';

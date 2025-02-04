@@ -1,8 +1,11 @@
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import { GlobalState } from '.';
-import { Form, FormData, FormDefinition, getFormDefinition } from './form';
-import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
 import { createSelector } from '@reduxjs/toolkit';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+
+import { Form, FormData, FormDefinition, getFormDefinition } from './form';
+
+import { GlobalState } from '.';
+
+import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
 
 export const questionnaireSelector = createSelector(
   [(state: GlobalState): FormDefinition | undefined | null => state?.refero?.form.FormDefinition],

@@ -1,3 +1,8 @@
+import { useEffect, useState } from 'react';
+
+import { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import { useSelector } from 'react-redux';
+
 import { newDecimalValueAction, newIntegerValueAction, newQuantityValueAction } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
 import { GlobalState, useAppDispatch } from '@/reducers';
@@ -7,9 +12,6 @@ import { ActionRequester } from '@/util/actionRequester';
 import { getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
-import { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 export const useScoringCalculator = (): {
   runScoringCalculator: (
@@ -63,6 +65,7 @@ export const useScoringCalculator = (): {
             value: getDecimalValue(item, value),
           };
           for (const itemAndPath of itemsAndPaths) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             actionRequester;
             dispatch(newQuantityValueAction({ itemPath: itemAndPath.path, valueQuantity: quantity, item }));
           }

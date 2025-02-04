@@ -1,4 +1,11 @@
-import ItemType from '@/constants/itemType';
+
+
+import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
+import { Mock, vi } from 'vitest';
+
+import { QuestionnaireItemWithAnswers } from '../../interface';
+import * as tableUtils from '../../utils';
+import { IStandardTableColumn } from '../interface';
 import {
   createBodyRows,
   createColumnsFromAnswers,
@@ -12,14 +19,9 @@ import {
   needsExtraColumn,
 } from '../utils';
 
-import * as choiceUtils from '@/util/choice';
-
-import * as tableUtils from '../../utils';
-import { QuestionnaireItemWithAnswers } from '../../interface';
-import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
-import { Mock, vi } from 'vitest';
-import { IStandardTableColumn } from '../interface';
+import ItemType from '@/constants/itemType';
 import { Options } from '@/types/formTypes/radioGroupOptions';
+import * as choiceUtils from '@/util/choice';
 vi.mock('../../utils');
 vi.mock('@/util/choice');
 

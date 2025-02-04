@@ -1,13 +1,9 @@
 import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 
-import { Options } from '@/types/formTypes/radioGroupOptions';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { IStandardTable, IStandardTableColumn, IStandardTableRow } from './interface';
-import codeSystems from '@/constants/codingsystems';
-import ItemType, { IItemType } from '@/constants/itemType';
-import { getContainedOptions, getSystemForItem } from '@/util/choice';
 import { QuestionnaireItemWithAnswers } from '../interface';
 import {
   getDisplayFromCodingSystem,
@@ -15,6 +11,12 @@ import {
   sortByItemType,
   transformAnswersToListOfStrings,
 } from '../utils';
+
+import codeSystems from '@/constants/codingsystems';
+import ItemType, { IItemType } from '@/constants/itemType';
+import { Options } from '@/types/formTypes/radioGroupOptions';
+import { getContainedOptions, getSystemForItem } from '@/util/choice';
+
 
 export const emptyTable = (): IStandardTable => {
   return {

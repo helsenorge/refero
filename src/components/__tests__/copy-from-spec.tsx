@@ -1,13 +1,14 @@
 import '../../util/__tests__/defineFetch';
 
+import { clickByLabelText } from '@test/selectors';
 import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
-import { createDataReceiverExpressionExtension, createItemControlExtension } from '../__tests__/utils';
+import { renderRefero, screen, userEvent, waitFor } from '../../../test/test-utils';
 import ItemType from '../../constants/itemType';
-import { renderRefero, userEvent, waitFor } from '../../../test/test-utils';
-import { clickByLabelText } from '@test/selectors';
-import ItemControlConstants from '@/constants/itemcontrol';
+import { createDataReceiverExpressionExtension, createItemControlExtension } from '../__tests__/utils';
+
 import { Extensions } from '@/constants/extensions';
+import ItemControlConstants from '@/constants/itemcontrol';
 import valueSet from '@/constants/valuesets';
 import { Valueset } from '@/util/__tests__/__data__/valuesets/valueset-8459';
 
@@ -16,58 +17,58 @@ describe('Copy value from item', () => {
     const sender = createSenderItem(ItemType.STRING);
     const reciever = createRecieverItem(ItemType.STRING);
     const q = createQuestionnaire(sender, reciever);
-    const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+    await createWrapper(q);
+    expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.type(getByLabelText(labelRegex), '123');
-    const elm = await findByTestId(/item_2/i);
+    await userEvent.type(screen.getByLabelText(labelRegex), '123');
+    const elm = await screen.findByTestId(/item_2/i);
     expect(elm).toBeInTheDocument();
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123'));
+    await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('123'));
   });
   it('should copy INTEGER value', async () => {
     const sender = createSenderItem(ItemType.INTEGER);
     const reciever = createRecieverItem(ItemType.INTEGER);
     const q = createQuestionnaire(sender, reciever);
-    const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+    await createWrapper(q);
+    expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.type(getByLabelText(labelRegex), '123');
-    const elm = await findByTestId(/item_2/i);
+    await userEvent.type(screen.getByLabelText(labelRegex), '123');
+    const elm = await screen.findByTestId(/item_2/i);
     expect(elm).toBeInTheDocument();
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123'));
+    await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('123'));
   });
   it('should copy TEXT value', async () => {
     const sender = createSenderItem(ItemType.TEXT);
     const reciever = createRecieverItem(ItemType.TEXT);
     const q = createQuestionnaire(sender, reciever);
-    const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+    await createWrapper(q);
+    expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.type(getByLabelText(labelRegex), '123');
-    const elm = await findByTestId(/item_2/i);
+    await userEvent.type(screen.getByLabelText(labelRegex), '123');
+    const elm = await screen.findByTestId(/item_2/i);
     expect(elm).toBeInTheDocument();
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123'));
+    await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('123'));
   });
   it('should copy DECIMAL value', async () => {
     const sender = createSenderItem(ItemType.DECIMAL);
     const reciever = createRecieverItem(ItemType.DECIMAL);
     const q = createQuestionnaire(sender, reciever);
-    const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+    await createWrapper(q);
+    expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.type(getByLabelText(labelRegex), '123.12');
-    const elm = await findByTestId(/item_2/i);
+    await userEvent.type(screen.getByLabelText(labelRegex), '123.12');
+    const elm = await screen.findByTestId(/item_2/i);
     expect(elm).toBeInTheDocument();
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123.12'));
+    await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('123.12'));
   });
   it('should copy BOOLEAN value', async () => {
     const sender = createSenderItem(ItemType.BOOLEAN);
     const reciever = createRecieverItem(ItemType.BOOLEAN);
     const q = createQuestionnaire(sender, reciever);
-    const { queryByTestId, findByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2-label/i)).not.toBeInTheDocument();
+    await createWrapper(q);
+    expect(screen.queryByTestId(/item_2-label/i)).not.toBeInTheDocument();
     await clickByLabelText(`${sender.text}`);
-    const elm = await findByTestId(/item_2-label/i);
+    const elm = await screen.findByTestId(/item_2-label/i);
     expect(elm).toBeInTheDocument();
   });
   describe('should copy DATE and TIME values', () => {
@@ -81,25 +82,25 @@ describe('Copy value from item', () => {
       const sender = createSenderItem(ItemType.DATE);
       const reciever = createRecieverItem(ItemType.DATE);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
       const labelRegex = new RegExp(`${sender.text}`, 'i');
-      await userEvent.type(getByLabelText(labelRegex), '12.12.2024');
-      const elm = await findByTestId(/item_2/i);
+      await userEvent.type(screen.getByLabelText(labelRegex), '12.12.2024');
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12. desember 2024'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('12. desember 2024'));
     });
     it('should copy DATETIME value', async () => {
       const sender = createSenderItem(ItemType.DATETIME);
       const reciever = createRecieverItem(ItemType.DATETIME);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
       const labelRegex = new RegExp(`${sender.text}`, 'i');
 
-      const dateElement = getByLabelText(labelRegex);
-      const hoursElement = await findByTestId('hours-test');
-      const minutesElement = await findByTestId('minutes-test');
+      const dateElement = screen.getByLabelText(labelRegex);
+      const hoursElement = await screen.findByTestId('hours-test');
+      const minutesElement = await screen.findByTestId('minutes-test');
 
       const hoursInput = hoursElement.querySelector('input');
       const minutesInput = minutesElement.querySelector('input');
@@ -110,53 +111,53 @@ describe('Copy value from item', () => {
         await userEvent.type(minutesInput, '30');
       }
 
-      const elm = await findByTestId(/item_2/i);
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024 12:30'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('12.12.2024 12:30'));
     });
     it('should copy DATEYEAR value', async () => {
       const sender = createSenderChoiceItem(ItemType.DATE, createItemControlExtension(ItemControlConstants.YEAR));
       const reciever = createReciverChoiceItem(ItemType.DATE, ItemControlConstants.YEAR);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
       const labelRegex = new RegExp(`${sender.text}`, 'i');
-      await userEvent.type(getByLabelText(labelRegex), '2024');
-      const elm = await findByTestId(/item_2/i);
+      await userEvent.type(screen.getByLabelText(labelRegex), '2024');
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('2024'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('2024'));
     });
     it('should copy DATEMONTH value', async () => {
       const sender = createSenderChoiceItem(ItemType.DATE, createItemControlExtension(ItemControlConstants.YEARMONTH));
       const reciever = createReciverChoiceItem(ItemType.DATE, ItemControlConstants.YEARMONTH);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
       const labelRegex = new RegExp(`${sender.text}`, 'i');
-      const monthElement = await findByTestId('month-select');
+      const monthElement = await screen.findByTestId('month-select');
       const monthSelect = monthElement.querySelector('select');
 
-      await userEvent.type(getByLabelText(labelRegex), '2024');
+      await userEvent.type(screen.getByLabelText(labelRegex), '2024');
       await userEvent.tab();
       if (monthSelect) {
         await userEvent.selectOptions(monthSelect, '05');
       }
 
-      const elm = await findByTestId(/item_2/i);
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('mai 2024'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('mai 2024'));
     });
     it('should copy TIME value', async () => {
       const sender = createSenderItem(ItemType.TIME);
       const reciever = createRecieverItem(ItemType.TIME);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
       const labelRegex = new RegExp(`${sender.text}`, 'i');
-      await userEvent.type(getByLabelText(labelRegex), '12');
-      const elm = await findByTestId(/item_2/i);
+      await userEvent.type(screen.getByLabelText(labelRegex), '12');
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12:00'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('12:00'));
     });
   });
   it('should copy QUANTITY value', async () => {
@@ -179,61 +180,64 @@ describe('Copy value from item', () => {
       },
     ]);
     const q = createQuestionnaire(sender, reciever);
-    const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+    await createWrapper(q);
+    expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.type(getByLabelText(labelRegex), '12');
-    const elm = await findByTestId(/item_2/i);
+    await userEvent.type(screen.getByLabelText(labelRegex), '12');
+    const elm = await screen.findByTestId(/item_2/i);
     expect(elm).toBeInTheDocument();
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12'));
+    await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('12'));
   });
   describe('should copy CHOICE value', () => {
     it('should copy CHECKBOX value', async () => {
       const sender = createSenderChoiceItem(ItemType.CHOICE, createItemControlExtension(ItemControlConstants.CHECKBOX));
       const reciever = createReciverChoiceItem(ItemType.CHOICE, ItemControlConstants.CHECKBOX);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-      expect(getByLabelText(/Mann/i)).toBeInTheDocument();
-      await userEvent.click(getByLabelText(/Mann/i));
-      const elm = await findByTestId(/item_2/i);
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      expect(screen.getByLabelText(/Mann/i)).toBeInTheDocument();
+      await userEvent.click(screen.getByLabelText(/Mann/i));
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
     it('should copy RADIOBOX value', async () => {
       const sender = createSenderChoiceItem(ItemType.CHOICE, createItemControlExtension(ItemControlConstants.RADIOBUTTON));
       const reciever = createReciverChoiceItem(ItemType.CHOICE, ItemControlConstants.RADIOBUTTON);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-      expect(getByLabelText(/Mann/i)).toBeInTheDocument();
-      await userEvent.click(getByLabelText(/Mann/i));
-      const elm = await findByTestId(/item_2/i);
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      expect(screen.getByLabelText(/Mann/i)).toBeInTheDocument();
+      await userEvent.click(screen.getByLabelText(/Mann/i));
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
     it('should copy DROPDOWN value', async () => {
       const sender = createSenderChoiceItem(ItemType.CHOICE, createItemControlExtension(ItemControlConstants.DROPDOWN));
       const reciever = createReciverChoiceItem(ItemType.CHOICE, ItemControlConstants.DROPDOWN);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, getByRole, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
       const labelRegex = new RegExp(`${sender.text}`, 'i');
-      await userEvent.selectOptions(getByLabelText(labelRegex), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
-      const elm = await findByTestId(/item_2/i);
+      await userEvent.selectOptions(screen.getByLabelText(labelRegex), screen.getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
     it.skip('should copy SLIDER value', async () => {
       const sender = createSenderChoiceItem(ItemType.CHOICE, createItemControlExtension(ItemControlConstants.SLIDER));
       const reciever = createReciverChoiceItem(ItemType.CHOICE, ItemControlConstants.SLIDER);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, getByRole, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-      await userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
-      const elm = await findByTestId(/item_2/i);
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await userEvent.selectOptions(
+        screen.getByLabelText(`${sender.text}`),
+        screen.getByRole('option', { name: 'Mann' }) as HTMLOptionElement
+      );
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
   });
   describe('should copy OPEN-CHOICE value', () => {
@@ -241,52 +245,52 @@ describe('Copy value from item', () => {
       const sender = createSenderChoiceItem(ItemType.OPENCHOICE, createItemControlExtension(ItemControlConstants.CHECKBOX));
       const reciever = createReciverChoiceItem(ItemType.OPENCHOICE, ItemControlConstants.CHECKBOX);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-      expect(getByLabelText(/Mann/i)).toBeInTheDocument();
-      await userEvent.click(getByLabelText(/Mann/i));
-      const elm = await findByTestId(/item_2/i);
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      expect(screen.getByLabelText(/Mann/i)).toBeInTheDocument();
+      await userEvent.click(screen.getByLabelText(/Mann/i));
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
     it('should copy RADIOBOX value', async () => {
       const sender = createSenderChoiceItem(ItemType.OPENCHOICE, createItemControlExtension(ItemControlConstants.RADIOBUTTON));
       const reciever = createReciverChoiceItem(ItemType.OPENCHOICE, ItemControlConstants.RADIOBUTTON);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-      expect(getByLabelText(/Mann/i)).toBeInTheDocument();
-      await userEvent.click(getByLabelText(/Mann/i));
-      const elm = await findByTestId(/item_2/i);
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      expect(screen.getByLabelText(/Mann/i)).toBeInTheDocument();
+      await userEvent.click(screen.getByLabelText(/Mann/i));
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
     it('should copy DROPDOWN value', async () => {
       const sender = createSenderChoiceItem(ItemType.OPENCHOICE, createItemControlExtension(ItemControlConstants.DROPDOWN));
       const reciever = createReciverChoiceItem(ItemType.OPENCHOICE, ItemControlConstants.DROPDOWN);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, getByRole, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
       const labelRegex = new RegExp(`${sender.text}`, 'i');
-      await userEvent.selectOptions(getByLabelText(labelRegex), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
-      const elm = await findByTestId(/item_2/i);
+      await userEvent.selectOptions(screen.getByLabelText(labelRegex), screen.getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
     it('should copy EXTRA-FIELD value', async () => {
       const sender = createSenderChoiceItem(ItemType.OPENCHOICE, createItemControlExtension(ItemControlConstants.CHECKBOX));
       const reciever = createReciverChoiceItem(ItemType.OPENCHOICE, ItemControlConstants.CHECKBOX);
       const q = createQuestionnaire(sender, reciever);
-      const { getByLabelText, queryByTestId, getByTestId, findByTestId } = createWrapper(q);
-      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-      expect(getByLabelText(/Annet/i)).toBeInTheDocument();
+      await createWrapper(q);
+      expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      expect(screen.getByLabelText(/Annet/i)).toBeInTheDocument();
 
-      await userEvent.click(getByLabelText(/Annet/i));
-      await userEvent.type(getByTestId('item_1-label'), 'e');
-      const elm = await findByTestId(/item_2/i);
+      await userEvent.click(screen.getByLabelText(/Annet/i));
+      await userEvent.type(screen.getByTestId('item_1-label'), 'e');
+      const elm = await screen.findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
 
-      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('e'));
+      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('e'));
     });
   });
 });
@@ -393,6 +397,6 @@ function _createItem(
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function createWrapper(q: Questionnaire) {
-  return renderRefero({ questionnaire: q });
+async function createWrapper(q: Questionnaire) {
+  return await waitFor(async () => await renderRefero({ questionnaire: q }));
 }

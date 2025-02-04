@@ -1,11 +1,13 @@
-import { Path } from '@/util/refero-core';
-import { QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
+/* eslint-disable react/prop-types */
+import { memo, useRef } from 'react';
 
 import { Resource, QuestionnaireItem } from 'fhir/r4';
-import { RenderContext } from '@/util/renderContext';
 
-import { memo, useRef } from 'react';
+import { QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
 import ResponseItem from './ResponseItem';
+
+import { Path } from '@/util/refero-core';
+import { RenderContext } from '@/util/renderContext';
 
 type RenderResponseItemsProps = {
   item: QuestionnaireItem;

@@ -9,12 +9,13 @@ import {
   Quantity,
 } from 'fhir/r4';
 
+import { getItemControlValue } from './choice';
 import { getCalculatedExpressionExtension, getCopyExtension } from './extension';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
-import itemType from '../constants/itemType';
-import { Extensions } from '@/constants/extensions';
 import { createDummySectionScoreItem } from './scoring';
-import { getItemControlValue } from './choice';
+import itemType from '../constants/itemType';
+
+import { Extensions } from '@/constants/extensions';
 import ItemControlConstants from '@/constants/itemcontrol';
 
 export interface AnswerPad {

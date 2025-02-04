@@ -1,9 +1,12 @@
-import dataModel from './__data__/nestedRepeats';
-import { Form } from '../form';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
-import { pathify, clickRepeat, uploadAttachment, createAttachment } from './utils';
 import { fail } from 'assert';
+
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+
+import { Form } from '../form';
+import dataModel from './__data__/nestedRepeats';
+import { pathify, clickRepeat, uploadAttachment, createAttachment } from './utils';
+import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
+
 
 describe('update enable when action', () => {
   let newState: Form;
@@ -44,7 +47,7 @@ describe('update enable when action', () => {
     if (!rootDefItem) return fail();
     newState = clickRepeat(newState, [], rootDefItem, [firstRootItem]);
 
-    let secondRootItem = getResponseItemWithPath(pathify('1^1'), newState.FormData);
+    const secondRootItem = getResponseItemWithPath(pathify('1^1'), newState.FormData);
     if (!secondRootItem || !secondRootItem.item) {
       return fail();
     }
@@ -88,7 +91,7 @@ describe('update enable when action', () => {
     if (!rootDefItem) return fail();
     newState = clickRepeat(newState, [], rootDefItem, [firstRootItem as QuestionnaireResponseItem]);
 
-    let secondRootItem = getResponseItemWithPath(pathify('1^1'), newState.FormData);
+    const secondRootItem = getResponseItemWithPath(pathify('1^1'), newState.FormData);
     if (!secondRootItem || !secondRootItem.item) {
       return fail();
     }

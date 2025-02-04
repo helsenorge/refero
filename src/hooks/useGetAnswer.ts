@@ -1,9 +1,10 @@
+import { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useSelector } from 'react-redux';
+
 import { GlobalState } from '@/reducers';
 import { getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { getAnswerFromResponseItem, Path } from '@/util/refero-core';
-import { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { useSelector } from 'react-redux';
 
 export const useGetAnswer = (
   _linkId?: string,

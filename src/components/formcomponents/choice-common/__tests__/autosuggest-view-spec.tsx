@@ -1,17 +1,19 @@
+import { waitFor, userEvent, renderRefero, screen } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
-
-import { waitFor, userEvent, renderRefero, findByRole, screen } from '@test/test-utils.tsx';
-import { q } from './__data__/index';
-import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
-import valueSet from '../../../../constants/valuesets';
-import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
-import { addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
-import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
+
+import { q } from './__data__/index';
+import { getResources } from '../../../../../preview/resources/referoResources';
+import { addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
+import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
+import { Extensions } from '../../../../constants/extensions';
+import valueSet from '../../../../constants/valuesets';
+
 import { ReferoProps } from '@/types/referoProps';
 
 vi.mock('@helsenorge/core-utils/debounce', () => ({
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unsafe-function-type
   debounce: (fn: Function) => fn,
 }));
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', openChoiceOption: 'annet' };
@@ -60,15 +62,15 @@ describe('autosuggest-view', () => {
     it('Should render repeat button if item repeats', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
 
-      const { getByTestId } = await createWrapper(questionnaire);
-      const repeatButton = getByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = screen.getByTestId(/-repeat-button/i);
       expect(repeatButton).toBeInTheDocument();
     });
 
     it('Should not render repeat button if item does not repeats', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const { queryByTestId } = await createWrapper(questionnaire);
-      const repeatButton = queryByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = screen.queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
@@ -86,7 +88,9 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _errorCallback: (error: string) => void
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
@@ -115,7 +119,9 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _errorCallback: (error: string) => void
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
@@ -132,9 +138,9 @@ describe('autosuggest-view', () => {
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { queryByTestId } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
@@ -142,7 +148,9 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _errorCallback: (error: string) => void
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
@@ -163,7 +171,9 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _errorCallback: (error: string) => void
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
@@ -177,8 +187,8 @@ describe('autosuggest-view', () => {
 
       await clickButtonTimes(/-delete-button/i, 1);
 
-      const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
-      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
+      await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -187,10 +197,10 @@ describe('autosuggest-view', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
         const questionnaire = addPropertyToQuestionnaireItem(q, 'required', true);
-        const { getByText } = await createWrapper(questionnaire);
+        await createWrapper(questionnaire);
         await submitForm();
 
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire = addPropertyToQuestionnaireItem(q, 'required', true);
@@ -198,23 +208,27 @@ describe('autosuggest-view', () => {
           _searchString: string,
           _item: QuestionnaireItem,
           successCallback: (valueSet: ValueSet) => void,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           _errorCallback: (error: string) => void
+          // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         ) => {
           successCallback(successReturnValueSet);
         };
-        const { getByLabelText, queryByText, getByText } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
-        await userEvent.type(getByLabelText(/Mistenkt legemiddel/i), 'fyr');
-        await userEvent.click(getByText(/Fyrstekake/i));
+        await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
+        await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'fyr');
+        await userEvent.click(screen.getByText(/Fyrstekake/i));
 
         await submitForm();
-        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+        expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
         const fetchValueSetFn = (
           _searchString: string,
           _item: QuestionnaireItem,
           successCallback: (valueSet: ValueSet) => void,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           _errorCallback: (error: string) => void
+          // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         ) => {
           successCallback(successReturnValueSet);
         };
@@ -222,21 +236,23 @@ describe('autosuggest-view', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByText, queryByText, getByLabelText } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
+        await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
         await submitForm();
 
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await userEvent.type(getByLabelText(/Mistenkt legemiddel/i), 'fyr');
-        await userEvent.click(getByText('Fyrstekake'));
-        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+        await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'fyr');
+        await userEvent.click(screen.getByText('Fyrstekake'));
+        expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('readOnly value should get validation error if error exist', async () => {
         const fetchValueSetFn = (
           _searchString: string,
           _item: QuestionnaireItem,
           successCallback: (valueSet: ValueSet) => void,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           _errorCallback: (error: string) => void
+          // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         ) => {
           successCallback(successReturnValueSet);
         };
@@ -256,19 +272,19 @@ describe('autosuggest-view', () => {
             ],
           })),
         };
-        const { queryByText } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
+        await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
         await submitForm();
 
-        expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
     });
   });
   it('skal kalle fetchValueSet når input endres', async () => {
     const fetchValueSetFn = vi.fn();
-    const { getByTestId, getByText } = await createWrapper(q, { fetchValueSet: fetchValueSetFn });
-    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
+    await createWrapper(q, { fetchValueSet: fetchValueSetFn });
+    expect(screen.getByText('Mistenkt legemiddel')).toBeInTheDocument();
 
-    await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'test');
+    await userEvent.type(screen.getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'test');
 
     await waitFor(() => expect(fetchValueSetFn).toHaveBeenCalled());
   });
@@ -278,14 +294,16 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _errorCallback: (error: string) => void
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback(successReturnValueSet);
     };
-    const { getByTestId, getByText } = await createWrapper(q, { fetchValueSet: fetchValueSetFn });
-    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
-    await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
-    expect(getByText('Fyrstekake')).toBeInTheDocument();
+    await createWrapper(q, { fetchValueSet: fetchValueSetFn });
+    expect(screen.getByText('Mistenkt legemiddel')).toBeInTheDocument();
+    await userEvent.type(screen.getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
+    expect(screen.getByText('Fyrstekake')).toBeInTheDocument();
   });
 
   it('skal vise spesiell melding dersom listen over valg som lastes er tom', async () => {
@@ -293,7 +311,9 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _errorCallback: (error: string) => void
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback({
         resourceType: 'ValueSet',
@@ -308,11 +328,11 @@ describe('autosuggest-view', () => {
         },
       });
     };
-    const { getByTestId, getByText } = await createWrapper(q, { fetchValueSet: fetchValueSetFn });
-    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
-    await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
+    await createWrapper(q, { fetchValueSet: fetchValueSetFn });
+    expect(screen.getByText('Mistenkt legemiddel')).toBeInTheDocument();
+    await userEvent.type(screen.getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
 
-    expect(getByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).toBeInTheDocument();
+    expect(screen.getByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).toBeInTheDocument();
   });
 
   it('skal fjerne spesiell melding dersom listen over valg som lastes er tom ved blur av feltet', async () => {
@@ -320,7 +340,9 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _errorCallback: (error: string) => void
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback({
         resourceType: 'ValueSet',
@@ -335,13 +357,13 @@ describe('autosuggest-view', () => {
         },
       });
     };
-    const { getByText, queryByText, getByTestId } = await createWrapper(q, { fetchValueSet: fetchValueSetFn });
+    await createWrapper(q, { fetchValueSet: fetchValueSetFn });
 
-    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
-    await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'f');
+    expect(screen.getByText('Mistenkt legemiddel')).toBeInTheDocument();
+    await userEvent.type(screen.getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'f');
     await userEvent.tab();
 
-    expect(queryByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).not.toBeInTheDocument();
   });
   describe('onChange', () => {
     it('skal kalle handleChange når bruker velger noe i listen', async () => {
@@ -350,15 +372,17 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _errorCallback: (error: string) => void
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
-      const { getByTestId, getByText } = await createWrapper(q, { onChange, fetchValueSet });
+      await createWrapper(q, { onChange, fetchValueSet });
 
-      expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
-      await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
-      await userEvent.click(getByText('Fyrstekake'));
+      expect(screen.getByText('Mistenkt legemiddel')).toBeInTheDocument();
+      await userEvent.type(screen.getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
+      await userEvent.click(screen.getByText('Fyrstekake'));
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueCoding: {
           code: '1',
@@ -377,14 +401,15 @@ describe('autosuggest-view', () => {
       _item: QuestionnaireItem,
       _successCallback: (valueSet: ValueSet) => void,
       errorCallback: (error: string) => void
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       errorCallback('feil');
     };
-    const { getByTestId, getByText } = await createWrapper(q, { fetchValueSet });
+    await createWrapper(q, { fetchValueSet });
 
-    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
-    await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
-    await waitFor(() => expect(getByText('Teknisk feil')).toBeInTheDocument());
+    expect(screen.getByText('Mistenkt legemiddel')).toBeInTheDocument();
+    await userEvent.type(screen.getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
+    await screen.findByText('Teknisk feil');
   });
 
   it('skal vise valgt verdi som allerede er satt i autosuggest når choice-komponenten lastes', async () => {
@@ -419,12 +444,17 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _errorCallback: (error: string) => void
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback(successReturnValueSet);
     };
-    const { getByDisplayValue } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn, questionnaireResponse });
-    await waitFor(() => expect(getByDisplayValue('Fyrstekake')).toBeDefined());
+    await createWrapper(questionnaire, {
+      fetchValueSet: fetchValueSetFn,
+      questionnaireResponse,
+    });
+    await screen.findByDisplayValue('Fyrstekake');
   });
 
   it('skal vise valgt verdi som allerede er satt i autosuggest når open-choice-komponenten lastes', async () => {
@@ -459,16 +489,22 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       _errorCallback: (error: string) => void
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback(successReturnValueSet);
     };
-    const { getByDisplayValue } = await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn, questionnaireResponse });
-    await waitFor(async () => expect(getByDisplayValue('Fyrstekake')).toBeDefined());
+    await createWrapper(questionnaire, {
+      fetchValueSet: fetchValueSetFn,
+      questionnaireResponse,
+    });
+    await screen.findByDisplayValue('Fyrstekake');
   });
 });
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
   return await waitFor(async () => {
-    return renderRefero({ questionnaire, props: { ...props, resources } });
+    return await renderRefero({ questionnaire, props: { ...props, resources } });
   });
 };

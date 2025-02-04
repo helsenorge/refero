@@ -1,9 +1,11 @@
-import * as uuid from 'uuid';
+import { fail } from 'assert';
 
-import state from './data/newValueAction';
-import { Form } from '../form';
 import { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { getDefinitionItems, getQuestionnaireDefinitionItem, Path } from '../../util/refero-core';
+import * as uuid from 'uuid';
+import { Assertion, Mocked, vi } from 'vitest';
+
+import { Form } from '../form';
+import state from './data/newValueAction';
 import {
   getResponseItem,
   pathify,
@@ -25,8 +27,7 @@ import {
   enterOpenChoiceText,
   removeOpenChoiceText,
 } from './utils';
-import { Assertion, Mocked, vi } from 'vitest';
-import { fail } from 'assert';
+import { getDefinitionItems, getQuestionnaireDefinitionItem, Path } from '../../util/refero-core';
 
 vi.mock('uuid');
 
@@ -43,7 +44,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
     definitionItems = dItems;
 
     const mockedUuid = uuid as Mocked<typeof uuid>;
-    //@ts-ignore
+    //@ts-expect-error - uuid is mocked
     mockedUuid.v4.mockReturnValue('uuid');
   });
 
@@ -156,11 +157,11 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user uploads a file, then removes the content of an attachment input field, answer should be undefined', () => {
-    const item =  {
-      linkId: "1.10",
-      type: "attachment",
-      text: "Attachment",
-      required: false
+    const item = {
+      linkId: '1.10',
+      type: 'attachment',
+      text: 'Attachment',
+      required: false,
     } as QuestionnaireItem;
     newState = uploadAttachment(newState, pathify('1', item.linkId), createAttachment('1', 'fil1'), item);
     verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId), 0, createAttachment('1', 'fil1'));
@@ -170,15 +171,15 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user uploads many files, then removes the content of an attachment input field, answer should be undefined', () => {
-    const item =  {
-      linkId: "1.10",
-      type: "attachment",
-      text: "Attachment",
+    const item = {
+      linkId: '1.10',
+      type: 'attachment',
+      text: 'Attachment',
       required: false,
       repeats: true,
     } as QuestionnaireItem;
     newState = uploadAttachment(newState, pathify('1', item.linkId), createAttachment('1', 'fil1'), item, true);
-    verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId),0, createAttachment('1', 'fil1'));
+    verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId), 0, createAttachment('1', 'fil1'));
 
     newState = uploadAttachment(newState, pathify('1', item.linkId), createAttachment('2', 'fil2'), item, true);
     verifyAttachmentAnswer(item.linkId, newState, pathify('1', item.linkId), 1, createAttachment('2', 'fil2'));
@@ -273,6 +274,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function verifyAnswer(
   linkId: string,
   state: Form,

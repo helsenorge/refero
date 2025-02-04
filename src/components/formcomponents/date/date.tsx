@@ -1,25 +1,26 @@
+import { useCallback, useMemo } from 'react';
+
+import { QuestionnaireItem } from 'fhir/r4';
+import { useSelector } from 'react-redux';
+
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
 import { newDateValueAsync } from '../../../actions/newValue';
-
 import itemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState, useAppDispatch } from '../../../reducers';
-
 import { getItemControlExtensionValue } from '../../../util/extension';
-
-import { useSelector } from 'react-redux';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useCallback, useMemo } from 'react';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { QuestionnaireItem } from 'fhir/r4';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+
 
 export type DateProps = QuestionnaireComponentItemProps;
 

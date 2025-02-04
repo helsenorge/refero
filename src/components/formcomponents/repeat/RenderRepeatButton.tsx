@@ -1,15 +1,16 @@
+import { memo } from 'react';
+
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { useSelector } from 'react-redux';
 
 import RepeatButton from './RepeatButton';
 
+import { GlobalState } from '@/reducers';
+import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
 import { shouldRenderRepeatButton } from '@/util';
 import { descendantsHasPrimitiveAnswer, Path } from '@/util/refero-core';
 import { Resources } from '@/util/resources';
 
-import { GlobalState } from '@/reducers';
-import { useSelector } from 'react-redux';
-import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
-import { memo } from 'react';
 
 const RenderRepeatButton = memo(function RenderRepeatButton({
   item,

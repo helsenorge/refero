@@ -1,5 +1,6 @@
-import { MimeType } from '@/util/attachmentHelper';
 import { QuestionnaireItem } from 'fhir/r4';
+
+import { MimeType } from '@/util/attachmentHelper';
 
 export const mockMinFiles: number = 2;
 export const mockMaxFiles: number = 2;

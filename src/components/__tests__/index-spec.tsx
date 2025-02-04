@@ -1,16 +1,16 @@
 import React from 'react';
-import { renderRefero, screen, waitFor } from '../../../test/test-utils';
-import userEvent from '@testing-library/user-event';
 
+import userEvent from '@testing-library/user-event';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import '../../util/__tests__/defineFetch';
-import itemControlConstants from '../../constants/itemcontrol';
 import RenderingOptionsData from './__data__/renderingOptions';
-import ChoiceCopyFrom from './__data__/copyFrom/choice';
-import { createItemControlExtension, findItemById } from '../__tests__/utils';
-import itemcontrol from '../../constants/itemcontrol';
 import { selectCheckboxOption } from '../../../test/selectors';
+import itemcontrol from '../../constants/itemcontrol';
+import itemControlConstants from '../../constants/itemcontrol';
+import { createItemControlExtension, findItemById } from '../__tests__/utils';
+import ChoiceCopyFrom from './__data__/copyFrom/choice';
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 
 describe('Component renders help items', () => {
   it('help button should be visible and control the help element', async () => {
@@ -51,17 +51,23 @@ describe('Component renders help items', () => {
     // Render schema with 1 help button
     const { container } = await createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
 
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.querySelectorAll('.helpButton')).toHaveLength(1);
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.querySelectorAll('.helpElement')).toHaveLength(0);
 
     // click help button to open the help element
     expectedOpeningStatus = true;
+    // eslint-disable-next-line testing-library/no-node-access
     await userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.querySelectorAll('.helpElement')).toHaveLength(1);
 
     // click help button to close the help element
     expectedOpeningStatus = false;
+    // eslint-disable-next-line testing-library/no-node-access
     await userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.querySelectorAll('.helpElement')).toHaveLength(0);
   });
 });
@@ -78,7 +84,7 @@ describe('repeat with enableWhen', () => {
 
     await userEvent.click(screen.getByTestId(/-repeat-button/i));
 
-    expect(screen.queryByLabelText(/enableWhen/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/enableWhen/i)).toBeInTheDocument();
     expect(screen.queryAllByLabelText(/Checkbox/i)).toHaveLength(2);
 
     // Click second boolean input, and enableWhen component should be enabled
@@ -99,10 +105,13 @@ describe('Coding system (RenderingOptions)', () => {
     expect(findItemById('item_group4_kunskjemautfyll', container)).toBeInTheDocument();
     expect(findItemById('item_group4_kunskjemautfyll_text', container)).toBeInTheDocument();
     expect(findItemById('item_group4_kunskjemautfyll_checkbox', container)).toBeInTheDocument();
-
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.querySelector('item_group2_kunpdf_checkbox')).toBeFalsy();
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.querySelector('item_group3_kunpdf')).toBeFalsy();
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.querySelector('item_group3_kunpdf_text')).toBeFalsy();
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.querySelector('item_group3_kunpdf_checkbox')).toBeFalsy();
   });
 });
@@ -123,8 +132,8 @@ async function createWrapper(
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
   helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
-  return await waitFor(async () =>
-    renderRefero({ questionnaire, props: { onRequestHelpButton: helpButtonCb, onRequestHelpElement: helpElementCb } })
+  return await waitFor(
+    async () => await renderRefero({ questionnaire, props: { onRequestHelpButton: helpButtonCb, onRequestHelpElement: helpElementCb } })
   );
 }
 

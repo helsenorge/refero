@@ -1,7 +1,8 @@
-import { Breakpoint, useBreakpoint } from '@helsenorge/designsystem-react';
 import Button from '@helsenorge/designsystem-react/components/Button';
 import Icon from '@helsenorge/designsystem-react/components/Icon';
 import Save from '@helsenorge/designsystem-react/components/Icons/Save';
+
+import { Breakpoint, useBreakpoint } from '@helsenorge/designsystem-react';
 
 type Props = {
   onPauseButtonClicked?: () => void;
@@ -19,7 +20,6 @@ export const PauseFormButton = ({ pauseButtonText, onPauseButtonClicked, pauseBu
 
   const displaySaveIcon = breakpoint > Breakpoint.xxs && !isStepView;
 
-  useBreakpoint;
   return (
     <div>
       <Button variant="outline" disabled={pauseButtonDisabled} onClick={onPauseButtonClicked} testId="refero-pause-button">

@@ -1,10 +1,13 @@
+import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { findByRole, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
-import { q } from './__data__';
-import { ReferoProps } from '../../../../types/referoProps';
-import { clickButtonTimes, clickByLabelText, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
-import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
+
+import { ReferoProps } from '../../../../types/referoProps';
+
+import { q } from './__data__';
+import { getResources } from '../../../../../preview/resources/referoResources';
+import { clickButtonTimes, clickByLabelText, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
+
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
 describe('Boolean', () => {
@@ -14,7 +17,7 @@ describe('Boolean', () => {
   describe('Render', () => {
     it('Should render as text if props.pdf', async () => {
       await createWrapper(q, { pdf: true });
-      expect(screen.queryByTestId(/-pdf/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-pdf/i)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', async () => {
       const questionnaire: Questionnaire = {
@@ -23,7 +26,7 @@ describe('Boolean', () => {
       };
 
       await createWrapper(questionnaire);
-      expect(screen.queryByTestId(/-label-readonly/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-label-readonly/i)).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', async () => {
       await createWrapper(q);
@@ -167,8 +170,8 @@ describe('Boolean', () => {
 
       await clickButtonTimes(/-delete-button/i, 1);
 
-      const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
-      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
+      await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -226,7 +229,7 @@ describe('Boolean', () => {
       };
       await createWrapper(questionnaire);
       await submitForm();
-      expect(screen.queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       await clickByLabelText(/Boolean/i);
 
       expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -234,6 +237,7 @@ describe('Boolean', () => {
   });
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
   return await waitFor(async () => {
     return renderRefero({ questionnaire, props: { ...props, resources } });
