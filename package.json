@@ -123,7 +123,7 @@
     "@helsenorge/eslint-config": "^34.1.2",
     "classnames": "^2.3.2",
     "date-fns": "^4.1.0",
-    "fhirpath": "3.15.2",
+    "fhirpath": "3.16.4",
     "marked": "^14.0.0",
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",
