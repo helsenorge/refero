@@ -22,6 +22,11 @@ jobs:
   eslint:
     name: Run eslint scanning
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
     permissions:
       contents: read
       security-events: write
