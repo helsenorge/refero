@@ -1,7 +1,6 @@
 import { FocusEvent, useCallback, useMemo } from 'react';
 
-import { QuestionnaireResponseItemAnswer, Coding, QuestionnaireItem } from 'fhir/r4';
-import { useSelector } from 'react-redux';
+import { QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -18,7 +17,8 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppSelector } from '@/reducers';
+import { useAppDispatch } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { isDataReceiver } from '@/util';
 import {
@@ -37,7 +37,7 @@ export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
 export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const { linkId, containedResources, path } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);

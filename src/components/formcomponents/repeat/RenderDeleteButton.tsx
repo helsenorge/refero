@@ -1,11 +1,10 @@
 import { memo, useEffect, useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { useSelector } from 'react-redux';
+import { QuestionnaireItem } from 'fhir/r4';
 
 import DeleteButton from './DeleteButton';
 
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { isGroupAndDescendantsHasAnswer } from '@/util/fhirpathHelper';
 import { Path, shouldRenderDeleteButton } from '@/util/refero-core';
@@ -19,9 +18,7 @@ type Props = {
 
 export const RenderDeleteButton = memo(function RenderDeleteButton({ className, item, path, index }: Props): JSX.Element | null {
   const [decendentAnswer, setDecendentAnswer] = useState<boolean>(false);
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+  const responseItem = useAppSelector(state => getResponseItemWithPathSelector(state, path));
   useEffect(() => {
     const checkDecendentAnswer = async (): Promise<void> => {
       const hasAnswer = await isGroupAndDescendantsHasAnswer(responseItem);

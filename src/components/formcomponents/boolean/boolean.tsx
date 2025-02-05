@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -24,7 +22,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { isReadOnly, getId, getLabelText } from '@/util/index';
@@ -35,9 +33,9 @@ export type Props = QuestionnaireComponentItemProps & {
 
 const Boolean = (props: Props): JSX.Element | null => {
   const { path, pdf, id, index, idWithLinkIdAndItemIndex, linkId, children } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();

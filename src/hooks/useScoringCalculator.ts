@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { useSelector } from 'react-redux';
 
 import { newDecimalValueAction, newIntegerValueAction, newQuantityValueAction } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppSelector } from '@/reducers';
+import { useAppDispatch } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getDecimalValue } from '@/util';
 import { ActionRequester } from '@/util/actionRequester';
@@ -20,7 +20,7 @@ export const useScoringCalculator = (): {
     actionRequester?: ActionRequester
   ) => Promise<void>;
 } => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
   const dispatch = useAppDispatch();
   const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>();
 

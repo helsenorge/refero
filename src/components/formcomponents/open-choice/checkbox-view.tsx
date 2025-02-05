@@ -1,6 +1,4 @@
-import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -17,7 +15,7 @@ import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { Options } from '@/types/formTypes/radioGroupOptions';
 import { shouldShowExtraChoice } from '@/util/choice';
@@ -38,7 +36,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const { resources } = useExternalRenderContext();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const answer = useGetAnswer(linkId, path);
 

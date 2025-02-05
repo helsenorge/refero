@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
 
 import { Coding, Quantity, Questionnaire, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
-import { useSelector } from 'react-redux';
 
 import ItemType from '@/constants/itemType';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getDecimalValue } from '@/util';
 import { ActionRequester } from '@/util/actionRequester';
 import { getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
-
 
 export const useFhirPathQrUpdater = (): {
   runFhirPathQrUpdater: (
@@ -20,7 +18,7 @@ export const useFhirPathQrUpdater = (): {
     actionRequester: ActionRequester
   ) => void;
 } => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
   const [fhirPathUpdater, setFhirPathUpdater] = useState<FhirPathExtensions | undefined>();
 
   useEffect(() => {

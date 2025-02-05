@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -21,7 +19,8 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppSelector } from '@/reducers';
+import { useAppDispatch } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getPDFStringValue, getMaxLength } from '@/util/index';
@@ -30,7 +29,7 @@ export type Props = QuestionnaireComponentItemProps;
 
 export const String = (props: Props): JSX.Element | null => {
   const { path, id, pdf, idWithLinkIdAndItemIndex, children, index, linkId } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { promptLoginMessage, validateScriptInjection, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);

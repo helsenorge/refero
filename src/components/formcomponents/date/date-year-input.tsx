@@ -1,6 +1,5 @@
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -18,7 +17,7 @@ import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
 
@@ -28,7 +27,7 @@ type Props = QuestionnaireComponentItemProps & {
 
 export const DateYearInput = (props: Props): JSX.Element | null => {
   const { id, pdf, linkId, onDateValueChange, idWithLinkIdAndItemIndex, children, path } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   initialize();
 

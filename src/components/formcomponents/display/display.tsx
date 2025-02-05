@@ -1,29 +1,25 @@
 import { memo } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
-import { useSelector } from 'react-redux';
-
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
-
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import SafeText from '@/components/referoLabel/SafeText';
 import itemControlConstants from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useAppSelector } from '@/reducers';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '@/util/extension';
 import { renderPrefix, getText, getId } from '@/util/index';
 
-
 export type Props = QuestionnaireComponentItemProps;
 
 const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element | null {
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { onRenderMarkdown, resources } = useExternalRenderContext();
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const formDefinition = useAppSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
