@@ -4,8 +4,6 @@ import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
 
-import Stepper from '@helsenorge/designsystem-react/components/Stepper';
-
 import RenderForm from './renderForm';
 import { getFormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
@@ -13,7 +11,7 @@ import { Resources } from '../util/resources';
 import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnaireComponents';
 
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { isEnableWhenEnabled, useCheckIfEnabled, useIsEnabled } from '@/hooks/useIsEnabled';
+import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
 import { useAppSelector } from '@/reducers';
 import { createPathForItem } from '@/util/refero-core';
 
