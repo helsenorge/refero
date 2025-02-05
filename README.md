@@ -300,13 +300,6 @@ the current index will be updated to. This can be used to make progress indicato
 
 # Scoring Functionality
 
-## Acceptance Criteria
-
-- It is possible to assign a numeric value to questions with answer options that can be used for scoring.
-- It is possible to create a field for a subtotal.
-- It is possible to create a field for the total sum for the entire form.
-- Scoring calculations work from top to bottom only.
-
 ## Description
 
 To assign a value to a question to be used in scoring, use the **Answer option**.
@@ -382,20 +375,6 @@ Finally, create a field for the total score, covering all scoring values in the 
 ![Example Form Layout](./doc_images/img4.png)
 
 # Mathematical Expressions
-
-## User Story
-
-As a system, I want to calculate mathematical expressions for end-users and recipients so that calculations can happen automatically.
-
-## Acceptance Criteria
-
-- In fields that support numeric values, it is possible to enter a mathematical expression that calculates values from other numeric fields
-  located above in the form.
-- Supported data types:
-  - **Integer**
-  - **Decimal**
-  - **Quantity (decimal)**
-- The expression is added in the attribute \`Calculation Formula\` in the calculation field.
 
 ## Description
 
