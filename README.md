@@ -24,6 +24,7 @@ React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/que
 - [date-fns](https://www.npmjs.com/package/date-fns)
 - [classnames](https://www.npmjs.com/package/classnames)
 - [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
+- [@helsenorge/eslint-config](https://www.npmjs.com/package/@helsenorge/eslint-config)
 
 ## Example usage
 
@@ -154,7 +155,7 @@ When this property is `true`, the form renders the actionbar as sticky.
 
 Max file size in bytes allowed for attachments. Default is 25M.
 
-### `attachmentValidTypes: Array<MimeTypes>`
+### `attachmentValidTypes: MimeTypes[]`
 
 List of allowed mime types for attachments. Default allowed types are image/jpeg, image/png, application/pdf
 
@@ -279,12 +280,12 @@ with an error message.
 - `errorCallback(error: string) => void)` The function to call to return an error message to the autosuggest field, which will be displayed
   to the user.
 
-### `fetchReceivers: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void`
+### `fetchReceivers: (successCallback: (receivers: OrgenhetHierarki[]) => void, errorCallback: () => void) => void`
 
 This callback is called when a receiver component needs to load data. It should call either successCallback with a list of OrgenhetHierarki
 objects, or errorCallback with an error message.
 
-- `successCallback: (receivers: Array<OrgenhetHierarki>) => void` The function to call to return a list of OrgenhetHierarki objects to the
+- `successCallback: (receivers: OrgenhetHierarki[]) => void` The function to call to return a list of OrgenhetHierarki objects to the
   receiver component, which will be displayed as a set of choices to the user.
 - `errorCallback(error: string) => void)` The function to call to return an error message to the receiver component, which will be displayed
   to the user.
@@ -463,7 +464,7 @@ answer from a radio-button group or drop-down group.
 
 ```ts
 interface IQuestionnaireInspector {
-  findItemWithLinkIds(linkIds: Array<string>): Array<QuestionnaireItemPair>;
+  findItemWithLinkIds(linkIds: string[]): QuestionnaireItemPair[];
 }
 ```
 
@@ -483,7 +484,7 @@ interface Path {
 ```ts
 interface QuestionnaireItemPair {
   QuestionnaireItem: QuestionnaireItem;
-  QuestionnaireResponseItems: Array<ItemAndPath>;
+  QuestionnaireResponseItems: ItemAndPath[];
 }
 
 interface ItemAndPath {

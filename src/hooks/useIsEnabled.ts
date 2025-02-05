@@ -13,7 +13,7 @@ export function isEnableWhenEnabled(
   path: Path[],
   responseItems: QuestionnaireResponseItem[] | undefined
 ): boolean {
-  const enableMatches: Array<boolean> = [];
+  const enableMatches: boolean[] = [];
   enableWhen.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
     const enableWhenQuestion = enableWhen.question;
     for (let i = 0; responseItems && i < responseItems.length; i++) {

@@ -16,6 +16,9 @@ export { default as form } from './reducers/form';
 export * from './reducers/index';
 export { default as rootReducer } from './reducers/index';
 
+//Hooks
+export { useIsEnabled, isEnableWhenEnabled, useCheckIfEnabled } from './hooks/useIsEnabled';
+
 //Utils
 export * from './util/index';
 export * from './util/hacks';
