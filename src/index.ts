@@ -26,6 +26,7 @@ export * from './util/extension';
 export * from './util/codingsystem';
 export * from './util/actionRequester';
 export * from './util/refero-core';
+export * from './util/getTopLevelElements';
 
 //Types
 export * from './types/formTypes/formButton';
