@@ -1,3 +1,9 @@
+## 17.0.1
+
+---
+
+- Check if group-item is enabled before displaying it in stepview
+
 ## 17.0.0
 
 ---
