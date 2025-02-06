@@ -7,7 +7,6 @@ import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
 import { newDateValueAsync } from '../../../actions/newValue';
 import itemControlConstants from '../../../constants/itemcontrol';
-import { useAppDispatch } from '../../../reducers';
 import { getItemControlExtensionValue } from '../../../util/extension';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -16,7 +15,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import { useAppSelector } from '@/reducers';
+import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type DateProps = QuestionnaireComponentItemProps;

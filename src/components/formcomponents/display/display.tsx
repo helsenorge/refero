@@ -7,7 +7,6 @@ import SafeText from '@/components/referoLabel/SafeText';
 import itemControlConstants from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useAppSelector } from '@/reducers';
-import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '@/util/extension';
@@ -19,7 +18,7 @@ const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element |
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { onRenderMarkdown, resources } = useExternalRenderContext();
-  const formDefinition = useAppSelector((state: GlobalState) => getFormDefinition(state));
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =

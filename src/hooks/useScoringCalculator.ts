@@ -4,8 +4,7 @@ import { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { newDecimalValueAction, newIntegerValueAction, newQuantityValueAction } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
-import { useAppSelector } from '@/reducers';
-import { useAppDispatch } from '@/reducers';
+import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getDecimalValue } from '@/util';
 import { ActionRequester } from '@/util/actionRequester';

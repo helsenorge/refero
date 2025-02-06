@@ -17,8 +17,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { useAppSelector } from '@/reducers';
-import { useAppDispatch } from '@/reducers';
+import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { isDataReceiver } from '@/util';
 import {

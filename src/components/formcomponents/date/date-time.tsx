@@ -14,7 +14,6 @@ import { DatePicker } from '@helsenorge/datepicker/components/DatePicker';
 
 import { useMinMaxDate } from './useMinMaxDate';
 import { newDateTimeValueAsync } from '../../../actions/newValue';
-import { useAppDispatch } from '../../../reducers';
 import { initialize } from '../../../util/date-fns-utils';
 import {
   getFullFnsDate,
@@ -45,7 +44,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { useAppSelector } from '@/reducers';
+import { useAppSelector, useAppDispatch } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
