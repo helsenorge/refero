@@ -1,6 +1,5 @@
-import { QuestionnaireResponseItemAnswer, Quantity as QuantityType, QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -21,7 +20,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import {
   getMaxDecimalPlacesExtensionValue,
@@ -36,7 +35,7 @@ export type Props = QuestionnaireComponentItemProps;
 
 const Quantity = (props: Props): JSX.Element | null => {
   const { path, id, pdf, idWithLinkIdAndItemIndex, index, children, linkId } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);

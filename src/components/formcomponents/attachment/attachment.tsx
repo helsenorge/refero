@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { Attachment, QuestionnaireItem } from 'fhir/r4';
-import { useSelector } from 'react-redux';
+import { Attachment } from 'fhir/r4';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
@@ -12,7 +11,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useAttachmentContext } from '@/context/AttachmentContext';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { TextMessage } from '@/types/text-message';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue } from '@/util/extension';
@@ -24,7 +23,7 @@ export type Props = QuestionnaireComponentItemProps & {
 
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const { path, id, idWithLinkIdAndItemIndex, linkId, children } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const [customErrorMessage, setCustomErrorMessage] = useState<TextMessage | undefined>(undefined);
   const {

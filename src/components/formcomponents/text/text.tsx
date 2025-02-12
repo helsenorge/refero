@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -27,7 +25,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getPlaceholder, getItemControlExtensionValue } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getMaxLength, getPDFStringValue } from '@/util/index';
@@ -38,7 +36,7 @@ export type Props = QuestionnaireComponentItemProps & {
 export const Text = (props: Props): JSX.Element | null => {
   const { id, pdf, idWithLinkIdAndItemIndex, path, shouldExpanderRenderChildrenWhenClosed, linkId, index, children } = props;
   const { promptLoginMessage, validateScriptInjection, globalOnChange, resources } = useExternalRenderContext();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const onAnswerChange = useOnAnswerChange(globalOnChange);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);

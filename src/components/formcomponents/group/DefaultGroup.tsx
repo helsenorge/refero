@@ -1,8 +1,5 @@
 import { Dispatch } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
-import { useSelector } from 'react-redux';
-
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
 import GroupHeader from './GroupHeader';
@@ -14,7 +11,7 @@ import styles from './group.module.css';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getId } from '@/util';
@@ -26,8 +23,8 @@ type DefaultGroup = QuestionnaireComponentItemProps & {
 const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: DefaultGroup): JSX.Element => {
   const { headerTag, includeSkipLink, path, linkId, index, id } = rest;
   const { onRenderMarkdown, resources } = useExternalRenderContext();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
   return (

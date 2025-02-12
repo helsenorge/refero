@@ -1,15 +1,12 @@
 import { useEffect } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
-
 
 import { useMinMaxDate } from './useMinMaxDate';
 import styles from '../../../styles/date-year-month.module.css';
@@ -24,7 +21,7 @@ import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { DateFormat } from '@/types/dateTypes';
 import { initialize } from '@/util/date-fns-utils';
@@ -53,7 +50,7 @@ export const DateYearMonthInput = ({
 }: DateMonthProps): JSX.Element | null => {
   initialize();
 
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
   const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();
   const { resources } = useExternalRenderContext();
@@ -63,7 +60,7 @@ export const DateYearMonthInput = ({
     if (!answer) return undefined;
 
     const answerItem = Array.isArray(answer) ? answer[0] : answer;
-    return answerItem ? answerItem.valueDate ?? answerItem.valueDateTime : '';
+    return answerItem ? (answerItem.valueDate ?? answerItem.valueDateTime) : '';
   };
   const dateValue = getDateValueFromAnswer();
 

@@ -1,61 +1,31 @@
 {
+  "title": "Stegvisning",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "211f35d2-700c-4e0c-81dd-a020d17c728b",
-  "name": "NHN_Test_Tabell_Repeterendegrupper",
-  "title": "Testskjema tabell repeterende grupper",
-  "version": "0.1",
+  "name": "NHN_Test_Tabell_Stegvisning",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
-    "versionId": "2",
-    "lastUpdated": "2024-12-12T08:12:37.684+00:00",
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "security": [
-      {
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
-        "code": "3",
-        "display": "Helsehjelp (Full)"
-      }
-    ],
-    "tag": [
-      {
-        "system": "urn:ietf:bcp:47",
-        "code": "nb-NO",
-        "display": "Bokmål"
-      }
-    ]
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
   },
-  "contact": [
-    {
-      "name": "http://www.nhn.no"
-    }
-  ],
+  "contact": [{ "name": "http://www.nhn.no" }],
   "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
-        "code": "1"
-      }
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
-        "code": "1"
-      }
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
       "valueCodeableConcept": {
         "coding": [
-          {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-help",
-            "display": "Hide help texts"
-          },
+          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
           {
             "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
             "code": "hide-sublabel",
@@ -64,69 +34,223 @@
         ]
       }
     },
+    { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint", "valueReference": { "reference": "Endpoint/1000" } }
+  ],
+  "id": "63c761d6-921a-43fe-e162-e6571ebd8a3d",
+  "version": "0.1",
+  "date": "2025-01-28T00:00:00+01:00",
+  "contained": [
     {
-      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
-      "valueReference": {
-        "reference": "Endpoint/1000"
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              { "code": "1", "display": "Ja" },
+              { "code": "2", "display": "Nei" }
+            ]
+          }
+        ]
       }
     }
   ],
-  "date": "2024-12-10T00:00:00+01:00",
-  "url": "Questionnaire/211f35d2-700c-4e0c-81dd-a020d17c728b",
   "item": [
     {
-      "linkId": "1234",
-      "text": "JEG ER PARENT CHOICE",
-      "type": "choice",
-      "required": false,
-      "answerOption": [
-        {
-          "valueCoding": {
-            "id": "6f8d98cb-d4b8-416f-caee-6449bdf1ecb8",
-            "code": "ja",
-            "system": "urn:uuid:81b780e4-d254-46d2-8c48-75e6ca378d58",
-            "display": "ja"
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "39a0e590-92af-4983-9dcf-7fb626ba2cf5",
-            "code": "nei",
-            "system": "urn:uuid:81b780e4-d254-46d2-8c48-75e6ca378d58",
-            "display": "nei"
-          }
-        }
-      ],
+      "linkId": "1619243b-877f-408f-b9e9-cdcdf308d92a",
+      "type": "display",
+      "text": "Dette skjemaet skal illustrere stegvisning Det er en skjult gruppe på slutten, som ikke skal vises i progressbar Det er en gruppe midt i, som kun aktiveres om man svarer ja på foregående spørsmål, og skal kun vises i progressbar om den er aktiv",
       "extension": [
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
           "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "radio-button"
-              }
-            ]
+            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "highlight" }]
           }
         }
       ],
-      "repeats": true,
+      "required": false,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "Dette skjemaet skal illustrere stegvisning\n\n*   Det er en skjult gruppe på slutten, som ikke skal vises i progressbar\n*   Det er en gruppe midt i, som kun aktiveres om man svarer ja på foregående spørsmål, og skal kun vises i progressbar om den er aktiv"
+          }
+        ]
+      }
+    },
+    {
+      "linkId": "7b44c008-7e63-4786-897c-3e71deee288e",
+      "type": "group",
+      "text": "Gruppe 1",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "step" }] }
+        }
+      ],
+      "item": [
+        { "linkId": "0592ab0b-f5e4-47e9-cf2b-2d4c9327ed37", "type": "string", "text": "Skriv noe her i gruppe 1", "required": false }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "342920c9-9fc5-4108-827b-372279d7644e",
+      "type": "group",
+      "text": "Gruppe 2",
       "item": [
         {
-          "linkId": "56789",
-          "text": "HEI HEI JEG ER CHILD",
+          "linkId": "b6bd0126-6b35-48ee-8f29-23cde020cc55",
+          "type": "choice",
+          "text": "Vil du åpne neste gruppe?",
+          "required": false,
+          "answerValueSet": "#1101"
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "526f83c8-6da3-4635-fe7d-e033078b1eb4",
+      "type": "group",
+      "text": "Gruppe 3 - Kun tilgjengelig ved valg ja på spørsmål i foregående gruppe. Skal hoppes over og ikke vises i progress om den ikke er aktivert",
+      "item": [
+        { "linkId": "56210061-20d3-4679-f108-77d50170f2aa", "type": "string", "text": "Skriv noe her i gruppe 3", "required": false }
+      ],
+      "required": false,
+      "enableWhen": [
+        {
+          "question": "b6bd0126-6b35-48ee-8f29-23cde020cc55",
+          "operator": "=",
+          "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" }
+        }
+      ]
+    },
+    {
+      "linkId": "6b34a8ec-1f0b-4835-8d4d-45fbdedeaadf",
+      "type": "group",
+      "text": "Gruppe 4",
+      "item": [
+        { "linkId": "e1f9d4b4-d239-4501-87a0-139b40277c4f", "type": "string", "text": "Skriv noe her i gruppe 4", "required": false }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "f8e6caa8-d371-470b-cf39-377b1a33bd06",
+      "type": "group",
+      "text": "Siste synlige gruppe - Avslutning",
+      "item": [
+        {
+          "linkId": "f595ceac-ce09-44de-9d62-3c5d2599ce8c",
+          "type": "display",
+          "text": "Du er nå ferdig og kan trykke send inn",
+          "required": false
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "aec28edf-2650-4633-a5be-a2c99009a5c5",
+      "type": "group",
+      "text": "Gruppe 6 - Skjult gruppe som kun vises i PDF - Skal ikke vises i progressbar",
+      "code": [
+        {
+          "code": "2",
+          "display": "KunPdf",
+          "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+          "id": "dbaac229-855f-45dc-9607-feda62cad44d"
+        }
+      ],
+      "item": [
+        {
+          "linkId": "ca051443-6fab-411f-8250-da5b4796e9fc",
           "type": "string",
-          "enableWhen": [
+          "text": "Skriv noe her i gruppe 1",
+          "required": false,
+          "extension": [
             {
-              "question": "1234",
-              "operator": "=",
-              "answerCoding": {
-                "system": "urn:uuid:81b780e4-d254-46d2-8c48-75e6ca378d58",
-                "code": "ja"
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='0592ab0b-f5e4-47e9-cf2b-2d4c9327ed37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [{ "answerBoolean": true, "question": "0592ab0b-f5e4-47e9-cf2b-2d4c9327ed37", "operator": "exists" }]
+        },
+        {
+          "linkId": "86888604-4fd6-4f27-9f1c-4b1a0747509b",
+          "type": "choice",
+          "text": "Vil du åpne neste gruppe?",
+          "required": false,
+          "answerValueSet": "#1101",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='b6bd0126-6b35-48ee-8f29-23cde020cc55').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [{ "answerBoolean": true, "question": "b6bd0126-6b35-48ee-8f29-23cde020cc55", "operator": "exists" }]
+        },
+        {
+          "linkId": "5cab537f-78f6-4f70-af3c-386a116576c6",
+          "type": "string",
+          "text": "Skriv noe her i gruppe 3",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
               }
             }
           ],
-          "required": false
+          "readOnly": true
+        },
+        {
+          "linkId": "e813e87d-abec-440a-f597-49ad1183935c",
+          "type": "string",
+          "text": "Skriv noe her i gruppe 4",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='e1f9d4b4-d239-4501-87a0-139b40277c4f').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [{ "answerBoolean": true, "question": "e1f9d4b4-d239-4501-87a0-139b40277c4f", "operator": "exists" }]
+        }
+      ],
+      "required": false,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "table-hn1" }]
+          }
         }
       ]
     }

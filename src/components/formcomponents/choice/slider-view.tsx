@@ -1,6 +1,5 @@
 import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
@@ -17,7 +16,7 @@ import { shouldValidate } from '@/components/validation/utils';
 import codeSystems from '@/constants/codingsystems';
 import { Extensions } from '@/constants/extensions';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getId, isReadOnly } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
@@ -40,7 +39,7 @@ type LeftRightLabels = { leftLabel: string; rightLabel: string };
 const SliderView = (props: SliderProps): JSX.Element | null => {
   const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children, pdfValue } = props;
   const { resources } = useExternalRenderContext();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);

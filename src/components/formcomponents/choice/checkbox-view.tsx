@@ -1,6 +1,4 @@
-import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -16,7 +14,7 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { Options } from '@/types/formTypes/radioGroupOptions';
 import { getId, isReadOnly } from '@/util/index';
@@ -30,7 +28,7 @@ export type Props = QuestionnaireComponentItemProps & {
 
 const CheckboxView = (props: Props): JSX.Element | null => {
   const { options, linkId, id, handleChange, idWithLinkIdAndItemIndex, selected, path, children, index, pdf, pdfValue } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const { resources } = useExternalRenderContext();
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();

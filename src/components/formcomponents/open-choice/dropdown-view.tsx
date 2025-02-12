@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
@@ -17,13 +15,11 @@ import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { Options } from '@/types/formTypes/radioGroupOptions';
 import { shouldShowExtraChoice } from '@/util/choice';
 import { getId, isReadOnly } from '@/util/index';
-
-
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -38,7 +34,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
     props;
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { resources } = useExternalRenderContext();
   const answer = useGetAnswer(linkId, path);

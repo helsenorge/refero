@@ -1,8 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
-import { ValueSet, Coding, QuestionnaireItem } from 'fhir/r4';
+import { ValueSet, Coding } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
@@ -25,7 +24,7 @@ import ItemType from '@/constants/itemType';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getId, getMaxLength, isReadOnly } from '@/util/index';
 import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero-core';
@@ -52,7 +51,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     children,
   } = props;
   const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(linkId, path);
