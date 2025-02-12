@@ -8,6 +8,11 @@ import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireRe
 import { getCalculatedExpressionExtension, getCopyExtension, getMinOccursExtensionValue } from '../util/extension';
 
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
+import { isHelpItem } from '@/util/help';
+
+const shouldNotAddItemToResponse = (item: QuestionnaireItem): boolean => {
+  return isHelpItem(item);
+};
 
 export function generateQuestionnaireResponse(questionnaire: Questionnaire): QuestionnaireResponse | undefined {
   const response: QuestionnaireResponse = {
@@ -28,6 +33,9 @@ export function generateQuestionnaireResponse(questionnaire: Questionnaire): Que
     }
 
     for (let j = 0; j < getMinOccurs(i); j++) {
+      if (shouldNotAddItemToResponse(i)) {
+        continue;
+      }
       const responseItem = createQuestionnaireResponseItem(i);
       addChildrenItemsToResponseItem(i, responseItem);
 
@@ -45,6 +53,9 @@ function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: Quest
   item.item.forEach((i: QuestionnaireItem) => {
     for (let j = 0; j < getMinOccurs(i); j++) {
       const responseItem = createQuestionnaireResponseItem(i);
+      if (shouldNotAddItemToResponse(i)) {
+        continue;
+      }
       addChildrenItemsToResponseItem(i, responseItem);
       addResponseItemtoResponse(item, response, responseItem);
     }
