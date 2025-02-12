@@ -1,4 +1,3 @@
-import exp from 'constants';
 import { Matcher, screen, userEvent } from './test-utils';
 
 export async function selectCheckboxOption(id: Matcher): Promise<void> {
@@ -14,6 +13,7 @@ export async function repeatNTimes(input: string, n: number, labelText: Matcher)
   for (let i = 0; i < n; i++) {
     await userEvent.type(screen.queryAllByLabelText(labelText)[i], input);
     await clickButtonTimes(/-repeat-button/i, 1);
+    await userEvent.type(screen.queryAllByLabelText(labelText)[i + 1], input);
   }
 }
 export async function repeatDateTimeNTimes(
@@ -34,6 +34,7 @@ export async function repeatDateTimeNTimes(
     const minutesInput = minutesElement.querySelector('input');
 
     await userEvent.type(dateElement, dateString);
+
     if (hoursInput && minutesInput) {
       await userEvent.type(hoursInput, hoursString);
       await userEvent.type(minutesInput, minutesString);
@@ -76,9 +77,9 @@ export async function clickByLabelText(id: Matcher): Promise<void> {
   expect(elm).toBeInTheDocument();
   await userEvent.click(elm);
 }
-export async function repeatCheckboxTimes(id: Matcher, n: number): Promise<void> {
+export async function repeatCheckboxTimes(matcher: Matcher, n: number): Promise<void> {
   for (let i = 0; i < n; i++) {
-    const elm = screen.getAllByLabelText(id);
+    const elm = screen.getAllByLabelText(matcher);
     await userEvent.click(elm[i]);
     await clickButtonTimes(/-repeat-button/i, 1);
   }
@@ -89,6 +90,9 @@ export async function repeatSliderTimes(linkId: string, n: number): Promise<void
     const itemToClick = elm.querySelectorAll('div.slider__track__step')[0];
     await userEvent.click(itemToClick);
     await clickButtonTimes(/-repeat-button/i, 1);
+    const elm2 = await screen.findByTestId(`item_${linkId}^${i + 1}-${i + 1}-slider-choice`);
+    const itemToClick2 = elm2.querySelectorAll('div.slider__track__step')[0];
+    await userEvent.click(itemToClick2);
   }
 }
 export async function clickSliderValue(linkId: Matcher, index: number, sliderItemIndex: undefined | number = 0): Promise<void> {
@@ -104,6 +108,7 @@ export async function repeatDropDownTimes(
   for (let i = 0; i < n; i++) {
     await userEvent.selectOptions(screen.getAllByLabelText(id)[i], screen.getAllByRole('option', { name: optionName })[i]);
     await clickButtonTimes(/-repeat-button/i, 1);
+    await userEvent.selectOptions(screen.getAllByLabelText(id)[i + 1], screen.getAllByRole('option', { name: optionName })[i + 1]);
   }
 }
 export async function typeAndTabByLabelText(id: Matcher, value: string): Promise<void> {

@@ -125,6 +125,9 @@ describe('checkbox-view - choice', () => {
 
       await repeatCheckboxTimes(/Ja/i, 1);
 
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
+
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 
@@ -138,6 +141,9 @@ describe('checkbox-view - choice', () => {
       await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
+
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);

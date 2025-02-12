@@ -215,6 +215,7 @@ describe('Slider-view', () => {
       await createWrapper(questionnaire);
 
       await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 1);
+
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 

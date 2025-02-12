@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access */
 import { renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
 import { screen } from '@testing-library/react';
 import { format } from 'date-fns';
@@ -78,9 +79,9 @@ describe('Date time', () => {
       const dateInput = screen.getByLabelText(/Dato/i);
       const hoursElement = screen.getByTestId(/hours-test/i);
       const minutesElement = screen.getByTestId(/minutes-test/i);
-      // eslint-disable-next-line testing-library/no-node-access
+
       const hoursInput = hoursElement.querySelector('input');
-      // eslint-disable-next-line testing-library/no-node-access
+
       const minutesInput = minutesElement.querySelector('input');
 
       await waitFor(async () => expect(dateInput).toHaveValue('31.05.1994'));
@@ -91,21 +92,21 @@ describe('Date time', () => {
   describe('help button', () => {
     it('Should render helpButton', async () => {
       const { container } = await createWrapper(q);
-      // eslint-disable-next-line testing-library/no-node-access
+
       await waitFor(async () => expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument());
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
       const { container } = await createWrapper(q);
-      // eslint-disable-next-line testing-library/no-node-access
+
       await waitFor(async () => expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument());
-      // eslint-disable-next-line testing-library/no-node-access
+
       await waitFor(async () => expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument());
-      // eslint-disable-next-line testing-library/no-node-access
+
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
         await userEvent.click(helpButton);
       }
-      // eslint-disable-next-line testing-library/no-node-access
+
       await waitFor(async () => expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument());
     });
   });
@@ -177,6 +178,20 @@ describe('Date time', () => {
       await createWrapper(questionnaire);
 
       await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
+      const dateElement2 = screen.queryAllByLabelText(/Dato/i)[1];
+      const hoursElement2 = screen.queryAllByTestId('hours-test')[1];
+      const minutesElement2 = screen.queryAllByTestId('minutes-test')[1];
+      if (dateElement2 && hoursElement2 && minutesElement2) {
+        const hoursInput2 = hoursElement2.querySelector('input');
+        const minutesInput2 = minutesElement2.querySelector('input');
+
+        await userEvent.type(dateElement2, '12.12.2024');
+
+        if (hoursInput2 && minutesInput2) {
+          await userEvent.type(hoursInput2, '12');
+          await userEvent.type(minutesInput2, '30');
+        }
+      }
 
       await screen.findByTestId(/-delete-button/i);
 
@@ -192,7 +207,20 @@ describe('Date time', () => {
       await createWrapper(questionnaire);
 
       await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
+      const dateElement2 = screen.queryAllByLabelText(/Dato/i)[1];
+      const hoursElement2 = screen.queryAllByTestId('hours-test')[1];
+      const minutesElement2 = screen.queryAllByTestId('minutes-test')[1];
+      if (dateElement2 && hoursElement2 && minutesElement2) {
+        const hoursInput2 = hoursElement2.querySelector('input');
+        const minutesInput2 = minutesElement2.querySelector('input');
 
+        await userEvent.type(dateElement2, '12.12.2024');
+
+        if (hoursInput2 && minutesInput2) {
+          await userEvent.type(hoursInput2, '12');
+          await userEvent.type(minutesInput2, '30');
+        }
+      }
       await screen.findByTestId(/-delete-button/i);
 
       await clickButtonTimes(/-delete-button/i, 1);
@@ -222,7 +250,7 @@ describe('Date time', () => {
       await createWrapper(q);
 
       const hoursElement = screen.getByTestId(/hours-test/i);
-      // eslint-disable-next-line testing-library/no-node-access
+
       const hoursInput = hoursElement.querySelector('input');
 
       if (hoursInput) {
@@ -236,7 +264,7 @@ describe('Date time', () => {
       await createWrapper(q);
 
       const minutesElement = screen.getByTestId(/minutes-test/i);
-      // eslint-disable-next-line testing-library/no-node-access
+
       const minutesInput = minutesElement.querySelector('input');
 
       if (minutesInput) {
@@ -251,9 +279,9 @@ describe('Date time', () => {
       const dateElement = screen.getByLabelText(/Dato/i);
       const hoursElement = await screen.findByTestId('hours-test');
       const minutesElement = await screen.findByTestId('minutes-test');
-      // eslint-disable-next-line testing-library/no-node-access
+
       const hoursInput = hoursElement.querySelector('input');
-      // eslint-disable-next-line testing-library/no-node-access
+
       const minutesInput = minutesElement.querySelector('input');
 
       expect(screen.getByLabelText(/Dato/i)).toBeInTheDocument();
@@ -297,9 +325,9 @@ describe('Date time', () => {
 
       const hoursElement = screen.getByTestId(/hours-test/i);
       const minutesElement = screen.getByTestId(/minutes-test/i);
-      // eslint-disable-next-line testing-library/no-node-access
+
       const hoursInput = hoursElement.querySelector('input');
-      // eslint-disable-next-line testing-library/no-node-access
+
       const minutesInput = minutesElement.querySelector('input');
 
       await userEvent.type(screen.getByLabelText(/Dato/i), '12.12.2024');
@@ -365,9 +393,9 @@ describe('Date time', () => {
 
       const hoursElement = screen.getByTestId(/hours-test/i);
       const minutesElement = screen.getByTestId(/minutes-test/i);
-      // eslint-disable-next-line testing-library/no-node-access
+
       const hoursInput = hoursElement.querySelector('input');
-      // eslint-disable-next-line testing-library/no-node-access
+
       const minutesInput = minutesElement.querySelector('input');
 
       await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.1994');
@@ -388,9 +416,9 @@ describe('Date time', () => {
 
       const hoursElement = screen.getByTestId(/hours-test/i);
       const minutesElement = screen.getByTestId(/minutes-test/i);
-      // eslint-disable-next-line testing-library/no-node-access
+
       const hoursInput = hoursElement.querySelector('input');
-      // eslint-disable-next-line testing-library/no-node-access
+
       const minutesInput = minutesElement.querySelector('input');
 
       await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.1994');

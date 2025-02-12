@@ -205,15 +205,15 @@ describe('string', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
-      const input = 'string';
+      const input = 'stringasdsss';
 
       await repeatNTimes(input, 1, /String/i);
       await waitFor(async () => {
         expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       });
+
       await clickButtonTimes(/-delete-button/i, 1);
 
-      // const confirmModal = getByTestId(/-delete-confirm-modal/i);
       await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });

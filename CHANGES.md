@@ -1,3 +1,23 @@
+## 17.1.1
+
+---
+
+- Exclude items with the "help item-control extension from the questionnaire response
+
+```json
+{
+  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+  "valueCodeableConcept": {
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+        "code": "help"
+      }
+    ]
+  }
+}
+```
+
 ## 17.0.1
 
 ---
