@@ -1,7 +1,8 @@
 {
-  "title": "Stegvisning",
+  "title": "Tittel",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "name": "Teknisk_string",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -21,22 +22,36 @@
       }
     ]
   },
-  "contact": [{ "name": "http://www.nhn.no" }],
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
   "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
       "valueCodeableConcept": {
         "coding": [
-          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
           {
             "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
             "code": "hide-sublabel",
@@ -46,80 +61,72 @@
       }
     }
   ],
-  "id": "7898201e-24bc-49f3-8bb7-6ce049b79b5c",
+  "id": "a2c22f04-f4b1-45d8-8731-67239b1dbc6b",
   "item": [
     {
-      "linkId": "3541c6af-becf-4a74-86fe-3132e67aa1ef",
-      "type": "group",
-      "text": "Text group",
-      "item": [
+      "linkId": "9f296680-528a-4496-daf8-89771bc1f19c",
+      "type": "string",
+      "extension": [
         {
-          "linkId": "b234db98-6347-40ba-8742-f3d9d0d5f114",
-          "type": "string",
-          "text": "Text answer ",
-          "item": [
-            {
-              "linkId": "a35fc9d0-8e5e-47e8-8d79-036f81699898",
-              "type": "text",
-              "required": false,
-              "repeats": false,
-              "text": "Dette er en hjelpetext",
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                    "valueMarkdown": "Dette er en hjelpetext"
-                  }
-                ]
-              },
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "help"
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          ],
-          "readOnly": true
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "**String sublabel**"
         },
         {
-          "linkId": "e813e87d-abec-440a-f597-49ad1183935c",
-          "type": "string",
-          "text": "Skriv noe her i gruppe 4",
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
+        }
+      ],
+      "item": [
+        {
+          "linkId": "886ba9d4-e7cd-4c23-b581-46ea81a1deca",
+          "type": "text",
           "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "maxLength": 250,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Help text"
+              }
+            ]
+          },
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "help"
+                  }
+                ]
               }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='e1f9d4b4-d239-4501-87a0-139b40277c4f').answer.value"
             }
-          ],
-          "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "e1f9d4b4-d239-4501-87a0-139b40277c4f", "operator": "exists" }]
+          ]
         }
       ],
-      "required": false,
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "table-hn1" }]
+      "required": true,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**String markdown**"
           }
-        }
-      ],
-      "required": false
+        ]
+      },
+      "text": "String markdown",
+      "maxLength": 20,
+      "repeats": true
     }
   ]
 }

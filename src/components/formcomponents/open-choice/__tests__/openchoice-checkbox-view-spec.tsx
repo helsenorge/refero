@@ -95,6 +95,9 @@ describe('checkbox-view - openchoice', () => {
       await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
+
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
       await clickButtonTimes(/-delete-button/i, 1);
 
       expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
@@ -104,7 +107,11 @@ describe('checkbox-view - openchoice', () => {
       await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
+
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
       await clickButtonTimes(/-delete-button/i, 1);
+
       await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });

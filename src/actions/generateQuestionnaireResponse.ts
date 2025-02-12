@@ -53,10 +53,11 @@ function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: Quest
   item.item.forEach((i: QuestionnaireItem) => {
     for (let j = 0; j < getMinOccurs(i); j++) {
       const responseItem = createQuestionnaireResponseItem(i);
+
+      addChildrenItemsToResponseItem(i, responseItem);
       if (shouldNotAddItemToResponse(i)) {
         continue;
       }
-      addChildrenItemsToResponseItem(i, responseItem);
       addResponseItemtoResponse(item, response, responseItem);
     }
   });
