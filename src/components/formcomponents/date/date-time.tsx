@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import { DateFormat, DateTimeUnit, defaultMaxDate, defaultMinDate, TimeUnit } from '../../../types/dateTypes';
 
@@ -15,7 +14,6 @@ import { DatePicker } from '@helsenorge/datepicker/components/DatePicker';
 
 import { useMinMaxDate } from './useMinMaxDate';
 import { newDateTimeValueAsync } from '../../../actions/newValue';
-import { GlobalState, useAppDispatch } from '../../../reducers';
 import { initialize } from '../../../util/date-fns-utils';
 import {
   getFullFnsDate,
@@ -46,6 +44,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppSelector, useAppDispatch } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
@@ -57,7 +56,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
   const dispatch = useAppDispatch();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const answer = useGetAnswer(linkId, path);
   const { formState, getFieldState, getValues, register } = useFormContext<FieldValues>();

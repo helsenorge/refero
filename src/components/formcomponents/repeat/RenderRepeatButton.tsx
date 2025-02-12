@@ -1,16 +1,14 @@
 import { memo } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { useSelector } from 'react-redux';
+import { QuestionnaireItem } from 'fhir/r4';
 
 import RepeatButton from './RepeatButton';
 
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
 import { shouldRenderRepeatButton } from '@/util';
 import { descendantsHasPrimitiveAnswer, Path } from '@/util/refero-core';
 import { Resources } from '@/util/resources';
-
 
 const RenderRepeatButton = memo(function RenderRepeatButton({
   item,
@@ -23,9 +21,7 @@ const RenderRepeatButton = memo(function RenderRepeatButton({
   resources?: Resources;
 }): JSX.Element | null {
   const parentPath = path.slice(0, -1);
-  const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(state =>
-    getFlatMapResponseItemsForItemSelector(state, item?.linkId, parentPath)
-  );
+  const responseItems = useAppSelector(state => getFlatMapResponseItemsForItemSelector(state, item?.linkId, parentPath));
 
   if (!item?.repeats || !shouldRenderRepeatButton(item, responseItems, index)) {
     return null;

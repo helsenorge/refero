@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
-import { useSelector } from 'react-redux';
 
 import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
 
@@ -13,7 +12,7 @@ import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
 import styles from './referoLabel.module.css';
 
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
 import { Resources } from '@/util/resources';
@@ -50,7 +49,7 @@ export const ReferoLabel = ({
   children,
 }: Props): JSX.Element => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const questionnaire = useSelector((state: GlobalState) => getFormDefinition(state))?.Content;
+  const questionnaire = useAppSelector(state => getFormDefinition(state))?.Content;
   const { onRenderMarkdown } = useExternalRenderContext();
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = labelText ? labelText : getLabelText(item, onRenderMarkdown, questionnaire, resources);

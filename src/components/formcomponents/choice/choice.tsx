@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { Coding, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { useSelector } from 'react-redux';
+import { Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -18,7 +17,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { isDataReceiver } from '@/util';
 import {
@@ -35,7 +34,7 @@ export type ChoiceProps = QuestionnaireComponentItemProps;
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const { containedResources, path, linkId, children } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
@@ -91,11 +90,14 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     return value.map(code => getDisplay(getOptions(resources, item, containedResources), code)).join(', ');
   };
 
-  const getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg || getDisplay(getOptions(resources, item, containedResources), code);
-    const system = systemArg || getSystem(item, code, containedResources);
-    return { code, display, system };
-  };
+  const getAnswerValueCoding = useCallback(
+    (code: string, systemArg?: string, displayArg?: string): Coding => {
+      const display = displayArg || getDisplay(getOptions(resources, item, containedResources), code);
+      const system = systemArg || getSystem(item, code, containedResources);
+      return { code, display, system };
+    },
+    [resources, item, containedResources] // Add dependencies here
+  );
   const answerContainsCode = useCallback(
     (code: string): boolean => {
       const codes = getAnswerValue();

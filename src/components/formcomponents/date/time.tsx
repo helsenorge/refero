@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -26,7 +24,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppSelector, useAppDispatch } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { TimeUnit } from '@/types/dateTypes';
 import { initialize } from '@/util/date-fns-utils';
@@ -40,17 +38,12 @@ import {
   validateTimeDigits,
 } from '@/util/date-utils';
 
-
-
-
-
-
 export type Props = QuestionnaireComponentItemProps;
 
 const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
   initialize();
 
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);

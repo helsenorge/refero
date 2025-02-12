@@ -3,6 +3,7 @@
 React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/questionnaire.html) object and renders it as a form.
 
 ## PeerDependencies
+
 - [react](https://www.npmjs.com/package/react)
 - [react-dom](https://www.npmjs.com/package/react-dom)
 - [redux](https://www.npmjs.com/package/redux)
@@ -13,8 +14,8 @@ React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/que
 - [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
 - [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
 
-
 ## Dependencies
+
 - [firepath](https://www.npmjs.com/package/firepath)
 - [marked](https://www.npmjs.com/package/marked)
 - [uuid](https://www.npmjs.com/package/uuid)
@@ -23,6 +24,7 @@ React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/que
 - [date-fns](https://www.npmjs.com/package/date-fns)
 - [classnames](https://www.npmjs.com/package/classnames)
 - [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
+- [@helsenorge/eslint-config](https://www.npmjs.com/package/@helsenorge/eslint-config)
 
 ## Example usage
 
@@ -122,8 +124,6 @@ const App = () => {
 | customNavigationCallBack      |          | callback                   |         | A callback function that allows consumers to listen to navigation changes.                                    |
 | customProps                   |          | any                        |         | Any custom props that consumers want to pass to the Refero component.                                         |
 
-
-
 ### `questionnaire: Questionnaire`
 
 This is the questionnaire to be rendered. It must be a [`Questionnaire`](https://hl7.org/fhir/R4/questionnaire.html) object.
@@ -155,7 +155,7 @@ When this property is `true`, the form renders the actionbar as sticky.
 
 Max file size in bytes allowed for attachments. Default is 25M.
 
-### `attachmentValidTypes: Array<MimeTypes>`
+### `attachmentValidTypes: MimeTypes[]`
 
 List of allowed mime types for attachments. Default allowed types are image/jpeg, image/png, application/pdf
 
@@ -199,7 +199,7 @@ This callback is called when the user requests the current form to be cancled.
 
 This callback is called when the user requests uploading an attachment. The callback is called with the following arguments:
 
-- `files: UploadFile[]` An array of [`UploadFile`](https://developer.mozilla.org/en-US/docs/Web/API/File)  objects to be be uploaded.
+- `files: UploadFile[]` An array of [`UploadFile`](https://developer.mozilla.org/en-US/docs/Web/API/File) objects to be be uploaded.
 
 - `onSuccess: (attachment: Attachment) => void` Call this callback to indicate success
 
@@ -280,12 +280,12 @@ with an error message.
 - `errorCallback(error: string) => void)` The function to call to return an error message to the autosuggest field, which will be displayed
   to the user.
 
-### `fetchReceivers: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void`
+### `fetchReceivers: (successCallback: (receivers: OrgenhetHierarki[]) => void, errorCallback: () => void) => void`
 
 This callback is called when a receiver component needs to load data. It should call either successCallback with a list of OrgenhetHierarki
 objects, or errorCallback with an error message.
 
-- `successCallback: (receivers: Array<OrgenhetHierarki>) => void` The function to call to return a list of OrgenhetHierarki objects to the
+- `successCallback: (receivers: OrgenhetHierarki[]) => void` The function to call to return a list of OrgenhetHierarki objects to the
   receiver component, which will be displayed as a set of choices to the user.
 - `errorCallback(error: string) => void)` The function to call to return an error message to the receiver component, which will be displayed
   to the user.
@@ -298,6 +298,116 @@ This callback is called when a required field is not filled out, or if a field i
 
 This callback is called when the current step in a step-view changes. It takes in the parameter newIndex, which contains the new index that
 the current index will be updated to. This can be used to make progress indicators display the correct step.
+
+# Scoring Functionality
+
+## Description
+
+To assign a value to a question to be used in scoring, use the **Answer option**.
+
+### Marking a Field as a Scoring Field
+
+![Scoring Field Toggle](./doc_images/img1.png)
+
+The following codes are established to indicate that this element is used for scoring, as well as a code to specify that it is a question
+(Question score):
+
+```json
+{
+  "system": "http://ehelse.no/Score",
+  "code": "score",
+  "display": "score"
+}
+
+{
+  "system": "http://ehelse.no/scoringFormulas",
+  "code": "QS",
+  "display": "Question score"
+}
+```
+
+You have the option to assign an \`ordinalValue\`—a decimal number—for each choice, which can be used in scoring.
+
+![Assigning Ordinal Values](./doc_images/img2.png)
+
+### Creating a Subtotal Field
+
+Next, create a field for a subtotal, e.g., for all scoring values within a group.  
+This should be a numeric or decimal value.
+
+![Subtotal Field](./doc_images/img3.png)
+
+The following codes indicate that this is a **Section Score**:
+
+```json
+{
+  "system": "http://ehelse.no/Score",
+  "code": "score",
+  "display": "score"
+}
+
+{
+  "system": "http://ehelse.no/scoringFormulas",
+  "code": "SS",
+  "display": "Section score"
+}
+```
+
+### Creating a Total Score Field
+
+Finally, create a field for the total score, covering all scoring values in the entire form:
+
+```json
+{
+  "system": "http://ehelse.no/Score",
+  "code": "score",
+  "display": "score"
+}
+
+{
+  "system": "http://ehelse.no/scoringFormulas",
+  "code": "TS",
+  "display": "Total score"
+}
+```
+
+### Example Form Layout
+
+![Example Form Layout](./doc_images/img4.png)
+
+# Mathematical Expressions
+
+## Description
+
+### Examples:
+
+#### Calculation: Integer, Decimal
+
+![Integer and Decimal Calculation](./doc_images/calc_img1.png)
+
+In the sum field, the following is entered:
+
+![Calculation Formula](./doc_images/calc_img2.png)
+
+```
+QuestionnaireResponse.descendants().where(linkId='Value1').answer.value + QuestionnaireResponse.descendants().where(linkId='Value2').answer.value
+```
+
+#### Calculation Using Quantity Data from Two Fields (Height and Weight to Calculate BMI)
+
+![BMI Calculation](./doc_images/calc_img3.png)
+
+In the sum field, the following is entered:
+
+```
+QuestionnaireResponse.descendants().where(linkId='Vekt').answer.value.value / ((QuestionnaireResponse.descendants().where(linkId='Hoyde').answer.value.value / 10000) * QuestionnaireResponse.descendants().where(linkId='Hoyde').answer.value.value)
+```
+
+> **Note:**  
+> Use \`value.value\` when working with quantities. For other numeric values, only \`value\` is used in the expressions.
+
+Custom units must follow the **FHIR Standard**:  
+[Datatypes-definitions - FHIR v4.0.1](https://www.hl7.org/fhir/datatypes.html)
 
 # Enum definitions
 
@@ -354,7 +464,7 @@ answer from a radio-button group or drop-down group.
 
 ```ts
 interface IQuestionnaireInspector {
-  findItemWithLinkIds(linkIds: Array<string>): Array<QuestionnaireItemPair>;
+  findItemWithLinkIds(linkIds: string[]): QuestionnaireItemPair[];
 }
 ```
 
@@ -374,7 +484,7 @@ interface Path {
 ```ts
 interface QuestionnaireItemPair {
   QuestionnaireItem: QuestionnaireItem;
-  QuestionnaireResponseItems: Array<ItemAndPath>;
+  QuestionnaireResponseItems: ItemAndPath[];
 }
 
 interface ItemAndPath {

@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { useSelector } from 'react-redux';
-
 import AsPdf from './AsPdf';
 import ContextTypeGrid from './ContextTypeGrid';
 import ContextTypeGridRow from './ContextTypeGridRow';
@@ -12,20 +9,17 @@ import TableContainer from './table/TableContainer';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { RenderContextType } from '@/constants/renderContextType';
-import { GlobalState } from '@/reducers';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { isTableCode } from '@/util';
 import { getCodingTextTableValues } from '@/util/extension';
-
 
 export type Props = QuestionnaireComponentItemProps;
 
 export const Group = (props: Props): JSX.Element | null => {
   const { pdf, renderContext, path, linkId } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useAppSelector(state => getResponseItemWithPathSelector(state, path));
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   const isLocalRenderContextTypeGrid = getLocalRenderContextType(item) === RenderContextType.Grid;
