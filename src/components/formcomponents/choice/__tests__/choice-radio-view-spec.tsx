@@ -1,11 +1,13 @@
+import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire } from 'fhir/r4';
-import { findByRole, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
-import { radioView as q } from './__data__/index';
-import { ReferoProps } from '../../../../types/referoProps';
-import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
-import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
+
+import { ReferoProps } from '../../../../types/referoProps';
+
+import { radioView as q } from './__data__/index';
+import { getResources } from '../../../../../preview/resources/referoResources';
+import { clickButtonTimes, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
+import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -18,20 +20,20 @@ const expectedAnswer = {
 describe('Radio-view - choice', () => {
   describe('Render', () => {
     it('Should render as text if props.pdf', async () => {
-      const { queryByText } = await createWrapper(q, { pdf: true });
-      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+      await createWrapper(q, { pdf: true });
+      expect(screen.getByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
-      const { queryByText } = await createWrapper(questionnaire);
-      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+      await createWrapper(questionnaire);
+      expect(screen.getByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', async () => {
-      const { queryByText } = await createWrapper(q);
-      expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
+      await createWrapper(q);
+      expect(screen.queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
     });
   });
   describe('help button', () => {
@@ -61,8 +63,8 @@ describe('Radio-view - choice', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
 
-      const { getByTestId } = await createWrapper(questionnaire);
-      const repeatButton = getByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = screen.getByTestId(/-repeat-button/i);
       expect(repeatButton).toBeInTheDocument();
     });
 
@@ -71,8 +73,8 @@ describe('Radio-view - choice', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByTestId } = await createWrapper(questionnaire);
-      const repeatButton = queryByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = screen.queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
@@ -86,10 +88,10 @@ describe('Radio-view - choice', () => {
           return y;
         }),
       };
-      const { queryAllByText, queryByTestId } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       await repeatCheckboxTimes(/Ja/i, 3);
-      expect(queryAllByText(/Radio view label/i)).toHaveLength(4);
-      expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
+      expect(screen.queryAllByText(/Radio view label/i)).toHaveLength(4);
+      expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
   describe('delete button', () => {
@@ -98,58 +100,56 @@ describe('Radio-view - choice', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryAllByTestId } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 2);
 
-      expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+      expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryByTestId } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
 
       const elm2 = screen.getAllByLabelText(/Ja/i);
       await userEvent.click(elm2[1]);
-
-      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 
-      expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
     it('Should remove item when delete button is clicked', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryByTestId } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
 
       const elm2 = screen.getAllByLabelText(/Ja/i);
       await userEvent.click(elm2[1]);
-
-      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);
 
-      const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
+      await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
 
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
   describe('initialvalue', () => {
@@ -161,9 +161,9 @@ describe('Radio-view - choice', () => {
           repeats: false,
         })),
       };
-      const { getByLabelText } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
-      expect(getByLabelText(/Ja/i)).not.toBeChecked();
+      expect(screen.getByLabelText(/Ja/i)).not.toBeChecked();
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -174,9 +174,9 @@ describe('Radio-view - choice', () => {
           initial: [expectedAnswer],
         })),
       };
-      const { getByLabelText } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
-      expect(getByLabelText(/Ja/i)).toBeChecked();
+      expect(screen.getByLabelText(/Ja/i)).toBeChecked();
     });
   });
   describe('onChange', () => {
@@ -185,11 +185,11 @@ describe('Radio-view - choice', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { getByLabelText } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
 
-      await userEvent.click(getByLabelText(/Ja/i));
+      await userEvent.click(screen.getByLabelText(/Ja/i));
 
-      expect(getByLabelText(/Ja/i)).toBeChecked();
+      expect(screen.getByLabelText(/Ja/i)).toBeChecked();
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire: Questionnaire = {
@@ -197,9 +197,9 @@ describe('Radio-view - choice', () => {
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
       const onChange = vi.fn();
-      const { getByLabelText } = await createWrapper(questionnaire, { onChange });
-      expect(getByLabelText(/Ja/i)).toBeInTheDocument();
-      await userEvent.click(getByLabelText(/Ja/i));
+      await createWrapper(questionnaire, { onChange });
+      expect(screen.getByLabelText(/Ja/i)).toBeInTheDocument();
+      await userEvent.click(screen.getByLabelText(/Ja/i));
 
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
@@ -212,35 +212,35 @@ describe('Radio-view - choice', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByLabelText, getByText } = await createWrapper(questionnaire);
-        expect(getByLabelText(/Ja/i)).toBeInTheDocument();
+        await createWrapper(questionnaire);
+        expect(screen.getByLabelText(/Ja/i)).toBeInTheDocument();
         await submitForm();
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { queryByText, getByLabelText } = await createWrapper(questionnaire);
-        await userEvent.click(getByLabelText(/Ja/i));
+        await createWrapper(questionnaire);
+        await userEvent.click(screen.getByLabelText(/Ja/i));
         await submitForm();
 
-        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+        expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByLabelText, getByText, queryByText } = await createWrapper(questionnaire);
+        await createWrapper(questionnaire);
         await submitForm();
 
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await userEvent.click(getByLabelText(/Ja/i));
+        await userEvent.click(screen.getByLabelText(/Ja/i));
         await userEvent.tab();
-        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+        expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should get required error on readOnly if noe value', async () => {
         const questionnaire: Questionnaire = {
@@ -258,17 +258,18 @@ describe('Radio-view - choice', () => {
             ],
           })),
         };
-        const { getByText } = await createWrapper(questionnaire);
+        await createWrapper(questionnaire);
         await submitForm();
 
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
     });
   });
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
   return await waitFor(async () => {
-    return renderRefero({ questionnaire, props: { ...props, resources } });
+    return await renderRefero({ questionnaire, props: { ...props, resources } });
   });
 };

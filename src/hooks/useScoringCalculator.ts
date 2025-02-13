@@ -1,15 +1,16 @@
+import { useEffect, useState } from 'react';
+
+import { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+
 import { newDecimalValueAction, newIntegerValueAction, newQuantityValueAction } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getDecimalValue } from '@/util';
 import { ActionRequester } from '@/util/actionRequester';
 import { getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
-import { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 export const useScoringCalculator = (): {
   runScoringCalculator: (
@@ -18,7 +19,7 @@ export const useScoringCalculator = (): {
     actionRequester?: ActionRequester
   ) => Promise<void>;
 } => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
   const dispatch = useAppDispatch();
   const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>();
 
@@ -63,6 +64,7 @@ export const useScoringCalculator = (): {
             value: getDecimalValue(item, value),
           };
           for (const itemAndPath of itemsAndPaths) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
             actionRequester;
             dispatch(newQuantityValueAction({ itemPath: itemAndPath.path, valueQuantity: quantity, item }));
           }

@@ -1,30 +1,31 @@
+import { useEffect, useState } from 'react';
+
 import { format, isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import styles from '../common-styles.module.css';
+
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
-import { getId, isReadOnly, isRequired } from '../../../util/index';
-
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { getPDFValueForDate, parseStringToDate, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
-import { initialize } from '@/util/date-fns-utils';
-import { GlobalState } from '@/reducers';
-import { useSelector } from 'react-redux';
-import { findQuestionnaireItem } from '@/reducers/selectors';
+import { getId, isReadOnly, isRequired } from '../../../util/index';
+import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
-import { DateFormat, defaultMaxDate, defaultMinDate } from '@/types/dateTypes';
-import { shouldValidate } from '@/components/validation/utils';
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage } from '@/components/validation/rules';
-import { useEffect, useState } from 'react';
+import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { DateFormat, defaultMaxDate, defaultMinDate } from '@/types/dateTypes';
+import { initialize } from '@/util/date-fns-utils';
+import { getPDFValueForDate, parseStringToDate, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -41,7 +42,7 @@ export const DateDayInput = ({
   path,
 }: DateDayInputProps): JSX.Element | null => {
   initialize();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);

@@ -1,11 +1,27 @@
-import { QuestionnaireResponseItemAnswer, Quantity as QuantityType, QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import styles2 from '../common-styles.module.css';
+
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
+
+import styles2 from '../common-styles.module.css';
+import { ReadOnly } from '../read-only/readOnly';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
 import styles from './quantity.module.css';
+
 import { newQuantityValueAsync } from '@/actions/newValue';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { decimalPattern, getErrorMessage, getInputWidth, isNumber, maxValue, minValue, required } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppDispatch, useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import {
   getMaxDecimalPlacesExtensionValue,
   getMaxValueExtensionValue,
@@ -15,25 +31,11 @@ import {
 } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useSelector } from 'react-redux';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { decimalPattern, getErrorMessage, getInputWidth, isNumber, maxValue, minValue, required } from '@/components/validation/rules';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import { ReadOnly } from '../read-only/readOnly';
-import { shouldValidate } from '@/components/validation/utils';
-import { useResetFormField } from '@/hooks/useResetFormField';
-
 export type Props = QuestionnaireComponentItemProps;
 
 const Quantity = (props: Props): JSX.Element | null => {
   const { path, id, pdf, idWithLinkIdAndItemIndex, index, children, linkId } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);

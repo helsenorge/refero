@@ -1,16 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { isValid } from 'date-fns';
-import { DatePicker } from '@helsenorge/datepicker/components/DatePicker';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import { DateFormat, DateTimeUnit, defaultMaxDate, defaultMinDate, TimeUnit } from '../../../types/dateTypes';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label from '@helsenorge/designsystem-react/components/Label';
+
+import { DatePicker } from '@helsenorge/datepicker/components/DatePicker';
+
+import { useMinMaxDate } from './useMinMaxDate';
 import { newDateTimeValueAsync } from '../../../actions/newValue';
-import { GlobalState, useAppDispatch } from '../../../reducers';
 import { initialize } from '../../../util/date-fns-utils';
 import {
   getFullFnsDate,
@@ -26,24 +29,23 @@ import {
 } from '../../../util/date-utils';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
-import dateStyles from './date.module.css';
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { useMinMaxDate } from './useMinMaxDate';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
-import { shouldValidate } from '@/components/validation/utils';
-import { getErrorMessage } from '@/components/validation/rules';
-import Input from '@helsenorge/designsystem-react/components/Input';
-import Label from '@helsenorge/designsystem-react/components/Label';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
+import dateStyles from './date.module.css';
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import SafeText from '@/components/referoLabel/SafeText';
+import { getErrorMessage } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppSelector, useAppDispatch } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -54,7 +56,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
   const dispatch = useAppDispatch();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const answer = useGetAnswer(linkId, path);
   const { formState, getFieldState, getValues, register } = useFormContext<FieldValues>();

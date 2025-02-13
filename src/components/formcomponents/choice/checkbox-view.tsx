@@ -1,25 +1,23 @@
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import styles from '../common-styles.module.css';
-import { Options } from '@/types/formTypes/radioGroupOptions';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
-import { getId, isReadOnly } from '@/util/index';
-
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import styles from '../common-styles.module.css';
+import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { QuestionnaireItem } from 'fhir/r4';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { Options } from '@/types/formTypes/radioGroupOptions';
+import { getId, isReadOnly } from '@/util/index';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -30,7 +28,7 @@ export type Props = QuestionnaireComponentItemProps & {
 
 const CheckboxView = (props: Props): JSX.Element | null => {
   const { options, linkId, id, handleChange, idWithLinkIdAndItemIndex, selected, path, children, index, pdf, pdfValue } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const { resources } = useExternalRenderContext();
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
@@ -75,7 +73,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
             key={`${option.type}-${index}`}
             inputId={`${getId(id)}-hn-${index}`}
             testId={`${getId(id)}-${index}-checkbox-choice`}
-            label={<Label testId={`${getId(id)}-${index}-checkbox-choice-label`} labelTexts={[{ text: option.label }]} />}
+            label={<Label testId={`${getId(id)}-${index}-checkbox-choice-label`} labelTexts={[{ text: option.label, type: 'subdued' }]} />}
             checked={selected?.some((val?: string) => val === option.type)}
             value={option.type}
             onChange={(e): void => {

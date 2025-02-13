@@ -1,15 +1,24 @@
 import { FocusEvent, useCallback, useMemo } from 'react';
 
-import { QuestionnaireResponseItemAnswer, Coding, QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import TextField from './text-field';
+import SliderView from '../choice/slider-view';
+import AutosuggestView from '../choice-common/autosuggest-view';
+
 import { removeCodingValueAsync, newCodingValueAsync, newCodingStringValueAsync, removeCodingStringValueAsync } from '@/actions/newValue';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemControlConstants from '@/constants/itemcontrol';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppDispatch, useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { isDataReceiver } from '@/util';
 import {
   getOptions,
@@ -23,21 +32,11 @@ import {
   isAboveDropdownThreshold,
 } from '@/util/choice';
 
-import SliderView from '../choice/slider-view';
-import AutosuggestView from '../choice-common/autosuggest-view';
-import { useSelector } from 'react-redux';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import { useResetFormField } from '@/hooks/useResetFormField';
-
 export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
 export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const { linkId, containedResources, path } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
@@ -80,6 +79,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     }
 
     return undefined;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answer, item]);
 
   const value = getValue();
@@ -104,6 +104,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     }
 
     return displayValues.join(', ');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answer, getDataReceiverValue, getOpenValue, isDataReceiver, item, options, resources, value]);
 
   const handleStringChange = useCallback(

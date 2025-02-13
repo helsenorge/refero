@@ -1,24 +1,25 @@
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import styles from '../common-styles.module.css';
+
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
+import { useMinMaxDate } from './useMinMaxDate';
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPDFValueForDate, validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { useMinMaxDate } from './useMinMaxDate';
-import { useSelector } from 'react-redux';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { GlobalState } from '@/reducers';
-import { initialize } from '@/util/date-fns-utils';
+import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
-import { shouldValidate } from '@/components/validation/utils';
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { initialize } from '@/util/date-fns-utils';
 
 type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
@@ -26,7 +27,7 @@ type Props = QuestionnaireComponentItemProps & {
 
 export const DateYearInput = (props: Props): JSX.Element | null => {
   const { id, pdf, linkId, onDateValueChange, idWithLinkIdAndItemIndex, children, path } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   initialize();
 

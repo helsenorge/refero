@@ -1,15 +1,17 @@
-import SafeText from '@/components/referoLabel/SafeText';
-import RenderHelpButton from '../help-button/RenderHelpButton';
-import { getHeaderText } from './helpers';
-import { getText } from '@/util';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { Resources } from '@/util/resources';
 import { Dispatch } from 'react';
-import { useSelector } from 'react-redux';
-import { getFormDefinition } from '@/reducers/form';
-import { GlobalState } from '@/reducers';
+
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+
+import { getHeaderText } from './helpers';
+import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
+
+import SafeText from '@/components/referoLabel/SafeText';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useAppSelector } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
+import { getText } from '@/util';
+import { Resources } from '@/util/resources';
 
 type GroupHeaderProps = {
   item?: QuestionnaireItem;
@@ -21,7 +23,7 @@ type GroupHeaderProps = {
 };
 const GroupHeader = ({ item, resources, headerTag, isHelpVisible, setIsHelpVisible }: GroupHeaderProps): JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
   if (!getText(item, onRenderMarkdown)) {
     return null;

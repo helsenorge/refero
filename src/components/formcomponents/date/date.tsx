@@ -1,31 +1,28 @@
+import { useCallback, useMemo } from 'react';
+
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
 import { newDateValueAsync } from '../../../actions/newValue';
-
 import itemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState, useAppDispatch } from '../../../reducers';
-
 import { getItemControlExtensionValue } from '../../../util/extension';
-
-import { useSelector } from 'react-redux';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useCallback, useMemo } from 'react';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { QuestionnaireItem } from 'fhir/r4';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useAppDispatch, useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type DateProps = QuestionnaireComponentItemProps;
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
   const { language, linkId, path, index, children } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const answer = useGetAnswer(linkId, path);
   const { promptLoginMessage, globalOnChange } = useExternalRenderContext();

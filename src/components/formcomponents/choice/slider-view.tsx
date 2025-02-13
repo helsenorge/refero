@@ -3,25 +3,25 @@ import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
+
 import styles from '../common-styles.module.css';
+import { ReadOnly } from '../read-only/readOnly';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { getErrorMessage, isInteger, maxValue, minValue, required } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
 import codeSystems from '@/constants/codingsystems';
 import { Extensions } from '@/constants/extensions';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getId, isReadOnly } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
 import { getExtension } from '@/util/extension';
 import { isString } from '@/util/typeguards';
-
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { getErrorMessage, isInteger, maxValue, minValue, required } from '@/components/validation/rules';
-import { useSelector } from 'react-redux';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { GlobalState } from '@/reducers';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { shouldValidate } from '@/components/validation/utils';
-import { ReadOnly } from '../read-only/readOnly';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
@@ -39,7 +39,7 @@ type LeftRightLabels = { leftLabel: string; rightLabel: string };
 const SliderView = (props: SliderProps): JSX.Element | null => {
   const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children, pdfValue } = props;
   const { resources } = useExternalRenderContext();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -200,7 +200,8 @@ export const convertToEmoji = (value: string): string => {
   if (codePoint !== null && codePoint >= 0 && codePoint <= 0x10ffff) {
     try {
       return String.fromCodePoint(codePoint);
-    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_error) {
       return value;
     }
   } else {

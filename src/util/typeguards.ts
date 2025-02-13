@@ -1,6 +1,7 @@
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+
 import ItemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
 import { TABLE_CODES_VALUES, TableCodes } from '@/constants/tableTypes';
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
 export function isString(value: unknown): value is string {
   return typeof value === 'string';
@@ -11,6 +12,7 @@ export const isQuestionnaireItem = (item: QuestionnaireItem | QuestionnaireRespo
 export function isOfTypeQuestionnaireResponseItem(
   item: QuestionnaireResponse | QuestionnaireResponseItem
 ): item is QuestionnaireResponseItem {
+  // eslint-disable-next-line no-prototype-builtins
   return item.hasOwnProperty('answer');
 }
 export const hasCode = (code: string | undefined): code is string => {

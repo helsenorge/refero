@@ -1,6 +1,7 @@
 import { configureStore, combineReducers, ThunkDispatch, UnknownAction, ThunkAction } from '@reduxjs/toolkit';
-import formReducer, { Form } from './form'; // Importing the `Form` type for explicit typing
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+
+import formReducer, { Form } from './form'; // Importing the `Form` type for explicit typing
 
 // Define your ReferoState using the same `Form` type from the old setup
 export interface ReferoState {

@@ -1,17 +1,17 @@
 import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
 
-import stepView from './__data__/customActionButtons/stepview';
 import standard from './__data__/customActionButtons/standard';
-
+import stepView from './__data__/customActionButtons/stepview';
 import { renderRefero, screen } from '../../../test/test-utils';
+
 import { ReferoProps } from '@/types/referoProps';
 
 describe('render custom actionbuttons', async () => {
   describe('standard', () => {
     it('should render custom buttons when prop != undefined', async () => {
       createWrapper(standard, () => {
-        return <div data-testid="custom-buttons">Custom Action Buttons</div>;
+        return <div data-testid="custom-buttons">{'Custom Action Buttons'}</div>;
       });
       expect(await screen.findByTestId(/custom-buttons/i)).toBeInTheDocument();
     });
@@ -23,7 +23,7 @@ describe('render custom actionbuttons', async () => {
   describe('stepview', () => {
     it('should render custom buttons when prop != undefined', async () => {
       createWrapper(stepView, () => {
-        return <div data-testid="custom-buttons">Custom Action Buttons</div>;
+        return <div data-testid="custom-buttons">{'Custom Action Buttons'}</div>;
       });
       expect(await screen.findByTestId(/custom-buttons/i)).toBeInTheDocument();
     });
@@ -39,7 +39,7 @@ describe('render custom actionbuttons', async () => {
         return (
           <div>
             <button data-testid="custom-submit-button" onClick={onSubmit}>
-              Custom Submit Button
+              {'Custom Submit Button'}
             </button>
           </div>
         );
@@ -62,7 +62,7 @@ describe('render custom actionbuttons', async () => {
                   reactHookFormMethods.handleSubmit(referoProps.onSubmit())
                 }
               >
-                Custom Submit Button
+                {'Custom Submit Button'}
               </button>
             </div>
           );

@@ -1,8 +1,9 @@
 import { QuestionnaireItem } from 'fhir/r4';
 
+import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+
 import constants from '@/constants';
 import { getMaxSizeExtensionValue, getValidationTextExtension } from '@/util/extension';
-import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { Resources } from '@/util/resources';
 
 export function convertMBToBytes(mb: number): number {

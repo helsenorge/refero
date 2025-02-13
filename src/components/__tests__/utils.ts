@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { queryHelpers, userEvent, screen } from '@test/test-utils';
 import {
   Coding,
   Extension,
@@ -7,30 +9,30 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
+
 import { Extensions } from '../../constants/extensions';
-import { queryHelpers, userEvent, screen } from '@test/test-utils';
 import valueSet from '../../constants/valuesets';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector } from '../../util/questionnaireInspector';
 
-export async function inputAnswer(linkId: string, answer: number | string, element: HTMLElement) {
+export async function inputAnswer(linkId: string, answer: number | string, element: HTMLElement): Promise<void> {
   const input = findItem(linkId, element);
   await userEvent.type(input, answer.toString());
   await userEvent.tab();
 }
 
-export function findItem(linkId: string, element: HTMLElement) {
+export function findItem(linkId: string, element: HTMLElement): Element {
   const id = `item_${linkId}`;
   return findItemById(id, element);
 }
-export function findItemById(id: string, element: HTMLElement) {
+export function findItemById(id: string, element: HTMLElement): Element {
   const el = element.querySelector(`#${id}`);
   if (!el) {
     throw queryHelpers.getElementError(`Found no elements with the [id="${id}"]`, element);
   }
   return el;
 }
-export function queryItemById(id: string, element: HTMLElement) {
+export function queryItemById(id: string, element: HTMLElement): NodeListOf<Element> {
   const el = element.querySelectorAll(`#${id}`);
   if (!el) {
     throw queryHelpers.getElementError(`Found no elements with the [id="${id}"]`, element);
@@ -38,7 +40,7 @@ export function queryItemById(id: string, element: HTMLElement) {
   return el;
 }
 
-export async function findItemByDispayValue(value: string) {
+export async function findItemByDispayValue(value: string): Promise<HTMLElement> {
   const el = await screen.findByDisplayValue(value);
   if (!el) {
     throw queryHelpers.getElementError(`Found no elements with the [id="${value}"]`, el);
@@ -48,7 +50,7 @@ export async function findItemByDispayValue(value: string) {
 
 export function findQuestionnaireItem(linkId: string, items?: QuestionnaireItem[]): QuestionnaireItem | undefined {
   if (items === undefined) return;
-  for (let item of items) {
+  for (const item of items) {
     if (item.linkId === linkId) return item;
 
     const found = findQuestionnaireItem(linkId, item.item);
@@ -90,7 +92,7 @@ export const createQuestionnareResponseWithAnswers = (
     ...questionnaireResponse,
     item: questionnaireResponse?.item?.map(x => {
       const answerItem = responseItem.find(y => y.linkId === x.linkId);
-      if (!!answerItem) {
+      if (answerItem) {
         return {
           ...x,
           answer: answerItem.answer,
@@ -204,7 +206,7 @@ export function createOnChangeFuncForActionRequester(actions: (actionRequester: 
     _answer: QuestionnaireResponseItemAnswer,
     actionRequester: IActionRequester,
     _questionnaireInspector: IQuestionnaireInspector
-  ) => {
+  ): void => {
     actions(actionRequester);
   };
 }
@@ -214,7 +216,7 @@ export function createOnChangeFuncForQuestionnaireInspector(actions: (questionna
     _answer: QuestionnaireResponseItemAnswer,
     _actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
-  ) => {
+  ): void => {
     actions(questionnaireInspector);
   };
 }

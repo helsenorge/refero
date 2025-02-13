@@ -2,22 +2,22 @@ import React from 'react';
 
 import { Coding, QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import styles from '../common-styles.module.css';
-import { EnhetType, OrgenhetHierarki } from '@/types/orgenhetHierarki';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { getId, isReadOnly } from '@/util';
-
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { EnhetType, OrgenhetHierarki } from '@/types/orgenhetHierarki';
+import { getId, isReadOnly } from '@/util';
 
 export type ReceiverComponentProps = QuestionnaireComponentItemProps & {
   item?: QuestionnaireItem;
@@ -53,6 +53,7 @@ const ReceiverComponent = ({
     if (fetchReceivers) {
       fetchReceivers(loadSuccessCallback, loadErrorCallback);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadSuccessCallback = (receiverTreeNodes: Array<OrgenhetHierarki>): void => {

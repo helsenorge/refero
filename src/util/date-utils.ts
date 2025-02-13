@@ -17,10 +17,11 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { DateFormat, DatePickerFormat, DateTimeUnit, TimeUnit, TimeValues } from '../types/dateTypes';
 
 import { safeParseJSON } from './date-fns-utils';
+import { getExtension } from './extension';
 import { Resources } from './resources';
 
 import '@helsenorge/datepicker/components/DatePicker/';
-import { getExtension } from './extension';
+
 import { Extensions } from '@/constants/extensions';
 
 export function getFullFnsDate(

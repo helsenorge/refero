@@ -1,9 +1,12 @@
-import enableWhenDataModel from './__data__/multipleEnableWhen';
-import { Form } from '../form';
-import { QuestionnaireItem } from 'fhir/r4';
-import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
-import { getResponseItem, pathify, clickCheckbox } from './utils';
 import { fail } from 'assert';
+
+import { QuestionnaireItem } from 'fhir/r4';
+
+import { Form } from '../form';
+import enableWhenDataModel from './__data__/multipleEnableWhen';
+import { getResponseItem, pathify, clickCheckbox } from './utils';
+import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
+
 
 describe('questionnaire with multiple dependent enable when items', () => {
   let newState: Form;
@@ -30,7 +33,7 @@ describe('questionnaire with multiple dependent enable when items', () => {
 
     newState = clickCheckbox(newState, pathify('1', '1.1'), false, getQuestionnaireDefinitionItem('1.1', definitionItems));
 
-    let responseItem21 = getResponseItem('2.1', newState, pathify('2', '2.1'));
+    const responseItem21 = getResponseItem('2.1', newState, pathify('2', '2.1'));
     if (!responseItem21) return fail();
     expect(responseItem21.answer).toMatchObject([{ valueBoolean: false }]);
 

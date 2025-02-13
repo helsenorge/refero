@@ -1,26 +1,21 @@
 import React from 'react';
 
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
-
 import { FormProvider, useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
-import { ReferoProps } from '@/types/referoProps';
 
+import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
 import RenderForm from './renderForm';
 import StepView from './stepView';
 
-import { GlobalState, useAppDispatch } from '@/reducers';
-import { getFormDefinition, getFormData } from '@/reducers/form';
-import { FormDefinition, FormData } from '@/reducers/form';
-
-import { getPresentationButtonsExtension } from '@/util/extension';
-import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
-
-import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
-import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { setSkjemaDefinitionAction } from '@/actions/form';
 import { AttachmentProvider } from '@/context/AttachmentContext';
-import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
+import { ExternalRenderProvider } from '@/context/externalRenderContext';
+import { useAppDispatch, useAppSelector } from '@/reducers';
+import { getFormDefinition, getFormData } from '@/reducers/form';
+import { ReferoProps } from '@/types/referoProps';
+import { getPresentationButtonsExtension } from '@/util/extension';
+import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
+import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
@@ -51,11 +46,11 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   } = props;
   IE11HackToWorkAroundBug187484();
   const dispatch = useAppDispatch();
-  const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
-  const formData = useSelector<GlobalState, FormData | null>((state: GlobalState) => getFormData(state));
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
+  const formData = useAppSelector(state => getFormData(state));
   const questionnaire = formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
-  const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item?.length]);
+  const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item]);
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,

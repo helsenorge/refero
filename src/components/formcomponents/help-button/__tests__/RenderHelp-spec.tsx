@@ -1,14 +1,16 @@
-import { renderRefero, userEvent } from '@test/test-utils.tsx';
-import { q } from './__data__/';
-
+import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import { vi } from 'vitest';
+
 import { ReferoProps } from '../../../../types/referoProps';
 
+import { q } from './__data__/';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { vi } from 'vitest';
+
 import ItemType from '@/constants/itemType';
 
 vi.mock('@helsenorge/core-utils/debounce', () => ({
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unsafe-function-type
   debounce: (fn: Function) => fn,
 }));
 
@@ -16,14 +18,14 @@ const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle
 describe('string', () => {
   describe('help button', () => {
     it('Should render helpButton', async () => {
-      const { getByTestId } = createWrapper(q);
-      const helpButton = getByTestId('bee820a4-4bbe-427e-8c39-00a0d9c5518c-help-button');
+      createWrapper(q);
+      const helpButton = screen.getByTestId('bee820a4-4bbe-427e-8c39-00a0d9c5518c-help-button');
 
       expect(helpButton).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
-      const { container, getByTestId } = createWrapper(q);
-      const helpButton = getByTestId('bee820a4-4bbe-427e-8c39-00a0d9c5518c-help-button');
+      const { container } = await createWrapper(q);
+      const helpButton = screen.getByTestId('bee820a4-4bbe-427e-8c39-00a0d9c5518c-help-button');
 
       expect(helpButton).toBeInTheDocument();
 
@@ -37,17 +39,19 @@ describe('string', () => {
   });
   describe('onRenderHelpButton', () => {
     it('Should render custom HelpButton', async () => {
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       const onRequestHelpButton = (item: QuestionnaireItem) => (
         <div className="customHelpButton" data-testid="custom-help">
           {item.text}
         </div>
       );
-      const { getByTestId } = createWrapper(q, { onRequestHelpButton });
+      await createWrapper(q, { onRequestHelpButton });
 
-      expect(getByTestId('custom-help')).toBeInTheDocument();
-      expect(getByTestId('custom-help')).toHaveTextContent('Help-element test');
+      expect(screen.getByTestId('custom-help')).toBeInTheDocument();
+      expect(screen.getByTestId('custom-help')).toHaveTextContent('Help-element test');
     });
     it('Should render custom helpElement with text', async () => {
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       const onRequestHelpButton = (item: QuestionnaireItem) => (
         <div className="customHelpButton" data-testid="custom-help">
           {item.text}
@@ -59,6 +63,7 @@ describe('string', () => {
         helpType: string,
         helpText: string,
         opening: boolean
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         return opening ? (
           <div
@@ -74,9 +79,9 @@ describe('string', () => {
           <></>
         );
       };
-      const { getByTestId } = createWrapper(q, { onRequestHelpButton, onRequestHelpElement });
-      await userEvent.click(getByTestId('custom-help'));
-      const customHelpElement = getByTestId('custom-help-element');
+      await createWrapper(q, { onRequestHelpButton, onRequestHelpElement });
+      await userEvent.click(screen.getByTestId('custom-help'));
+      const customHelpElement = screen.getByTestId('custom-help-element');
       expect(customHelpElement).toHaveAttribute('data-itemtype', ItemType.GROUP);
       expect(customHelpElement).toHaveAttribute('data-helpitemid', 'bee820a4-4bbe-427e-8c39-00a0d9c5518c');
       expect(customHelpElement).toHaveAttribute('data-helptype', 'help');
@@ -87,6 +92,7 @@ describe('string', () => {
   });
 });
 
-function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) {
-  return renderRefero({ questionnaire, props, resources });
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) {
+  return await waitFor(async () => await renderRefero({ questionnaire, props, resources }));
 }

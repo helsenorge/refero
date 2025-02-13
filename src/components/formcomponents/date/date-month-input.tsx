@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
-import styles2 from '../common-styles.module.css';
-import { QuestionnaireItem } from 'fhir/r4';
+
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -9,8 +8,23 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
+import { useMinMaxDate } from './useMinMaxDate';
+import styles from '../../../styles/date-year-month.module.css';
 import { getId, isReadOnly, isRequired } from '../../../util';
+import styles2 from '../common-styles.module.css';
+import { ReadOnly } from '../read-only/readOnly';
 
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { getErrorMessage } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { DateFormat } from '@/types/dateTypes';
+import { initialize } from '@/util/date-fns-utils';
 import {
   getMonthOptions,
   getPDFValueForDate,
@@ -19,22 +33,6 @@ import {
   validateYearMonthMax,
   validateYearMonthMin,
 } from '@/util/date-utils';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useMinMaxDate } from './useMinMaxDate';
-
-import styles from '../../../styles/date-year-month.module.css';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { GlobalState } from '@/reducers';
-import { useSelector } from 'react-redux';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { initialize } from '@/util/date-fns-utils';
-import { DateFormat } from '@/types/dateTypes';
-import { ReadOnly } from '../read-only/readOnly';
-import { shouldValidate } from '@/components/validation/utils';
-import { getErrorMessage } from '@/components/validation/rules';
-import { useResetFormField } from '@/hooks/useResetFormField';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -52,7 +50,7 @@ export const DateYearMonthInput = ({
 }: DateMonthProps): JSX.Element | null => {
   initialize();
 
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
   const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();
   const { resources } = useExternalRenderContext();
@@ -62,7 +60,7 @@ export const DateYearMonthInput = ({
     if (!answer) return undefined;
 
     const answerItem = Array.isArray(answer) ? answer[0] : answer;
-    return answerItem ? answerItem.valueDate ?? answerItem.valueDateTime : '';
+    return answerItem ? (answerItem.valueDate ?? answerItem.valueDateTime) : '';
   };
   const dateValue = getDateValueFromAnswer();
 

@@ -1,9 +1,12 @@
-import dataModel from './__data__/enableWhenAndWipingAnswers';
-import { Form } from '../form';
-import { QuestionnaireItem } from 'fhir/r4';
-import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
-import { getResponseItem, clickCheckbox, enterText, selectChoice, createCoding, pathifyExpand } from './utils';
 import { fail } from 'assert';
+
+import { QuestionnaireItem } from 'fhir/r4';
+
+import { Form } from '../form';
+import dataModel from './__data__/enableWhenAndWipingAnswers';
+import { getResponseItem, clickCheckbox, enterText, selectChoice, createCoding, pathifyExpand } from './utils';
+import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
+
 
 describe('wipe answers when collapsing enable whens', () => {
   let newState: Form;
@@ -25,7 +28,7 @@ describe('wipe answers when collapsing enable whens', () => {
     }
 
     // unclick first checkbox
-    let qItem = getQuestionnaireDefinitionItem('1', definitionItems);
+    const qItem = getQuestionnaireDefinitionItem('1', definitionItems);
     if (!qItem) return;
     state = clickCheckbox(state, pathifyExpand('1'), false, qItem);
 
@@ -54,7 +57,7 @@ describe('wipe answers when collapsing enable whens', () => {
     }
 
     // remove "hello" answer
-    let qItem = getQuestionnaireDefinitionItem('1.1', definitionItems);
+    const qItem = getQuestionnaireDefinitionItem('1.1', definitionItems);
     if (!qItem) return fail();
     state = enterText(state, pathifyExpand('1.1'), '', qItem);
 

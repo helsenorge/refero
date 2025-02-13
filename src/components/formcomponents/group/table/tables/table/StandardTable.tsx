@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
+import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import {
   Table as HnTable,
@@ -15,10 +15,10 @@ import {
 import { IStandardTable } from './interface';
 import { StandardTableHeader } from './StandardTableHeader';
 import { getDisplayToSortBy, getStandardTableObject } from './utils';
-import { transformCodingToSortDirection } from '../utils';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
 import { containedResourceSelector } from '../../tableSelector';
+import { transformCodingToSortDirection } from '../utils';
+
+import { useAppSelector } from '@/reducers';
 
 interface Props {
   items: QuestionnaireItem[];
@@ -28,7 +28,7 @@ interface Props {
 
 export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): React.JSX.Element | null => {
   const displayToSortBy = getDisplayToSortBy(tableCodesCoding);
-  const resource = useSelector<GlobalState, Resource[] | undefined>(containedResourceSelector);
+  const resource = useAppSelector(containedResourceSelector);
 
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
   const [table, setTable] = useState<IStandardTable>(

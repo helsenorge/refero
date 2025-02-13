@@ -1,20 +1,17 @@
 import React, { Dispatch } from 'react';
-import { useSelector } from 'react-redux';
-import { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
+import GroupHeader from '../GroupHeader';
 import GTable from './tables/gtable/GTable';
 import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
 
-import { TableCodes } from '@/constants/tableTypes';
-import { GlobalState } from '@/reducers';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { TableCodes } from '@/constants/tableTypes';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem, questionnaireResponseSelector } from '@/reducers/selectors';
 import { getCodingTextTableValues } from '@/util/extension';
-
-import GroupHeader from '../GroupHeader';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
@@ -22,8 +19,8 @@ type Props = QuestionnaireComponentItemProps & {
 };
 
 const TableContainer = ({ linkId, isHelpVisible, setIsHelpVisible, headerTag }: Props): JSX.Element | null => {
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const questionnaireResponse = useSelector<GlobalState, QuestionnaireResponse | null | undefined>(questionnaireResponseSelector);
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
+  const questionnaireResponse = useAppSelector(questionnaireResponseSelector);
 
   const { resources } = useExternalRenderContext();
 

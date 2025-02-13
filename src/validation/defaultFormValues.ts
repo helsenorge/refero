@@ -2,10 +2,10 @@ import { Attachment, QuestionnaireItem, QuestionnaireItemInitial, Reference } fr
 
 import ItemType, { IItemType } from '../constants/itemType';
 
-import itemControlConstants from '@/constants/itemcontrol';
-import { getItemControlExtensionValue } from '@/util/extension';
-import { isReadOnly, isRepeat } from '@/util';
 import { encodeString } from '@/components/createQuestionnaire/utils';
+import itemControlConstants from '@/constants/itemcontrol';
+import { isReadOnly, isRepeat } from '@/util';
+import { getItemControlExtensionValue } from '@/util/extension';
 
 export type DefaultValues = Record<string, IItemType | unknown>;
 const excludedTypes = ['group', 'display', 'reference', 'url'];

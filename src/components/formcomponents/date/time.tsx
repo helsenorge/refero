@@ -1,17 +1,33 @@
 import { useEffect, useState } from 'react';
 
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label from '@helsenorge/designsystem-react/components/Label';
+
 import { newTimeValueAsync } from '../../../actions/newValue';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import styles from '../common-styles.module.css';
+import { ReadOnly } from '../read-only/readOnly';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
+import dateStyles from './date.module.css';
+
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import SafeText from '@/components/referoLabel/SafeText';
+import { getErrorMessage } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useSelector } from 'react-redux';
-
-import { GlobalState, useAppDispatch } from '@/reducers';
-import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import styles from '../common-styles.module.css';
-import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppSelector, useAppDispatch } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { TimeUnit } from '@/types/dateTypes';
+import { initialize } from '@/util/date-fns-utils';
 import {
   extractHoursAndMinutesFromAnswer,
   getPDFValueForTime,
@@ -21,28 +37,13 @@ import {
   validateMinutes,
   validateTimeDigits,
 } from '@/util/date-utils';
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { QuestionnaireItem } from 'fhir/r4';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { initialize } from '@/util/date-fns-utils';
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import { ReadOnly } from '../read-only/readOnly';
-import { shouldValidate } from '@/components/validation/utils';
-import { getErrorMessage } from '@/components/validation/rules';
-import { TimeUnit } from '@/types/dateTypes';
-import { useResetFormField } from '@/hooks/useResetFormField';
-import dateStyles from './date.module.css';
-import Input from '@helsenorge/designsystem-react/components/Input';
-import Label from '@helsenorge/designsystem-react/components/Label';
-import SafeText from '@/components/referoLabel/SafeText';
 
 export type Props = QuestionnaireComponentItemProps;
 
 const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
   initialize();
 
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);

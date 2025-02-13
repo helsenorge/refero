@@ -1,9 +1,12 @@
-import repeatableBooleanDataModel from './__data__/repeatableBoolean';
-import { Form } from '../form';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { getDefinitionItems } from '../../util/refero-core';
-import { pathify, getResponseItem, clickRepeat } from './utils';
 import { fail } from 'assert';
+
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+
+import { Form } from '../form';
+import repeatableBooleanDataModel from './__data__/repeatableBoolean';
+import { pathify, getResponseItem, clickRepeat } from './utils';
+import { getDefinitionItems } from '../../util/refero-core';
+
 
 describe('Given a questionnaire with multiple repeatable booleans', () => {
   let newState: Form;

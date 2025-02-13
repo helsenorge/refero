@@ -1,10 +1,11 @@
 import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { FieldError, FieldErrors, FieldErrorsImpl, FieldValues, Merge } from 'react-hook-form';
 
+import { decodeString } from '../createQuestionnaire/utils';
+
+import { FormData } from '@/reducers/form';
 import { getText, isReadOnly, shouldValidateReadOnly } from '@/util';
 import { findFirstGuidInString, getQuestionnaireDefinitionItem } from '@/util/refero-core';
-import { FormData } from '@/reducers/form';
-import { decodeString } from '../createQuestionnaire/utils';
 
 export type ResponseItemsWithFieldNames = {
   item: QuestionnaireResponseItem;

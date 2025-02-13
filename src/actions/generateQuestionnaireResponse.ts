@@ -2,11 +2,12 @@ import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Qu
 
 import Constants from '../constants/index';
 import itemType from '../constants/itemType';
+import ItemType from '../constants/itemType';
 import StatusConstants from '../constants/status';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 import { getCalculatedExpressionExtension, getCopyExtension, getMinOccursExtensionValue } from '../util/extension';
+
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
-import ItemType from '../constants/itemType';
 import { isHelpItem } from '@/util/help';
 
 const shouldNotAddItemToResponse = (item: QuestionnaireItem): boolean => {
@@ -52,6 +53,7 @@ function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: Quest
   item.item.forEach((i: QuestionnaireItem) => {
     for (let j = 0; j < getMinOccurs(i); j++) {
       const responseItem = createQuestionnaireResponseItem(i);
+
       addChildrenItemsToResponseItem(i, responseItem);
       if (shouldNotAddItemToResponse(i)) {
         continue;

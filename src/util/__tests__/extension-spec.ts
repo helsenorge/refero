@@ -1,5 +1,6 @@
-import { Extensions } from '../../constants/extensions';
 import { QuestionnaireItem, Extension } from 'fhir/r4';
+
+import { Extensions } from '../../constants/extensions';
 import { getExtension, getCopyExtension } from '../extension';
 
 describe('extensions', () => {

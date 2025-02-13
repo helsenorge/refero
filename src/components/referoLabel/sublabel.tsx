@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify';
+
 import styles from './sublabel.module.css';
 
 interface Props {
@@ -13,6 +14,7 @@ const SubLabel = ({ subLabelText, id, testId }: Props): JSX.Element | null => {
       data-testid={testId}
       className={`${styles.pageReferoSublabel} page_refero__sublabel`}
       id={id}
+      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(subLabelText, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string,
       }}

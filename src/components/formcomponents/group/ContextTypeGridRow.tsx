@@ -1,13 +1,15 @@
-import { QuestionnaireItem } from 'fhir/r4';
-import GroupHeader from './GroupHeader';
-import { RenderContext } from '@/util/renderContext';
 import React, { Dispatch } from 'react';
+
+import { QuestionnaireItem } from 'fhir/r4';
+
+import GroupHeader from './GroupHeader';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import GenerateQuestionnaireComponents from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { findQuestionnaireItem } from '@/reducers/selectors';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { RenderContext } from '@/util/renderContext';
 
 type ContextTypeGridRowProps = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
@@ -15,7 +17,7 @@ type ContextTypeGridRowProps = QuestionnaireComponentItemProps & {
 };
 const ContextTypeGridRow = ({ isHelpVisible, setIsHelpVisible, ...rest }: ContextTypeGridRowProps): JSX.Element => {
   const { renderContext, headerTag, linkId } = rest;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const { resources } = useExternalRenderContext();
   const renderChildren = (
     childItems: QuestionnaireItem[],

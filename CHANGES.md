@@ -1,4 +1,40 @@
+## 17.1.1
+
+---
+
+- Exclude items with the "help item-control extension from the questionnaire response
+
+```json
+{
+  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+  "valueCodeableConcept": {
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+        "code": "help"
+      }
+    ]
+  }
+}
+```
+
+## 17.0.1
+
+---
+
+- Check if group-item is enabled before displaying it in stepview
+
+## 17.0.0
+
+---
+
+- Update helsenorge packages
+- Update Label component to use new designsystem-react Label component
+- Fix linting errors and update all tests to use .screen and properly use asycn await
+
 ## 16.4.1
+
+---
 
 - Exclude items with the "help item-control extension from the questionnaire response
 
@@ -22,7 +58,7 @@
 
 - Split scoring into custom scoring and fhirpath scoring
 - EnableWhen for items on the first level
-- Moved logic for Table into group component 
+- Moved logic for Table into group component
 
 ## 16.3.2
 
@@ -119,7 +155,6 @@
 
 - Bugfix: fix attachement error message shows correct max size
 
-
 ## 16.0.2
 
 ---
@@ -135,7 +170,7 @@
 - Date bugfix: Missing min and max values in time component
 - Fixed bug with the autosuggest component not validation properly
 
-## 16.0.0 
+## 16.0.0
 
 ---
 
@@ -145,7 +180,7 @@
 - Upgraded to v.9 of @helsenorge/designsystem.
 - Removed all old form components and added new components from @helsenorge/designsystem.
 - Rewrite from class to functional components.
-- Added vite and vitest for development and build. 
+- Added vite and vitest for development and build.
 - Removed old enzyme and complete rewrite of tests with react-testing-library.
 - Updated redux to use redux toolkit.
 - Removed old form validation and added react-hook-form.
@@ -176,7 +211,8 @@
 ---
 
 - Bugfix:
-  - fix a bug with sorting strings that looks like numbers. now trying to parse all stings as numbers and if they are numbers, sort as numbers
+  - fix a bug with sorting strings that looks like numbers. now trying to parse all stings as numbers and if they are numbers, sort as
+    numbers
 
 ## 15.0.8
 
@@ -1373,8 +1409,8 @@
 
   { linkId: "1", text: "This is a question", type: "group", item: [ { extension: [ { url:
   "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl", valueCodeableConcept: { coding: [ { system:
-  "http://hl7.org/fhir/ValueSet/questionnaire-item-control", code: "help" } ] } } ], linkId: "1.0.1", text: "This is the help text for the item
-  with linkId 1", type: "text" } ] }
+  "http://hl7.org/fhir/ValueSet/questionnaire-item-control", code: "help" } ] } } ], linkId: "1.0.1", text: "This is the help text for the
+  item with linkId 1", type: "text" } ] }
 
   2.2.2
 

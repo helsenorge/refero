@@ -1,7 +1,6 @@
-import { screen, userEvent, renderRefero, waitFor } from '../../../test/test-utils';
-
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
+import { screen, userEvent, renderRefero, waitFor } from '../../../test/test-utils';
 import '../../util/__tests__/defineFetch';
 import { OPEN_CHOICE_ID } from '../../constants/index';
 import { IActionRequester } from '../../util/actionRequester';
@@ -40,10 +39,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('1', 42);
     });
 
-    const { findByDisplayValue } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    const updatedInput = await findByDisplayValue('42');
+    const updatedInput = await screen.findByDisplayValue('42');
     expect(updatedInput).toBeInTheDocument();
   });
 
@@ -53,10 +52,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearIntegerAnswer('1');
     });
 
-    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    const item = queryByLabelText(/Integer/i);
+    const item = screen.queryByLabelText(/Integer/i);
     expect(item).toHaveValue(null);
   });
 
@@ -65,10 +64,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addDecimalAnswer('2', 42);
     });
 
-    const { findByDisplayValue } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    const updatedInput = await findByDisplayValue('42');
+    const updatedInput = await screen.findByDisplayValue('42');
     expect(updatedInput).toBeInTheDocument();
   });
 
@@ -78,10 +77,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearDecimalAnswer('2');
     });
 
-    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    const item = queryByLabelText(/Decimal/i);
+    const item = screen.queryByLabelText(/Decimal/i);
     expect(item).toHaveValue(null);
   });
 
@@ -114,9 +113,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addBooleanAnswer('4', true);
     });
 
-    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-    const updatedInput = queryByLabelText(/Boolean/i);
+    const updatedInput = screen.queryByLabelText(/Boolean/i);
     expect(updatedInput).toBeChecked();
   });
 
@@ -126,9 +125,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearBooleanAnswer('4');
     });
 
-    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-    const updatedInput = queryByLabelText(/Boolean/i);
+    const updatedInput = screen.queryByLabelText(/Boolean/i);
     expect(updatedInput).not.toBeChecked();
   });
 
@@ -137,10 +136,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { queryByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
+    expect(screen.queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
   });
 
   it('choice (radiobuttons) get cleared', async () => {
@@ -149,10 +148,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { queryByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
+    expect(screen.queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
   });
 
   it('choice (checkboxes) gets updated', async () => {
@@ -182,10 +181,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addOpenChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { queryByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
+    expect(screen.queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
   });
   it('openchoice (radiobuttons) get cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
@@ -193,10 +192,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { queryByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
+    expect(screen.queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
   });
   it('openchoice (checkboxes) gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
@@ -218,10 +217,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
         actionRequester.addDateAnswer('7a', '2024-08-14');
       });
-      const { getByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      await wrapper(onChange, questionnaireWithAllItemTypes);
       await clickByLabelText(/Boolean/i);
 
-      const dateElement = getByTestId(/datepicker-test/i);
+      const dateElement = screen.getByTestId(/datepicker-test/i);
       const dateInput = dateElement.querySelector('input');
       await waitFor(async () => await expect(dateInput).toHaveValue('14.08.2024'));
     });
@@ -230,10 +229,10 @@ describe('onAnswerChange callback gets called and can request additional changes
         actionRequester.addDateAnswer('7a', '2024-08-14');
         actionRequester.clearDateAnswer('7a');
       });
-      const { getByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      await wrapper(onChange, questionnaireWithAllItemTypes);
       await clickByLabelText(/Boolean/i);
 
-      const dateElement = getByTestId(/datepicker-test/i);
+      const dateElement = screen.getByTestId(/datepicker-test/i);
       const dateInput = dateElement.querySelector('input');
 
       expect(dateInput).not.toHaveValue('14.08.2024');
@@ -242,10 +241,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
         actionRequester.addDateTimeAnswer('7b', '2024-08-14T12:30:00+02:00');
       });
-      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
       await inputAnswer('1', 0.1, container);
-      const date = getByLabelText(/DateTime/i);
+      const date = screen.getByLabelText(/DateTime/i);
 
       expect(date).toHaveValue('14.08.2024');
     });
@@ -254,10 +253,10 @@ describe('onAnswerChange callback gets called and can request additional changes
         actionRequester.addDateTimeAnswer('7b', '1994-05-31T12:30:00+02:00');
         actionRequester.clearDateTimeAnswer('7b');
       });
-      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
       await inputAnswer('1', 0.1, container);
-      const date = getByLabelText(/DateTime/i);
+      const date = screen.getByLabelText(/DateTime/i);
 
       expect(date).toHaveValue('');
     });
@@ -265,10 +264,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
         actionRequester.addDateAnswer('7c', '2024');
       });
-      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
       await inputAnswer('1', 0.1, container);
-      const date = getByLabelText(/DateYear/i);
+      const date = screen.getByLabelText(/DateYear/i);
 
       expect(date).toHaveValue(2024);
     });
@@ -277,10 +276,10 @@ describe('onAnswerChange callback gets called and can request additional changes
         actionRequester.addDateAnswer('7c', '2024');
         actionRequester.clearDateAnswer('7c');
       });
-      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
       await inputAnswer('1', 0.1, container);
-      const date = getByLabelText(/DateYear/i);
+      const date = screen.getByLabelText(/DateYear/i);
 
       expect(date).toHaveValue(null);
     });
@@ -288,11 +287,11 @@ describe('onAnswerChange callback gets called and can request additional changes
       const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
         actionRequester.addDateAnswer('7d', '2024-05');
       });
-      const { container, getByLabelText, findByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
       await inputAnswer('1', 0.1, container);
-      const dateElement = getByLabelText(/DateMonth/i);
-      const monthElement = await findByTestId('month-select');
+      const dateElement = screen.getByLabelText(/DateMonth/i);
+      const monthElement = await screen.findByTestId('month-select');
       const monthSelect = monthElement.querySelector('select');
 
       await waitFor(async () => expect(dateElement).toHaveValue(2024));
@@ -303,10 +302,10 @@ describe('onAnswerChange callback gets called and can request additional changes
         actionRequester.addDateAnswer('7d', '2024-05');
         actionRequester.clearDateAnswer('7d');
       });
-      const { container, getByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+      const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
       await inputAnswer('1', 0.1, container);
-      const date = getByLabelText(/DateMonth/i);
+      const date = screen.getByLabelText(/DateMonth/i);
 
       expect(date).toHaveValue(null);
     });
@@ -316,10 +315,10 @@ describe('onAnswerChange callback gets called and can request additional changes
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addTimeAnswer('8', '12:01:00');
     });
-    const { container, getByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
     await inputAnswer('1', 0.1, container);
 
-    const hoursElement = getByTestId(/time-1/i);
+    const hoursElement = screen.getByTestId(/time-1/i);
     const hoursInput = hoursElement.querySelector('input');
     const minutesElement = screen.getByTestId(/time-2/i);
     const minutesInput = minutesElement.querySelector('input');
@@ -339,10 +338,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addTimeAnswer('8', '12:01');
       actionRequester.clearTimeAnswer('8');
     });
-    const { container, getByTestId } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
     await inputAnswer('1', 0.1, container);
 
-    const hoursElement = getByTestId(/time-1/i);
+    const hoursElement = screen.getByTestId(/time-1/i);
     const hoursInput = hoursElement.querySelector('input');
     const minutesElement = screen.getByTestId(/time-2/i);
     const minutesInput = minutesElement.querySelector('input');
@@ -356,9 +355,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addStringAnswer('9', 'Hello World!');
     });
 
-    const { queryByLabelText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-    expect(queryByLabelText(/String/i)).toHaveValue('Hello World!');
+    expect(screen.queryByLabelText(/String/i)).toHaveValue('Hello World!');
   });
 
   it('string gets cleared', async () => {
@@ -367,11 +366,11 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearStringAnswer('9');
     });
 
-    const { queryByText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
 
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByText('Hello World!')).not.toBeInTheDocument();
+    expect(screen.queryByText('Hello World!')).not.toBeInTheDocument();
   });
 
   it('text gets updated', async () => {
@@ -379,10 +378,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addStringAnswer('10', 'Hello\nWorld!');
     });
 
-    const { getByText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
 
     await clickByLabelText(/Boolean/i);
-    expect(getByText(/Hello/i)).toBeInTheDocument();
+    expect(screen.getByText(/Hello/i)).toBeInTheDocument();
   });
 
   it('can request many changes', async () => {
@@ -391,12 +390,12 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('1', 42);
     });
 
-    const { getByLabelText, getByText } = await wrapper(onChange, questionnaireWithAllItemTypes);
+    await wrapper(onChange, questionnaireWithAllItemTypes);
 
     await clickByLabelText(/Boolean/i);
-    expect(getByText(/Hello/i)).toBeInTheDocument();
+    expect(screen.getByText(/Hello/i)).toBeInTheDocument();
 
-    expect(getByLabelText(/Integer/i)).toHaveValue(42);
+    expect(screen.getByLabelText(/Integer/i)).toHaveValue(42);
   });
 
   it('opencboice other option can be updated', async () => {
@@ -448,10 +447,10 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addDecimalAnswer('1', 2.1, 2);
     });
 
-    const { queryAllByLabelText, findByLabelText } = await wrapper(onChange, questionnaireWithRepeats);
+    await wrapper(onChange, questionnaireWithRepeats);
 
-    await userEvent.type(await findByLabelText(/Integer/i), '1');
-    const items = queryAllByLabelText(/Decimal/i);
+    await userEvent.type(await screen.findByLabelText(/Integer/i), '1');
+    const items = screen.queryAllByLabelText(/Decimal/i);
     expect(items).toHaveLength(3);
 
     expect(items[0]).toHaveValue(0.1);
@@ -464,11 +463,11 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('1.3.2', 42);
     });
 
-    const { queryByLabelText } = await wrapper(onChange, questionnaireWithNestedItems);
+    await wrapper(onChange, questionnaireWithNestedItems);
 
     await typeByLabelText(/Decimal/i, '1');
 
-    expect(queryByLabelText(/IntegerNested/i)).toHaveValue(42);
+    expect(screen.queryByLabelText(/IntegerNested/i)).toHaveValue(42);
   });
 
   it('can update items nested under answer', async () => {
@@ -476,9 +475,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('1.3.1.1', 42);
     });
 
-    const { queryByLabelText } = await wrapper(onChange, questionnaireWithNestedItems);
+    await wrapper(onChange, questionnaireWithNestedItems);
     await typeByLabelText(/Decimal/i, '1');
-    expect(queryByLabelText(/nested under non-group/i)).toHaveValue(42);
+    expect(screen.queryByLabelText(/nested under non-group/i)).toHaveValue(42);
   });
 
   it('can query to get both questionnaire and questionnaire response', async () => {
@@ -553,6 +552,7 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function wrapper(
   onChange: (
     item: QuestionnaireItem,

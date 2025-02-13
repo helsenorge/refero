@@ -1,8 +1,8 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
-import { ValueSet, Coding, QuestionnaireItem } from 'fhir/r4';
+import { ValueSet, Coding } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
-import styles from '../common-styles.module.css';
+
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
@@ -10,25 +10,24 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 import { debounce } from '@helsenorge/core-utils/debounce';
 
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
-import ItemType from '@/constants/itemType';
-import { getId, getMaxLength, isReadOnly } from '@/util/index';
-import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero-core';
-
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
+import styles from '../common-styles.module.css';
+import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
+import ItemType from '@/constants/itemType';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { getId, getMaxLength, isReadOnly } from '@/util/index';
+import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero-core';
 
 export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -52,7 +51,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     children,
   } = props;
   const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(linkId, path);
@@ -144,6 +143,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   };
 
   const debouncedOnSuggestionsFetchRequested: ({ value }: { value: string }) => void = debounce(
+    //@ts-expect-error - value is not a number
     onSuggestionsFetchRequested,
     autoSuggestProps?.typingSearchDelay || 500,
     false

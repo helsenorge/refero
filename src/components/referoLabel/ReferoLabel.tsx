@@ -1,18 +1,21 @@
+import { useState } from 'react';
+
 import { QuestionnaireItem } from 'fhir/r4';
-import styles from './referoLabel.module.css';
+
 import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
 
 import SafeText from './SafeText';
 import SubLabel from './sublabel';
+import RenderHelpButton from '../formcomponents/help-button/RenderHelpButton';
+import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
+
+import styles from './referoLabel.module.css';
+
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useAppSelector } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
 import { getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
 import { Resources } from '@/util/resources';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { getFormDefinition } from '@/reducers/form';
-import RenderHelpButton from '../formcomponents/help-button/RenderHelpButton';
-import { useState } from 'react';
-import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
 
 type Props = {
   item?: QuestionnaireItem;
@@ -46,7 +49,7 @@ export const ReferoLabel = ({
   children,
 }: Props): JSX.Element => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const questionnaire = useSelector((state: GlobalState) => getFormDefinition(state))?.Content;
+  const questionnaire = useAppSelector(state => getFormDefinition(state))?.Content;
   const { onRenderMarkdown } = useExternalRenderContext();
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = labelText ? labelText : getLabelText(item, onRenderMarkdown, questionnaire, resources);
@@ -58,7 +61,14 @@ export const ReferoLabel = ({
           <Label
             labelId={labelId}
             testId={testId}
-            labelTexts={labelTexts || []}
+            labelTexts={
+              labelTexts || [
+                {
+                  text: '',
+                  type: 'subdued',
+                },
+              ]
+            }
             htmlFor={htmlFor}
             className={styles.pageReferoLabel}
             afterLabelChildren={afterLabelChildren}

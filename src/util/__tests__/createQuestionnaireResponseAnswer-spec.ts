@@ -1,6 +1,7 @@
-import { createQuestionnaireResponseAnswer } from '../createQuestionnaireResponseAnswer';
 import { QuestionnaireItem } from 'fhir/r4';
+
 import itemType from '../../constants/itemType';
+import { createQuestionnaireResponseAnswer } from '../createQuestionnaireResponseAnswer';
 
 describe('createQuestionnaireResponseAnswer', () => {
   const item: QuestionnaireItem = {

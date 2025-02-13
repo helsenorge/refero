@@ -1,5 +1,4 @@
-import { renderRefero, waitFor } from '@test/test-utils.tsx';
-
+import { renderRefero, screen } from '@test/test-utils.tsx';
 import {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -9,13 +8,14 @@ import {
   QuestionnaireResponse,
   QuestionnaireResponseItem,
 } from 'fhir/r4';
+
+import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
+import itemcontrol from '../../../../constants/itemcontrol';
 import itemType from '../../../../constants/itemType';
 import '../../../../util/__tests__/defineFetch';
-import { createItemControlExtension } from '../../../__tests__/utils';
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
-import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import ItemType from '../../../../constants/itemType';
-import itemcontrol from '../../../../constants/itemcontrol';
+import { createItemControlExtension } from '../../../__tests__/utils';
 
 describe('Open-Choice component render', () => {
   it('should render coding answer as text', async () => {
@@ -30,8 +30,8 @@ describe('Open-Choice component render', () => {
     const answer: QuestionnaireResponseItemAnswer[] = [
       { valueCoding: { code: '4', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } },
     ];
-    const { queryByText } = renderWrapperWithItem(item, [{ linkId: '1', answer }]);
-    const textView = await waitFor(async () => queryByText(/Usikker/i));
+    renderWrapperWithItem(item, [{ linkId: '1', answer }]);
+    const textView = await screen.findByText(/Usikker/i);
     expect(textView).toBeInTheDocument();
   });
 
@@ -49,9 +49,9 @@ describe('Open-Choice component render', () => {
       { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
       { valueString: 'Fri text' },
     ];
-    const { queryByText } = renderWrapperWithItem(item, [{ linkId: '1', answer }]);
+    renderWrapperWithItem(item, [{ linkId: '1', answer }]);
 
-    const textView = await waitFor(async () => queryByText(/Usikker, Fri text/i));
+    const textView = await screen.findByText(/Usikker, Fri text/i);
     expect(textView).toBeInTheDocument();
   });
 
@@ -70,9 +70,9 @@ describe('Open-Choice component render', () => {
       { valueString: 'Fri text' },
     ];
 
-    const { queryByText } = renderWrapperWithItem(item, [{ linkId: '1', answer }]);
+    renderWrapperWithItem(item, [{ linkId: '1', answer }]);
 
-    const textView = await waitFor(async () => queryByText('Fri text'));
+    const textView = await screen.findByText('Fri text');
     expect(textView).toBeInTheDocument();
   });
 
@@ -85,11 +85,11 @@ describe('Open-Choice component render', () => {
       type: ItemType.OPENCHOICE,
     };
     const answer = [{ valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } }];
-    const { queryByText } = renderWrapperWithItem(item, [{ linkId: '1', answer }]);
+    renderWrapperWithItem(item, [{ linkId: '1', answer }]);
 
-    const textView = queryByText('Home');
-    const textView2 = queryByText('Car');
-    const textView3 = queryByText(OPEN_CHOICE_LABEL);
+    const textView = screen.queryByText('Home');
+    const textView2 = screen.queryByText('Car');
+    const textView3 = screen.queryByText(OPEN_CHOICE_LABEL);
 
     expect(textView).not.toBeInTheDocument();
     expect(textView2).not.toBeInTheDocument();
@@ -97,6 +97,7 @@ describe('Open-Choice component render', () => {
   });
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function renderWrapperWithItem(item: QuestionnaireItem, responseItem: QuestionnaireResponseItem[]) {
   const quest = createQuestionnaire({ item: [item] });
 
@@ -107,7 +108,7 @@ function renderWrapperWithItem(item: QuestionnaireItem, responseItem: Questionna
     ...resp,
     item: resp?.item?.map(x => {
       const answerItem = responseItem.find(y => y.linkId === x.linkId);
-      if (!!answerItem) {
+      if (answerItem) {
         return {
           ...x,
           answer: answerItem.answer,

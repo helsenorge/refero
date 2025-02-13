@@ -1,29 +1,25 @@
-import AsPdf from './AsPdf';
-import { getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
-import { RenderContextType } from '@/constants/renderContextType';
-
 import { useState } from 'react';
 
+import AsPdf from './AsPdf';
 import ContextTypeGrid from './ContextTypeGrid';
 import ContextTypeGridRow from './ContextTypeGridRow';
 import DefaultGroup from './DefaultGroup';
+import { getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
+import TableContainer from './table/TableContainer';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { RenderContextType } from '@/constants/renderContextType';
+import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { isTableCode } from '@/util';
 import { getCodingTextTableValues } from '@/util/extension';
-import TableContainer from './table/TableContainer';
 
 export type Props = QuestionnaireComponentItemProps;
 
 export const Group = (props: Props): JSX.Element | null => {
   const { pdf, renderContext, path, linkId } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useAppSelector(state => getResponseItemWithPathSelector(state, path));
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   const isLocalRenderContextTypeGrid = getLocalRenderContextType(item) === RenderContextType.Grid;

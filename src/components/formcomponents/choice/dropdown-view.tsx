@@ -2,22 +2,21 @@ import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
-import { getPlaceholder } from '@/util/extension';
-import { getId, isReadOnly } from '@/util/index';
 
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { Options } from '@/types/formTypes/radioGroupOptions';
+import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
-import { useSelector } from 'react-redux';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import { QuestionnaireItem } from 'fhir/r4';
-import { GlobalState } from '@/reducers';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { Options } from '@/types/formTypes/radioGroupOptions';
+import { getPlaceholder } from '@/util/extension';
+import { getId, isReadOnly } from '@/util/index';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -29,7 +28,7 @@ export type Props = QuestionnaireComponentItemProps & {
 const DropdownView = (props: Props): JSX.Element | null => {
   const { options, linkId, id, handleChange, selected, idWithLinkIdAndItemIndex, path, index, pdf, pdfValue, children } = props;
   const { resources } = useExternalRenderContext();
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);

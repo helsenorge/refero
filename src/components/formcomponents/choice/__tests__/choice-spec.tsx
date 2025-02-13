@@ -1,11 +1,12 @@
-import { renderRefero, screen } from '../../../../../test/test-utils';
-
-import '../../../../util/__tests__/defineFetch';
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, Extension } from 'fhir/r4';
-import itemType from '../../../../constants/itemType';
-import { Extensions } from '../../../../constants/extensions';
-import { createQuestionnaire } from '@/components/__tests__/utils';
+
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { renderRefero, screen } from '../../../../../test/test-utils';
+import '../../../../util/__tests__/defineFetch';
+import { Extensions } from '../../../../constants/extensions';
+import itemType from '../../../../constants/itemType';
+
+import { createQuestionnaire } from '@/components/__tests__/utils';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
 // Provide the mock implementation
@@ -97,7 +98,7 @@ describe('Choice component renders item.option[]', () => {
   });
 });
 
-function expectToFind(keys: string[], values: string[]) {
+function expectToFind(keys: string[], values: string[]): void {
   const choices = screen.getAllByRole('radio');
 
   expect(choices).toHaveLength(keys.length);
@@ -179,7 +180,7 @@ function createValueTimeOption(...options: string[]): QuestionnaireItemAnswerOpt
   });
 }
 
-function renderWrapperWithItem(item: QuestionnaireItem) {
+function renderWrapperWithItem(item: QuestionnaireItem): void {
   const q = createQuestionnaire({ items: [item] });
   renderRefero({ questionnaire: q, resources: resources });
 }

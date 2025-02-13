@@ -1,13 +1,14 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+
 import { Resource, QuestionnaireItem } from 'fhir/r4';
 
-import { RenderContext } from '@/util/renderContext';
-import { getNavigatorExtension } from '@/util/extension';
-
-import { Path } from '@/util/refero-core';
-import { languageSelector, questionnaireSelector } from '@/reducers/selectors';
 import ItemRenderer from './ItemRenderer';
+
+import { useAppSelector } from '@/reducers';
+import { languageSelector, questionnaireSelector } from '@/reducers/selectors';
+import { getNavigatorExtension } from '@/util/extension';
+import { Path } from '@/util/refero-core';
+import { RenderContext } from '@/util/renderContext';
 
 export type QuestionnaireComponentItemProps = {
   containedResources?: Resource[];
@@ -39,8 +40,8 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
   const { items, path, pdf = false, renderContext, headerTag } = props;
 
   const renderContextValue = useMemo(() => renderContext || new RenderContext(), [renderContext]);
-  const language = useSelector(languageSelector);
-  const questionnaire = useSelector(questionnaireSelector);
+  const language = useAppSelector(languageSelector);
+  const questionnaire = useAppSelector(questionnaireSelector);
   const containedResources = useMemo(() => questionnaire?.contained, [questionnaire]);
   const isNavigatorEnabled = useMemo(() => !!getNavigatorExtension(questionnaire), [questionnaire]);
 

@@ -1,12 +1,25 @@
-import { Coding, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useCallback, useEffect, useMemo } from 'react';
+
+import { Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import SliderView from './slider-view';
+import AutosuggestView from '../choice-common/autosuggest-view';
+import { ReadOnly } from '../read-only/readOnly';
+import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
+
 import { newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import itemControlConstants from '@/constants/itemcontrol';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useResetFormField } from '@/hooks/useResetFormField';
+import { useAppDispatch, useAppSelector } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { isDataReceiver } from '@/util';
 import {
   getOptions,
   getSystem,
@@ -17,24 +30,11 @@ import {
   isAboveDropdownThreshold,
 } from '@/util/choice';
 
-import AutosuggestView from '../choice-common/autosuggest-view';
-import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
-import { useSelector } from 'react-redux';
-import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { useCallback, useEffect, useMemo } from 'react';
-import { findQuestionnaireItem } from '@/reducers/selectors';
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import { ReadOnly } from '../read-only/readOnly';
-import { isDataReceiver } from '@/util';
-import { useResetFormField } from '@/hooks/useResetFormField';
-
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const { containedResources, path, linkId, children } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
@@ -47,7 +47,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         resetInitialAnswer(answer?.valueCoding?.code);
       }
     }
-  }, [answer]);
+  }, [answer, item]);
 
   const getAnswerValue = useCallback((): string[] | undefined => {
     if (Array.isArray(answer)) {
@@ -59,7 +59,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       return [];
     }
     return undefined;
-  }, [answer]);
+  }, [answer, item]);
 
   // const getInitialValue = useCallback((): string[] | undefined => {
   //   const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
@@ -90,11 +90,14 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     return value.map(code => getDisplay(getOptions(resources, item, containedResources), code)).join(', ');
   };
 
-  const getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg || getDisplay(getOptions(resources, item, containedResources), code);
-    const system = systemArg || getSystem(item, code, containedResources);
-    return { code, display, system };
-  };
+  const getAnswerValueCoding = useCallback(
+    (code: string, systemArg?: string, displayArg?: string): Coding => {
+      const display = displayArg || getDisplay(getOptions(resources, item, containedResources), code);
+      const system = systemArg || getSystem(item, code, containedResources);
+      return { code, display, system };
+    },
+    [resources, item, containedResources] // Add dependencies here
+  );
   const answerContainsCode = useCallback(
     (code: string): boolean => {
       const codes = getAnswerValue();

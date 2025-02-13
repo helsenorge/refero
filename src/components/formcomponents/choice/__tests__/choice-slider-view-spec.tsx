@@ -1,12 +1,14 @@
-import { convertToEmoji, getCodePoint, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../slider-view';
+import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire } from 'fhir/r4';
-import { act, findByRole, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
-import { sliderView as q } from './__data__/index';
-import { ReferoProps } from '../../../../types/referoProps';
-import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, clickSliderValue, repeatSliderTimes, submitForm } from '../../../../../test/selectors';
-import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
+
+import { ReferoProps } from '../../../../types/referoProps';
+
+import { convertToEmoji, getCodePoint, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../slider-view';
+import { sliderView as q } from './__data__/index';
+import { getResources } from '../../../../../preview/resources/referoResources';
+import { clickButtonTimes, clickSliderValue, repeatSliderTimes, submitForm } from '../../../../../test/selectors';
+import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -140,8 +142,8 @@ describe('Slider-view', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
 
-      const { getByTestId } = await createWrapper(questionnaire);
-      const repeatButton = getByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = screen.getByTestId(/-repeat-button/i);
       await waitFor(async () => {
         expect(repeatButton).toBeInTheDocument();
       });
@@ -152,8 +154,8 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByTestId } = await createWrapper(questionnaire);
-      const repeatButton = queryByTestId(/-repeat-button/i);
+      await createWrapper(questionnaire);
+      const repeatButton = screen.queryByTestId(/-repeat-button/i);
       await waitFor(async () => {
         expect(repeatButton).not.toBeInTheDocument();
       });
@@ -173,12 +175,13 @@ describe('Slider-view', () => {
           }),
         })),
       };
-      await act(async () => {});
       await createWrapper(questionnaire);
 
       await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 3);
       await waitFor(async () => {
         expect(screen.queryAllByTestId(/-slider-choice-label/i)).toHaveLength(4);
+      });
+      await waitFor(async () => {
         expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
       });
     });
@@ -189,10 +192,10 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryAllByTestId } = await createWrapper(questionnaire);
+      await createWrapper(questionnaire);
       await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 2);
 
-      expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+      expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire: Questionnaire = {
@@ -200,7 +203,7 @@ describe('Slider-view', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
-      waitFor(async () => {
+      await waitFor(async () => {
         expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
       });
     });
@@ -212,6 +215,7 @@ describe('Slider-view', () => {
       await createWrapper(questionnaire);
 
       await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 1);
+
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 
@@ -230,8 +234,8 @@ describe('Slider-view', () => {
 
       await clickButtonTimes(/-delete-button/i, 1);
 
-      const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
-      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
+      await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -244,11 +248,11 @@ describe('Slider-view', () => {
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
-        waitFor(async () => {
+        await waitFor(async () => {
           expect(screen.getByLabelText(/Slider view label/i)).toBeInTheDocument();
         });
         await submitForm();
-        waitFor(async () => {
+        await waitFor(async () => {
           expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
         });
       });
@@ -270,7 +274,7 @@ describe('Slider-view', () => {
         };
         await createWrapper(questionnaire);
         await submitForm();
-        waitFor(async () => {
+        await waitFor(async () => {
           expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
         });
         await clickSliderValue(`3dec9e0d-7b78-424e-8a59-f0909510985d`, 0);
@@ -416,8 +420,9 @@ describe('Slider-view', () => {
     });
   });
 });
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
   return await waitFor(async () => {
-    return renderRefero({ questionnaire, props: { ...props, resources } });
+    return await renderRefero({ questionnaire, props: { ...props, resources } });
   });
 };

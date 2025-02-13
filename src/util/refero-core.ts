@@ -13,11 +13,12 @@ import {
 import { QuestionnaireEnableOperator } from '../types/fhirEnums';
 
 import { getMinOccursExtensionValue } from './extension';
+import { isOfTypeQuestionnaireResponseItem } from './typeguards';
 import ItemType from '../constants/itemType';
 import { FormData, FormDefinition } from '../reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
+
 import { isRepeat } from '.';
-import { isOfTypeQuestionnaireResponseItem } from './typeguards';
 export interface Path {
   linkId: string;
   index?: number;

@@ -15,7 +15,7 @@ export const GTableHeader = ({ headerRow, sortDir, setSortDir, linkIdToSortBy }:
   const sortable = linkIdToSortBy !== undefined ? true : false;
 
   const handleSort = (): void => {
-    setSortDir && setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
+    setSortDir?.(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
   };
   return (
     <TableHead category={sortable ? HeaderCategory.sortable : HeaderCategory.normal} className="page_refero__table__gtable__header">
