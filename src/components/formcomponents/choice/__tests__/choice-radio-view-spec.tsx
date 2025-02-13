@@ -1,5 +1,5 @@
 import { Questionnaire } from 'fhir/r4';
-import { findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { radioView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -122,6 +122,9 @@ describe('Radio-view - choice', () => {
 
       await repeatCheckboxTimes(/Ja/i, 1);
 
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
+
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 
@@ -135,6 +138,10 @@ describe('Radio-view - choice', () => {
       const { getByTestId, queryByTestId } = await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
+
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
+
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);

@@ -172,6 +172,21 @@ describe('Date time', () => {
 
       await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
 
+      const dateElement2 = screen.queryAllByLabelText(/Dato/i)[1];
+      const hoursElement2 = screen.queryAllByTestId('hours-test')[1];
+      const minutesElement2 = screen.queryAllByTestId('minutes-test')[1];
+      if (dateElement2 && hoursElement2 && minutesElement2) {
+        const hoursInput2 = hoursElement2.querySelector('input');
+        const minutesInput2 = minutesElement2.querySelector('input');
+
+        await userEvent.type(dateElement2, '12.12.2024');
+
+        if (hoursInput2 && minutesInput2) {
+          await userEvent.type(hoursInput2, '12');
+          await userEvent.type(minutesInput2, '30');
+        }
+      }
+
       await waitFor(async () => expect(getByTestId(/-delete-button/i)).toBeInTheDocument());
 
       await clickButtonTimes(/-delete-button/i, 1);
@@ -187,6 +202,20 @@ describe('Date time', () => {
 
       await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
 
+      const dateElement2 = screen.queryAllByLabelText(/Dato/i)[1];
+      const hoursElement2 = screen.queryAllByTestId('hours-test')[1];
+      const minutesElement2 = screen.queryAllByTestId('minutes-test')[1];
+      if (dateElement2 && hoursElement2 && minutesElement2) {
+        const hoursInput2 = hoursElement2.querySelector('input');
+        const minutesInput2 = minutesElement2.querySelector('input');
+
+        await userEvent.type(dateElement2, '12.12.2024');
+
+        if (hoursInput2 && minutesInput2) {
+          await userEvent.type(hoursInput2, '12');
+          await userEvent.type(minutesInput2, '30');
+        }
+      }
       await waitFor(async () => expect(getByTestId(/-delete-button/i)).toBeInTheDocument());
 
       await clickButtonTimes(/-delete-button/i, 1);

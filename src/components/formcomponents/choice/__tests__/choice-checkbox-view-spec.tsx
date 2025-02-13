@@ -1,5 +1,5 @@
 import { Questionnaire } from 'fhir/r4';
-import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
 import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -123,6 +123,9 @@ describe('checkbox-view - choice', () => {
 
       await repeatCheckboxTimes(/Ja/i, 1);
 
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
+
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 
@@ -136,6 +139,10 @@ describe('checkbox-view - choice', () => {
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
+
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
+
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);

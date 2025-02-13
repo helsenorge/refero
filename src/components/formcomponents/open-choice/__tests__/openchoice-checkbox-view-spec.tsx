@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { clickButtonTimes, repeatCheckboxTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
 import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
@@ -93,6 +93,10 @@ describe('checkbox-view - openchoice', () => {
       const { getByTestId } = await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
+
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
+
       await clickButtonTimes(/-delete-button/i, 1);
 
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
@@ -102,6 +106,10 @@ describe('checkbox-view - openchoice', () => {
       const { getByTestId, queryByTestId } = await createWrapper(questionnaire);
 
       await repeatCheckboxTimes(/Ja/i, 1);
+
+      const elm2 = screen.getAllByLabelText(/Ja/i);
+      await userEvent.click(elm2[1]);
+
       await clickButtonTimes(/-delete-button/i, 1);
       await userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();

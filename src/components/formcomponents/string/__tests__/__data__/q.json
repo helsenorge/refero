@@ -72,14 +72,6 @@
           "valueMarkdown": "**String sublabel**"
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/regex",
-          "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/minLength",
-          "valueInteger": 10
-        },
-        {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
           "valueInteger": 1
         },

@@ -152,6 +152,9 @@ describe('autosuggest-view', () => {
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
 
+      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[1], 'f');
+      await userEvent.click(await screen.findByText(/Fyrstekake/i));
+
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 
@@ -172,6 +175,9 @@ describe('autosuggest-view', () => {
 
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
+
+      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[1], 'f');
+      await userEvent.click(await screen.findByText(/Fyrstekake/i));
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
