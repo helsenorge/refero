@@ -1,3 +1,7 @@
+## 17.1.2
+
+- generateQuestionnaireResponse now supports bundles of questionnaires
+
 ## 17.1.1
 
 ---
