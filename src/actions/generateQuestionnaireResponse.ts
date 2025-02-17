@@ -168,9 +168,8 @@ export function evaluateCalculatedExpressions(questionnaire: Questionnaire, resp
           qrItem.answer = [answer];
         }
       }
-
       // Recursively process child items
-      if (qItem.item && qrItem.item) {
+      if (qItem?.item && qrItem?.item) {
         traverseItems(qItem.item, qrItem.item);
       }
     });

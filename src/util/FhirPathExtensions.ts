@@ -229,7 +229,7 @@ export class FhirPathExtensions {
               };
             }
 
-            if (qItem.item && qrItem.item) {
+            if (qItem?.item && qrItem?.item) {
               newQrItem = {
                 ...newQrItem,
                 item: traverseItems(qItem.item, qrItem.item, response),

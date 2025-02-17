@@ -31,12 +31,11 @@ export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }
   const resource = useAppSelector(containedResourceSelector);
 
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
-  const [table, setTable] = useState<IStandardTable>(
-    getStandardTableObject(items, questionnaireResponse, resource, sortDir, displayToSortBy)
-  );
+  const tableData = getStandardTableObject(items, questionnaireResponse, resource, sortDir, displayToSortBy);
+  const [table, setTable] = useState<IStandardTable>(tableData);
   useEffect(() => {
-    setTable(getStandardTableObject(items, questionnaireResponse, resource, sortDir, displayToSortBy));
-  }, [sortDir, items, questionnaireResponse, resource, displayToSortBy]);
+    setTable(tableData);
+  }, [sortDir, items, questionnaireResponse, resource, displayToSortBy, tableData]);
 
   return table.rows.length > 0 ? (
     <HnTable mode={ModeType.normal} className="page_refero__standard-table">
