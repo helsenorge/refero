@@ -16,11 +16,12 @@ interface Props {
 
 const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): React.JSX.Element | null => {
   const linkIdToSortBy = getLinkIdToSortBy(tableCodesCoding);
-  const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
+  const SORT_DIRECTION = transformCodingToSortDirection(tableCodesCoding) || SortDirection.asc;
+  const [sortDir, setSortDir] = useState<SortDirection>(SORT_DIRECTION);
 
   const gTable = getGtablebodyObject(items, questionnaireResponse, sortDir, linkIdToSortBy);
   return gTable && gTable.rows.length > 0 ? (
-    <HnTable className="page_refero__table__gtable">
+    <HnTable className="page_refero__table__gtable" testId="gtable">
       <GTableHeader headerRow={gTable.headerRow} sortDir={sortDir} setSortDir={setSortDir} linkIdToSortBy={linkIdToSortBy} />
       <TableBody className="page_refero__table__gtable__body">
         {gTable.rows.map((item, index) => {
@@ -28,6 +29,7 @@ const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): Reac
             <TableRow key={item.id} className="page_refero__table__gtable__body__row">
               {item.columns.map(column => (
                 <TableCell
+                  testId={column.id}
                   key={column.id}
                   dataLabel={gTable.headerRow[index]?.value ?? column.value}
                   className="page_refero__table__gtable__body__row__cell"

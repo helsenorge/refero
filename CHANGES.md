@@ -1,6 +1,10 @@
+## 17.1.3
+
+- Fix sorting of tables with date.
+
 ## 17.1.2
 
-- generateQuestionnaireResponse now supports bundles of questionnaires
+- GenerateQuestionnaireResponse now supports bundles of questionnaires
 
 ## 17.1.1
 
