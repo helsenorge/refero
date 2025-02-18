@@ -38,7 +38,7 @@ export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }
   }, [sortDir, items, questionnaireResponse, resource, displayToSortBy, tableData]);
 
   return table.rows.length > 0 ? (
-    <HnTable mode={ModeType.normal} className="page_refero__standard-table">
+    <HnTable mode={ModeType.normal} className="page_refero__standard-table" testId="standardTable">
       <StandardTableHeader headerRow={table.headerRow} setSortDir={setSortDir} displayToSortBy={displayToSortBy} sortDir={sortDir} />
       <TableBody className="page_refero__standard-table__body">
         {table.rows.map(item => (
