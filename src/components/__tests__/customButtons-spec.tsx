@@ -3,39 +3,39 @@ import { Questionnaire } from 'fhir/r4';
 
 import standard from './__data__/customActionButtons/standard';
 import stepView from './__data__/customActionButtons/stepview';
-import { renderRefero, screen } from '../../../test/test-utils';
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 
 import { ReferoProps } from '@/types/referoProps';
 
 describe('render custom actionbuttons', async () => {
   describe('standard', () => {
     it('should render custom buttons when prop != undefined', async () => {
-      createWrapper(standard, () => {
+      await createWrapper(standard, () => {
         return <div data-testid="custom-buttons">{'Custom Action Buttons'}</div>;
       });
       expect(await screen.findByTestId(/custom-buttons/i)).toBeInTheDocument();
     });
     it('should render rended standard buttons when prop == undefined', async () => {
-      createWrapper(standard);
+      await createWrapper(standard);
       expect(screen.queryByTestId(/custom-buttons/i)).not.toBeInTheDocument();
     });
   });
   describe('stepview', () => {
     it('should render custom buttons when prop != undefined', async () => {
-      createWrapper(stepView, () => {
+      await createWrapper(stepView, () => {
         return <div data-testid="custom-buttons">{'Custom Action Buttons'}</div>;
       });
       expect(await screen.findByTestId(/custom-buttons/i)).toBeInTheDocument();
     });
     it('should render rended standard buttons when prop == undefined', async () => {
-      createWrapper(stepView);
+      await createWrapper(stepView);
       expect(screen.queryByTestId(/custom-buttons/i)).not.toBeInTheDocument();
     });
   });
   describe('handle submit form with custom buttons', () => {
     it('should call onSubmit when custom button is clicked', async () => {
       const onSubmit = vi.fn();
-      createWrapper(standard, () => {
+      await createWrapper(standard, () => {
         return (
           <div>
             <button data-testid="custom-submit-button" onClick={onSubmit}>
@@ -50,7 +50,7 @@ describe('render custom actionbuttons', async () => {
     });
     it('should call react hook form methods when react hook form methods is called', async () => {
       const onSubmit = vi.fn();
-      createWrapper(
+      await createWrapper(
         standard,
         ({ reactHookFormMethods, referoProps }) => {
           return (
@@ -70,22 +70,26 @@ describe('render custom actionbuttons', async () => {
         onSubmit
       );
       const submitButton = await screen.findByTestId(/custom-submit-button/i);
-      submitButton.click();
+      await waitFor(async () => {
+        submitButton.click();
+      });
       expect(onSubmit).toHaveBeenCalled();
     });
   });
 });
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function createWrapper(
+async function createWrapper(
   questionnaire: Questionnaire,
   renderCustomActionButtons?: Partial<ReferoProps>['renderCustomActionButtons'],
   onSubmit: ReferoProps['onSubmit'] = vi.fn()
 ) {
-  return renderRefero({
-    questionnaire,
-    props: {
-      renderCustomActionButtons,
-      onSubmit,
-    },
+  return await waitFor(async () => {
+    return renderRefero({
+      questionnaire,
+      props: {
+        renderCustomActionButtons,
+        onSubmit,
+      },
+    });
   });
 }

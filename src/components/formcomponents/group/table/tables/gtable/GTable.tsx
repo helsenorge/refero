@@ -21,7 +21,7 @@ const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): Reac
 
   const gTable = getGtablebodyObject(items, questionnaireResponse, sortDir, linkIdToSortBy);
   return gTable && gTable.rows.length > 0 ? (
-    <HnTable className="page_refero__table__gtable">
+    <HnTable className="page_refero__table__gtable" testId="gtable">
       <GTableHeader headerRow={gTable.headerRow} sortDir={sortDir} setSortDir={setSortDir} linkIdToSortBy={linkIdToSortBy} />
       <TableBody className="page_refero__table__gtable__body">
         {gTable.rows.map((item, index) => {
@@ -29,6 +29,7 @@ const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): Reac
             <TableRow key={item.id} className="page_refero__table__gtable__body__row">
               {item.columns.map(column => (
                 <TableCell
+                  testId={column.id}
                   key={column.id}
                   dataLabel={gTable.headerRow[index]?.value ?? column.value}
                   className="page_refero__table__gtable__body__row__cell"
