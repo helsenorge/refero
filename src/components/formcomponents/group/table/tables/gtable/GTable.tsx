@@ -16,7 +16,8 @@ interface Props {
 
 const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): React.JSX.Element | null => {
   const linkIdToSortBy = getLinkIdToSortBy(tableCodesCoding);
-  const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
+  const SORT_DIRECTION = transformCodingToSortDirection(tableCodesCoding) || SortDirection.asc;
+  const [sortDir, setSortDir] = useState<SortDirection>(SORT_DIRECTION);
 
   const gTable = getGtablebodyObject(items, questionnaireResponse, sortDir, linkIdToSortBy);
   return gTable && gTable.rows.length > 0 ? (

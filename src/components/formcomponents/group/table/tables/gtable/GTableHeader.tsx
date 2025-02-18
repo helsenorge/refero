@@ -6,7 +6,7 @@ import { IGTableHeaderItem } from './interface';
 
 type Props = {
   headerRow: IGTableHeaderItem[];
-  setSortDir?: React.Dispatch<React.SetStateAction<SortDirection | undefined>>;
+  setSortDir?: React.Dispatch<React.SetStateAction<SortDirection>>;
   sortDir?: SortDirection;
   linkIdToSortBy?: string;
 };

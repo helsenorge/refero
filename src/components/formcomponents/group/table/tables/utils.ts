@@ -392,7 +392,7 @@ export const sortByItemType = (aValue: string, bValue: string, sortOrder: SortDi
     case ItemType.DATE:
       return compareDates(aValue, bValue, sortOrder);
     case ItemType.DATETIME:
-      return compareDates(aValue, bValue, sortOrder);
+      return compareDateTime(aValue, bValue, sortOrder);
     case ItemType.TIME:
       return compareTimes(aValue, bValue, sortOrder);
     case ItemType.INTEGER:
@@ -444,9 +444,8 @@ const compareStrings = (aValue: string, bValue: string, sortOrder: SortDirection
 };
 
 const compareDates = (aValue: string, bValue: string, sortOrder: SortDirection): number => {
-  const dateA = parse(aValue, DATEFORMATS.DATETIME, new Date());
-  const dateB = parse(bValue, DATEFORMATS.DATETIME, new Date());
-
+  const dateA = parse(aValue, DATEFORMATS.DATE, new Date());
+  const dateB = parse(bValue, DATEFORMATS.DATE, new Date());
   let comparisonResult = 0;
   if (isBefore(dateA, dateB)) {
     comparisonResult = -1;
@@ -455,7 +454,17 @@ const compareDates = (aValue: string, bValue: string, sortOrder: SortDirection):
   }
   return sortOrder === 'asc' ? comparisonResult : -comparisonResult;
 };
-
+const compareDateTime = (aValue: string, bValue: string, sortOrder: SortDirection): number => {
+  const dateA = parse(aValue, DATEFORMATS.DATETIME, new Date());
+  const dateB = parse(bValue, DATEFORMATS.DATETIME, new Date());
+  let comparisonResult = 0;
+  if (isBefore(dateA, dateB)) {
+    comparisonResult = -1;
+  } else if (isAfter(dateA, dateB)) {
+    comparisonResult = 1;
+  }
+  return sortOrder === 'asc' ? comparisonResult : -comparisonResult;
+};
 const compareTimes = (aValue: string, bValue: string, sortOrder: SortDirection): number => {
   const format = DATEFORMATS.TIME;
   const timeA = parse(aValue, format, new Date());
