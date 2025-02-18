@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire, Bundle } from 'fhir/r4';
 
 import Constants from '../constants/index';
 import itemType from '../constants/itemType';
@@ -114,69 +114,79 @@ export function createQuestionnaireResponseItem(item: QuestionnaireItem): Questi
 
   return responseItem;
 }
-export function evaluateCalculatedExpressions(questionnaire: Questionnaire, response: QuestionnaireResponse): QuestionnaireResponse {
+export function evaluateCalculatedExpressions(
+  questionnaire: Questionnaire | Bundle<Questionnaire>,
+  response: QuestionnaireResponse,
+  bundleIndex?: number
+): QuestionnaireResponse {
   function traverseItems(qItems: QuestionnaireItem[], qrItems: QuestionnaireResponseItem[]): void {
-    qItems.forEach((qItem, index) => {
-      const qrItem = qrItems[index];
-      const expressionToEvaluate = getCopyExtension(qItem) ?? getCalculatedExpressionExtension(qItem);
-      if (expressionToEvaluate && expressionToEvaluate.valueString) {
-        const result = evaluateFhirpathExpressionToGetString(expressionToEvaluate, response);
-        if (result.length > 0) {
-          const calculatedValue = result[0];
-          const answer = qrItem.answer ? qrItem.answer[0] : {};
-          switch (qItem.type) {
-            case ItemType.BOOLEAN:
-              answer.valueBoolean = Boolean(calculatedValue);
-              break;
-            case ItemType.DECIMAL:
-              answer.valueDecimal = Number(calculatedValue);
-              break;
-            case ItemType.INTEGER:
-              answer.valueInteger = Number(calculatedValue);
-              break;
-            case ItemType.QUANTITY:
-              answer.valueQuantity = calculatedValue;
-              break;
-            case ItemType.DATE:
-              answer.valueDate = String(calculatedValue);
-              break;
-            case ItemType.DATETIME:
-              answer.valueDateTime = String(calculatedValue);
-              break;
-            case ItemType.TIME:
-              answer.valueTime = String(calculatedValue);
-              break;
-            case ItemType.TEXT:
-            case ItemType.STRING:
-              answer.valueString = String(calculatedValue);
-              break;
-            case ItemType.ATTATCHMENT:
-              answer.valueAttachment = calculatedValue;
-              break;
-            case ItemType.CHOICE:
-            case ItemType.OPENCHOICE:
-              answer.valueCoding = calculatedValue;
-              break;
-            default:
-              if (typeof answer === 'string') {
-                (answer as { valueString: string }).valueString = calculatedValue;
-              } else {
-                answer.valueCoding = calculatedValue;
-              }
-              break;
-          }
-          qrItem.answer = [answer];
+    qItems
+      .filter(x => !!x)
+      .forEach((qItem, index) => {
+        const qrItem = qrItems[index];
+        if (!qrItem) {
+          return;
         }
-      }
-      // Recursively process child items
-      if (qItem?.item && qrItem?.item) {
-        traverseItems(qItem.item, qrItem.item);
-      }
-    });
-  }
+        const expressionToEvaluate = getCopyExtension(qItem) ?? getCalculatedExpressionExtension(qItem);
+        if (expressionToEvaluate && expressionToEvaluate.valueString) {
+          const result = evaluateFhirpathExpressionToGetString(expressionToEvaluate, response);
+          if (result.length > 0) {
+            const calculatedValue = result[0];
+            const answer = qrItem.answer ? qrItem.answer[0] : {};
+            switch (qItem.type) {
+              case ItemType.BOOLEAN:
+                answer.valueBoolean = Boolean(calculatedValue);
+                break;
+              case ItemType.DECIMAL:
+                answer.valueDecimal = Number(calculatedValue);
+                break;
+              case ItemType.INTEGER:
+                answer.valueInteger = Number(calculatedValue);
+                break;
+              case ItemType.QUANTITY:
+                answer.valueQuantity = calculatedValue;
+                break;
+              case ItemType.DATE:
+                answer.valueDate = String(calculatedValue);
+                break;
+              case ItemType.DATETIME:
+                answer.valueDateTime = String(calculatedValue);
+                break;
+              case ItemType.TIME:
+                answer.valueTime = String(calculatedValue);
+                break;
+              case ItemType.TEXT:
+              case ItemType.STRING:
+                answer.valueString = String(calculatedValue);
+                break;
+              case ItemType.ATTATCHMENT:
+                answer.valueAttachment = calculatedValue;
+                break;
+              case ItemType.CHOICE:
+              case ItemType.OPENCHOICE:
+                answer.valueCoding = calculatedValue;
+                break;
+              default:
+                if (typeof answer === 'string') {
+                  (answer as { valueString: string }).valueString = calculatedValue;
+                } else {
+                  answer.valueCoding = calculatedValue;
+                }
+                break;
+            }
+            qrItem.answer = [answer];
+          }
+        }
 
-  if (questionnaire.item && response.item) {
-    traverseItems(questionnaire.item, response.item);
+        // Recursively process child items
+        if (qrItem && qItem.item && qrItem.item) {
+          traverseItems(qItem.item, qrItem.item);
+        }
+      });
+  }
+  const q = questionnaire.resourceType === 'Bundle' ? questionnaire?.entry?.[bundleIndex ?? 0].resource : questionnaire;
+  if (q && q?.item && response?.item) {
+    traverseItems(q.item, response.item);
   }
 
   return response; // Return the updated response

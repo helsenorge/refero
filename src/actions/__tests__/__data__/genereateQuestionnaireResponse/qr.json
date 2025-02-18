@@ -1,0 +1,797 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": "Questionnaire/501",
+  "item": [
+    {
+      "linkId": "highlight",
+      "text": "Du kan melde bivirkninger på legemidler (medisiner) og vaksiner til Direktoratet for medisinske produkter ved å fylle ut dette skjemaet og sende det inn. Du vil ikke få svar på dette skjemaet. Meld først og fremst bivirkninger som ikke står i pakningsvedlegget eller som oppleves som svært belastende (alvorlige). Din melding kan gi oss ny kunnskap om hvordan bivirkninger påvirker pasienters legemiddelbruk og livskvalitet. Hvis du vil vite mer om bivirkningsmeldinger, se \"Om skjema\"."
+    },
+    {
+      "linkId": "sot-2",
+      "text": "Veiledning og ansvar"
+    },
+    {
+      "linkId": "sot-3",
+      "text": "Behandling hos mottaker"
+    },
+    {
+      "linkId": "2",
+      "text": "Personopplysninger",
+      "item": [
+        {
+          "linkId": "1.4",
+          "text": "Om det er på vegne av eller ei. True er på vegne av",
+          "answer": [
+            {
+              "valueBoolean": false
+            }
+          ]
+        },
+        {
+          "linkId": "1.5",
+          "text": "Dette skjema fylles ut av en annen person på vegne av pasienten.",
+          "item": [
+            {
+              "linkId": "e6cdcdbf-8efa-46d5-a1d5-65ef653c1dc3",
+              "text": "Opplysninger om den som fyller ut på vegne av pasienten"
+            },
+            {
+              "linkId": "1.5.1",
+              "text": "Navn"
+            },
+            {
+              "linkId": "1.5.2",
+              "text": "E-postadresse"
+            },
+            {
+              "linkId": "1.5.3",
+              "text": "Oppgi e-postadresse vi kan nå deg på"
+            }
+          ]
+        },
+        {
+          "linkId": "f59e29ad-8353-4b3b-cfa5-bc3bd9fa9a3b",
+          "text": "Opplysninger om pasienten"
+        },
+        {
+          "linkId": "2.1",
+          "text": "Fødselsnummer"
+        },
+        {
+          "linkId": "2.2",
+          "text": "Navn"
+        },
+        {
+          "linkId": "2.3",
+          "text": "E-postadresse"
+        },
+        {
+          "linkId": "2.4",
+          "text": "Oppgi e-postadresse vi kan nå deg på",
+          "answer": [
+            {
+              "valueString": "enepost@epost.no"
+            }
+          ]
+        },
+        {
+          "linkId": "2.6",
+          "text": "Vekt",
+          "answer": [
+            {
+              "valueQuantity": {
+                "unit": "kilo",
+                "system": "http://unitsofmeasure.org",
+                "code": "kg",
+                "value": 100
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "2.7",
+          "text": "Høyde",
+          "answer": [
+            {
+              "valueQuantity": {
+                "unit": "centimeter",
+                "system": "http://unitsofmeasure.org",
+                "code": "cm",
+                "value": 180
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "2.8",
+          "text": "Pasientens postnummer"
+        }
+      ]
+    },
+    {
+      "linkId": "100",
+      "text": "Mistenkte legemidler",
+      "item": [
+        {
+          "linkId": "100.3",
+          "text": "Hva ønsker du å melde bivirkninger av?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "100.5",
+                  "text": "Koronavaksine",
+                  "item": [
+                    {
+                      "linkId": "100.5.1",
+                      "text": "Hvilken koronavaksine mistenker du er årsaken til bivirkningen(e)?",
+                      "answer": []
+                    }
+                  ]
+                },
+                {
+                  "linkId": "94d3b98a-3e34-42c4-9b55-607441fcfcc6",
+                  "text": "Legemiddel og/eller andre vaksiner",
+                  "item": [
+                    {
+                      "linkId": "100.10",
+                      "text": "Mistenkt legemiddel",
+                      "answer": [
+                        {
+                          "valueCoding": {
+                            "code": "1",
+                            "display": "Fyrstekake",
+                            "system": "http://helsedirektoratet.no/ValueSet/legemiddeloppslag"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "100.15",
+                      "text": "Jeg er usikker på valgt legemiddel, legemiddelform eller styrke",
+                      "answer": [
+                        {
+                          "valueBoolean": true,
+                          "item": [
+                            {
+                              "linkId": "100.15.1",
+                              "text": "Hva er du usikker på?",
+                              "answer": [
+                                {
+                                  "valueCoding": {
+                                    "code": "legemiddelform-(for-eksempel-om-det-er-tablett,-kapsel-eller-mikstur)",
+                                    "display": "Legemiddelform (for eksempel om det er tablett, kapsel eller mikstur)",
+                                    "system": "urn:uuid:2dfa42e6-6a07-4274-bf67-5a502917bb2f"
+                                  }
+                                },
+                                {
+                                  "valueCoding": {
+                                    "code": "annet",
+                                    "display": "Annet",
+                                    "system": "urn:uuid:2dfa42e6-6a07-4274-bf67-5a502917bb2f"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "100.15.2",
+                              "text": "Beskriv kort det du er usikker på",
+                              "answer": [
+                                {
+                                  "valueString": "usikker"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "valueCoding": {
+                "code": "andre-legemidler",
+                "display": "Andre legemidler",
+                "system": "http://ehelse.no/TypeLegemiddel"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "100.20.2",
+          "text": "Informasjon om mistenkt legemiddel",
+          "item": [
+            {
+              "linkId": "100.20.2.10",
+              "text": "Hvor mye tar du av legemiddelet?"
+            },
+            {
+              "linkId": "100.20.2.20",
+              "text": "Vet du når du startet med legemiddelet?",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "100.20.2.20.1",
+                      "text": "Hvilken dato startet du å bruke legemiddelet?"
+                    },
+                    {
+                      "linkId": "100.20.2.20.2",
+                      "text": "Hvilken måned og år startet du å bruke legemiddelet?"
+                    },
+                    {
+                      "linkId": "100.20.2.20.3",
+                      "text": "Hvilket år startet du å bruke legemiddelet?"
+                    }
+                  ],
+                  "valueCoding": {
+                    "code": "4",
+                    "display": "Vet ikke",
+                    "system": "http://ehelse.no/DatoValg"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "100.20.2.30",
+              "text": "Bruker du legemiddelet i dag?",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "100.20.2.30.1",
+                      "text": "Vet du når du sluttet med legemiddelet?",
+                      "answer": [
+                        {
+                          "item": [
+                            {
+                              "linkId": "100.20.2.30.1.1",
+                              "text": "Hvilken dato sluttet du å bruke legemiddelet?"
+                            },
+                            {
+                              "linkId": "100.20.2.30.1.2",
+                              "text": "Hvilken måned og år sluttet du å bruke legemiddelet?"
+                            },
+                            {
+                              "linkId": "100.20.2.30.1.3",
+                              "text": "Hvilket år sluttet du å bruke legemiddelet?"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "valueCoding": {
+                    "code": "3",
+                    "display": "Vet ikke",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "100.20.2.40",
+              "text": "Hva skal legemiddelet behandle eller forebygge?",
+              "answer": [
+                {
+                  "valueString": "kolesterol"
+                }
+              ]
+            },
+            {
+              "linkId": "100.20.2.50",
+              "text": "Endret bruken av legemiddelet seg når bivirkningen oppstod?",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "100.20.2.50.1",
+                      "text": "Hvis behandling med legemiddelet ble avsluttet og så startet opp igjen: Oppstod bivirkningen på nytt?"
+                    }
+                  ],
+                  "valueCoding": {
+                    "code": "5",
+                    "display": "Vet ikke",
+                    "system": "http://ehelse.no/EndretLegemiddelBruk"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "100.20.2.60",
+              "text": "Hvor ble legemiddelet kjøpt?",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "100.20.2.60.1",
+                      "text": "Beskriv stedet der -legemiddelet ble kjøpt"
+                    }
+                  ],
+                  "valueCoding": {
+                    "code": "1",
+                    "display": "Apotek, uten resept",
+                    "system": "http://ehelse.no/Kjopssted"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "100.20.2.70",
+              "text": "Batch- eller LOT-nummer"
+            }
+          ]
+        },
+        {
+          "linkId": "100.20.1",
+          "text": "Informasjon om mistenkt vaksine",
+          "item": [
+            {
+              "linkId": "100.20.1.10",
+              "text": "Vet du når vaksinen ble satt?",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "100.20.1.10.1",
+                      "text": "Hvilken dato og klokkeslett tok du vaksinen? (dd.mm.åååå tt:mm)"
+                    },
+                    {
+                      "linkId": "100.20.1.10.2",
+                      "text": "Hvilken dato tok du vaksinen?"
+                    },
+                    {
+                      "linkId": "100.20.1.10.3",
+                      "text": "Hvilken måned og år tok du vaksinen?"
+                    },
+                    {
+                      "linkId": "100.20.1.10.4",
+                      "text": "Hvilket år tok du vaksinen?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "100.20.1.20",
+              "text": "Hvilket dosenummer i serien er vaksinen?",
+              "answer": []
+            },
+            {
+              "linkId": "100.20.1.30",
+              "text": "Hvor ble vaksinen satt?",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "100.20.1.30.1",
+                      "text": "Oppgi stedet på kroppen vaksinen ble satt"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "100.20.1.40",
+              "text": "Batch- eller LOT-nummer"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "200",
+      "text": "Bivirkninger",
+      "item": [
+        {
+          "linkId": "200.1",
+          "text": "Fikk du én eller flere bivirkninger?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "200.1.10",
+                  "text": "Informasjon om bivirkningen",
+                  "item": [
+                    {
+                      "linkId": "200.1.10.10",
+                      "text": "Hvilken bivirkning oppstod?",
+                      "answer": [
+                        {
+                          "valueString": "neseblod"
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "200.1.10.20",
+                      "text": "Vet du når bivirkningen startet?",
+                      "answer": [
+                        {
+                          "item": [
+                            {
+                              "linkId": "200.1.10.20.1",
+                              "text": "Hvilken dato startet bivirkningen?"
+                            },
+                            {
+                              "linkId": "200.1.10.20.2",
+                              "text": "Hvilken måned og år startet bivirkningen?"
+                            },
+                            {
+                              "linkId": "200.1.10.20.3",
+                              "text": "Hvilket år startet bivirkningen?"
+                            }
+                          ],
+                          "valueCoding": {
+                            "code": "4",
+                            "display": "Vet ikke",
+                            "system": "http://ehelse.no/DatoValg"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "200.1.10.40",
+                      "text": "Fra første gang det mistenkte legemiddelet ble brukt - hvor lang tid tok det før bivirkningen startet?",
+                      "answer": [
+                        {
+                          "valueString": "10 minutter"
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "200.1.10.50",
+                      "text": "Har bivirkningen forsvunnet?",
+                      "answer": [
+                        {
+                          "item": [
+                            {
+                              "linkId": "200.1.10.30.1",
+                              "text": "Vet du når bivirkningen sluttet?",
+                              "answer": [
+                                {
+                                  "item": [
+                                    {
+                                      "linkId": "200.1.10.30.1.1",
+                                      "text": "Hvilken dato sluttet bivirkningen?"
+                                    },
+                                    {
+                                      "linkId": "200.1.10.30.1.2",
+                                      "text": "Hvilken måned og år sluttet bivirkningen?"
+                                    },
+                                    {
+                                      "linkId": "200.1.10.30.1.3",
+                                      "text": "Hvilket år sluttet bivirkningen?"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ],
+                          "valueCoding": {
+                            "code": "3",
+                            "display": "Nei, ingen forskjell",
+                            "system": "urn:oid:2.16.578.1.12.4.1.7469"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "linkId": "200.1.20",
+                  "text": "Informasjon om bivirkningen",
+                  "item": [
+                    {
+                      "linkId": "200.1.20.10",
+                      "text": "Hvilken bivirkning oppstod?"
+                    },
+                    {
+                      "linkId": "200.1.20.20",
+                      "text": "Vet du når bivirkningen startet?",
+                      "answer": [
+                        {
+                          "item": [
+                            {
+                              "linkId": "200.1.20.20.1",
+                              "text": "Hvilken dato startet bivirkningen?"
+                            },
+                            {
+                              "linkId": "200.1.20.20.2",
+                              "text": "Hvilken måned og år startet bivirkningen?"
+                            },
+                            {
+                              "linkId": "200.1.20.20.3",
+                              "text": "Hvilket år startet bivirkningen?"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "200.1.20.40",
+                      "text": "Fra første gang det mistenkte legemiddelet ble brukt - hvor lang tid tok det før bivirkningen startet?"
+                    },
+                    {
+                      "linkId": "200.1.20.50",
+                      "text": "Har bivirkningen forsvunnet?",
+                      "answer": [
+                        {
+                          "item": [
+                            {
+                              "linkId": "200.1.20.30.1",
+                              "text": "Vet du når bivirkningen sluttet?",
+                              "answer": [
+                                {
+                                  "item": [
+                                    {
+                                      "linkId": "200.1.20.30.1.1",
+                                      "text": "Hvilken dato sluttet bivirkningen?"
+                                    },
+                                    {
+                                      "linkId": "200.1.20.30.1.2",
+                                      "text": "Hvilken måned og år sluttet bivirkningen?"
+                                    },
+                                    {
+                                      "linkId": "200.1.20.30.1.3",
+                                      "text": "Hvilket år sluttet bivirkningen?"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "valueCoding": {
+                "code": "1",
+                "display": "én bivirkning",
+                "system": "http://ehelse.no/AntallBivirkninger"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "300",
+      "text": "Andre legemidler",
+      "item": [
+        {
+          "linkId": "300.1",
+          "text": "Brukte du andre legemidler samtidig som mistenkt legemiddel?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "300.1.10",
+                  "text": "Informasjon om annet legemiddel",
+                  "item": [
+                    {
+                      "linkId": "300.1.10.10",
+                      "text": "Legemiddel"
+                    },
+                    {
+                      "linkId": "300.1.10.15",
+                      "text": "Jeg er usikker på valgt legemiddel, legemiddelform eller styrke",
+                      "answer": [
+                        {
+                          "valueBoolean": false
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "300.1.10.20",
+                      "text": "Er dette en vaksine?",
+                      "answer": [
+                        {
+                          "item": [
+                            {
+                              "linkId": "300.1.10.20.1",
+                              "text": "Informasjon om vaksinen",
+                              "item": [
+                                {
+                                  "linkId": "300.1.10.20.1.10",
+                                  "text": "Vet du når vaksinen ble satt?",
+                                  "answer": [
+                                    {
+                                      "item": [
+                                        {
+                                          "linkId": "300.1.10.20.1.10.1",
+                                          "text": "Hvilken dato og klokkeslett tok du vaksinen?"
+                                        },
+                                        {
+                                          "linkId": "300.1.10.20.1.10.2",
+                                          "text": "Hvilken dato tok du vaksinen?"
+                                        },
+                                        {
+                                          "linkId": "300.1.10.20.1.10.3",
+                                          "text": "Hvilken måned og år tok du vaksinen?"
+                                        },
+                                        {
+                                          "linkId": "300.1.10.20.1.10.4",
+                                          "text": "Hvilket år tok du vaksinen?"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "300.1.10.20.1.20",
+                                  "text": "Hvilket dosenummer i serien er vaksinen?"
+                                },
+                                {
+                                  "linkId": "300.1.10.20.1.30",
+                                  "text": "Hvor ble vaksinen satt?",
+                                  "answer": [
+                                    {
+                                      "item": [
+                                        {
+                                          "linkId": "300.1.10.20.1.30.1",
+                                          "text": "Oppgi stedet på kroppen vaksinen ble satt"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "300.1.10.20.1.40",
+                                  "text": "Batch- eller LOT-nummer"
+                                }
+                              ]
+                            },
+                            {
+                              "linkId": "300.1.10.20.2",
+                              "text": "Informasjon om legemiddelet",
+                              "item": [
+                                {
+                                  "linkId": "300.1.10.20.2.20",
+                                  "text": "Hvor mye tar du av legemiddelet?"
+                                },
+                                {
+                                  "linkId": "300.1.10.20.2.30",
+                                  "text": "Vet du når du startet med legemiddelet?",
+                                  "answer": [
+                                    {
+                                      "item": [
+                                        {
+                                          "linkId": "300.1.10.20.2.30.1",
+                                          "text": "Hvilken dato startet du å bruke legemiddelet?"
+                                        },
+                                        {
+                                          "linkId": "300.1.10.20.2.30.2",
+                                          "text": "Hvilken måned og år startet du å bruke legemiddelet?"
+                                        },
+                                        {
+                                          "linkId": "300.1.10.20.2.30.3",
+                                          "text": "Hvilket år startet du å bruke legemiddelet?"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "300.1.10.20.2.40",
+                                  "text": "Bruker du legemiddelet i dag?",
+                                  "answer": [
+                                    {
+                                      "item": [
+                                        {
+                                          "linkId": "300.1.10.20.2.40.1",
+                                          "text": "Vet du når du sluttet med legemiddelet?",
+                                          "answer": [
+                                            {
+                                              "item": [
+                                                {
+                                                  "linkId": "300.1.10.20.2.40.1.1",
+                                                  "text": "Hvilken dato sluttet du å bruke legemiddelet?"
+                                                },
+                                                {
+                                                  "linkId": "300.1.10.20.2.40.1.2",
+                                                  "text": "Hvilken måned og år sluttet du å bruke legemiddelet?"
+                                                },
+                                                {
+                                                  "linkId": "300.1.10.20.2.40.1.3",
+                                                  "text": "Hvilket år sluttet du å bruke legemiddelet?"
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "linkId": "300.1.10.20.2.50",
+                                  "text": "Hva skal legemiddelet behandle eller forebygge?"
+                                },
+                                {
+                                  "linkId": "300.1.10.20.2.60",
+                                  "text": "Batch- eller LOT-nummer"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "valueCoding": {
+                "code": "2",
+                "display": "Nei",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "400",
+      "text": "Annen relevant informasjon",
+      "item": [
+        {
+          "linkId": "400.10",
+          "text": "Har bivirkningen ført til noe av det følgende?",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "6",
+                "display": "Sykemelding fra lege",
+                "system": "urn:oid:2.16.578.1.12.4.1.7468"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "400.20",
+          "text": "Har du vært i kontakt med helsepersonell på grunn av bivirkningen?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "400.20.10",
+                  "text": "Hvem ble kontaktet?"
+                }
+              ],
+              "valueCoding": {
+                "code": "2",
+                "display": "Nei",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "400.30",
+          "text": "Andre opplysninger",
+          "answer": [
+            {
+              "valueString": "asdasdasd"
+            }
+          ]
+        },
+        {
+          "linkId": "400.40",
+          "text": "Bruk av kosttilskudd",
+          "answer": [
+            {
+              "valueString": "asdasdasd"
+            }
+          ]
+        },
+        {
+          "linkId": "400.50",
+          "text": "Opplasting av vedlegg om andre opplysninger"
+        }
+      ]
+    }
+  ]
+}
