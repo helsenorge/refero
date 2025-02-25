@@ -1,6 +1,6 @@
 ## 17.1.4
 
-- Fixed aria-label UU bug on anchorlinks
+- Fixed aria-label accessibility bug on anchorlinks
 
 ## 17.1.3
 
