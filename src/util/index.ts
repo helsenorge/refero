@@ -139,7 +139,7 @@ export function getText(
 
 function getAriaLabelTextForLink(href: string, linkText: string, linkOpensInNewTabText?: string): string {
   const opensInNewTab: boolean = openNewIfAbsolute(href) === '_blank';
-  if (opensInNewTab) {
+  if (opensInNewTab && linkOpensInNewTabText) {
     return linkText + ', ' + linkOpensInNewTabText;
   } else {
     return linkText;
