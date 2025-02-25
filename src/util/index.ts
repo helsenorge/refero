@@ -15,16 +15,16 @@ import {
   getHyperlinkExtensionValue,
   getCopyExtension,
 } from './extension';
+
 import CodingSystemConstants from '../constants/codingsystems';
-import codeSystems from '../constants/codingsystems';
 import { Extensions } from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
-
-import { VALIDATE_READONLY_CODE } from '@/constants/codes';
 import { Resources } from '@/util/resources';
+import codeSystems from '../constants/codingsystems';
+import { VALIDATE_READONLY_CODE } from '@/constants/codes';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -137,31 +137,40 @@ export function getText(
   return '';
 }
 
+function getAriaLabelTextForLink(href: string, linkText: string, linkOpensInNewTabText?: string): string {
+  const opensInNewTab: boolean = openNewIfAbsolute(href) === '_blank';
+  if (opensInNewTab && linkOpensInNewTabText) {
+    return linkText + ', ' + linkOpensInNewTabText;
+  } else {
+    return linkText;
+  }
+}
+
 function getMarkdownValue(
   markdownText: string,
   item: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
   questionnaire?: Questionnaire | null,
-  srLinkText?: string
+  linkOpensInNewTabText?: string
 ): string {
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
   const renderer = new marked.Renderer();
 
   renderer.link = ({ href, title, text }): string => {
+    const ariaLabel = getAriaLabelTextForLink(href, text, linkOpensInNewTabText);
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
-    } target="_blank" rel="noopener noreferrer" class="external" aria-label=${
-      openNewIfAbsolute(href) === '_blank' ? srLinkText : ''
-    }>${text}</a>`;
+    } target="_blank" rel="noopener noreferrer" class="external" aria-label=${ariaLabel}>${text}</a>`;
     return urlString;
   };
 
   const rendererSameWindow = new marked.Renderer();
   rendererSameWindow.link = ({ href, title, text }): string => {
+    const ariaLabel = getAriaLabelTextForLink(href, text, linkOpensInNewTabText);
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href
-    )}" rel="noopener noreferrer" aria-label=${openNewIfAbsolute(href) === '_blank' ? srLinkText : ''}>${text}</a>`;
+    )}" rel="noopener noreferrer" aria-label=${ariaLabel}>${text}</a>`;
     return urlString;
   };
 
