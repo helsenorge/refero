@@ -8,6 +8,7 @@ import {
   Reference,
   Attachment,
   Quantity,
+  Questionnaire,
 } from 'fhir/r4';
 
 import { QuestionnaireEnableOperator } from '../types/fhirEnums';
@@ -22,6 +23,11 @@ import { isRepeat } from '.';
 export interface Path {
   linkId: string;
   index?: number;
+}
+export interface QrItemEntry {
+  path: Path[];
+  definitionItem: QuestionnaireItem;
+  responseItem: QuestionnaireResponseItem;
 }
 export function getRootQuestionnaireResponseItemFromData(
   definitionLinkId?: string,
@@ -57,7 +63,38 @@ export function isInGroupContext(path: Path[], item: QuestionnaireResponseItem, 
   const repeatingItems = getItemWithIdFromResponseItemArray(item.linkId, items) || [];
   return repeatingItems.indexOf(item) === pathItem.index;
 }
+export function isQuestionnaireResponse(arg: QuestionnaireResponse | QuestionnaireResponseItem): arg is QuestionnaireResponse {
+  // If it has "resourceType": "QuestionnaireResponse", it's the root resource
+  return (arg as QuestionnaireResponse).resourceType === 'QuestionnaireResponse';
+}
 
+export function getResponseItemByPath(root: QuestionnaireResponse, path: Path[]): QuestionnaireResponseItem | undefined {
+  // Start with the root array
+  let currentItems = root.item ?? [];
+  console.log('path', path);
+  for (let step = 0; step < path.length; step++) {
+    const { linkId, index = 0 } = path[step];
+
+    // among currentItems, find the item with that linkId in position 'index'
+    const matchingItems = currentItems.filter(i => i.linkId === linkId);
+    if (matchingItems.length <= index) {
+      return undefined; // no such repeated instance
+    }
+
+    const currentItem = matchingItems[index];
+    // if this isn't the last step, proceed deeper
+    if (step < path.length - 1) {
+      // next step might be a child in 'item' or in 'answer.item'
+      const nestedInItem = currentItem.item ?? [];
+      const nestedInAnswers = currentItem.answer?.flatMap(a => a.item ?? []) ?? [];
+      currentItems = [...nestedInItem, ...nestedInAnswers];
+    } else {
+      // This is the last step, so return the matched item
+      return currentItem;
+    }
+  }
+  return undefined;
+}
 export function getQuestionnaireResponseItemWithLinkid(
   linkId: string,
   responseItem: QuestionnaireResponseItem,
@@ -66,6 +103,7 @@ export function getQuestionnaireResponseItemWithLinkid(
   if (!responseItem) {
     return undefined;
   }
+
   if (responseItem.linkId === linkId) {
     return responseItem;
   }

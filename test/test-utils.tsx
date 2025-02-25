@@ -155,6 +155,42 @@ async function renderRefero({ questionnaire, props, initialState, resources, def
     { store, defaultValues: defaultReactHookFormValues, referoProps: props }
   );
 }
+async function renderReferoWithRedux({ questionnaire, props, initialState, resources }: InputProps) {
+  const resourcesDefault = {
+    ...getResources(''),
+    ...resources,
+  };
+  const state = initialState || {
+    refero: {
+      form: {
+        FormDefinition: {
+          Content: questionnaire,
+        },
+        FormData: {
+          Content: generateQuestionnaireResponse(questionnaire),
+        },
+        Language: 'nb',
+      },
+    },
+  };
+  const store = configureStore({ reducer: rootReducer, preloadedState: state, middleware: getDefaultMiddleware => getDefaultMiddleware() });
+  type RootState = ReturnType<typeof store.getState>;
+
+  return renderWithRedux(
+    <ReferoContainer
+      loginButton={<React.Fragment />}
+      authorized={true}
+      onCancel={() => {}}
+      onSave={() => {}}
+      onSubmit={() => {}}
+      questionnaire={questionnaire}
+      resources={resourcesDefault}
+      onChange={() => {}}
+      {...props}
+    />,
+    { store: store as Store<RootState> }
+  );
+}
 export * from '@testing-library/react';
 const user = userEvent.setup();
-export { customRender as render, renderWithRedux, renderWithReduxAndHookFormMock, renderRefero, user as userEvent };
+export { customRender as render, renderWithRedux, renderWithReduxAndHookFormMock, renderRefero, renderReferoWithRedux, user as userEvent };

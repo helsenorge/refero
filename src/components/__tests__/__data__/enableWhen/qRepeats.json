@@ -1,0 +1,99 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-nested-enablewhen-repeats",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Klikk for å åpne",
+      "type": "boolean",
+      "repeats": true,
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "skriv noe",
+          "type": "string",
+          "enableBehavior": "any",
+          "enableWhen": [
+            {
+              "question": "1",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ],
+          "item": [
+            {
+              "linkId": "1.1.1",
+              "text": "nested enable when",
+              "type": "text",
+              "enableBehavior": "any",
+              "enableWhen": [
+                {
+                  "question": "1.1",
+                  "operator": "exists",
+                  "answerBoolean": true
+                }
+              ],
+              "item": [
+                {
+                  "linkId": "1.1.1.1",
+                  "text": "turtles all the way down",
+                  "type": "choice",
+                  "enableBehavior": "any",
+                  "enableWhen": [
+                    {
+                      "question": "1.1.1",
+                      "operator": "exists",
+                      "answerBoolean": true
+                    }
+                  ],
+                  "answerValueSet": "#1101"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "type": "group",
+      "text": "Group 2",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "2.1",
+          "text": "unrelated number",
+          "type": "integer"
+        }
+      ]
+    }
+  ]
+}
