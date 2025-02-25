@@ -4,7 +4,6 @@ import {
   Questionnaire,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
-  QuestionnaireItem,
   QuestionnaireResponse,
   Coding,
   Attachment,

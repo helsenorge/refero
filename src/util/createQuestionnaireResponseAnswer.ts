@@ -1,13 +1,16 @@
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): QuestionnaireResponseItemAnswer | undefined {
+export function createQuestionnaireResponseAnswer(
+  item: QuestionnaireItem,
+  isEnableWhen?: boolean
+): QuestionnaireResponseItemAnswer | undefined {
   const answer: QuestionnaireResponseItemAnswer = {};
   let hasInitialAnswer = false;
 
   if (item.initial && item.initial.length > 0 && item.initial[0].valueBoolean !== undefined) {
     answer.valueBoolean = item.initial[0].valueBoolean;
     hasInitialAnswer = true;
-  } else if (item.type === 'boolean') {
+  } else if (item.type === 'boolean' && !isEnableWhen) {
     hasInitialAnswer = true;
     answer.valueBoolean = false;
   }

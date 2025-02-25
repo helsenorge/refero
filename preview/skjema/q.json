@@ -14,12 +14,34 @@
           "linkId": "1.1",
           "type": "string",
           "text": "Skriv navn",
+          "initial": [
+            {
+              "valueString": "Ola Nordmann"
+            }
+          ],
           "item": [
             {
               "linkId": "1.1.1",
               "type": "boolean",
               "text": "Navnet du har skrevet inn er riktig",
               "required": true,
+              "initial": [
+                {
+                  "valueBoolean": true
+                }
+              ],
+              "enableWhen": [{ "question": "1.1", "operator": "exists", "answerBoolean": true }]
+            },
+            {
+              "linkId": "1.1.2",
+              "type": "string",
+              "text": "Navnet du har skrevet inn er riktig",
+              "required": true,
+              "initial": [
+                {
+                  "valueString": "tester noe annet"
+                }
+              ],
               "enableWhen": [{ "question": "1.1", "operator": "exists", "answerBoolean": true }]
             }
           ],

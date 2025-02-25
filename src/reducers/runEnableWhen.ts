@@ -216,7 +216,7 @@ function wipeAnswerItems(answerItem: QuestionnaireResponseItem | undefined, item
   }
 }
 function resetAnswerValue(answer: QuestionnaireResponseItemAnswer, item: QuestionnaireItem): void {
-  const initialAnswer = createQuestionnaireResponseAnswer(item);
+  const initialAnswer = createQuestionnaireResponseAnswer(item, true);
   nullAnswerValue(answer, initialAnswer);
 }
 
@@ -239,17 +239,12 @@ function nullAnswerValue(answer: QuestionnaireResponseItemAnswer, initialAnswer?
   for (const key of answerKeys) {
     if (answer[key] !== undefined) {
       if (initialAnswer && initialAnswer[key] !== undefined) {
-        answer[key] = initialAnswer[key];
+        answer[key] = initialAnswer[key] as never;
       } else {
         delete answer[key];
       }
     }
   }
-
-  if (answer.valueBoolean !== undefined) {
-    answer.valueBoolean = initialAnswer?.valueBoolean ?? false;
-  }
-
   return undefined;
 }
 
