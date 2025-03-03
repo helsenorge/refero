@@ -32,15 +32,8 @@ export function runEnableWhen(action: NewValuePayload, state: Form): void {
      */
     const responseItems = getResponseItems(state.FormData);
     // lag en kopi som kan oppdateres underveis, for å beregne multiple dependent enableWhen items
-    const calculatedResponseItems = JSON.parse(JSON.stringify(responseItems));
-    calculateEnableWhenItemsToClear(
-      [action.item],
-      state.FormData,
-      state.FormDefinition,
-      action.itemPath,
-      qrItemsToClear,
-      calculatedResponseItems
-    );
+    // const calculatedResponseItems = JSON.parse(JSON.stringify(responseItems));
+    calculateEnableWhenItemsToClear([action.item], state.FormData, state.FormDefinition, action.itemPath, qrItemsToClear, responseItems);
 
     if (responseItems && responseItems.length > 0) {
       for (let w = 0; w < qrItemsToClear.length; w++) {
@@ -220,32 +213,35 @@ function resetAnswerValue(answer: QuestionnaireResponseItemAnswer, item: Questio
   nullAnswerValue(answer, initialAnswer);
 }
 
-function nullAnswerValue(answer: QuestionnaireResponseItemAnswer, initialAnswer?: QuestionnaireResponseItemAnswer): undefined {
-  if (!answer) return undefined;
-
-  const answerKeys: (keyof QuestionnaireResponseItemAnswer)[] = [
-    'valueBoolean',
-    'valueCoding',
-    'valueDate',
-    'valueDateTime',
-    'valueDecimal',
-    'valueInteger',
-    'valueString',
-    'valueTime',
-    'valueQuantity',
-    'valueAttachment',
-  ];
-
-  for (const key of answerKeys) {
-    if (answer[key] !== undefined) {
-      if (initialAnswer && initialAnswer[key] !== undefined) {
-        answer[key] = initialAnswer[key] as never;
-      } else {
-        delete answer[key];
-      }
-    }
+export function nullAnswerValue(
+  answer: QuestionnaireResponseItemAnswer,
+  initialAnswer: QuestionnaireResponseItemAnswer | undefined = undefined
+): undefined {
+  if (!answer) {
+    return undefined;
   }
-  return undefined;
+
+  if (answer.valueBoolean !== undefined) {
+    initialAnswer ? (answer.valueBoolean = initialAnswer.valueBoolean) : (answer.valueBoolean = false);
+  } else if (answer.valueCoding !== undefined) {
+    initialAnswer ? (answer.valueCoding = initialAnswer.valueCoding) : delete answer.valueCoding;
+  } else if (answer.valueDate !== undefined) {
+    initialAnswer ? (answer.valueDate = initialAnswer.valueDate) : delete answer.valueDate;
+  } else if (answer.valueDateTime !== undefined) {
+    initialAnswer ? (answer.valueDateTime = initialAnswer.valueDateTime) : delete answer.valueDateTime;
+  } else if (answer.valueDecimal !== undefined) {
+    initialAnswer ? (answer.valueDecimal = initialAnswer.valueDecimal) : delete answer.valueDecimal;
+  } else if (answer.valueInteger !== undefined) {
+    initialAnswer ? (answer.valueInteger = initialAnswer.valueInteger) : delete answer.valueInteger;
+  } else if (answer.valueString !== undefined) {
+    initialAnswer ? (answer.valueString = initialAnswer.valueString) : delete answer.valueString;
+  } else if (answer.valueTime !== undefined) {
+    initialAnswer ? (answer.valueTime = initialAnswer.valueTime) : delete answer.valueTime;
+  } else if (answer.valueQuantity !== undefined) {
+    initialAnswer ? (answer.valueQuantity = initialAnswer.valueQuantity) : delete answer.valueQuantity;
+  } else if (answer.valueAttachment !== undefined) {
+    initialAnswer ? (answer.valueAttachment = initialAnswer.valueAttachment) : delete answer.valueAttachment;
+  }
 }
 
 function getItemsWithEnableWhen(linkId: string, definitionItems: QuestionnaireItem[]): QuestionnaireItem[] {

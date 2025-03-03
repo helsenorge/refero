@@ -1,0 +1,94 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "21b00efe-cd9d-497e-b616-c6df80e1a14e",
+  "item": [
+    {
+      "linkId": "720b7b95-654b-4f27-8662-81ac5ba6eae1",
+      "type": "group",
+      "text": "test",
+      "item": [
+        {
+          "linkId": "9c2515ae-b07f-4d5d-ca2a-692c64dcdb5b",
+          "type": "boolean",
+          "text": "test 2",
+          "item": [
+            {
+              "linkId": "2d55ef3e-da24-442a-8d09-a3d29da9ec22",
+              "type": "string",
+              "text": "text",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "9c2515ae-b07f-4d5d-ca2a-692c64dcdb5b",
+                  "operator": "=",
+                  "answerBoolean": true
+                }
+              ]
+            }
+          ],
+          "required": false
+        }
+      ],
+      "required": false
+    }
+  ]
+}

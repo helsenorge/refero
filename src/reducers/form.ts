@@ -11,7 +11,7 @@ import {
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
-import { runEnableWhen } from './runEnableWhen';
+import { runEnableWhen } from './enableWhenFunctional';
 import { getResponseItemWithPath, getQuestionnaireDefinitionItem, getQuestionnaireDefinitionItemWithLinkid } from '../util/refero-core';
 
 import { SetFormDefinitionAction, setSkjemaDefinitionAction } from '@/actions/form';
@@ -115,7 +115,19 @@ export function getFormData(state: GlobalState): FormData | null {
   }
   return state.refero.form.FormData;
 }
+function applyStateChangesBeforeEnableWhen(state: Form): Form {
+  // Force Immer to complete all pending mutations
+  const currentFormData = current(state.FormData);
+  const currentFormDefinition = current(state.FormDefinition);
 
+  // Now run enableWhen on the finalized state
+  const newContent = runEnableWhen(currentFormDefinition.Content, currentFormData.Content);
+
+  // Apply the result back to state
+  state.FormData.Content = newContent;
+
+  return state;
+}
 function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined): Array<QuestionnaireResponseItem> | undefined {
   if (!itemToAddTo) {
     return undefined;
@@ -209,7 +221,7 @@ function processDeleteRepeatItemAction(action: NewValuePayload, state: Form): Fo
   return state;
 }
 
-function copyItem(
+export function copyItem(
   source: QuestionnaireResponseItem,
   target: QuestionnaireResponseItem | undefined,
   questionnairestate: Questionnaire,
@@ -248,7 +260,7 @@ function copyItem(
     target.item.push(newResponseItem);
     copyItem(source.item[i], newResponseItem, questionnairestate, questionnaire);
   }
-  const defItem = getQuestionnaireDefinitionItem(source.linkId, questionnairestate.item);
+  const defItem = getQuestionnaireDefinitionItem(source.linkId, questionnairestate?.item);
   if (defItem?.type === itemType.BOOLEAN) {
     const answer = createQuestionnaireResponseAnswer(defItem);
     if (answer) {
@@ -331,8 +343,8 @@ function processRemoveCodingValueAction(action: NewValuePayload, state: Form): F
   }
 
   // run enableWhen to clear fields
-  runEnableWhen(action, state);
-  return state;
+  // return runEnableWhen(action, state);
+  return applyStateChangesBeforeEnableWhen(state);
 }
 
 function processRemoveCodingStringValueAction(action: NewValuePayload, state: Form): Form {
@@ -350,8 +362,8 @@ function processRemoveCodingStringValueAction(action: NewValuePayload, state: Fo
   }
 
   // run enableWhen to clear fields
-  runEnableWhen(action, state);
-  return state;
+  // return runEnableWhen(action, state);
+  return applyStateChangesBeforeEnableWhen(state);
 }
 
 function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form): Form {
@@ -380,9 +392,8 @@ function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: For
   }
   const answer = payload.newAnswer;
   responseItem.answer = answer;
-  runEnableWhen(payload, state);
-
-  return state;
+  // return runEnableWhen(payload, state);
+  return applyStateChangesBeforeEnableWhen(state);
 }
 
 function processNewValueAction(payload: NewValuePayload, state: Form): Form {
@@ -495,8 +506,8 @@ function processNewValueAction(payload: NewValuePayload, state: Form): Form {
       }
     }
   }
-  runEnableWhen(payload, state);
-  return state;
+
+  return applyStateChangesBeforeEnableWhen(state);
 }
 
 function processNewCodingStringValueAction(action: NewValuePayload, state: Form): Form {

@@ -1,51 +1,78 @@
 {
-  "title": "Bekreft navn",
   "resourceType": "Questionnaire",
-  "language": "nb-NO",
-  "name": "Bekreftelse_Navn",
+  "id": "test-nested-enablewhen",
   "status": "draft",
+  "meta": {
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
   "item": [
     {
-      "linkId": "1",
+      "linkId": "0ff00604-cf13-435d-80b6-474333d9531d",
       "type": "group",
-      "text": "Gruppe",
+      "text": "Container",
       "item": [
         {
-          "linkId": "1.1",
-          "type": "string",
-          "text": "Skriv navn",
-          "initial": [
-            {
-              "valueString": "Ola Nordmann"
-            }
-          ],
+          "linkId": "7932670f-5920-49b1-8bac-ae3bbdb772b1",
+          "type": "group",
+          "text": "Repeatable Group",
           "item": [
             {
-              "linkId": "1.1.1",
-              "type": "boolean",
-              "text": "Navnet du har skrevet inn er riktig",
-              "required": true,
-              "initial": [
-                {
-                  "valueBoolean": true
-                }
-              ],
-              "enableWhen": [{ "question": "1.1", "operator": "exists", "answerBoolean": true }]
+              "linkId": "3399ab6e-b33f-488f-f738-a2c062ad32fb",
+              "type": "string",
+              "text": "repeatable text",
+              "required": false,
+              "repeats": true
             },
             {
-              "linkId": "1.1.2",
-              "type": "string",
-              "text": "Navnet du har skrevet inn er riktig",
-              "required": true,
-              "initial": [
+              "linkId": "306836ac-d08d-43f6-8cd4-308c5c93085a",
+              "type": "integer",
+              "text": "Number",
+              "required": false
+            },
+            {
+              "linkId": "ba57fe13-063c-496d-c5d2-af7026839844",
+              "type": "boolean",
+              "text": "Confermation with enable when",
+              "item": [
                 {
-                  "valueString": "tester noe annet"
+                  "linkId": "92cecf85-de58-417a-c187-d52121058811",
+                  "type": "string",
+                  "text": "text behind enableWhen",
+                  "required": false,
+                  "enableWhen": [
+                    {
+                      "question": "ba57fe13-063c-496d-c5d2-af7026839844",
+                      "operator": "=",
+                      "answerBoolean": true
+                    }
+                  ]
+                },
+                {
+                  "linkId": "b68bb243-b20b-42bb-9122-5b3c522badda",
+                  "type": "string",
+                  "text": "repeatable text behind enableWhen",
+                  "required": false,
+                  "enableWhen": [
+                    {
+                      "question": "ba57fe13-063c-496d-c5d2-af7026839844",
+                      "operator": "=",
+                      "answerBoolean": true
+                    }
+                  ],
+                  "repeats": true
                 }
               ],
-              "enableWhen": [{ "question": "1.1", "operator": "exists", "answerBoolean": true }]
+              "required": false
             }
           ],
-          "required": false
+          "required": false,
+          "repeats": true
         }
       ],
       "required": false

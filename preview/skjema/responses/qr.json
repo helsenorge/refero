@@ -3,71 +3,94 @@
   "status": "in-progress",
   "item": [
     {
-      "linkId": "62314607-656b-47bb-8b8a-a3bcbd579eb7",
-      "text": "Initial",
+      "linkId": "0ff00604-cf13-435d-80b6-474333d9531d",
+      "text": "Container",
       "item": [
         {
-          "linkId": "d342579c-2805-49f6-8c92-f4c8ecd07750",
-          "text": "Choice 1",
-          "answer": [
+          "linkId": "7932670f-5920-49b1-8bac-ae3bbdb772b1",
+          "text": "Repeatable Group",
+          "item": [
             {
-              "valueCoding": {
-                "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                "code": "2",
-                "display": "Nei"
-              }
+              "linkId": "3399ab6e-b33f-488f-f738-a2c062ad32fb",
+              "text": "repeatable text"
             },
             {
-              "valueCoding": {
-                "code": "3",
-                "display": "Vet ikke",
-                "system": "urn:oid:2.16.578.1.12.4.1.1102"
-              }
+              "linkId": "306836ac-d08d-43f6-8cd4-308c5c93085a",
+              "text": "Number"
+            },
+            {
+              "linkId": "ba57fe13-063c-496d-c5d2-af7026839844",
+              "text": "Confermation with enable when",
+              "answer": [
+                {
+                  "valueBoolean": true,
+                  "item": [
+                    {
+                      "linkId": "92cecf85-de58-417a-c187-d52121058811",
+                      "text": "text behind enableWhen",
+                      "answer": [
+                        {
+                          "valueString": "sdf"
+                        }
+                      ]
+                    },
+                    {
+                      "linkId": "b68bb243-b20b-42bb-9122-5b3c522badda",
+                      "text": "repeatable text behind enableWhen",
+                      "answer": [
+                        {
+                          "valueString": "dsf"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
         {
-          "linkId": "8cd87d20-1583-4f79-f238-c5c5607e314a",
-          "text": "Choice 1",
-          "answer": [
+          "linkId": "7932670f-5920-49b1-8bac-ae3bbdb772b1",
+          "text": "Repeatable Group",
+          "item": [
             {
-              "valueCoding": {
-                "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                "code": "2",
-                "display": "Nei"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "linkId": "f3ca60d7-678b-49c5-812d-d76b30a5cccb",
-      "text": "Initial - radio",
-      "item": [
-        {
-          "linkId": "8c4ec2fd-e05d-40d0-8c8e-5d6672ec34b7",
-          "text": "Radio 1",
-          "answer": [
+              "linkId": "3399ab6e-b33f-488f-f738-a2c062ad32fb",
+              "text": "repeatable text"
+            },
             {
-              "valueCoding": {
-                "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                "code": "2",
-                "display": "Nei"
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "282c6123-dd00-4786-9543-8605a22aca3e",
-          "text": "radio 2",
-          "answer": [
+              "linkId": "306836ac-d08d-43f6-8cd4-308c5c93085a",
+              "text": "Number"
+            },
             {
-              "valueCoding": {
-                "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                "code": "2",
-                "display": "Nei"
-              }
+              "linkId": "ba57fe13-063c-496d-c5d2-af7026839844",
+              "text": "Confermation with enable when",
+              "answer": [
+                {
+                  "valueBoolean": false
+                },
+                {
+                  "item": [
+                    {
+                      "linkId": "92cecf85-de58-417a-c187-d52121058811",
+                      "answer": [
+                        {
+                          "valueString": "sdf"
+                        }
+                      ],
+                      "text": "text behind enableWhen"
+                    },
+                    {
+                      "linkId": "b68bb243-b20b-42bb-9122-5b3c522badda",
+                      "answer": [
+                        {
+                          "valueString": "sdf"
+                        }
+                      ],
+                      "text": "repeatable text behind enableWhen"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }

@@ -7,7 +7,6 @@ import enableWhenDataModel from './__data__/repeatsUnderEnableWhen';
 import { pathify, selectChoice, getResponseItem, enterText, clickRepeat } from './utils';
 import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 
-
 describe('update enable when action', () => {
   let newState: Form;
   let definitionItems: QuestionnaireItem[];
@@ -88,6 +87,7 @@ describe('update enable when action', () => {
     r1 = getResponseItem('7.1.2', newState, pathify('7', '7.1', '7.1.2^0'));
     r2 = getResponseItem('7.1.2', newState, pathify('7', '7.1', '7.1.2^1'));
     if (!r1) return fail();
+    console.log('state', JSON.stringify(newState, null, 2));
 
     expect(r1.answer).toMatchObject({});
     expect(r2).toBeUndefined();
