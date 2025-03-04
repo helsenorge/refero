@@ -17,6 +17,11 @@ describe('Validation-summary', () => {
     await submitForm();
     expect(screen.getByTestId(/validation-summary/i)).toBeInTheDocument();
   });
+  it('should not show validation summary when submitting form with invalid data and hideValidationSummary is true', async () => {
+    await createWrapper(q, { hideValidationSummary: true });
+    await submitForm();
+    expect(screen.queryByTestId(/validation-summary/i)).not.toBeInTheDocument();
+  });
   it('should scroll to validation summary when submitting form with invalid data', async () => {
     await createWrapper(q);
     await submitForm();

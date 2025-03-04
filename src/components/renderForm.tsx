@@ -111,9 +111,9 @@ const RenderForm = ({
   return (
     <React.Fragment>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
-        {displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
+        {displayValidationSummaryOnTop && !referoProps.hideValidationSummary && <ValidationSummary resources={resources} />}
         {children}
-        {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
+        {!displayValidationSummaryOnTop && !referoProps.hideValidationSummary && <ValidationSummary resources={resources} />}
       </form>
 
       {referoProps.customProps?.isMicroweb && !referoProps.renderCustomActionButtons ? (
