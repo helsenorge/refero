@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { configureStore } from '@reduxjs/toolkit';
 import {
   Attachment,
   Bundle,
@@ -12,8 +13,12 @@ import {
 } from 'fhir/r4';
 import { Provider } from 'react-redux';
 
-import LanguageLocales from '@helsenorge/core-utils/constants/languages';
+import Button from '@helsenorge/designsystem-react/components/Button';
 
+import LanguageLocales from '@helsenorge/core-utils/constants/languages';
+import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+
+import HelpButton from './external-components/HelpButton';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/q.json';
@@ -23,13 +28,10 @@ import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
-import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
-import { configureStore } from '@reduxjs/toolkit';
-import HelpButton from './external-components/HelpButton';
-import Button from '@helsenorge/designsystem-react/components/Button';
-import { MimeType } from '@/util/attachmentHelper';
+
 import { getId, setSkjemaDefinitionAction, TextMessage } from '@/index';
-import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import { MimeType } from '@/util/attachmentHelper';
+import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 
 const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
@@ -229,7 +231,6 @@ const FormFillerPreview = (): JSX.Element => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     questionnaireInspector: IQuestionnaireInspector
   ): void => {
-    // eslint-disable-next-line no-console
     // console.log(item, answer, actionRequester, questionnaireInspector);
   };
   const setQr = (): void => {
@@ -282,6 +283,7 @@ const FormFillerPreview = (): JSX.Element => {
                   attachmentValidTypes={[MimeType.PNG, MimeType.JPG, MimeType.JPEG, MimeType.PDF, MimeType.PlainText]}
                   attachmentMaxFileSize={10000000}
                   attachmentErrorMessage={hasTooManyAttachments(questionnaireResponse) ? 'For mange vedlegg' : undefined}
+                  hideValidationSummary={true}
                   onRequestHelpButton={(_1, _2, _3, _4, opening) => {
                     return <HelpButton opening={opening} />;
                   }}

@@ -313,6 +313,11 @@ export interface ReferoProps {
   useFormProps?: UseFormProps<{ [x: string]: any }, any>;
 
   /**
+   * If `true`, hides the validation summary. Useful for custom validation handling.
+   */
+  hideValidationSummary?: boolean;
+
+  /**
    * A callback function that allows consumers to render their own custom buttons, overriding the default FormButtons.
    * If this prop is defined, the returned JSX element will be displayed instead of the default buttons.
    */
