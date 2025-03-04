@@ -283,7 +283,7 @@ const FormFillerPreview = (): JSX.Element => {
                   attachmentValidTypes={[MimeType.PNG, MimeType.JPG, MimeType.JPEG, MimeType.PDF, MimeType.PlainText]}
                   attachmentMaxFileSize={10000000}
                   attachmentErrorMessage={hasTooManyAttachments(questionnaireResponse) ? 'For mange vedlegg' : undefined}
-                  hideValidationSummary={true}
+                  hideValidationSummary={false}
                   onRequestHelpButton={(_1, _2, _3, _4, opening) => {
                     return <HelpButton opening={opening} />;
                   }}
