@@ -1,3 +1,7 @@
+## 17.1.4
+
+- Fixed aria-label accessibility bug on anchorlinks
+
 ## 17.1.3
 
 - Fix sorting of tables with date.
