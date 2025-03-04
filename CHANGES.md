@@ -1,5 +1,6 @@
-## 17.1.4
+## 17.2.0
 
+- Added prop to be able to hide validationSummary in form
 - Fixed aria-label accessibility bug on anchorlinks
 
 ## 17.1.3
