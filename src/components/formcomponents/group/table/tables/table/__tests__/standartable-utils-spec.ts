@@ -1,5 +1,3 @@
-
-
 import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 import { Mock, vi } from 'vitest';
 
@@ -89,13 +87,13 @@ describe('createHeaderRow', () => {
         value: '',
       },
       {
-        id: '1-0',
-        index: 0,
+        id: '1-1',
+        index: 1,
         value: 'Option A',
       },
       {
-        id: '2-1',
-        index: 1,
+        id: '2-2',
+        index: 2,
         value: 'Option B',
       },
       {
@@ -120,13 +118,13 @@ describe('createHeaderRow', () => {
         value: '',
       },
       {
-        id: '1-0',
-        index: 0,
+        id: '1-1',
+        index: 1,
         value: 'Option A',
       },
       {
-        id: '2-1',
-        index: 1,
+        id: '2-2',
+        index: 2,
         value: 'Option B',
       },
     ]);
@@ -468,13 +466,13 @@ describe('getStandardTableObject', () => {
           value: '',
         },
         {
-          id: '1-0',
-          index: 0,
+          id: '1-1',
+          index: 1,
           value: 'Option A',
         },
         {
-          id: '2-1',
-          index: 1,
+          id: '2-2',
+          index: 2,
           value: 'Option B',
         },
       ],

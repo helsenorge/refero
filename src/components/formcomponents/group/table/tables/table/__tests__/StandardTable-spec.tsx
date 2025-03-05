@@ -7,9 +7,9 @@ import { q } from './__data__/';
 import { ReferoProps } from '@/types/referoProps';
 
 describe.skip('StandardTable', () => {
-  it('should first', async () => {
+  it('should render', async () => {
     await waitFor(async () => {
-      return createWrapper(q);
+      createWrapper(q);
     });
     expect(screen.queryByTestId('standardTable')).not.toBeInTheDocument();
     await userEvent.click(screen.getByTestId(/item_4208c597-87cd-4f36-825b-1a3050981c7b/));
