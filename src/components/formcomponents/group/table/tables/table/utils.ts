@@ -1,6 +1,5 @@
 import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 
-
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { IStandardTable, IStandardTableColumn, IStandardTableRow } from './interface';
@@ -16,7 +15,6 @@ import codeSystems from '@/constants/codingsystems';
 import ItemType, { IItemType } from '@/constants/itemType';
 import { Options } from '@/types/formTypes/radioGroupOptions';
 import { getContainedOptions, getSystemForItem } from '@/util/choice';
-
 
 export const emptyTable = (): IStandardTable => {
   return {
@@ -51,8 +49,8 @@ export const createHeaderRow = (choiceValues: Options[], hasExtraColumn: boolean
       value: '',
     },
     ...choiceValues.map((value, index) => ({
-      id: `${value.type}-${index}`,
-      index,
+      id: `${value.type}-${index + 1}`,
+      index: index + 1,
       value: value.label,
     })),
     ...(hasExtraColumn

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
@@ -12,7 +12,6 @@ import {
   TableRow,
 } from '@helsenorge/designsystem-react/components/Table';
 
-import { IStandardTable } from './interface';
 import { StandardTableHeader } from './StandardTableHeader';
 import { getDisplayToSortBy, getStandardTableObject } from './utils';
 import { containedResourceSelector } from '../../tableSelector';
@@ -31,17 +30,13 @@ export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }
   const resource = useAppSelector(containedResourceSelector);
 
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
-  const tableData = getStandardTableObject(items, questionnaireResponse, resource, sortDir, displayToSortBy);
-  const [table, setTable] = useState<IStandardTable>(tableData);
-  useEffect(() => {
-    setTable(tableData);
-  }, [sortDir, items, questionnaireResponse, resource, displayToSortBy, tableData]);
 
-  return table.rows.length > 0 ? (
+  const tableData = getStandardTableObject(items, questionnaireResponse, resource, sortDir, displayToSortBy);
+  return tableData.rows.length > 0 ? (
     <HnTable mode={ModeType.normal} className="page_refero__standard-table" testId="standardTable">
-      <StandardTableHeader headerRow={table.headerRow} setSortDir={setSortDir} displayToSortBy={displayToSortBy} sortDir={sortDir} />
+      <StandardTableHeader headerRow={tableData.headerRow} setSortDir={setSortDir} displayToSortBy={displayToSortBy} sortDir={sortDir} />
       <TableBody className="page_refero__standard-table__body">
-        {table.rows.map(item => (
+        {tableData.rows.map(item => (
           <TableRow key={item.id} className="page_refero__standard-table__body__row">
             {item.columns.map(({ value, id }, colIndex) => {
               if (colIndex === 0) {
@@ -62,7 +57,7 @@ export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }
                 <TableCell
                   key={id}
                   className="page_refero__standard-table__body__row__cell"
-                  dataLabel={table.headerRow[colIndex]?.value ?? ''}
+                  dataLabel={tableData.headerRow[colIndex]?.value ?? ''}
                 >
                   <span className="page_refero__standard-table__body__row__cell__value">{value}</span>
                 </TableCell>

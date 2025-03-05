@@ -23,12 +23,11 @@ export const StandardTableHeader = ({ headerRow, setSortDir, sortDir, displayToS
     setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
   };
   const sortable = displayToSortBy !== undefined ? true : false;
-
   return (
     <TableHead category={sortable ? HeaderCategory.sortable : HeaderCategory.normal} className="page_refero__standard-table__header">
       <TableRow className="page_refero__standard-table__header__row">
         {headerRow.map((column, index) => {
-          if (index === 0 || index === headerRow.length - 1) {
+          if (index === 0) {
             return (
               <TableCell dataLabel="" key={column.id}>
                 &nbsp;
