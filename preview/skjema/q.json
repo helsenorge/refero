@@ -1,12 +1,17 @@
 {
   "resourceType": "Questionnaire",
-  "id": "211f35d2-700c-4e0c-81dd-a020d17c728b",
-  "name": "NHN_Test_Tabell_Repeterendegrupper",
-  "title": "Testskjema tabell repeterende grupper",
-  "version": "0.1",
+  "language": "nb-NO",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
     "security": [
       {
         "code": "3",
@@ -15,21 +20,110 @@
       }
     ]
   },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
   "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "a732e13d-bfe6-41b2-9817-c9c925d86aa5",
   "item": [
     {
-      "linkId": "6f08b879-733e-4a85-fb3d-419b3b6b5df1",
+      "linkId": "907c416f-a1c2-4f4d-e41a-ef2db5674499",
       "type": "group",
-      "text": "Group 1",
-      "repeats": true,
+      "text": "Dates",
       "item": [
         {
-          "linkId": "26509baa-e8d8-43f1-8b2a-a6e275667fe4",
-          "type": "string",
-          "text": "mandatory",
-          "required": true
+          "linkId": "82edf246-7f9f-4f6a-ed07-267a6bf25dd5",
+          "type": "dateTime",
+          "text": "Time, day, month and year",
+          "required": false
+        },
+        {
+          "linkId": "779c9407-f60f-4e50-9ddf-b7875255be20",
+          "type": "date",
+          "text": "Day, month and year",
+          "required": false
+        },
+        {
+          "linkId": "49982d29-fa8f-4401-97db-a6bd7571b931",
+          "type": "date",
+          "text": "Month and year",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "yearMonth"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "e9786d31-d091-4c0b-9ff7-4287e8438ebc",
+          "type": "date",
+          "text": "Year",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "year"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "825177df-0f27-4804-dd07-ab24f12dd1b8",
+          "type": "time",
+          "text": "Time",
+          "required": false
         }
-      ]
+      ],
+      "required": false
     }
   ]
 }
