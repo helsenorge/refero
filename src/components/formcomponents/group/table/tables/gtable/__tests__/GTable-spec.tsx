@@ -9,7 +9,7 @@ import { ReferoProps } from '@/types/referoProps';
 describe('GTable', () => {
   it('should render', async () => {
     await waitFor(async () => {
-      return createWrapper(q);
+      createWrapper(q);
     });
     expect(screen.queryByTestId('gtable')).not.toBeInTheDocument();
     await userEvent.type(screen.getByTestId('item_103ab616-f027-482d-c725-7a8486034d8c-string-label'), 'test');
