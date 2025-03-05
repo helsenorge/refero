@@ -1,6 +1,9 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "id": "4171d6c9-43ee-4f2b-863b-2080beacd382",
+  "name": "Date_day_unit_tests",
+  "title": "Tittel",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -59,30 +62,26 @@
       }
     }
   ],
-  "id": "a732e13d-bfe6-41b2-9817-c9c925d86aa5",
   "item": [
     {
-      "linkId": "907c416f-a1c2-4f4d-e41a-ef2db5674499",
-      "type": "group",
-      "text": "Dates",
+      "linkId": "71d92d62-cad3-445b-848d-4efd281078d3",
+      "type": "date",
       "item": [
         {
-          "linkId": "82edf246-7f9f-4f6a-ed07-267a6bf25dd5",
-          "type": "dateTime",
-          "text": "Time, day, month and year",
-          "required": false
-        },
-        {
-          "linkId": "779c9407-f60f-4e50-9ddf-b7875255be20",
-          "type": "date",
-          "text": "Day, month and year",
-          "required": false
-        },
-        {
-          "linkId": "49982d29-fa8f-4401-97db-a6bd7571b931",
-          "type": "date",
-          "text": "Month and year",
+          "linkId": "466b2d0d-ad4f-4ce5-83f5-62b39db28593",
+          "type": "text",
           "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "maxLength": 250,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Help text"
+              }
+            ]
+          },
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -90,40 +89,43 @@
                 "coding": [
                   {
                     "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "yearMonth"
+                    "code": "help"
                   }
                 ]
               }
             }
           ]
-        },
-        {
-          "linkId": "e9786d31-d091-4c0b-9ff7-4287e8438ebc",
-          "type": "date",
-          "text": "Year",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "year"
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "825177df-0f27-4804-dd07-ab24f12dd1b8",
-          "type": "time",
-          "text": "Time",
-          "required": false
         }
       ],
-      "required": false
+      "required": true,
+      "repeats": true,
+      "extension": [
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
+        },
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "**Dato sublabel**"
+        }
+      ],
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Dato**"
+          }
+        ]
+      },
+      "text": "Dato"
     }
   ]
 }
