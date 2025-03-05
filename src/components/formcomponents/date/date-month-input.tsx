@@ -6,8 +6,6 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
-
 import { useMinMaxDate } from './useMinMaxDate';
 import styles from '../../../styles/date-year-month.module.css';
 import { getId, isReadOnly, isRequired } from '../../../util';
@@ -24,7 +22,6 @@ import { useResetFormField } from '@/hooks/useResetFormField';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { DateFormat } from '@/types/dateTypes';
-import { initialize } from '@/util/date-fns-utils';
 import {
   getMonthOptions,
   getPDFValueForDate,
@@ -35,7 +32,6 @@ import {
 } from '@/util/date-utils';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
-  locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   onDateValueChange: (newValue: string) => void;
 };
 
@@ -48,8 +44,6 @@ export const DateYearMonthInput = ({
   children,
   path,
 }: DateMonthProps): JSX.Element | null => {
-  initialize();
-
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
   const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();
