@@ -1,4 +1,4 @@
-## 17.2.2-beta01
+## 17.2.2
 
 - fixed bug by moving the logic for the calculators into a action creator
 
