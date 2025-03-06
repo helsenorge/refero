@@ -3,71 +3,145 @@
   "status": "in-progress",
   "item": [
     {
-      "linkId": "62314607-656b-47bb-8b8a-a3bcbd579eb7",
-      "text": "Initial",
+      "linkId": "0701f3cf-73f5-48f7-8317-24c1223264a8",
+      "text": "Input scoring and calculation and copying of scoringvalue",
       "item": [
         {
-          "linkId": "d342579c-2805-49f6-8c92-f4c8ecd07750",
-          "text": "Choice 1",
+          "linkId": "verdi1",
+          "text": "Verdi 1",
           "answer": [
             {
               "valueCoding": {
-                "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                "code": "2",
-                "display": "Nei"
-              }
-            },
-            {
-              "valueCoding": {
-                "code": "3",
-                "display": "Vet ikke",
-                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+                "code": "100",
+                "display": "Ja",
+                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3"
               }
             }
           ]
         },
         {
-          "linkId": "8cd87d20-1583-4f79-f238-c5c5607e314a",
-          "text": "Choice 1",
+          "linkId": "verdi2",
+          "text": "Verdi 2",
           "answer": [
             {
               "valueCoding": {
-                "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                "code": "2",
-                "display": "Nei"
+                "code": "200",
+                "display": "Nei",
+                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3"
               }
+            }
+          ]
+        },
+        {
+          "linkId": "verdi3",
+          "text": "Verdi 3",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "100",
+                "display": "Ja",
+                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "verdi4",
+          "text": "Verdi 4",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "100",
+                "display": "Ja",
+                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "Delsum",
+          "text": "Delsum",
+          "answer": [
+            {
+              "valueInteger": 500
+            }
+          ]
+        },
+        {
+          "linkId": "Totalsum",
+          "text": "Totalsum",
+          "answer": [
+            {
+              "valueInteger": 500
+            }
+          ]
+        },
+        {
+          "linkId": "aritmetisk_gjennomsnitt",
+          "text": "Aritmetisk gjennomsnitt basert på totalsum.",
+          "answer": [
+            {
+              "valueInteger": 125
+            }
+          ]
+        },
+        {
+          "linkId": "kopiert_felt",
+          "text": "Kopi",
+          "answer": [
+            {
+              "valueInteger": 500
+            }
+          ]
+        },
+        {
+          "linkId": "aritmetisk_gjennomsnitt_kopi",
+          "text": "Aritmetisk gjennomsnitt basert på kopiert felt",
+          "answer": [
+            {
+              "valueInteger": 125
             }
           ]
         }
       ]
     },
     {
-      "linkId": "f3ca60d7-678b-49c5-812d-d76b30a5cccb",
-      "text": "Initial - radio",
+      "linkId": "498140b3-7c26-4492-dea5-24c829552347",
+      "text": "Regning - Fhir path",
       "item": [
         {
-          "linkId": "8c4ec2fd-e05d-40d0-8c8e-5d6672ec34b7",
-          "text": "Radio 1",
+          "linkId": "Tall1",
+          "text": "Tall 1",
           "answer": [
             {
-              "valueCoding": {
-                "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                "code": "2",
-                "display": "Nei"
-              }
+              "valueInteger": 10
             }
           ]
         },
         {
-          "linkId": "282c6123-dd00-4786-9543-8605a22aca3e",
-          "text": "radio 2",
+          "linkId": "Tall2",
+          "text": "Tall 2",
           "answer": [
             {
-              "valueCoding": {
-                "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                "code": "2",
-                "display": "Nei"
-              }
+              "valueInteger": 20
+            }
+          ]
+        },
+        {
+          "linkId": "Sum",
+          "text": "Sum",
+          "answer": [
+            {
+              "valueInteger": 30
+            }
+          ]
+        },
+        {
+          "linkId": "Gjennomsnitt",
+          "text": "Gjennomsnitt",
+          "answer": [
+            {
+              "valueInteger": 15
             }
           ]
         }

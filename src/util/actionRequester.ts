@@ -21,6 +21,7 @@ import {
   newAnswerValueAction,
 } from '@/actions/newValue';
 import itemControlConstants from '@/constants/itemcontrol';
+import { AppDispatch } from '@/reducers';
 
 export interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;
@@ -238,5 +239,13 @@ export class ActionRequester implements IActionRequester {
   }
   public addManyActions(actions: PayloadAction<NewValuePayload, string>[]): void {
     this.actions.push(...actions);
+  }
+
+  /*
+   * @description: Dispatches all actions in the actions array and then clears the array.
+   */
+  public dispatchAllActions(dispatch: AppDispatch): void {
+    this.actions.forEach(action => dispatch(action));
+    this.actions = [];
   }
 }
