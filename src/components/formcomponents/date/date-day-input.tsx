@@ -6,7 +6,6 @@ import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
-import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
 import { useMinMaxDate } from './useMinMaxDate';
@@ -24,11 +23,9 @@ import { useResetFormField } from '@/hooks/useResetFormField';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { DateFormat, defaultMaxDate, defaultMinDate } from '@/types/dateTypes';
-import { initialize } from '@/util/date-fns-utils';
 import { getPDFValueForDate, parseStringToDate, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
-  locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   onDateValueChange: (newValue: string) => void;
 };
 
@@ -41,7 +38,6 @@ export const DateDayInput = ({
   children,
   path,
 }: DateDayInputProps): JSX.Element | null => {
-  initialize();
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
@@ -75,7 +71,7 @@ export const DateDayInput = ({
 
   const dateAnswerValue = getDateAnswerValue(answer);
   const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
-  const [dateValue, setDateValue] = useState(dateAnswerValueParsed);
+  const [dateValue, setDateValue] = useState<Date | undefined>(dateAnswerValueParsed);
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMdd, DateFormat.dMMyyyy);
   useResetFormField(idWithLinkIdAndItemIndex, dateAnswerValue);
 
@@ -88,17 +84,15 @@ export const DateDayInput = ({
   const handleChange = (newDate: string | Date | undefined): void => {
     if (typeof newDate === 'string') {
       const parsedDate = parseStringToDate(newDate);
-      if (parsedDate && isValid(parsedDate)) {
+      if (isValid(parsedDate)) {
         setDateValue(parsedDate);
-        onDateValueChange(format(parsedDate, DateFormat.yyyyMMdd));
-      } else {
-        onDateValueChange(newDate);
       }
+      onDateValueChange(parsedDate ? format(parsedDate, DateFormat.yyyyMMdd) : '');
     } else {
       if (newDate && isValid(newDate)) {
         setDateValue(newDate);
-        onDateValueChange(format(newDate, DateFormat.yyyyMMdd));
       }
+      onDateValueChange(newDate ? format(newDate, DateFormat.yyyyMMdd) : '');
     }
   };
 

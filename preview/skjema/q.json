@@ -239,7 +239,6 @@
       "linkId": "498140b3-7c26-4492-dea5-24c829552347",
       "type": "group",
       "text": "Regning - Fhir path",
-      "required": false,
       "item": [
         { "linkId": "Tall1", "type": "integer", "text": "Tall 1", "required": false },
         { "linkId": "Tall2", "type": "integer", "text": "Tall 2", "required": false },
@@ -267,7 +266,8 @@
             }
           ]
         }
-      ]
+      ],
+      "required": false
     }
   ]
 }

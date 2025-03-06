@@ -1,7 +1,5 @@
 import { useCallback, useMemo } from 'react';
 
-import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
-
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
@@ -17,11 +15,13 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
-
+import { initialize } from '@/util/date-fns-utils';
 export type DateProps = QuestionnaireComponentItemProps;
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
-  const { language, linkId, path, index, children } = props;
+  initialize();
+
+  const { linkId, path, index, children } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const answer = useGetAnswer(linkId, path);
@@ -46,9 +46,6 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
     [answer, dispatch, item, onAnswerChange, path, promptLoginMessage]
   );
 
-  const locale = useMemo(() => {
-    return language?.toLowerCase() === 'en-gb' ? LanguageLocales.ENGLISH : LanguageLocales.NORWEGIAN;
-  }, [language]);
   const isYearMonth = itemControls?.some(control => control.code === YEARMONTH);
   const isYear = itemControls?.some(control => control.code === YEAR);
 
@@ -56,11 +53,11 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
     if (isYear) {
       return <DateYearInput {...props} onDateValueChange={onDateValueChange} />;
     } else if (isYearMonth) {
-      return <DateYearMonthInput {...props} locale={locale} onDateValueChange={onDateValueChange} />;
+      return <DateYearMonthInput {...props} onDateValueChange={onDateValueChange} />;
     } else {
-      return <DateDayInput {...props} locale={locale} onDateValueChange={onDateValueChange} />;
+      return <DateDayInput {...props} onDateValueChange={onDateValueChange} />;
     }
-  }, [itemControls, locale, onDateValueChange, props]);
+  }, [onDateValueChange, props, isYear, isYearMonth]);
 
   if (!element) {
     return null;
