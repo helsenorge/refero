@@ -1,3 +1,7 @@
+## 17.2.2-beta01
+
+- fixed bug by moving the logic for the calculators into a action creator
+
 ## 17.2.1
 
 - Fixed a bug with standard table where the headervalue did not represent the correct value from the choice input elements
