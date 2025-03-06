@@ -1,0 +1,46 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
+
+import { runFhirPathQrUpdater } from '@/calculators/runFhirPathUpdater';
+import { runScoringCalculator } from '@/calculators/runScoringCalculator';
+import { AppDispatch, RootState } from '@/reducers';
+import { ActionRequester } from '@/util/actionRequester';
+import { FhirPathExtensions } from '@/util/FhirPathExtensions';
+import { ScoringCalculator } from '@/util/scoringCalculator';
+
+export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootState; dispatch: AppDispatch }>(
+  'questionnaireResponse/update',
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    const state = getState();
+    const questionnaire = state.refero.form.FormDefinition.Content;
+    const questionnaireResponse = state.refero.form.FormData.Content;
+
+    if (!questionnaire || !questionnaireResponse) {
+      return rejectWithValue('Missing questionnaire or questionnaireResponse');
+    }
+
+    try {
+      const scoringActionRequester = new ActionRequester(questionnaire, questionnaireResponse);
+
+      await runScoringCalculator(questionnaire, questionnaireResponse, scoringActionRequester, new ScoringCalculator(questionnaire));
+
+      scoringActionRequester.dispatchAllActions(dispatch);
+
+      const updatedQuestionnaireResponse = getState().refero.form.FormData.Content;
+      if (!updatedQuestionnaireResponse) {
+        return rejectWithValue('Missing updated questionnaire response');
+      }
+      const fhirActionRequester = new ActionRequester(questionnaire, updatedQuestionnaireResponse);
+
+      await runFhirPathQrUpdater({
+        questionnaire,
+        questionnaireResponse: updatedQuestionnaireResponse,
+        dispatch,
+        actionRequester: fhirActionRequester,
+        fhirPathUpdater: new FhirPathExtensions(questionnaire),
+      });
+      fhirActionRequester.dispatchAllActions(dispatch);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
