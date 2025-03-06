@@ -238,7 +238,6 @@
     {
       "linkId": "498140b3-7c26-4492-dea5-24c829552347",
       "type": "group",
-      "text": "Regning - Fhir path",
       "item": [
         { "linkId": "Tall1", "type": "integer", "text": "Tall 1", "required": false },
         { "linkId": "Tall2", "type": "integer", "text": "Tall 2", "required": false },
@@ -267,7 +266,35 @@
           ]
         }
       ],
-      "required": false
+      "required": true,
+      "repeats": true,
+      "extension": [
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
+        },
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "**Dato sublabel**"
+        }
+      ],
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Dato**"
+          }
+        ]
+      },
+      "text": "Dato"
     }
   ]
 }
