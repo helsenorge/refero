@@ -1,3 +1,7 @@
+## 17.3.0-beta01
+
+- POC: new component for form buttons. uses the old buttons but is customizable through the questionnaire
+
 ## 17.2.2
 
 - fixed bug by moving the logic for the calculators into a action creator
