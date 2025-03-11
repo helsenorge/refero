@@ -81,7 +81,7 @@ export function getExtension(url: string, item?: QuestionnaireItem | Element | Q
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }
-  const filteredExtension: Array<Extension> = item.extension.filter((e: Extension) => e.url === url);
+  const filteredExtension: Extension[] = item.extension.filter((e: Extension) => e.url === url);
   if (!filteredExtension || filteredExtension.length === 0) {
     return undefined;
   }
@@ -201,7 +201,20 @@ export const getCodingTextTableValues = (item?: QuestionnaireItem): TABLE_CODES_
       .filter(isTableCode) || [];
   return codeValues;
 };
+export const isButtonContainerCode = (item?: QuestionnaireItem): boolean => {
+  const extension = getItemControlExtensionValue(item);
+  return !!extension?.find(x => x.code === 'buttonGroup');
+};
 
+export const getActionButtonGuidedActionCoding = (item?: QuestionnaireItem): Coding | undefined => {
+  const extension = getExtension(Extensions.QUESTIONNAIRE_ACTION_BUTTON, item);
+  return extension?.valueCoding;
+};
+
+export const getActionButtonItemControlCoding = (item?: QuestionnaireItem): Coding | undefined => {
+  const extension = getExtension(Extensions.QUESTIONNAIRE_ACTION_BUTTON_ITEM_CONTROL, item);
+  return extension?.valueCoding;
+};
 export function getMarkdownExtensionValue(item?: QuestionnaireItem | Element): string | undefined {
   const markdownExtension = getExtension(Extensions.MARKDOWN_URL, item);
   if (!markdownExtension || !markdownExtension.valueMarkdown) {

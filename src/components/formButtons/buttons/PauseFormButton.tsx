@@ -9,9 +9,16 @@ type Props = {
   pauseButtonText: string;
   pauseButtonDisabled?: boolean;
   isStepView?: boolean;
+  children?: React.ReactNode;
 };
 
-export const PauseFormButton = ({ pauseButtonText, onPauseButtonClicked, pauseButtonDisabled, isStepView }: Props): JSX.Element | null => {
+export const PauseFormButton = ({
+  pauseButtonText,
+  onPauseButtonClicked,
+  pauseButtonDisabled,
+  isStepView,
+  children,
+}: Props): JSX.Element | null => {
   const breakpoint = useBreakpoint();
 
   if (!onPauseButtonClicked) {
@@ -26,6 +33,7 @@ export const PauseFormButton = ({ pauseButtonText, onPauseButtonClicked, pauseBu
         {displaySaveIcon && <Icon svgIcon={Save} />}
         {pauseButtonText}
       </Button>
+      {children}
     </div>
   );
 };

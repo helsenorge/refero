@@ -5,6 +5,7 @@ import { Form, FormData, FormDefinition, getFormDefinition } from './form';
 
 import { GlobalState } from '.';
 
+import { isButtonContainerCode } from '@/util/extension';
 import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
 
 export const questionnaireSelector = createSelector(
@@ -192,3 +193,36 @@ export const languageSelector = createSelector(
   [(state: GlobalState): QuestionnaireResponse | null | undefined => state.refero.form.FormData?.Content],
   formData => formData?.language
 );
+function findItemsWithButtonContainerExtension(item?: QuestionnaireItem[]): boolean {
+  // If no items to check, return false
+  if (!item) {
+    return false;
+  }
+
+  // Iterate through each item
+  for (const currentItem of item) {
+    // If this is a group item, check if it has the extension
+    if (currentItem.type === 'group') {
+      if (isButtonContainerCode(currentItem)) {
+        return true;
+      }
+    }
+
+    // If this item has nested items, recursively check them
+    if (currentItem.item && currentItem.item.length > 0) {
+      const foundInNestedItems = findItemsWithButtonContainerExtension(currentItem.item);
+      if (foundInNestedItems) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+export const formHasButtonsInDefinitionSelector = createSelector([questionnaireSelector], questionnaire => {
+  if (!questionnaire) {
+    return false;
+  }
+  return findItemsWithButtonContainerExtension(questionnaire.item);
+});

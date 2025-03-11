@@ -9,9 +9,15 @@ type Props = {
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     | ((e: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined) => void);
   submitButtonText: string;
+  children?: React.ReactNode;
 };
 
-export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSubmitButtonClicked }: Props): JSX.Element | null => {
+export const SubmitFormButton = ({
+  submitButtonText,
+  submitButtonDisabled,
+  onSubmitButtonClicked,
+  children,
+}: Props): JSX.Element | null => {
   const handleSubmit = (
     // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     e?: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined
@@ -26,6 +32,7 @@ export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSub
       <Button type="submit" disabled={submitButtonDisabled} onClick={handleSubmit} testId="refero-submit-button">
         {submitButtonText}
       </Button>
+      {children}
     </div>
   );
 };

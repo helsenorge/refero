@@ -46,7 +46,7 @@ const ItemRenderer = memo(function ItemRenderer({
     return null;
   }
 
-  const ItemComponent = getComponentForItem(item.type);
+  const ItemComponent = getComponentForItem(item);
   if (!ItemComponent) {
     return null;
   }

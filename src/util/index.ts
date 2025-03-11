@@ -14,17 +14,19 @@ import {
   getSublabelExtensionValue,
   getHyperlinkExtensionValue,
   getCopyExtension,
+  getActionButtonItemControlCoding,
 } from './extension';
-
 import CodingSystemConstants from '../constants/codingsystems';
+import codeSystems from '../constants/codingsystems';
 import { Extensions } from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
-import { Resources } from '@/util/resources';
-import codeSystems from '../constants/codingsystems';
+
+import { ButtonExtensionCodeValue } from '@/constants/buttonTypes';
 import { VALIDATE_READONLY_CODE } from '@/constants/codes';
+import { Resources } from '@/util/resources';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -44,6 +46,24 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
     return lowerCode.indexOf(value.toLocaleLowerCase()) === -1 ? false : true;
   });
   return isTable;
+};
+
+export const itemIsButtonCode = (extensionCode: string | string[]): boolean => {
+  let lowerCode: string | string[] = '';
+  if (Array.isArray(extensionCode)) {
+    lowerCode = extensionCode.map(code => code.toLocaleLowerCase());
+  } else {
+    lowerCode = extensionCode.toLowerCase();
+  }
+  const itemIsButton = Object.values(ButtonExtensionCodeValue).some(value => {
+    return lowerCode.indexOf(value.toLocaleLowerCase()) === -1 ? false : true;
+  });
+  return itemIsButton;
+};
+
+export const itemHasButtonExtension = (item?: QuestionnaireItem): boolean => {
+  const coding = getActionButtonItemControlCoding(item);
+  return itemIsButtonCode(coding?.code || []);
 };
 
 export function isStringEmpty(string: string | undefined): boolean {

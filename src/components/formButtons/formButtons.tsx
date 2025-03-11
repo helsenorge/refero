@@ -4,9 +4,9 @@ import { QuestionnaireResponse } from 'fhir/r4';
 
 import { ButtonOrder, ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../types/formTypes/formButton';
 
-import { CancelFormButton } from './CancelFormButton';
-import { PauseFormButton } from './PauseFormButton';
-import { SubmitFormButton } from './SubmitFormButton';
+import { CancelFormButton } from './buttons/CancelFormButton';
+import { PauseFormButton } from './buttons/PauseFormButton';
+import { SubmitFormButton } from './buttons/SubmitFormButton';
 
 import styles from './formButtons.module.css';
 

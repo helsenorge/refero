@@ -132,20 +132,15 @@ describe('Date day', () => {
       };
       await createWrapper(questionnaire);
       const input = '31.05.1994';
-      await waitFor(async () => {
-        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[0], input);
-        const repeatButton = screen.getByTestId(/-repeat-button/i);
-        await userEvent.click(repeatButton);
-        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[1], input);
-      });
-      await waitFor(async () => {
-        await userEvent.click(screen.getAllByTestId(/-repeat-button/i)[0]);
-        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[2], input);
-      });
-      await waitFor(async () => {
-        await userEvent.click(screen.getAllByTestId(/-repeat-button/i)[0]);
-        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[3], input);
-      });
+
+      await userEvent.type(screen.queryAllByLabelText(/Dato/i)[0], input);
+      await userEvent.click(screen.getByTestId(/-repeat-button/i));
+      await userEvent.type(screen.queryAllByLabelText(/Dato/i)[1], input);
+      await userEvent.click(screen.getAllByTestId(/-repeat-button/i)[0]);
+      await userEvent.type(screen.queryAllByLabelText(/Dato/i)[2], input);
+      await userEvent.click(screen.getAllByTestId(/-repeat-button/i)[0]);
+      await userEvent.type(screen.queryAllByLabelText(/Dato/i)[3], input);
+
       expect(screen.queryAllByLabelText(/Dato/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -162,11 +157,18 @@ describe('Date day', () => {
 
       await waitFor(async () => {
         await userEvent.type(screen.queryAllByLabelText(/Dato/i)[0], input);
-        await userEvent.click(screen.getByTestId(/-repeat-button/i));
-        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[1], input);
       });
       await waitFor(async () => {
+        await userEvent.click(screen.getByTestId(/-repeat-button/i));
+      });
+      await waitFor(async () => {
+        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[1], input);
+      });
+
+      await waitFor(async () => {
         await userEvent.click(screen.getAllByTestId(/-repeat-button/i)[0]);
+      });
+      await waitFor(async () => {
         await userEvent.type(screen.queryAllByLabelText(/Dato/i)[2], input);
       });
 

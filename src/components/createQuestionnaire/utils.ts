@@ -9,6 +9,7 @@ import DateTimeInput from '@formcomponents/date/date-time';
 import Time from '@formcomponents/date/time';
 import Decimal from '@formcomponents/decimal/decimal';
 import Display from '@formcomponents/display/display';
+import FormButtonComponent from '@formcomponents/formButton/FormButtonComponent';
 import Integer from '@formcomponents/integer/integer';
 import OpenChoice from '@formcomponents/open-choice/open-choice';
 import Quantity from '@formcomponents/quantity/quantity';
@@ -19,7 +20,7 @@ import { QuestionnaireResponseItem, QuestionnaireItem } from 'fhir/r4';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import ItemType from '@/constants/itemType';
 import { FormData } from '@/reducers/form';
-import { isRepeat } from '@/util';
+import { isRepeat, itemHasButtonExtension } from '@/util';
 import { createIdSuffix, getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
 
 export const getResponseItems = (
@@ -79,47 +80,50 @@ function getResponseItemWithPath(path: Path[] = [], items: QuestionnaireResponse
 
   return responseItem;
 }
-export function getComponentForItem(type: string): ComponentType<QuestionnaireComponentItemProps> | undefined {
-  if (String(type) === ItemType.GROUP) {
+export function getComponentForItem(item: QuestionnaireItem): ComponentType<QuestionnaireComponentItemProps> | undefined {
+  if (String(item.type) === ItemType.GROUP) {
     return Group;
   }
-  if (String(type) === ItemType.DISPLAY) {
+  if (String(item.type) === ItemType.DISPLAY) {
     return Display;
   }
-  if (String(type) === ItemType.BOOLEAN) {
+  if (String(item.type) === ItemType.BOOLEAN) {
     return Boolean;
   }
-  if (String(type) === ItemType.DECIMAL) {
+  if (String(item.type) === ItemType.DECIMAL) {
     return Decimal;
   }
-  if (String(type) === ItemType.INTEGER) {
+  if (String(item.type) === ItemType.INTEGER) {
     return Integer;
   }
-  if (String(type) === ItemType.DATE) {
+  if (String(item.type) === ItemType.DATE) {
     return Date;
   }
-  if (String(type) === ItemType.DATETIME) {
+  if (String(item.type) === ItemType.DATETIME) {
     return DateTimeInput;
   }
-  if (String(type) === ItemType.TIME) {
+  if (String(item.type) === ItemType.TIME) {
     return Time;
   }
-  if (String(type) === ItemType.STRING) {
+  if (String(item.type) === ItemType.STRING) {
+    if (itemHasButtonExtension(item)) {
+      return FormButtonComponent;
+    }
     return StringComponent;
   }
-  if (String(type) === ItemType.TEXT) {
+  if (String(item.type) === ItemType.TEXT) {
     return Text;
   }
-  if (String(type) === ItemType.CHOICE) {
+  if (String(item.type) === ItemType.CHOICE) {
     return Choice;
   }
-  if (String(type) === ItemType.OPENCHOICE) {
+  if (String(item.type) === ItemType.OPENCHOICE) {
     return OpenChoice;
   }
-  if (String(type) === ItemType.ATTATCHMENT) {
+  if (String(item.type) === ItemType.ATTATCHMENT) {
     return Attachment;
   }
-  if (String(type) === ItemType.QUANTITY) {
+  if (String(item.type) === ItemType.QUANTITY) {
     return Quantity;
   }
   return undefined;

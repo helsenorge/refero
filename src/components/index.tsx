@@ -9,6 +9,7 @@ import StepView from './stepView';
 
 import { setSkjemaDefinitionAction } from '@/actions/form';
 import { AttachmentProvider } from '@/context/AttachmentContext';
+import { ButtonProvider } from '@/context/ButtonContext';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
@@ -160,29 +161,38 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
       <ExternalRenderProvider {...externalRenderProps}>
         <AttachmentProvider {...attachmentProviderProps}>
           <FormProvider {...methods}>
-            {isStepView ? (
-              <StepView
-                isAuthorized={authorized}
-                referoProps={props}
-                resources={resources}
-                onSave={handleSave}
-                onSubmit={handleSubmit}
-                methods={methods}
-              />
-            ) : (
-              <RenderForm
-                isAuthorized={authorized}
-                isStepView={false}
-                referoProps={props}
-                resources={resources}
-                onSave={handleSave}
-                onSubmit={handleSubmit}
-                methods={methods}
-                onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
-              >
-                <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
-              </RenderForm>
-            )}
+            <ButtonProvider
+              isStepView={isStepView}
+              isAuthorized={authorized}
+              cancelButtonProps={{ onCancelButtonClicked: props.onCancel }}
+              saveButtonProps={{ onPauseButtonClicked: handleSave }}
+              onSubmit={handleSubmit}
+              methods={methods}
+            >
+              {isStepView ? (
+                <StepView
+                  isAuthorized={authorized}
+                  referoProps={props}
+                  resources={resources}
+                  onSave={handleSave}
+                  onSubmit={handleSubmit}
+                  methods={methods}
+                />
+              ) : (
+                <RenderForm
+                  isAuthorized={authorized}
+                  isStepView={false}
+                  referoProps={props}
+                  resources={resources}
+                  onSave={handleSave}
+                  onSubmit={handleSubmit}
+                  methods={methods}
+                  onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
+                >
+                  <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
+                </RenderForm>
+              )}
+            </ButtonProvider>
           </FormProvider>
         </AttachmentProvider>
       </ExternalRenderProvider>
