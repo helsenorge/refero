@@ -2,7 +2,7 @@ import { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
 
-import { ButtonOrder, ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../types/formTypes/formButton';
+import { ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../types/formTypes/formButton';
 
 import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';
@@ -25,10 +25,6 @@ interface FormButtonsInterface {
   isStepView?: boolean;
   isAuthorized?: boolean;
   loginButton?: JSX.Element;
-  overrideButtonOrder?: ButtonOrder;
-  isMicrowebStep?: boolean;
-  cancelUrl?: string;
-  hideBackButton?: boolean;
 }
 
 const FormButtons = ({
@@ -43,16 +39,9 @@ const FormButtons = ({
   onPauseButtonClicked,
   isAuthorized,
   loginButton,
-  overrideButtonOrder,
-  isMicrowebStep,
-  cancelUrl,
-  hideBackButton,
 }: FormButtonsInterface): JSX.Element => {
   let buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
-  if (overrideButtonOrder) {
-    buttonOrder = overrideButtonOrder;
-  }
-
+  
   return (
     <div className={`${styles.formButtonsWrapper} page_refero__buttons`}>
       {!isAuthorized && loginButton ? (
@@ -62,14 +51,10 @@ const FormButtons = ({
           {Object.values(buttonOrder).map((buttonType: ButtonType): JSX.Element | null => {
             switch (buttonType) {
               case ButtonType.pauseButton:
-                if (isMicrowebStep && hideBackButton) {
-                  return <></>;
-                }
-
                 return (
                   <PauseFormButton
                     key={buttonType}
-                    isStepView={isStepView || isMicrowebStep}
+                    isStepView={isStepView}
                     pauseButtonText={pauseButtonText}
                     onPauseButtonClicked={onPauseButtonClicked}
                     pauseButtonDisabled={pauseButtonDisabled}
@@ -81,8 +66,6 @@ const FormButtons = ({
                     key={buttonType}
                     cancelButtonText={cancelButtonText}
                     onCancelButtonClicked={onCancelButtonClicked}
-                    isMicroweb={isMicrowebStep}
-                    cancelUrl={cancelUrl}
                   />
                 );
               case ButtonType.submitButton:
