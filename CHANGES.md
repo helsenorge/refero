@@ -1,3 +1,7 @@
+## 17.2.3
+
+- table with itemControl 'table' now supports showing value from other column if only open-choice other value is selected
+
 ## 17.2.2
 
 - fixed bug by moving the logic for the calculators into a action creator
