@@ -275,6 +275,12 @@ function copyItem(
   }
   if (defItem && defItem.type !== itemType.ATTATCHMENT) {
     for (let i = 0; source.answer && i < source.answer.length; i++) {
+      if (defItem.initial && defItem.initial.length > 0) {
+        if (!target.answer) {
+          target.answer = [];
+        }
+        target.answer.push(...defItem.initial);
+      }
       if (!source.answer[i].item || source.answer[i].item?.length === 0) {
         continue;
       }

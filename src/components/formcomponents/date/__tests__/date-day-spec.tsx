@@ -162,14 +162,20 @@ describe('Date day', () => {
 
       await waitFor(async () => {
         await userEvent.type(screen.queryAllByLabelText(/Dato/i)[0], input);
-        await userEvent.click(screen.getByTestId(/-repeat-button/i));
-        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[1], input);
       });
       await waitFor(async () => {
-        await userEvent.click(screen.getAllByTestId(/-repeat-button/i)[0]);
-        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[2], input);
+        await userEvent.click(screen.getByTestId(/-repeat-button/i));
+      });
+      await waitFor(async () => {
+        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[1], input);
       });
 
+      await waitFor(async () => {
+        await userEvent.click(screen.getAllByTestId(/-repeat-button/i)[0]);
+      });
+      await waitFor(async () => {
+        await userEvent.type(screen.queryAllByLabelText(/Dato/i)[2], input);
+      });
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {

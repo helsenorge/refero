@@ -64,7 +64,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     },
     []
   );
-  const getValue = useCallback((): (string | undefined)[] | undefined => {
+  const getValue = (): (string | undefined)[] | undefined => {
     if (Array.isArray(answer)) {
       return answer.map(el => el?.valueCoding?.code).filter(Boolean);
     } else if (answer?.valueCoding?.code) {
@@ -80,7 +80,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
     return undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [answer, item]);
+  };
 
   const value = getValue();
   useResetFormField(props.idWithLinkIdAndItemIndex, value);

@@ -2,7 +2,9 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): QuestionnaireResponseItemAnswer | undefined {
   const answer: QuestionnaireResponseItemAnswer = {};
+
   let hasInitialAnswer = false;
+  const initialSelectedOption = item?.answerOption?.find(x => x.initialSelected);
 
   if (item.initial && item.initial.length > 0 && item.initial[0].valueBoolean !== undefined) {
     answer.valueBoolean = item.initial[0].valueBoolean;
@@ -46,6 +48,27 @@ export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): Ques
   if (item.initial && item.initial.length > 0 && item.initial[0].valueAttachment !== undefined) {
     hasInitialAnswer = true;
     answer.valueAttachment = item.initial[0].valueAttachment;
+  }
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueReference !== undefined) {
+    hasInitialAnswer = true;
+    answer.valueReference = item.initial[0].valueReference;
+  }
+  if (initialSelectedOption) {
+    hasInitialAnswer = true;
+    if (initialSelectedOption.valueCoding) {
+      answer.valueCoding = initialSelectedOption.valueCoding;
+    }
+    if (initialSelectedOption.valueString) {
+      answer.valueString = initialSelectedOption.valueString;
+    } else if (initialSelectedOption.valueDate) {
+      answer.valueString = initialSelectedOption.valueDate;
+    } else if (initialSelectedOption.valueTime) {
+      answer.valueString = initialSelectedOption.valueTime;
+    } else if (initialSelectedOption.valueInteger) {
+      answer.valueInteger = initialSelectedOption.valueInteger;
+    } else if (initialSelectedOption.valueReference) {
+      answer.valueReference = initialSelectedOption.valueReference;
+    }
   }
 
   return hasInitialAnswer ? answer : undefined;
