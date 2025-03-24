@@ -196,7 +196,10 @@ export const findFirstChoiceItem = (items: QuestionnaireItem[]): QuestionnaireIt
 export const needsExtraColumn = (items: QuestionnaireItem[], responseItems: QuestionnaireResponse): boolean => {
   const answers = getEnabledQuestionnaireItemsWithAnswers(items, responseItems) || [];
   return answers.some(item => {
-    return item?.item?.length && item.item.length > 0;
+    return (
+      (item?.item?.length && item.item.length > 0) ||
+      (item?.type === ItemType.OPENCHOICE && item?.answer?.some(answer => answer.valueCoding?.code === 'other'))
+    );
   });
 };
 
