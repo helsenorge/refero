@@ -1,31 +1,31 @@
 {
   "resourceType": "Bundle",
-  "id": "192871b4-83e6-4028-9439-2609cdf9d7d8",
+  "id": "047b51f3-5962-446a-a842-6654db1eea58",
   "type": "searchset",
   "total": 1,
   "link": [
     {
       "relation": "self",
-      "url": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=3a0f51a9-9b34-4ef3-b387-000bece05ab2&_offset=0"
+      "url": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=37adb5cb-cddd-457e-8d5c-2663fcc83ccb&_offset=0"
     },
     {
       "relation": "first",
-      "url": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=3a0f51a9-9b34-4ef3-b387-000bece05ab2&_offset=0"
+      "url": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=37adb5cb-cddd-457e-8d5c-2663fcc83ccb&_offset=0"
     },
     {
       "relation": "last",
-      "url": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=3a0f51a9-9b34-4ef3-b387-000bece05ab2&_offset=0"
+      "url": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=37adb5cb-cddd-457e-8d5c-2663fcc83ccb&_offset=0"
     }
   ],
   "entry": [
     {
-      "fullUrl": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/Questionnaire/d468d2e2-5293-4dee-81b4-75d86d92f2ee/_history/1",
+      "fullUrl": "https://api-fnsp-dev.int-hn.nhn.no/skjemakatalog/api/v1/Questionnaire/4cf4f695-1789-48fc-aadf-f94e553ffdd2/_history/6",
       "resource": {
         "resourceType": "Questionnaire",
-        "id": "d468d2e2-5293-4dee-81b4-75d86d92f2ee",
+        "id": "4cf4f695-1789-48fc-aadf-f94e553ffdd2",
         "meta": {
-          "versionId": "1",
-          "lastUpdated": "2025-03-13T07:32:25.946+00:00",
+          "versionId": "6",
+          "lastUpdated": "2025-02-20T12:09:07.242+00:00",
           "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
           "security": [
             {
@@ -43,6 +43,39 @@
           ]
         },
         "language": "nb-NO",
+        "contained": [
+          {
+            "resourceType": "ValueSet",
+            "id": "9523",
+            "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+            "version": "1.0",
+            "name": "urn:oid:9523",
+            "title": "Ja / Nei / Usikker (structor)",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                  "concept": [
+                    {
+                      "code": "1",
+                      "display": "Ja"
+                    },
+                    {
+                      "code": "2",
+                      "display": "Nei"
+                    },
+                    {
+                      "code": "3",
+                      "display": "Usikker"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
         "extension": [
           {
             "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
@@ -74,15 +107,21 @@
                 }
               ]
             }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+            "valueReference": {
+              "reference": "Endpoint/1000"
+            }
           }
         ],
-        "url": "Questionnaire/d468d2e2-5293-4dee-81b4-75d86d92f2ee",
+        "url": "Questionnaire/4cf4f695-1789-48fc-aadf-f94e553ffdd2",
         "version": "0.1",
-        "name": "Gjenta_Initial",
-        "title": "Skejma Gjentas Initial",
+        "name": "NHN_Test_Tabell_SvaralternativerKolonner_NoSort",
+        "title": "Tabell med svaralternativer som kolonner Uten sortering",
         "status": "draft",
         "subjectType": ["Patient"],
-        "date": "2025-03-13T00:00:00+01:00",
+        "date": "2025-02-12T00:00:00+01:00",
         "publisher": "NHN",
         "contact": [
           {
@@ -91,96 +130,786 @@
         ],
         "item": [
           {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-                "valueInteger": 10
-              },
-              {
-                "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-                "valueString": "Legg til medisin"
-              }
-            ],
-            "linkId": "a502f0c2-216a-4373-d5de-fa34b222f8f2",
-            "text": "Hvilke medisiner bruker du?",
+            "linkId": "f47d795d-672e-4c01-e52d-8a74d92abf1d",
+            "text": "Informasjon som fylles ut",
             "type": "group",
             "required": false,
-            "repeats": true,
             "item": [
               {
-                "linkId": "5f42268d-6776-4f6b-eec6-dcb450e54c89",
-                "text": "Medisin navn",
-                "type": "string",
+                "linkId": "3bae9654-cae8-4e62-fb81-17d002571cca",
+                "text": "Her skal du fylle ut informasjon",
+                "type": "display",
                 "required": false
               },
               {
-                "linkId": "b246dea9-291b-4457-8d6e-9a238f559023",
-                "text": "Category",
+                "linkId": "3a818ca4-4cf5-45b4-8f07-5224d855239c",
+                "text": "Spørsmål 1: Alternativer med felt under med veldig lang spørsmålstekst som bør få linjeskift litt før",
                 "type": "choice",
                 "required": false,
-                "answerOption": [
+                "answerValueSet": "#9523",
+                "item": [
                   {
-                    "valueCoding": {
-                      "id": "1cf92eb5-d107-41d9-a9a4-d9f2c7ddb247",
-                      "system": "http://terminology.hl7.org/CodeSystem/medication-statement-category",
-                      "code": "community",
-                      "display": "Community"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "dbc3d685-1fd1-46cc-8d21-c0421e60f91d",
-                      "system": "http://terminology.hl7.org/CodeSystem/medication-statement-category",
-                      "code": "patientspecified",
-                      "display": "Patient specified"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "7109014f-c5dc-4e5e-8b3c-1ec07d9c2e26",
-                      "system": "http://terminology.hl7.org/CodeSystem/medication-statement-category",
-                      "code": "inpatient",
-                      "display": "Inpatient"
-                    }
-                  },
-                  {
-                    "valueCoding": {
-                      "id": "1f201394-f9b6-4de6-bb12-890d55471e54",
-                      "system": "http://terminology.hl7.org/CodeSystem/medication-statement-category",
-                      "code": "outpatient",
-                      "display": "Outpatient"
-                    }
-                  }
-                ],
-                "initial": [
-                  {
-                    "valueCoding": {
-                      "system": "http://terminology.hl7.org/CodeSystem/medication-statement-category",
-                      "code": "patientspecified",
-                      "display": "Patient specified"
-                    }
+                    "linkId": "31aa69ce-a4ec-47dd-a2c9-07334b4ab0ac",
+                    "text": "Tekst ved Ja",
+                    "type": "string",
+                    "enableWhen": [
+                      {
+                        "question": "3a818ca4-4cf5-45b4-8f07-5224d855239c",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      }
+                    ],
+                    "required": false
                   }
                 ]
+              },
+              {
+                "linkId": "f0bc7ac2-7c0a-4453-820b-b34df230d6fc",
+                "text": "Spørsmål 2",
+                "type": "choice",
+                "required": false,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "linkId": "103ab616-f027-482d-c725-7a8486034d8c",
+                    "text": "Tekst ved ja",
+                    "type": "string",
+                    "enableWhen": [
+                      {
+                        "question": "f0bc7ac2-7c0a-4453-820b-b34df230d6fc",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      }
+                    ],
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "linkId": "044c2017-6bd1-428c-8955-65a4886e0017",
+                "text": "Spørsmål 3",
+                "type": "choice",
+                "required": false,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "linkId": "ad38896a-854a-40d9-8096-7fd982133a29",
+                    "text": "Dato ved ja",
+                    "type": "date",
+                    "enableWhen": [
+                      {
+                        "question": "044c2017-6bd1-428c-8955-65a4886e0017",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      }
+                    ],
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "linkId": "0e4b9ac9-f58b-4448-a716-ed1b3687278f",
+                "text": "Spørsmål 4",
+                "type": "choice",
+                "required": false,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "linkId": "d850bc21-d2f4-4863-8816-c3b0888feed1",
+                    "text": "Klokkeslett ved ja",
+                    "type": "time",
+                    "enableWhen": [
+                      {
+                        "question": "0e4b9ac9-f58b-4448-a716-ed1b3687278f",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      }
+                    ],
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "linkId": "51b45827-6c26-45c0-89a7-6abc1a8877b2",
+                "text": "Spørsmål 5",
+                "type": "choice",
+                "required": false,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "linkId": "faa69942-d724-4f5a-e49a-e7968ee62bc1",
+                    "text": "Tall ved ja",
+                    "type": "integer",
+                    "enableWhen": [
+                      {
+                        "question": "51b45827-6c26-45c0-89a7-6abc1a8877b2",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      }
+                    ],
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "linkId": "dcf1d799-a3ca-4f39-823f-e7fd4984fc80",
+                "text": "Spørsmål 6",
+                "type": "choice",
+                "required": false,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                        "valueCoding": {
+                          "system": "http://unitsofmeasure.org",
+                          "code": "kg",
+                          "display": "kilo"
+                        }
+                      }
+                    ],
+                    "linkId": "bbdaf832-9533-4a4e-8bbe-51fe1350de3e",
+                    "text": "Tall med enhet ved ja",
+                    "type": "quantity",
+                    "enableWhen": [
+                      {
+                        "question": "dcf1d799-a3ca-4f39-823f-e7fd4984fc80",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      }
+                    ],
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "linkId": "349c3cf6-d461-4608-9909-af1a5e611d51",
+                "text": "Spørsmål 7",
+                "type": "choice",
+                "required": false,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "linkId": "af3b630e-8bd6-491a-8a9d-d8f40c061546",
+                    "code": [
+                      {
+                        "id": "d19b36b7-6a19-4c19-e2c6-de3aa82ab1a8",
+                        "system": "urn:uuid:7004446b-4f21-435b-8630-efa3d9c49078"
+                      }
+                    ],
+                    "text": "Bekreftelse ved ja",
+                    "type": "boolean",
+                    "enableWhen": [
+                      {
+                        "question": "349c3cf6-d461-4608-9909-af1a5e611d51",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      }
+                    ],
+                    "required": false
+                  }
+                ]
+              },
+              {
+                "linkId": "1e885ef9-cbaa-445b-87ea-d431cd452e5d",
+                "text": "Spørmål 8 med  tekstfelt for åpent svar",
+                "type": "open-choice",
+                "required": false,
+                "answerValueSet": "#9523"
               }
             ]
           },
           {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "table"
+                    },
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "summary"
+                    },
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "summary-container"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "7ff646c5-cf28-47ad-f03e-549328418eaf",
+            "text": "Tabell med svaralternativer som kolonner",
             "type": "group",
-            "linkId": "c6b80d4b-094c-446d-cded-965d1677a28d-1",
-            "text": "Gjentagelse teks 2 t",
-            "repeats": true,
+            "required": false,
             "item": [
               {
-                "linkId": "c6b80d4b-094c-446d-cded-965d1677a28d",
-                "text": "Gjentagelse tekst",
-                "type": "string",
-                "required": false,
-                "repeats": true,
-                "initial": [
+                "extension": [
                   {
-                    "valueString": "test"
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='3a818ca4-4cf5-45b4-8f07-5224d855239c').answer.value"
+                  }
+                ],
+                "linkId": "4208c597-87cd-4f36-825b-1a3050981c7b",
+                "text": "Spørsmål 1: Alternativer med felt under med veldig lang spørsmålstekst som bør få linjeskift litt før",
+                "type": "choice",
+                "enableWhen": [
+                  {
+                    "question": "3a818ca4-4cf5-45b4-8f07-5224d855239c",
+                    "operator": "exists",
+                    "answerBoolean": true
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                              "code": "data-receiver"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                        "valueString": "QuestionnaireResponse.descendants().where(linkId='31aa69ce-a4ec-47dd-a2c9-07334b4ab0ac').answer.value"
+                      }
+                    ],
+                    "linkId": "272fa437-d2df-495e-859b-ea7279fe548a",
+                    "text": "Tekst ved Ja",
+                    "type": "string",
+                    "enableWhen": [
+                      {
+                        "question": "4208c597-87cd-4f36-825b-1a3050981c7b",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.1101",
+                          "code": "1"
+                        }
+                      },
+                      {
+                        "question": "31aa69ce-a4ec-47dd-a2c9-07334b4ab0ac",
+                        "operator": "exists",
+                        "answerBoolean": true
+                      }
+                    ],
+                    "required": false,
+                    "readOnly": true
                   }
                 ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='f0bc7ac2-7c0a-4453-820b-b34df230d6fc').answer.value"
+                  }
+                ],
+                "linkId": "bafc77bb-cbb2-4bdb-8456-88ce0f91580b",
+                "text": "Spørsmål 2",
+                "type": "choice",
+                "enableWhen": [
+                  {
+                    "question": "f0bc7ac2-7c0a-4453-820b-b34df230d6fc",
+                    "operator": "exists",
+                    "answerBoolean": true
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                              "code": "data-receiver"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                        "valueString": "QuestionnaireResponse.descendants().where(linkId='103ab616-f027-482d-c725-7a8486034d8c').answer.value"
+                      }
+                    ],
+                    "linkId": "c8bfd084-874c-4898-c2fe-db11a73b4ea2",
+                    "text": "Tekst ved ja",
+                    "type": "string",
+                    "enableWhen": [
+                      {
+                        "question": "bafc77bb-cbb2-4bdb-8456-88ce0f91580b",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      },
+                      {
+                        "question": "103ab616-f027-482d-c725-7a8486034d8c",
+                        "operator": "exists",
+                        "answerBoolean": true
+                      }
+                    ],
+                    "required": false,
+                    "readOnly": true
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='044c2017-6bd1-428c-8955-65a4886e0017').answer.value"
+                  }
+                ],
+                "linkId": "f29839b1-2b53-4241-a5b2-9a72c7c410e9",
+                "text": "Spørsmål 3",
+                "type": "choice",
+                "enableWhen": [
+                  {
+                    "question": "044c2017-6bd1-428c-8955-65a4886e0017",
+                    "operator": "exists",
+                    "answerBoolean": true
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                              "code": "data-receiver"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                        "valueString": "QuestionnaireResponse.descendants().where(linkId='ad38896a-854a-40d9-8096-7fd982133a29').answer.value"
+                      }
+                    ],
+                    "linkId": "ae17adb8-0dd8-4d1f-85dc-4019183fd46b",
+                    "text": "Dato ved ja",
+                    "type": "date",
+                    "enableWhen": [
+                      {
+                        "question": "f29839b1-2b53-4241-a5b2-9a72c7c410e9",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      },
+                      {
+                        "question": "ad38896a-854a-40d9-8096-7fd982133a29",
+                        "operator": "exists",
+                        "answerBoolean": true
+                      }
+                    ],
+                    "required": false,
+                    "readOnly": true
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='0e4b9ac9-f58b-4448-a716-ed1b3687278f').answer.value"
+                  }
+                ],
+                "linkId": "f9e120e7-0498-4a5f-c206-56647969b471",
+                "text": "Spørsmål 4",
+                "type": "choice",
+                "enableWhen": [
+                  {
+                    "question": "0e4b9ac9-f58b-4448-a716-ed1b3687278f",
+                    "operator": "exists",
+                    "answerBoolean": true
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                              "code": "data-receiver"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                        "valueString": "QuestionnaireResponse.descendants().where(linkId='d850bc21-d2f4-4863-8816-c3b0888feed1').answer.value"
+                      }
+                    ],
+                    "linkId": "63542a2c-3320-4f24-8b50-e0358240a09f",
+                    "text": "Klokkeslett ved ja",
+                    "type": "time",
+                    "enableWhen": [
+                      {
+                        "question": "f9e120e7-0498-4a5f-c206-56647969b471",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      },
+                      {
+                        "question": "d850bc21-d2f4-4863-8816-c3b0888feed1",
+                        "operator": "exists",
+                        "answerBoolean": true
+                      }
+                    ],
+                    "required": false,
+                    "readOnly": true
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='51b45827-6c26-45c0-89a7-6abc1a8877b2').answer.value"
+                  }
+                ],
+                "linkId": "9a2f0e0b-5cef-42aa-8987-e89a9c4f1369",
+                "text": "Spørsmål 5",
+                "type": "choice",
+                "enableWhen": [
+                  {
+                    "question": "51b45827-6c26-45c0-89a7-6abc1a8877b2",
+                    "operator": "exists",
+                    "answerBoolean": true
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                              "code": "data-receiver"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                        "valueString": "QuestionnaireResponse.descendants().where(linkId='faa69942-d724-4f5a-e49a-e7968ee62bc1').answer.value"
+                      }
+                    ],
+                    "linkId": "38f5beb8-6f12-4585-8ad6-8ba4b9bac3d9",
+                    "text": "Tall ved ja",
+                    "type": "integer",
+                    "enableWhen": [
+                      {
+                        "question": "9a2f0e0b-5cef-42aa-8987-e89a9c4f1369",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      },
+                      {
+                        "question": "faa69942-d724-4f5a-e49a-e7968ee62bc1",
+                        "operator": "exists",
+                        "answerBoolean": true
+                      }
+                    ],
+                    "required": false,
+                    "readOnly": true
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='dcf1d799-a3ca-4f39-823f-e7fd4984fc80').answer.value"
+                  }
+                ],
+                "linkId": "fc61a3a2-2974-4883-9761-4b995b6cabb8",
+                "text": "Spørsmål 6",
+                "type": "choice",
+                "enableWhen": [
+                  {
+                    "question": "dcf1d799-a3ca-4f39-823f-e7fd4984fc80",
+                    "operator": "exists",
+                    "answerBoolean": true
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                        "valueCoding": {
+                          "system": "http://unitsofmeasure.org",
+                          "code": "kg",
+                          "display": "kilo"
+                        }
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                              "code": "data-receiver"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                        "valueString": "QuestionnaireResponse.descendants().where(linkId='bbdaf832-9533-4a4e-8bbe-51fe1350de3e').answer.value"
+                      }
+                    ],
+                    "linkId": "2622f764-583c-40bc-9191-4c09dc9afb0d",
+                    "text": "Tall med enhet ved ja",
+                    "type": "quantity",
+                    "enableWhen": [
+                      {
+                        "question": "fc61a3a2-2974-4883-9761-4b995b6cabb8",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "urn:oid:2.16.578.1.12.4.1.9523",
+                          "code": "1"
+                        }
+                      },
+                      {
+                        "question": "bbdaf832-9533-4a4e-8bbe-51fe1350de3e",
+                        "operator": "exists",
+                        "answerBoolean": true
+                      }
+                    ],
+                    "required": false,
+                    "readOnly": true
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='349c3cf6-d461-4608-9909-af1a5e611d51').answer.value"
+                  }
+                ],
+                "linkId": "f42a9e99-372b-45b3-c3b5-485234a3e788",
+                "text": "Spørsmål 7",
+                "type": "choice",
+                "enableWhen": [
+                  {
+                    "question": "349c3cf6-d461-4608-9909-af1a5e611d51",
+                    "operator": "exists",
+                    "answerBoolean": true
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#9523",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [
+                            {
+                              "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                              "code": "data-receiver"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                        "valueString": "QuestionnaireResponse.descendants().where(linkId='af3b630e-8bd6-491a-8a9d-d8f40c061546').answer.value"
+                      }
+                    ],
+                    "linkId": "dcf66890-1722-407b-8ba3-2507fad3b75f",
+                    "text": "Bekreftelse ved ja",
+                    "type": "boolean",
+                    "enableWhen": [
+                      {
+                        "question": "af3b630e-8bd6-491a-8a9d-d8f40c061546",
+                        "operator": "=",
+                        "answerBoolean": true
+                      }
+                    ],
+                    "required": false,
+                    "readOnly": true
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='1e885ef9-cbaa-445b-87ea-d431cd452e5d').answer.value"
+                  }
+                ],
+                "linkId": "fbf1f300-9dfe-4ac3-8a9c-5ecfbf80f988",
+                "text": "Spørmål 8 med  tekstfelt for åpent svar",
+                "type": "open-choice",
+                "enableWhen": [
+                  {
+                    "question": "1e885ef9-cbaa-445b-87ea-d431cd452e5d",
+                    "operator": "exists",
+                    "answerBoolean": true
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#9523"
               }
             ]
           }
