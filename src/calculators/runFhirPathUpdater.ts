@@ -58,188 +58,207 @@ const updateQuestionnaireResponseWithScore = (
     if (!item) continue;
     const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
     const value = scores[linkId];
-    switch (item.type) {
-      case ItemType.QUANTITY: {
-        const extension = getQuestionnaireUnitExtensionValue(item);
-        if (!extension) continue;
 
-        for (const itemAndPath of itemsAndPaths) {
-          if (actionRequester) {
-            actionRequester.addQuantityAnswer(
-              linkId,
-              typeof value === 'string' || typeof value === 'number'
-                ? createQuantity(item, extension, value as number)
-                : (value as Quantity),
-              itemAndPath.path[0]?.index
-            );
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [
-                  typeof value === 'string' || typeof value === 'number'
-                    ? createQuantity(item, extension, value as number)
-                    : (value as Quantity),
-                ],
-                item,
-              })
-            );
-          }
-        }
-        break;
+    if (Array.isArray(value) && actionRequester) {
+      for (const itemAndPath of itemsAndPaths) {
+        actionRequester.setNewAnswer(linkId, value, itemAndPath.path[0]?.index);
       }
-      case ItemType.DECIMAL: {
-        for (const itemAndPath of itemsAndPaths) {
-          const decimalValue = getDecimalValue(item, value as number);
-          if (actionRequester) {
-            actionRequester.addDecimalAnswer(linkId, decimalValue, itemAndPath.path[0]?.index);
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [{ valueDecimal: decimalValue }],
-                item,
-              })
-            );
-          }
-        }
-        break;
+    } else if (Array.isArray(value)) {
+      for (const itemAndPath of itemsAndPaths) {
+        dispatch(
+          newAnswerValueAction({
+            itemPath: itemAndPath.path,
+            newAnswer: value,
+            item,
+          })
+        );
       }
-      case ItemType.INTEGER: {
-        for (const itemAndPath of itemsAndPaths) {
-          if (actionRequester) {
-            actionRequester.addIntegerAnswer(linkId, value as number, itemAndPath.path[0]?.index);
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [{ valueInteger: value as number }],
-                item,
-              })
-            );
-          }
-        }
+    } else {
+      switch (item.type) {
+        case ItemType.QUANTITY: {
+          const extension = getQuestionnaireUnitExtensionValue(item);
+          if (!extension) continue;
 
-        break;
-      }
-      case ItemType.BOOLEAN: {
-        for (const itemAndPath of itemsAndPaths) {
-          if (actionRequester) {
-            actionRequester.addBooleanAnswer(linkId, value as boolean, itemAndPath.path[0]?.index);
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [{ valueBoolean: value as boolean }],
-                item,
-              })
-            );
-          }
-        }
-        break;
-      }
-      case ItemType.STRING:
-      case ItemType.TEXT:
-        for (const itemAndPath of itemsAndPaths) {
-          if (actionRequester) {
-            actionRequester.addStringAnswer(linkId, (value as string) ?? '', itemAndPath.path[0]?.index);
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [{ valueString: (value as string) ?? '' }],
-                item,
-              })
-            );
-          }
-        }
-        break;
-      case ItemType.CHOICE: {
-        for (const itemAndPath of itemsAndPaths) {
-          if (actionRequester) {
-            if (actionRequester.isCheckbox(item)) {
-              const answer = value ? (value as Coding[])?.map(x => ({ valueCoding: x })) : [];
-              actionRequester.setNewAnswer(linkId, answer, itemAndPath.path[0]?.index);
+          for (const itemAndPath of itemsAndPaths) {
+            if (actionRequester) {
+              actionRequester.addQuantityAnswer(
+                linkId,
+                typeof value === 'string' || typeof value === 'number'
+                  ? createQuantity(item, extension, value as number)
+                  : (value as Quantity),
+                itemAndPath.path[0]?.index
+              );
             } else {
-              actionRequester.addChoiceAnswer(linkId, value as Coding, itemAndPath.path[0]?.index);
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [
+                    typeof value === 'string' || typeof value === 'number'
+                      ? createQuantity(item, extension, value as number)
+                      : (value as Quantity),
+                  ],
+                  item,
+                })
+              );
             }
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [{ valueCoding: value as Coding }],
-                item,
-              })
-            );
           }
+          break;
         }
-        break;
-      }
-      case ItemType.OPENCHOICE: {
-        for (const itemAndPath of itemsAndPaths) {
-          if (actionRequester) {
-            if (actionRequester.isCheckbox(item)) {
-              const answer = value ? (value as Coding[])?.map(x => (typeof x === 'string' ? { valueString: x } : { valueCoding: x })) : [];
-              actionRequester.setNewAnswer(linkId, answer, itemAndPath.path[0]?.index);
+        case ItemType.DECIMAL: {
+          for (const itemAndPath of itemsAndPaths) {
+            const decimalValue = getDecimalValue(item, value as number);
+            if (actionRequester) {
+              actionRequester.addDecimalAnswer(linkId, decimalValue, itemAndPath.path[0]?.index);
             } else {
-              actionRequester.addOpenChoiceAnswer(linkId, value as Coding | string, itemAndPath.path[0]?.index);
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [{ valueDecimal: decimalValue }],
+                  item,
+                })
+              );
             }
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [typeof value === 'string' ? { valueString: value } : { valueCoding: value as Coding }],
-                item,
-              })
-            );
           }
+          break;
         }
-        break;
+        case ItemType.INTEGER: {
+          for (const itemAndPath of itemsAndPaths) {
+            if (actionRequester) {
+              actionRequester.addIntegerAnswer(linkId, value as number, itemAndPath.path[0]?.index);
+            } else {
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [{ valueInteger: value as number }],
+                  item,
+                })
+              );
+            }
+          }
+
+          break;
+        }
+        case ItemType.BOOLEAN: {
+          for (const itemAndPath of itemsAndPaths) {
+            if (actionRequester) {
+              actionRequester.addBooleanAnswer(linkId, value as boolean, itemAndPath.path[0]?.index);
+            } else {
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [{ valueBoolean: value as boolean }],
+                  item,
+                })
+              );
+            }
+          }
+          break;
+        }
+        case ItemType.STRING:
+        case ItemType.TEXT:
+          for (const itemAndPath of itemsAndPaths) {
+            if (actionRequester) {
+              actionRequester.addStringAnswer(linkId, (value as string) ?? '', itemAndPath.path[0]?.index);
+            } else {
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [{ valueString: (value as string) ?? '' }],
+                  item,
+                })
+              );
+            }
+          }
+          break;
+        case ItemType.CHOICE: {
+          for (const itemAndPath of itemsAndPaths) {
+            if (actionRequester) {
+              if (actionRequester.isCheckbox(item)) {
+                const answer = value ? (value as Coding[])?.map(x => ({ valueCoding: x })) : [];
+                actionRequester.setNewAnswer(linkId, answer, itemAndPath.path[0]?.index);
+              } else {
+                actionRequester.addChoiceAnswer(linkId, value as Coding, itemAndPath.path[0]?.index);
+              }
+            } else {
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [{ valueCoding: value as Coding }],
+                  item,
+                })
+              );
+            }
+          }
+          break;
+        }
+        case ItemType.OPENCHOICE: {
+          for (const itemAndPath of itemsAndPaths) {
+            if (actionRequester) {
+              if (actionRequester.isCheckbox(item)) {
+                const answer = value
+                  ? (value as Coding[])?.map(x => (typeof x === 'string' ? { valueString: x } : { valueCoding: x }))
+                  : [];
+                actionRequester.setNewAnswer(linkId, answer, itemAndPath.path[0]?.index);
+              } else {
+                actionRequester.addOpenChoiceAnswer(linkId, value as Coding | string, itemAndPath.path[0]?.index);
+              }
+            } else {
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [typeof value === 'string' ? { valueString: value } : { valueCoding: value as Coding }],
+                  item,
+                })
+              );
+            }
+          }
+          break;
+        }
+        case ItemType.DATETIME:
+          for (const itemAndPath of itemsAndPaths) {
+            if (actionRequester) {
+              actionRequester.addDateTimeAnswer(linkId, value as string, itemAndPath.path[0]?.index);
+            } else {
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [{ valueDateTime: value as string }],
+                  item,
+                })
+              );
+            }
+          }
+          break;
+        case ItemType.DATE:
+          for (const itemAndPath of itemsAndPaths) {
+            if (actionRequester) {
+              actionRequester.addDateAnswer(linkId, value as string, itemAndPath.path[0]?.index);
+            } else {
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [{ valueDate: value as string }],
+                  item,
+                })
+              );
+            }
+          }
+          break;
+        case ItemType.TIME:
+          for (const itemAndPath of itemsAndPaths) {
+            if (actionRequester) {
+              actionRequester.addTimeAnswer(linkId, value as string, itemAndPath.path[0]?.index);
+            } else {
+              dispatch(
+                newAnswerValueAction({
+                  itemPath: itemAndPath.path,
+                  newAnswer: [{ valueTime: value as string }],
+                  item,
+                })
+              );
+            }
+          }
       }
-      case ItemType.DATETIME:
-        for (const itemAndPath of itemsAndPaths) {
-          if (actionRequester) {
-            actionRequester.addDateTimeAnswer(linkId, value as string, itemAndPath.path[0]?.index);
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [{ valueDateTime: value as string }],
-                item,
-              })
-            );
-          }
-        }
-        break;
-      case ItemType.DATE:
-        for (const itemAndPath of itemsAndPaths) {
-          if (actionRequester) {
-            actionRequester.addDateAnswer(linkId, value as string, itemAndPath.path[0]?.index);
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [{ valueDate: value as string }],
-                item,
-              })
-            );
-          }
-        }
-        break;
-      case ItemType.TIME:
-        for (const itemAndPath of itemsAndPaths) {
-          if (actionRequester) {
-            actionRequester.addTimeAnswer(linkId, value as string, itemAndPath.path[0]?.index);
-          } else {
-            dispatch(
-              newAnswerValueAction({
-                itemPath: itemAndPath.path,
-                newAnswer: [{ valueTime: value as string }],
-                item,
-              })
-            );
-          }
-        }
     }
   }
 };

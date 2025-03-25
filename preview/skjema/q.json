@@ -1,300 +1,671 @@
 {
-  "resourceType": "Questionnaire",
-  "language": "nb-NO",
-  "id": "3981d77d-f69f-4c9c-85cd-8b07b05d93d2",
-  "name": "NHN_Test_Scoore_Calculation",
-  "title": "Test kopi og regning på score",
-  "version": "0.1",
-  "status": "draft",
-  "publisher": "NHN",
-  "meta": {
-    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
-    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
-  },
-  "contact": [{ "name": "http://www.nhn.no" }],
-  "subjectType": ["Patient"],
-  "extension": [
+  "resourceType": "Bundle",
+  "id": "f852b4f8-f2d8-431b-9022-0533c671df9d",
+  "type": "searchset",
+  "total": 1,
+  "link": [
     {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+      "relation": "self",
+      "url": "https://api-fnsp.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=cdd673c3-cf49-4e96-9930-e806ebf396bc&_offset=0"
     },
     {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+      "relation": "first",
+      "url": "https://api-fnsp.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=cdd673c3-cf49-4e96-9930-e806ebf396bc&_offset=0"
     },
     {
-      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
-      "valueCodeableConcept": {
-        "coding": [
-          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+      "relation": "last",
+      "url": "https://api-fnsp.int-hn.nhn.no/skjemakatalog/api/v1/_snapshot?id=cdd673c3-cf49-4e96-9930-e806ebf396bc&_offset=0"
+    }
+  ],
+  "entry": [
+    {
+      "fullUrl": "https://api-fnsp.int-hn.nhn.no/skjemakatalog/api/v1/Questionnaire/46c8135d-e340-425e-cb5f-ea32bdc4b20f/_history/17",
+      "resource": {
+        "resourceType": "Questionnaire",
+        "id": "46c8135d-e340-425e-cb5f-ea32bdc4b20f",
+        "meta": {
+          "versionId": "17",
+          "lastUpdated": "2024-11-18T15:02:07.49+00:00",
+          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+          "security": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.7618", "code": "3", "display": "Helsehjelp (Full)" }],
+          "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }]
+        },
+        "language": "nb-NO",
+        "contained": [
           {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-sublabel",
-            "display": "Hide sublabel texts"
+            "resourceType": "ValueSet",
+            "id": "1101",
+            "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+            "version": "1.0",
+            "name": "urn:oid:1101",
+            "title": "Ja / Nei (structor)",
+            "status": "draft",
+            "publisher": "NHN",
+            "compose": {
+              "include": [
+                {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1101",
+                  "concept": [
+                    { "code": "1", "display": "Ja" },
+                    { "code": "2", "display": "Nei" }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "extension": [
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+                  "code": "hide-help",
+                  "display": "Hide help texts"
+                },
+                {
+                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+                  "code": "hide-sublabel",
+                  "display": "Hide sublabel texts"
+                },
+                {
+                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+                  "code": "hide-sidebar",
+                  "display": "Hide sidebar texts"
+                }
+              ]
+            }
+          },
+          { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint", "valueReference": { "reference": "Endpoint/1000" } }
+        ],
+        "url": "Questionnaire/46c8135d-e340-425e-cb5f-ea32bdc4b20f",
+        "version": "0.2",
+        "name": "NHN_Helsenorge_Hodepinekalender",
+        "title": "Hodepinekalender",
+        "status": "draft",
+        "subjectType": ["Patient"],
+        "date": "2024-11-15T00:00:00+01:00",
+        "publisher": "NHN",
+        "contact": [{ "name": "http://www.nhn.no" }],
+        "item": [
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "highlight" }]
+                }
+              }
+            ],
+            "linkId": "0918eede-3544-4e6f-84e7-ad505860abc0",
+            "text": "Denne hodepinekalenderen gir deg en mulighet for enkelt å registrere din hodepineepisoder. Det lages et dokument av dette, du kan skrive ut, samt at informasjonen du legger inn lagres på en slik måte at du kan følge anfallene (POC), og informasjonen kan deles med din behandler (Ny funksjonalitet). Du legger inn verdier hver gang du ha hodepine, og fortsetter neste gang du får et anfall (Ny funksjonalitet). Du kan etter en periode avslutte denne dagboken, eller opprette en ny (Ny funksjonalitet).",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Denne **hodepinekalenderen** gir deg en mulighet for enkelt å registrere din hodepineepisoder.\n\nDet lages et dokument av dette, du kan skrive ut, samt at informasjonen du legger inn lagres på en slik måte at du kan følge anfallene (POC), og informasjonen kan deles med din behandler (Ny funksjonalitet).\n\nDu legger inn verdier hver gang du ha hodepine, og fortsetter neste gang du får et anfall (Ny funksjonalitet).\n\n \nDu kan etter en periode avslutte denne dagboken, eller opprette en ny (Ny funksjonalitet)."
+                }
+              ]
+            },
+            "type": "display",
+            "required": false
+          },
+          {
+            "extension": [
+              {
+                "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                "valueString": "iif(%patient.gender.empty() or %patient.gender = 'other' or %patient.gender = 'unknown', 'Ukjent', iif(%patient.gender = 'female', 'Kvinne', 'Mann'))"
+              },
+              { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden", "valueBoolean": true }
+            ],
+            "linkId": "c1e64a68-78e9-446d-bb55-633e44e274ba",
+            "text": "Kjønn",
+            "type": "string",
+            "required": false,
+            "readOnly": true,
+            "initial": [{ "valueString": "Kvinne" }]
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemExtractionContext",
+                "valueUri": "http://hl7.org/fhir/StructureDefinition/Observation"
+              },
+              { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 0 },
+              { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 500 },
+              { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til hodepineepisode" }
+            ],
+            "linkId": "9b2e10cd-a7ee-4da5-c493-b9f1596cd027",
+            "definition": "http://hl7.org/fhir/StructureDefinition/Observation#Component",
+            "code": [
+              {
+                "id": "bda239dd-bf87-4989-ee56-98ffd58b0fac",
+                "system": "http://snomed.info/sct",
+                "code": "25064002",
+                "display": "Hodepine"
+              }
+            ],
+            "text": "Hodepine",
+            "type": "group",
+            "required": false,
+            "repeats": true,
+            "item": [
+              {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden", "valueBoolean": true }],
+                "linkId": "99f23b1a-bbf9-415c-e23c-e527bb4c8f34",
+                "definition": "http://hl7.org/fhir/StructureDefinition/Observation#Category",
+                "text": "observation-category",
+                "type": "choice",
+                "required": false,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "id": "1e31c08e-9a2c-409a-870b-5903ae3baeab",
+                      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                      "code": "survey",
+                      "display": "survey"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "58f9f666-c772-4dc2-98d3-d3b3d8601c37",
+                      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                      "code": "vital-signs",
+                      "display": "Vital signs"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "587446b0-44d7-4ed8-9188-f7b206d3cf81",
+                      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                      "code": "social-history",
+                      "display": "social-history"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "a3f3b4f3-14f4-4771-9135-be2e9c63b5f5",
+                      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                      "code": "exam",
+                      "display": "exam"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "04b1edab-0755-448d-9a42-0c81d5437d33",
+                      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                      "code": "activity",
+                      "display": "activity"
+                    }
+                  }
+                ],
+                "initial": [
+                  {
+                    "valueCoding": {
+                      "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                      "code": "survey",
+                      "display": "survey"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "6bb4c80b-1eb2-4c16-865f-97f575c2c65a",
+                "definition": "http://hl7.org/fhir/StructureDefinition/Observation#effectiveDateTime",
+                "code": [
+                  {
+                    "id": "0ec9427f-b043-4d4e-b2fa-0156160da964",
+                    "system": "http://snomed.info/sct",
+                    "code": "298059007",
+                    "display": "Date of onset"
+                  }
+                ],
+                "text": "Når startet hodepinen?",
+                "type": "dateTime",
+                "required": true
+              },
+              {
+                "linkId": "0f2b531e-3355-4d99-ac2e-a9674c53f5f3",
+                "definition": "http://hl7.org/fhir/StructureDefinition/observation#value[x]",
+                "text": "Hvor alvorlig vil du si hodepinen var?",
+                "type": "choice",
+                "required": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "id": "ddba461a-30ba-4e26-9b97-b51ee379b986",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "1",
+                      "display": "Lett hodepine"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "e8e25406-0446-4d9e-91bb-9718e928eedb",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "2",
+                      "display": "Moderat hodepine"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "3a03fd51-7eae-487f-cae8-0156e8469223",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "3",
+                      "display": "Kraftig hodepine"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "97f6f919-91b3-4ffe-eb50-be0b1d1732fa",
+                "definition": "http://hl7.org/fhir/StructureDefinition/observation#value[x]",
+                "code": [
+                  {
+                    "id": "784b22b9-77cc-4a72-d7e0-1a55b34caffc",
+                    "system": "http://snomed.info/sct",
+                    "code": "473123009",
+                    "display": "Medication used"
+                  }
+                ],
+                "text": "Brukte du noen legemidler for å forsøkte å stoppe eller lindre hodepinen?",
+                "type": "choice",
+                "required": true,
+                "answerValueSet": "#1101",
+                "item": [
+                  {
+                    "linkId": "779db52e-d366-447b-b985-e1dfa5d51818",
+                    "definition": "http://hl7.org/fhir/StructureDefinition/observation#value[x]",
+                    "code": [
+                      {
+                        "id": "dccf93d3-b980-4f56-81b5-b68f5eb91c87",
+                        "system": "http://snomed.info/sct",
+                        "code": "410942007",
+                        "display": "legemiddel eller rusmiddel"
+                      }
+                    ],
+                    "text": "Legemiddel og dose",
+                    "type": "string",
+                    "enableWhen": [
+                      {
+                        "question": "97f6f919-91b3-4ffe-eb50-be0b1d1732fa",
+                        "operator": "=",
+                        "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" }
+                      }
+                    ],
+                    "required": true
+                  },
+                  {
+                    "linkId": "9424c068-cb86-4563-8bd4-a72452f18a3d",
+                    "definition": "http://hl7.org/fhir/StructureDefinition/observation#value[x]",
+                    "code": [
+                      {
+                        "id": "c053c5bb-87ae-4be6-9d22-19dff55c15b9",
+                        "system": "http://snomed.info/sct",
+                        "code": "405177001",
+                        "display": "Medication response"
+                      }
+                    ],
+                    "text": "Hvordan vurderer du effekten av legemiddelet du tok?",
+                    "type": "choice",
+                    "enableWhen": [
+                      {
+                        "question": "97f6f919-91b3-4ffe-eb50-be0b1d1732fa",
+                        "operator": "=",
+                        "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" }
+                      }
+                    ],
+                    "required": true,
+                    "answerOption": [
+                      {
+                        "valueCoding": {
+                          "id": "e543c2c1-64e9-4276-9ecb-5c0417d88c33",
+                          "system": "http://helsenorge.no/fhir/CodeSystem/",
+                          "code": "ingen",
+                          "display": "Ingen"
+                        }
+                      },
+                      {
+                        "valueCoding": {
+                          "id": "10a69af3-af4b-4433-8e58-aa5b41acd8ee",
+                          "system": "http://helsenorge.no/fhir/CodeSystem/",
+                          "code": "middels",
+                          "display": "Middels"
+                        }
+                      },
+                      {
+                        "valueCoding": {
+                          "id": "4f92a133-9892-48ce-85e4-8e18158569f5",
+                          "system": "http://helsenorge.no/fhir/CodeSystem/",
+                          "code": "veldig-bra",
+                          "display": "Veldig bra"
+                        }
+                      },
+                      {
+                        "valueCoding": {
+                          "id": "c3d21201-3abf-415c-8ed9-a2b5c10f54c1",
+                          "system": "http://helsenorge.no/fhir/CodeSystem/",
+                          "code": "tilbakefall",
+                          "display": "Tilbakefall"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 },
+                  { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 0 },
+                  { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 100 },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Oppgi en verdi mellom 0 og 100. Du kan oppgi et tall med 2 desimaler."
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                    "valueCoding": { "system": "http://unitsofmeasure.org", "code": "t", "display": "Timer" }
+                  }
+                ],
+                "linkId": "1320bff7-2447-4449-85fe-ab730222b432",
+                "definition": "http://hl7.org/fhir/StructureDefinition/observation#value[x]",
+                "code": [
+                  {
+                    "id": "1cf14858-a501-4ef5-8ef3-1e64c407ed52",
+                    "system": "http://snomed.info/sct",
+                    "code": "162442009",
+                    "display": "Time symptom lasts"
+                  }
+                ],
+                "text": "Hvor mange timer vil du si hodepinen varte?",
+                "type": "quantity",
+                "required": true
+              },
+              {
+                "linkId": "01b8efed-7a7d-403f-87b9-c52c32051118",
+                "definition": "http://hl7.org/fhir/StructureDefinition/observation#value[x]",
+                "code": [
+                  {
+                    "id": "2869b5a3-5ba3-48a7-d003-c7e8dde9fa65",
+                    "system": "http://snomed.info/sct",
+                    "code": "21840007",
+                    "display": "Menstruation status"
+                  }
+                ],
+                "text": "Hadde du blødningsdag når du hadde hodepine?",
+                "type": "choice",
+                "enableWhen": [{ "question": "c1e64a68-78e9-446d-bb55-633e44e274ba", "operator": "=", "answerString": "Kvinne" }],
+                "required": true,
+                "answerValueSet": "#1101"
+              }
+            ]
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "gtable" }]
+                }
+              }
+            ],
+            "linkId": "c3e55b39-8cba-4ca8-97c3-879d2cb4ec0d",
+            "code": [
+              {
+                "id": "7c3db7d9-aa79-40cf-942f-c31c549159c5",
+                "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                "code": "1",
+                "display": "Default"
+              }
+            ],
+            "text": "Hodepinedagbok",
+            "type": "group",
+            "required": false,
+            "item": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='6bb4c80b-1eb2-4c16-865f-97f575c2c65a').answer.value"
+                  }
+                ],
+                "linkId": "69dcf571-fc93-4a37-ed91-c687e6ef2a62",
+                "text": "Starttidspunkt",
+                "type": "dateTime",
+                "enableWhen": [{ "question": "6bb4c80b-1eb2-4c16-865f-97f575c2c65a", "operator": "exists", "answerBoolean": true }],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='0f2b531e-3355-4d99-ac2e-a9674c53f5f3').answer.value"
+                  }
+                ],
+                "linkId": "5e721ee6-2b80-4e5e-8bd7-d51dda5b784b",
+                "text": "Alvorlighet",
+                "type": "choice",
+                "enableWhen": [{ "question": "0f2b531e-3355-4d99-ac2e-a9674c53f5f3", "operator": "exists", "answerBoolean": true }],
+                "required": false,
+                "readOnly": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "id": "ddba461a-30ba-4e26-9b97-b51ee379b986",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "1",
+                      "display": "Lett hodepine"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "e8e25406-0446-4d9e-91bb-9718e928eedb",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "2",
+                      "display": "Moderat hodepine"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "5b0fef03-ffe6-45d3-8e9c-635da7016971",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "3",
+                      "display": "Kraftig hodepine"
+                    }
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='97f6f919-91b3-4ffe-eb50-be0b1d1732fa').answer.value"
+                  }
+                ],
+                "linkId": "dbe05eac-cb17-464f-8709-ba75895b7d81",
+                "text": "Brukte legemidler",
+                "type": "choice",
+                "enableWhen": [{ "question": "97f6f919-91b3-4ffe-eb50-be0b1d1732fa", "operator": "exists", "answerBoolean": true }],
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#1101"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='779db52e-d366-447b-b985-e1dfa5d51818').answer.value"
+                  }
+                ],
+                "linkId": "e3fa0051-8f64-4ad5-fe13-13e3d002e1f9",
+                "text": "Legemiddel og dose",
+                "type": "string",
+                "enableWhen": [
+                  {
+                    "question": "dbe05eac-cb17-464f-8709-ba75895b7d81",
+                    "operator": "=",
+                    "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" }
+                  },
+                  { "question": "779db52e-d366-447b-b985-e1dfa5d51818", "operator": "exists", "answerBoolean": true }
+                ],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='9424c068-cb86-4563-8bd4-a72452f18a3d').answer.value"
+                  }
+                ],
+                "linkId": "80111ad6-a93f-4fbb-94a1-2ea8c16878a8",
+                "text": "Effekten av legemiddel",
+                "type": "choice",
+                "enableWhen": [
+                  {
+                    "question": "dbe05eac-cb17-464f-8709-ba75895b7d81",
+                    "operator": "=",
+                    "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" }
+                  },
+                  { "question": "9424c068-cb86-4563-8bd4-a72452f18a3d", "operator": "exists", "answerBoolean": true }
+                ],
+                "required": false,
+                "readOnly": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "id": "e543c2c1-64e9-4276-9ecb-5c0417d88c33",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "ingen",
+                      "display": "Ingen"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "10a69af3-af4b-4433-8e58-aa5b41acd8ee",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "middels",
+                      "display": "Middels"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "4f92a133-9892-48ce-85e4-8e18158569f5",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "veldig-bra",
+                      "display": "Veldig bra"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "c3d21201-3abf-415c-8ed9-a2b5c10f54c1",
+                      "system": "http://helsenorge.no/fhir/CodeSystem/",
+                      "code": "tilbakefall",
+                      "display": "Tilbakefall"
+                    }
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 },
+                  { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 0 },
+                  { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 100 },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Oppgi en verdi mellom 0 og 100. Du kan oppgi et tall med 2 desimaler."
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                    "valueCoding": { "system": "http://unitsofmeasure.org", "code": "h", "display": "Timer" }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='1320bff7-2447-4449-85fe-ab730222b432').answer.value"
+                  }
+                ],
+                "linkId": "927161dc-828f-4a6b-8f1b-4ab00ae54e89",
+                "text": "Timer hodepinen varte",
+                "type": "quantity",
+                "enableWhen": [{ "question": "1320bff7-2447-4449-85fe-ab730222b432", "operator": "exists", "answerBoolean": true }],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='01b8efed-7a7d-403f-87b9-c52c32051118').answer.value"
+                  }
+                ],
+                "linkId": "14f431c3-2c1c-490d-a3a0-11893ffb06cb",
+                "text": "Hadde du blødningsdag når du hadde hodepine?",
+                "type": "choice",
+                "enableWhen": [
+                  { "question": "01b8efed-7a7d-403f-87b9-c52c32051118", "operator": "exists", "answerBoolean": true },
+                  { "question": "c1e64a68-78e9-446d-bb55-633e44e274ba", "operator": "=", "answerString": "Kvinne" }
+                ],
+                "enableBehavior": "all",
+                "required": false,
+                "readOnly": true,
+                "answerValueSet": "#1101"
+              }
+            ]
           }
         ]
       }
-    }
-  ],
-  "date": "2025-03-05T00:00:00+01:00",
-  "item": [
-    {
-      "linkId": "0701f3cf-73f5-48f7-8317-24c1223264a8",
-      "type": "group",
-      "text": "Input scoring and calculation and copying of scoringvalue",
-      "required": false,
-      "item": [
-        {
-          "linkId": "verdi1",
-          "type": "choice",
-          "text": "Verdi 1",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "verdi2",
-          "type": "choice",
-          "text": "Verdi 2",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "verdi3",
-          "type": "choice",
-          "text": "Verdi 3",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "verdi4",
-          "type": "choice",
-          "text": "Verdi 4",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "Delsum",
-          "type": "integer",
-          "text": "Delsum",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "SS", "display": "Section score" }
-          ],
-          "required": false,
-          "readOnly": true
-        },
-        {
-          "linkId": "Totalsum",
-          "type": "integer",
-          "text": "Totalsum",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "TS", "display": "Total score" }
-          ],
-          "required": false,
-          "readOnly": true
-        },
-        {
-          "linkId": "aritmetisk_gjennomsnitt",
-          "type": "integer",
-          "text": "Aritmetisk gjennomsnitt basert på totalsum.",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Totalsum').answer.value / 4"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "kopiert_felt",
-          "type": "integer",
-          "text": "Kopi",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Totalsum').answer.value"
-            }
-          ],
-          "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "Totalsum", "operator": "exists" }]
-        },
-        {
-          "linkId": "aritmetisk_gjennomsnitt_kopi",
-          "type": "integer",
-          "text": "Aritmetisk gjennomsnitt basert på kopiert felt",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='kopiert_felt').answer.value / 4"
-            }
-          ],
-          "readOnly": true
-        }
-      ]
-    },
-    {
-      "linkId": "498140b3-7c26-4492-dea5-24c829552347",
-      "type": "group",
-      "item": [
-        { "linkId": "Tall1", "type": "integer", "text": "Tall 1", "required": false },
-        { "linkId": "Tall2", "type": "integer", "text": "Tall 2", "required": false },
-        {
-          "linkId": "Sum",
-          "type": "integer",
-          "text": "Sum",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Tall1').answer.value + QuestionnaireResponse.descendants().where(linkId='Tall2').answer.value"
-            }
-          ]
-        },
-        {
-          "linkId": "Gjennomsnitt",
-          "type": "integer",
-          "text": "Gjennomsnitt",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Sum').answer.value / 2"
-            }
-          ]
-        }
-      ],
-      "required": true,
-      "repeats": true,
-      "extension": [
-        {
-          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-          "valueString": "Legg til"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
-          "valueInteger": 1
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-          "valueInteger": 4
-        },
-        {
-          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "**Dato sublabel**"
-        }
-      ],
-      "_text": {
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "**Dato**"
-          }
-        ]
-      },
-      "text": "Dato"
     }
   ]
 }
