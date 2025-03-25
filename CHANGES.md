@@ -1,3 +1,7 @@
+## 17.4.0-beta01
+
+- Removed microweb related props.
+
 ## 17.2.3
 
 - table with itemControl 'table' now supports showing value from other column if only open-choice other value is selected
