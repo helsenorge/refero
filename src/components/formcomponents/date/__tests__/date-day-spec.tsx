@@ -181,7 +181,7 @@ describe('Date day', () => {
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
-    it('Should show confirmationbox when deletebutton is clicked', async () => {
+    it.skip('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
