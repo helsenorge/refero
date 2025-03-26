@@ -9,14 +9,12 @@ import {
   Quantity,
 } from 'fhir/r4';
 
-import { getItemControlValue } from './choice';
 import { getCalculatedExpressionExtension, getCopyExtension } from './extension';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
 import { createDummySectionScoreItem } from './scoring';
 import itemType from '../constants/itemType';
 
 import { Extensions } from '@/constants/extensions';
-import ItemControlConstants from '@/constants/itemcontrol';
 
 export interface AnswerPad {
   [linkId: string]: number | undefined | string | Coding | boolean | Coding[] | Quantity;
@@ -250,8 +248,5 @@ export class FhirPathExtensions {
         : undefined,
     };
     return newQuestionnaireResponse;
-  }
-  private isCheckbox(item: QuestionnaireItem): boolean {
-    return getItemControlValue(item) === ItemControlConstants.CHECKBOX;
   }
 }
