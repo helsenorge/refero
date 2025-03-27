@@ -33,7 +33,7 @@ jobs:
       - name: Install ESLint
         run: |
           npm install @helsenorge/eslint-config
-          npm install eslint@9.19.0
+          npm install eslint@9.23.0
           npm install @microsoft/eslint-formatter-sarif@3.1.0
       - name: Run ESLint
         env:
