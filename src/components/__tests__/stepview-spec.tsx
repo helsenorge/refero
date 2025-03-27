@@ -1,7 +1,5 @@
 import { Questionnaire } from 'fhir/r4';
-
 import '../../util/__tests__/defineFetch';
-
 import { vi } from 'vitest';
 
 import { ReferoProps } from '../../types/referoProps';
@@ -10,7 +8,6 @@ import StepViewQuestionnaire from './__data__/stepview';
 import { getResources } from '../../../preview/resources/referoResources';
 import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from '../../../test/selectors';
 import { renderRefero, screen } from '../../../test/test-utils';
-
 
 const resources = {
   ...getResources(''),

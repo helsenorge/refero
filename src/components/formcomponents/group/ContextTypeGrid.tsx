@@ -1,4 +1,3 @@
-
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { getColumns } from './helpers';
@@ -9,7 +8,7 @@ import GenerateQuestionnaireComponents, {
   QuestionnaireComponentItemProps,
 } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { RenderContextType } from '@/constants/renderContextType';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { getId } from '@/util';
 import { RenderContext } from '@/util/renderContext';
 

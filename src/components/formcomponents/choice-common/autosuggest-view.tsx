@@ -21,7 +21,7 @@ import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemType from '@/constants/itemType';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useResetFormField } from '@/hooks/useResetFormField';
 import { useAppSelector } from '@/reducers';

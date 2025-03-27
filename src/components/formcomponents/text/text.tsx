@@ -21,7 +21,7 @@ import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptI
 import { shouldValidate } from '@/components/validation/utils';
 import Constants from '@/constants/index';
 import itemControlConstants from '@/constants/itemcontrol';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';

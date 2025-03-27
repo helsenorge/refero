@@ -42,7 +42,6 @@ describe('Component renders and calculates score', () => {
   it('fhirpath score should be updated when integer questions are answered - should work with zeros', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", FhirpathScoreDataModel);
     const { container } = await createWrapper(questionnaire);
-
     await inputAnswer('2', 0, container);
 
     const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);

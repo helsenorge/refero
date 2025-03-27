@@ -6,7 +6,7 @@ import SafeText from '../referoLabel/SafeText';
 import RenderHelpButton from './help-button/RenderHelpButton';
 import RenderHelpElement from './help-button/RenderHelpElement';
 
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { getText, getId } from '@/util/index';
 
 interface Props {

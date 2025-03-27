@@ -8,7 +8,7 @@ import TableHn2 from './tables/table-hn2/TableHn2';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { TableCodes } from '@/constants/tableTypes';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem, questionnaireResponseSelector } from '@/reducers/selectors';
 import { getCodingTextTableValues } from '@/util/extension';

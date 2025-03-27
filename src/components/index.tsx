@@ -8,8 +8,8 @@ import RenderForm from './renderForm';
 import StepView from './stepView';
 
 import { setSkjemaDefinitionAction } from '@/actions/form';
-import { AttachmentProvider } from '@/context/AttachmentContext';
-import { ExternalRenderProvider } from '@/context/externalRenderContext';
+import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
+import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { ReferoProps } from '@/types/referoProps';
