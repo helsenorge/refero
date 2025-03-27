@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 
 import { ReferoProps } from '../../../../types/referoProps';
 
-import { convertToEmoji, getCodePoint, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../slider-view';
+import { convertToEmoji, getCodePoint, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../sliderUtils';
 import { sliderView as q } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, clickSliderValue, repeatSliderTimes, submitForm } from '../../../../../test/selectors';
