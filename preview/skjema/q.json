@@ -1,33 +1,56 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "3981d77d-f69f-4c9c-85cd-8b07b05d93d2",
-  "name": "NHN_Test_Scoore_Calculation",
-  "title": "Test kopi og regning på score",
-  "version": "0.1",
+  "id": "52546ba2-28d1-467f-8e58-1259133b1f26",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
-    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
   },
-  "contact": [{ "name": "http://www.nhn.no" }],
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
   "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
       "valueCodeableConcept": {
         "coding": [
-          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
           {
             "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
             "code": "hide-sublabel",
@@ -37,198 +60,67 @@
       }
     }
   ],
-  "date": "2025-03-05T00:00:00+01:00",
   "item": [
     {
-      "linkId": "0701f3cf-73f5-48f7-8317-24c1223264a8",
+      "linkId": "1",
       "type": "group",
-      "text": "Input scoring and calculation and copying of scoringvalue",
+      "text": "Group Decimal (1)",
       "required": false,
       "item": [
         {
-          "linkId": "verdi1",
-          "type": "choice",
-          "text": "Verdi 1",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
+          "linkId": "1.1",
+          "type": "decimal",
+          "text": "Decimal 1",
+          "required": false
         },
         {
-          "linkId": "verdi2",
-          "type": "choice",
-          "text": "Verdi 2",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
+          "linkId": "1.2",
+          "type": "decimal",
+          "text": "Decimal 2",
+          "required": false
         },
         {
-          "linkId": "verdi3",
-          "type": "choice",
-          "text": "Verdi 3",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
+          "linkId": "1.3",
+          "type": "decimal",
+          "text": "Decimal summeringsfelt",
           "required": false,
-          "answerOption": [
+          "code": [
             {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
+              "code": "1",
+              "display": "Default",
+              "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+              "id": "d33a5f32-43ab-4b0a-ffeb-264679017b93"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+              "valueInteger": 2
             },
             {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='1.1').answer.value + QuestionnaireResponse.descendants().where(linkId='1.2').answer.value"
             }
-          ]
-        },
-        {
-          "linkId": "verdi4",
-          "type": "choice",
-          "text": "Verdi 4",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
           ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "Delsum",
-          "type": "integer",
-          "text": "Delsum",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "SS", "display": "Section score" }
-          ],
-          "required": false,
           "readOnly": true
         },
         {
-          "linkId": "Totalsum",
+          "linkId": "1.4",
           "type": "integer",
-          "text": "Totalsum",
+          "text": "Integer summeringsfelt",
+          "required": false,
           "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "TS", "display": "Total score" }
+            {
+              "code": "1",
+              "display": "Default",
+              "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+              "id": "d33a5f32-43ab-4b0a-ffeb-264679017b93"
+            }
           ],
-          "required": false,
-          "readOnly": true
-        },
-        {
-          "linkId": "aritmetisk_gjennomsnitt",
-          "type": "integer",
-          "text": "Aritmetisk gjennomsnitt basert på totalsum.",
-          "required": false,
           "extension": [
             {
               "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Totalsum').answer.value / 4"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "kopiert_felt",
-          "type": "integer",
-          "text": "Kopi",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Totalsum').answer.value"
-            }
-          ],
-          "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "Totalsum", "operator": "exists" }]
-        },
-        {
-          "linkId": "aritmetisk_gjennomsnitt_kopi",
-          "type": "integer",
-          "text": "Aritmetisk gjennomsnitt basert på kopiert felt",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='kopiert_felt').answer.value / 4"
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='1.1').answer.value + QuestionnaireResponse.descendants().where(linkId='1.2').answer.value"
             }
           ],
           "readOnly": true
@@ -236,36 +128,437 @@
       ]
     },
     {
-      "linkId": "498140b3-7c26-4492-dea5-24c829552347",
+      "linkId": "2",
       "type": "group",
-      "text": "Regning - Fhir path",
+      "text": "Group Integer",
       "required": false,
       "item": [
-        { "linkId": "Tall1", "type": "integer", "text": "Tall 1", "required": false },
-        { "linkId": "Tall2", "type": "integer", "text": "Tall 2", "required": false },
         {
-          "linkId": "Sum",
+          "linkId": "2.1",
           "type": "integer",
-          "text": "Sum",
+          "text": "Integer 1",
+          "required": false
+        },
+        {
+          "linkId": "2.2",
+          "type": "integer",
+          "text": "Integer 2",
+          "required": false
+        },
+        {
+          "linkId": "2.3",
+          "type": "integer",
+          "text": "Integer summeringsfelt",
           "required": false,
+          "code": [
+            {
+              "code": "1",
+              "display": "Default",
+              "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+              "id": "d33a5f32-43ab-4b0a-ffeb-264679017b93"
+            }
+          ],
           "extension": [
             {
               "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Tall1').answer.value + QuestionnaireResponse.descendants().where(linkId='Tall2').answer.value"
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='2.1').answer.value + QuestionnaireResponse.descendants().where(linkId='2.2').answer.value"
+            }
+          ],
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "linkId": "3",
+      "type": "group",
+      "text": "Group Quantity (3)",
+      "required": false,
+      "item": [
+        {
+          "linkId": "3.1",
+          "type": "quantity",
+          "text": "Quantity 1",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "cm",
+                "display": "centimeter",
+                "system": "http://unitsofmeasure.org"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "3.2",
+          "type": "quantity",
+          "text": "Nytt quantityfelt med en egen enhet der man feks skal regne sammen to cm felt",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "cm",
+                "display": "centimeter",
+                "system": "http://unitsofmeasure.org"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "3.3",
+          "type": "quantity",
+          "text": "Seksjonssum",
+          "required": false,
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+              "valueInteger": 2
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3.1').answer.value.value + QuestionnaireResponse.descendants().where(linkId='3.2').answer.value.value"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "cm",
+                "display": "centimeter",
+                "system": "http://unitsofmeasure.org"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "4",
+      "type": "group",
+      "text": "Group Choice (4)",
+      "required": false,
+      "item": [
+        {
+          "linkId": "4.1",
+          "type": "choice",
+          "text": "Kryss av om noen av disse tilstandene gjelder deg",
+          "code": [
+            {
+              "system": "http://ehelse.no/scoringFormulas",
+              "code": "QS",
+              "display": "Question score"
+            }
+          ],
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "check-box"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerOption": [
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
+                "code": "1",
+                "display": "Svært medtatt, vansker med å ta til deg væske eller næring"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
+                "code": "50",
+                "display": "Alvorlige pustevansker"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
+                "code": "3",
+                "display": "Brått fall i allmenntilstand"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
+                "code": "4",
+                "display": "Petekkier (utslett som ikke lar seg avbleke)"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
+                "code": "5",
+                "display": "Nyoppståtte brystsmerter"
+              }
             }
           ]
         },
         {
-          "linkId": "Gjennomsnitt",
-          "type": "integer",
-          "text": "Gjennomsnitt",
-          "required": false,
+          "linkId": "4.2",
+          "type": "quantity",
+          "text": "Seksjonssum",
           "extension": [
             {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Sum').answer.value / 2"
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "kg",
+                "display": "kilo",
+                "system": "http://unitsofmeasure.org"
+              }
+            }
+          ],
+          "code": [
+            {
+              "system": "http://ehelse.no/Score",
+              "code": "score",
+              "display": "score"
+            },
+            {
+              "system": "http://ehelse.no/scoringFormulas",
+              "code": "SS",
+              "display": "SS"
+            }
+          ],
+          "required": false,
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "linkId": "5",
+      "type": "group",
+      "text": "Group Choice (5)",
+      "required": false,
+      "item": [
+        {
+          "linkId": "5.1",
+          "type": "choice",
+          "text": "Har du noen av følgende sykdommer?",
+          "code": [
+            {
+              "system": "http://ehelse.no/scoringFormulas",
+              "code": "QS",
+              "display": "Question score"
+            }
+          ],
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 25
+                  }
+                ],
+                "code": "1",
+                "display": "Astma"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 25
+                  }
+                ],
+                "code": "2",
+                "display": "Kols"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 25
+                  }
+                ],
+                "code": "3",
+                "display": "Annen lungesykdom"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "check-box"
+                  }
+                ]
+              }
             }
           ]
+        },
+        {
+          "linkId": "5.2",
+          "type": "quantity",
+          "text": "Seksjonssum",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "score",
+                "display": "score",
+                "system": "http://ehelse.no/Score"
+              }
+            }
+          ],
+          "code": [
+            {
+              "system": "http://ehelse.no/Score",
+              "code": "score",
+              "display": "score"
+            },
+            {
+              "system": "http://ehelse.no/scoringFormulas",
+              "code": "SS",
+              "display": "SS"
+            }
+          ],
+          "required": false,
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "linkId": "6",
+      "type": "group",
+      "text": "Group Choice (6)",
+      "required": false,
+      "item": [
+        {
+          "linkId": "6.1",
+          "type": "choice",
+          "text": "Har du noen av disse plagene?",
+          "code": [
+            {
+              "system": "http://ehelse.no/scoringFormulas",
+              "code": "QS",
+              "display": "Question score"
+            }
+          ],
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 10
+                  }
+                ],
+                "code": "1",
+                "display": "Feber"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 10
+                  }
+                ],
+                "code": "2",
+                "display": "Tørrhoste"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 10
+                  }
+                ],
+                "code": "3",
+                "display": "Tungpust"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "6.2",
+          "type": "string",
+          "text": "Beskriv eventuelle andre luftveisplager du har",
+          "required": false,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "7",
+      "type": "group",
+      "text": "Resultat",
+      "required": false,
+      "item": [
+        {
+          "linkId": "7.1",
+          "type": "quantity",
+          "text": "Totalsum fra alle QS",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "score",
+                "display": "score",
+                "system": "http://ehelse.no/Score"
+              }
+            }
+          ],
+          "code": [
+            {
+              "system": "http://ehelse.no/Score",
+              "code": "score",
+              "display": "score"
+            },
+            {
+              "system": "http://ehelse.no/scoringFormulas",
+              "code": "TS",
+              "display": "TS"
+            }
+          ],
+          "required": false,
+          "readOnly": true
         }
       ]
     }

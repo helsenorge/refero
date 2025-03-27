@@ -10,7 +10,7 @@ import { getTopLevelElements } from '../util/getTopLevelElements';
 import { Resources } from '../util/resources';
 import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnaireComponents';
 
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
 import { useAppSelector } from '@/reducers';
 import { createPathForItem } from '@/util/refero-core';
