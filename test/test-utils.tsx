@@ -17,8 +17,8 @@ import { ReferoProps } from '../src/types/referoProps';
 import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
 
-import { AttachmentProvider } from '@/context/attachment/AttachmentContext';
-import { ExternalRenderProvider } from '@/context/externalRender/useExternalRender';
+import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
+import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
 
 export const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
   const methods = useForm({
