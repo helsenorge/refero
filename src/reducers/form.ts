@@ -443,12 +443,13 @@ function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form
 }
 function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: Form): Form {
   const responseItem = getResponseItemWithPath(payload.itemPath || [], state.FormData);
-
   if (!responseItem) {
     return state;
   }
   const answer = payload.newAnswer;
+
   responseItem.answer = answer;
+
   runEnableWhen(payload, state);
 
   return state;

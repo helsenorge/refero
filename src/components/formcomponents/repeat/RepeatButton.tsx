@@ -9,7 +9,7 @@ import { useAppDispatch } from '../../../reducers';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
 
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 interface Props {

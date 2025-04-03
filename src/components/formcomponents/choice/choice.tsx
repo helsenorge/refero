@@ -13,7 +13,7 @@ import ReceiverComponentWrapper from '../receiver-component/receiver-component-w
 import { newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import itemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';

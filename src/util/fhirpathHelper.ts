@@ -71,7 +71,6 @@ export const hasDescendants = (questionnaire?: QuestionnaireResponseItem[] | nul
 export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnare?: QuestionnaireResponse | null): any {
   const qCopy = structuredClone(questionnare);
   const qExt = structuredClone(fhirExtension);
-
   try {
     if (qExt.valueString) {
       const compiledExpression = fhirpath.compile(qExt.valueString, fhirpath_r4_model);

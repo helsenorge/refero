@@ -5,7 +5,7 @@ import { Collapse } from 'react-collapse';
 import SafeText from '../../referoLabel/SafeText';
 
 import ItemControlConstants from '@/constants/itemcontrol';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { getText } from '@/util';
 import { findHelpItem, getHelpItemType } from '@/util/help';
 

@@ -1,6 +1,6 @@
 import ReceiverComponent, { ReceiverComponentProps } from './receiver-component';
 
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { getId } from '@/util';
 
 const ReceiverComponentWrapper = (props: ReceiverComponentProps): JSX.Element => {
