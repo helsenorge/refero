@@ -1,3 +1,8 @@
+## 17.3.0
+
+- If a repeated item has initial value, set this value on the repeated item.
+- Add valueReference to QuestionnaireResponse if the item has a valueReference and initial value
+
 ## 17.2.3
 
 - table with itemControl 'table' now supports showing value from other column if only open-choice other value is selected
