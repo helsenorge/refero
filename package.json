@@ -130,7 +130,7 @@
   },
   "optionalDependencies": {
     "@ast-grep/napi-linux-x64-gnu": "0.31.1",
-    "@rollup/rollup-linux-x64-gnu": "4.28.1",
+    "@rollup/rollup-linux-x64-gnu": "4.39.0",
     "@swc/core-linux-x64-gnu": "^1.7.14"
   }
 }
