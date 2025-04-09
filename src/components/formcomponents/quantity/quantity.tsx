@@ -91,9 +91,9 @@ const Quantity = (props: Props): JSX.Element | null => {
     }
 
     if (dispatch && path && item) {
-      dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(newState =>
-        onAnswerChange(newState, item, { valueQuantity: quantity })
-      );
+      dispatch(newQuantityValueAsync({ itemPath: path || [], valueQuantity: quantity, item }))
+        .unwrap()
+        .then(newState => onAnswerChange(newState, item, { valueQuantity: quantity }));
     }
 
     if (promptLoginMessage) {

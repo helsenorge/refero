@@ -43,8 +43,9 @@ export const String = (props: Props): JSX.Element | null => {
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const value = event.target.value;
     if (dispatch && path && item) {
-      const newState = await dispatch(newStringValueAsync(path, value, item));
-      onAnswerChange(newState, item, { valueString: value });
+      await dispatch(newStringValueAsync({ itemPath: path, valueString: value, item }))
+        .unwrap()
+        .then(newState => onAnswerChange(newState, item, { valueString: value }));
     }
 
     if (promptLoginMessage) {

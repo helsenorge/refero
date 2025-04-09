@@ -94,9 +94,15 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         const coding = getAnswerValueCoding(code);
         const responseAnswer = { valueCoding: coding };
         if (answerContainsCode(code)) {
-          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+          dispatch(removeCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+            .unwrap()
+            .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
-        dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+          .unwrap()
+          .then(newState => {
+            onAnswerChange?.(newState, item, responseAnswer);
+          });
         promptLoginMessage?.();
       }
     },
@@ -144,9 +150,15 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         const coding = getAnswerValueCoding(code);
         const responseAnswer = { valueCoding: coding };
         if (answerContainsCode(code)) {
-          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+          dispatch(removeCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+            .unwrap()
+            .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         } else {
-          dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange(newState, item, responseAnswer));
+          dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item, multipleAnswers: true }))
+            .unwrap()
+            .then(newState => {
+              onAnswerChange?.(newState, item, responseAnswer);
+            });
         }
         promptLoginMessage?.();
       }
@@ -158,7 +170,9 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     (coding: Coding): void => {
       if (onAnswerChange && path && item) {
         const responseAnswer = { valueCoding: coding };
-        dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        dispatch(removeCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+          .unwrap()
+          .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         promptLoginMessage?.();
       }
     },
@@ -170,7 +184,11 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       if (code && onAnswerChange && path && item) {
         const coding = getAnswerValueCoding(code, systemArg, displayArg);
         const responseAnswer = { valueCoding: coding };
-        dispatch(newCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+          .unwrap()
+          .then(newState => {
+            onAnswerChange?.(newState, item, responseAnswer);
+          });
         promptLoginMessage?.();
       }
     },

@@ -79,7 +79,6 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     }
 
     return undefined;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   };
 
   const value = getValue();
@@ -111,9 +110,13 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     (value: string): void => {
       if (path && item) {
         if (value.length > 0) {
-          dispatch(newCodingStringValueAsync(path, value, item)).then(newState => onAnswerChange?.(newState, item, { valueString: value }));
+          dispatch(newCodingStringValueAsync({ itemPath: path, valueString: value, item }))
+            .unwrap()
+            .then(state => onAnswerChange?.(state, item, { valueString: value }));
         } else {
-          dispatch(removeCodingStringValueAsync(path, item)).then(newState => onAnswerChange?.(newState, item, { valueString: '' }));
+          dispatch(removeCodingStringValueAsync({ itemPath: path, item }))
+            .unwrap()
+            .then(state => onAnswerChange?.(state, item, { valueString: '' }));
         }
         promptLoginMessage?.();
       }
@@ -144,10 +147,14 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
         const coding = getAnswerValueCoding(code);
         const responseAnswer = { valueCoding: coding };
         if (getIndexOfAnswer(code, answer) > -1 && item) {
-          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+          dispatch(removeCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+            .unwrap()
+            .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
         if (item) {
-          dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+          dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+            .unwrap()
+            .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
         promptLoginMessage?.();
       }
@@ -157,7 +164,9 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const singleValueHandler = useCallback(
     (coding: Coding): void => {
       if (path && coding.code !== OPEN_CHOICE_ID && item) {
-        dispatch(removeCodingStringValueAsync(path, item)).then(newState => onAnswerChange?.(newState, item, { valueString: '' }));
+        dispatch(removeCodingStringValueAsync({ itemPath: path, item }))
+          .unwrap()
+          .then(state => onAnswerChange?.(state, item, { valueString: '' }));
       }
     },
     [dispatch, item, onAnswerChange, path]
@@ -168,7 +177,9 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       if (path) {
         const isShown = shouldShowExtraChoice(answer);
         if (isShown && coding.code === OPEN_CHOICE_ID && item) {
-          dispatch(removeCodingStringValueAsync(path, item)).then(newState => onAnswerChange?.(newState, item, { valueString: '' }));
+          dispatch(removeCodingStringValueAsync({ itemPath: path, item }))
+            .unwrap()
+            .then(state => onAnswerChange?.(state, item, { valueString: '' }));
         }
       }
     },
@@ -190,9 +201,13 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
         const coding = getAnswerValueCoding(code);
         const responseAnswer = { valueCoding: coding };
         if (getIndexOfAnswer(code, answer) > -1) {
-          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+          dispatch(removeCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+            .unwrap()
+            .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         } else {
-          dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+          dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item, multipleAnswers: true }))
+            .unwrap()
+            .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
         promptLoginMessage?.();
         interceptHandler(coding);
@@ -205,7 +220,9 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     (coding: Coding): void => {
       if (path && item) {
         const responseAnswer = { valueCoding: coding };
-        dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+        dispatch(removeCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+          .unwrap()
+          .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         promptLoginMessage?.();
       }
     },
@@ -216,7 +233,9 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       if (code && path && item) {
         const coding = getAnswerValueCoding(code, systemArg, displayArg);
         const responseAnswer = { valueCoding: coding };
-        dispatch(newCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+        dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+          .unwrap()
+          .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         promptLoginMessage?.();
         interceptHandler(coding);
       }

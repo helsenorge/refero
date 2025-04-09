@@ -49,7 +49,9 @@ export const Text = (props: Props): JSX.Element | null => {
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch && path && item) {
-      dispatch(newStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueString: value }));
+      dispatch(newStringValueAsync({ itemPath: path, valueString: value, item }))
+        .unwrap()
+        .then(newState => onAnswerChange(newState, item, { valueString: value }));
     }
 
     if (promptLoginMessage) {

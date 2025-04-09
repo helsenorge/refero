@@ -75,7 +75,9 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
 
   const dispatchNewTime = (newTime: string): void => {
     if (dispatch && onAnswerChange && path && item) {
-      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState => onAnswerChange(newState, item, { valueTime: newTime }));
+      dispatch(newTimeValueAsync({ itemPath: path, valueTime: newTime, item }))
+        .unwrap()
+        .then(newState => onAnswerChange(newState, item, { valueTime: newTime }));
     }
   };
 

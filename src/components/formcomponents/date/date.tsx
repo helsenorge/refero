@@ -36,9 +36,11 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
     (newValue: string): void => {
       const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
       if (newValue !== existingAnswer && path && item) {
-        dispatch(newDateValueAsync(path, newValue, item)).then(newState => {
-          onAnswerChange?.(newState, item, { valueDate: newValue });
-        });
+        dispatch(newDateValueAsync({ itemPath: path, valueDate: newValue, item }))
+          .unwrap()
+          .then(newState => {
+            onAnswerChange?.(newState, item, { valueDate: newValue });
+          });
 
         promptLoginMessage?.();
       }

@@ -74,9 +74,11 @@ const Decimal = (props: Props): JSX.Element | null => {
 
     if (item) {
       const newValueConverted = parseFloat(newValue);
-      dispatch(newDecimalValueAsync(path || [], newValueConverted, item))?.then(newState => {
-        return onAnswerChange(newState, item, { valueDecimal: newValueConverted });
-      });
+      dispatch(newDecimalValueAsync({ itemPath: path || [], valueDecimal: newValueConverted, item }))
+        .unwrap()
+        .then(newState => {
+          return onAnswerChange(newState, item, { valueDecimal: newValueConverted });
+        });
     }
 
     if (promptLoginMessage) {

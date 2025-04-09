@@ -45,9 +45,9 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
       for (const file of files) {
         const onSuccess = (attachment: Attachment): void => {
           if (onAnswerChange && attachment && path) {
-            dispatch(newAttachmentAsync(path, attachment, item, isRepeat(item)))?.then(newState =>
-              onAnswerChange(newState, item, { valueAttachment: attachment })
-            );
+            dispatch(newAttachmentAsync({ itemPath: path, valueAttachment: attachment, item, multipleAnswers: isRepeat(item) }))
+              .unwrap()
+              .then(newState => onAnswerChange?.(newState, item, { valueAttachment: attachment }));
           }
         };
         const onError = (errormessage: TextMessage | null): void => {
@@ -63,13 +63,11 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const onDelete = (fileId: string): void => {
     if (onDeleteAttachment && item) {
       const onSuccess = (): void => {
-        if (dispatch) {
-          const attachment: Attachment = { id: fileId };
-          if (path)
-            dispatch(removeAttachmentAsync(path, attachment, item))?.then(
-              newState => onAnswerChange && onAnswerChange(newState, item, { valueAttachment: { id: fileId } })
-            );
-        }
+        const attachment: Attachment = { id: fileId };
+        if (path)
+          dispatch(removeAttachmentAsync({ itemPath: path, valueAttachment: attachment, item }))
+            .unwrap()
+            .then(newState => onAnswerChange?.(newState, item, { valueAttachment: { id: fileId } }));
       };
       const onError = (errormessage: TextMessage | null): void => {
         if (errormessage) {

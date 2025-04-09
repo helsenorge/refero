@@ -70,7 +70,9 @@ const Integer = (props: Props): JSX.Element | null => {
     const valueInt = parseInt((event.target as HTMLInputElement).value, 10);
 
     if (dispatch && path && item) {
-      dispatch(newIntegerValueAsync(path, valueInt, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: valueInt }));
+      dispatch(newIntegerValueAsync({ itemPath: path, valueInteger: valueInt, item }))
+        .unwrap()
+        .then(newState => onAnswerChange(newState, item, { valueInteger: valueInt }));
     }
 
     if (promptLoginMessage) {

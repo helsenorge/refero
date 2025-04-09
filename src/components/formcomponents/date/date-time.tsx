@@ -159,9 +159,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     }
 
     if (dispatch && onAnswerChange && path && item) {
-      dispatch(newDateTimeValueAsync(path, fullDate ?? '', item))?.then(newState =>
-        onAnswerChange(newState, item, { valueDateTime: fullDate })
-      );
+      dispatch(newDateTimeValueAsync({ itemPath: path, valueDateTime: fullDate ?? '', item }))
+        .unwrap()
+        .then(newState => onAnswerChange(newState, item, { valueDateTime: fullDate }));
     }
 
     if (promptLoginMessage) {

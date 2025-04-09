@@ -67,9 +67,9 @@ const Boolean = (props: Props): JSX.Element | null => {
   const handleChange = (): void => {
     const newValue = !getValue();
     if (dispatch && item && path) {
-      dispatch(newBooleanValueAsync(path, newValue, item))?.then(
-        newState => onAnswerChange && onAnswerChange(newState, item, { valueBoolean: newValue })
-      );
+      dispatch(newBooleanValueAsync({ itemPath: path, valueBoolean: newValue, item }))
+        .unwrap()
+        .then(newState => onAnswerChange?.(newState, item, { valueBoolean: newValue }));
     }
 
     promptLoginMessage?.();
