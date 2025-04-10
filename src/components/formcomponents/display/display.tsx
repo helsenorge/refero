@@ -5,7 +5,7 @@ import designsystemtypography from '@helsenorge/designsystem-react/scss/typograp
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import SafeText from '@/components/referoLabel/SafeText';
 import itemControlConstants from '@/constants/itemcontrol';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { findQuestionnaireItem } from '@/reducers/selectors';

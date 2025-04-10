@@ -64,7 +64,7 @@ describe('runFhirPathQrUpdater', () => {
 
   it('should evaluate expressions and update the response', async () => {
     const updatedResponse = { resourceType: 'QuestionnaireResponse' } as QuestionnaireResponse;
-    const scores: AnswerPad = { 'test-item': 10 };
+    const scores: AnswerPad = { 'test-item': [{ valueInteger: 10 }] };
 
     mockFhirPathUpdater.evaluateAllExpressions = vi.fn().mockReturnValue(updatedResponse);
     mockFhirPathUpdater.calculateFhirScore = vi.fn().mockReturnValue(scores);
@@ -93,7 +93,18 @@ describe('runFhirPathQrUpdater', () => {
   });
 
   it('should handle quantity type items', async () => {
-    const scores: AnswerPad = { 'quantity-item': 42 };
+    const scores: AnswerPad = {
+      'quantity-item': [
+        {
+          valueQuantity: {
+            unit: 'Test Unit',
+            system: 'test-system',
+            code: 'test-code',
+            value: 42,
+          },
+        },
+      ],
+    };
     const mockExtension: Coding = {
       system: 'test-system',
       code: 'test-code',
@@ -122,29 +133,33 @@ describe('runFhirPathQrUpdater', () => {
       fhirPathUpdater: mockFhirPathUpdater,
     });
 
-    expect(mockActionRequester.addQuantityAnswer).toHaveBeenCalledWith(
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith(
       'quantity-item',
-      expect.objectContaining({
-        unit: 'Test Unit',
-        system: 'test-system',
-        code: 'test-code',
-        value: 42,
-      }),
+      expect.objectContaining([
+        {
+          valueQuantity: {
+            unit: 'Test Unit',
+            system: 'test-system',
+            code: 'test-code',
+            value: 42,
+          },
+        },
+      ]),
       0
     );
   });
 
   it('should handle different item types with actionRequester', async () => {
     const scores: AnswerPad = {
-      'decimal-item': 10.5,
-      'integer-item': 42,
-      'boolean-item': true,
-      'string-item': 'test',
-      'choice-item': { system: 'test', code: 'code', display: 'Test Coding' },
-      'openchoice-item': 'open value',
-      'datetime-item': '2023-01-01T12:00:00',
-      'date-item': '2023-01-01',
-      'time-item': '12:00:00',
+      'decimal-item': [{ valueDecimal: 10.5 }],
+      'integer-item': [{ valueInteger: 42 }],
+      'boolean-item': [{ valueBoolean: true }],
+      'string-item': [{ valueString: 'test' }],
+      'choice-item': [{ valueCoding: { system: 'test', code: 'code', display: 'Test Coding' } }],
+      'openchoice-item': [{ valueString: 'open value' }],
+      'datetime-item': [{ valueDateTime: '2023-01-01T12:00:00' }],
+      'date-item': [{ valueDate: '2023-01-01' }],
+      'time-item': [{ valueTime: '12:00:00' }],
     };
 
     mockFhirPathUpdater.evaluateAllExpressions = vi.fn().mockReturnValue(mockQuestionnaireResponse);
@@ -186,26 +201,28 @@ describe('runFhirPathQrUpdater', () => {
       fhirPathUpdater: mockFhirPathUpdater,
     });
 
-    expect(mockActionRequester.addDecimalAnswer).toHaveBeenCalledWith('decimal-item', 10.5, 0);
-    expect(mockActionRequester.addIntegerAnswer).toHaveBeenCalledWith('integer-item', 42, 0);
-    expect(mockActionRequester.addBooleanAnswer).toHaveBeenCalledWith('boolean-item', true, 0);
-    expect(mockActionRequester.addStringAnswer).toHaveBeenCalledWith('string-item', 'test', 0);
-    expect(mockActionRequester.addChoiceAnswer).toHaveBeenCalledWith(
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith('decimal-item', [{ valueDecimal: 10.5 }], 0);
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith('integer-item', [{ valueInteger: 42 }], 0);
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith('boolean-item', [{ valueBoolean: true }], 0);
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith('string-item', [{ valueString: 'test' }], 0);
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith(
       'choice-item',
-      { system: 'test', code: 'code', display: 'Test Coding' },
+      [{ valueCoding: { system: 'test', code: 'code', display: 'Test Coding' } }],
       0
     );
-    expect(mockActionRequester.addOpenChoiceAnswer).toHaveBeenCalledWith('openchoice-item', 'open value', 0);
-    expect(mockActionRequester.addDateTimeAnswer).toHaveBeenCalledWith('datetime-item', '2023-01-01T12:00:00', 0);
-    expect(mockActionRequester.addDateAnswer).toHaveBeenCalledWith('date-item', '2023-01-01', 0);
-    expect(mockActionRequester.addTimeAnswer).toHaveBeenCalledWith('time-item', '12:00:00', 0);
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith('openchoice-item', [{ valueString: 'open value' }], 0);
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith('datetime-item', [{ valueDateTime: '2023-01-01T12:00:00' }], 0);
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith('date-item', [{ valueDate: '2023-01-01' }], 0);
+    expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith('time-item', [{ valueTime: '12:00:00' }], 0);
   });
 
   it('should handle checkbox items for choice type', async () => {
     const scores: AnswerPad = {
       'checkbox-item': [
-        { system: 'test', code: 'code1', display: 'Option 1' },
-        { system: 'test', code: 'code2', display: 'Option 2' },
+        {
+          valueCoding: { system: 'test', code: 'code1', display: 'Option 1' },
+        },
+        { valueCoding: { system: 'test', code: 'code2', display: 'Option 2' } },
       ],
     };
 
@@ -222,8 +239,6 @@ describe('runFhirPathQrUpdater', () => {
       },
     ]);
 
-    mockActionRequester.isCheckbox = vi.fn().mockReturnValue(true);
-
     await runFhirPathQrUpdater({
       questionnaire: mockQuestionnaire,
       questionnaireResponse: mockQuestionnaireResponse,
@@ -232,12 +247,11 @@ describe('runFhirPathQrUpdater', () => {
       fhirPathUpdater: mockFhirPathUpdater,
     });
 
-    expect(mockActionRequester.isCheckbox).toHaveBeenCalledWith(mockItem);
     expect(mockActionRequester.setNewAnswer).toHaveBeenCalledWith(
       'checkbox-item',
       expect.arrayContaining([
-        { valueCoding: { system: 'test', code: 'code1', display: 'Option 1' } },
-        { valueCoding: { system: 'test', code: 'code2', display: 'Option 2' } },
+        { valueCoding: { code: 'code1', display: 'Option 1', system: 'test' } },
+        { valueCoding: { code: 'code2', display: 'Option 2', system: 'test' } },
       ]),
       0
     );

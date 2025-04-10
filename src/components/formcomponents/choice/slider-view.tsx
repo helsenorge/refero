@@ -5,6 +5,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import styles from '../common-styles.module.css';
+import { convertToEmoji } from './sliderUtils';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -15,7 +16,7 @@ import { getErrorMessage, isInteger, maxValue, minValue, required } from '@/comp
 import { shouldValidate } from '@/components/validation/utils';
 import codeSystems from '@/constants/codingsystems';
 import { Extensions } from '@/constants/extensions';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getId, isReadOnly } from '@/util';
@@ -165,48 +166,5 @@ function getStepEmoji(option: QuestionnaireItemAnswerOption): string | undefined
 
   return convertToEmoji(emojiLabel);
 }
-
-export const isValidDecimal = (str: string): boolean => /^\d+$/.test(str);
-
-export const isValidHex = (str: string): boolean => /^(0x)?[0-9A-Fa-f]{1,6}$/.test(str);
-
-export const isValidHtmlCode = (str: string): boolean => /^&#(x[0-9A-Fa-f]+|\d+);$/.test(str);
-
-export const isValidUnicodeHex = (str: string): boolean => /^U\+[0-9A-Fa-f]{4,6}$/.test(str);
-
-export const getCodePoint = (value: string): number | null => {
-  if (isValidDecimal(value)) {
-    return parseInt(value, 10);
-  }
-  if (isValidHtmlCode(value)) {
-    if (value.startsWith('&#x')) {
-      return parseInt(value.replace(/^&#x|;$/g, ''), 16);
-    } else {
-      return parseInt(value.replace(/^&#|;$/g, ''), 10);
-    }
-  }
-  if (isValidUnicodeHex(value)) {
-    return parseInt(value.replace(/^U\+/, ''), 16);
-  }
-  if (isValidHex(value)) {
-    return parseInt(value.replace(/^0x/, ''), 16);
-  }
-  return null;
-};
-
-export const convertToEmoji = (value: string): string => {
-  const codePoint = getCodePoint(value);
-
-  if (codePoint !== null && codePoint >= 0 && codePoint <= 0x10ffff) {
-    try {
-      return String.fromCodePoint(codePoint);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (_error) {
-      return value;
-    }
-  } else {
-    return value;
-  }
-};
 
 export default SliderView;
