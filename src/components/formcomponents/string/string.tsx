@@ -15,7 +15,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';

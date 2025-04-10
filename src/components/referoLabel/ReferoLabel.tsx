@@ -11,7 +11,7 @@ import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
 
 import styles from './referoLabel.module.css';
 
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
