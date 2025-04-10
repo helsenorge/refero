@@ -610,8 +610,8 @@ export function getResponseItemAndPathWithLinkId(
   }
 
   if (isOfTypeQuestionnaireResponseItem(item)) {
-    for (const answer of item.answer ?? []) {
-      if (answer.item) {
+    for (const answer of item?.answer ?? []) {
+      if (answer?.item) {
         for (const i of answer.item) {
           index = i.linkId in seen ? seen[i.linkId] : 0;
           response.push(...getResponseItemAndPathWithLinkIdTraverse(linkId, i, currentPath, index));

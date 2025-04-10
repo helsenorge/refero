@@ -2,6 +2,7 @@ import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { AppDispatch, GlobalState } from '../reducers';
+import { runCalculatorsAction } from './thunks';
 import { Path } from '../util/refero-core';
 
 //#region Action Types & Payloads
@@ -81,11 +82,21 @@ export const deleteRepeatItemAction = createAction<DeleteRepeatItemPayload>(DELE
 //#endregion
 
 //#region Async Thunks
+
+export const newValueAsync = createAsyncThunk<GlobalState, NewValuePayload, { state: GlobalState; dispatch: AppDispatch }>(
+  'refero/newValueAsync',
+  async (payload, { dispatch, getState }) => {
+    dispatch(newValue(payload));
+    await dispatch(runCalculatorsAction());
+    return getState();
+  }
+);
+
 export const newAttachmentAsync = createAsyncThunk<GlobalState, NewAttachmentPayload, { state: GlobalState; dispatch: AppDispatch }>(
   'refero/newAttachmentAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newAttachmentAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -94,7 +105,7 @@ export const removeAttachmentAsync = createAsyncThunk<GlobalState, RemoveAttachm
   'refero/removeAttachmentAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(removeAttachmentAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -103,7 +114,7 @@ export const newBooleanValueAsync = createAsyncThunk<GlobalState, BooleanItemPay
   'refero/newBooleanValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newBooleanValueAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -112,6 +123,7 @@ export const newCodingValueAsync = createAsyncThunk<GlobalState, CodingValueItem
   'refero/newCodingValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newCodingValueAction(payload));
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -120,7 +132,7 @@ export const newCodingStringValueAsync = createAsyncThunk<GlobalState, CodingStr
   'refero/newCodingStringValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newCodingStringValueAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -131,7 +143,7 @@ export const removeCodingStringValueAsync = createAsyncThunk<
   { state: GlobalState; dispatch: AppDispatch }
 >('refero/removeCodingStringValueAsync', async (payload, { dispatch, getState }) => {
   dispatch(removeCodingStringValueAction(payload));
-
+  await dispatch(runCalculatorsAction());
   return getState();
 });
 
@@ -139,7 +151,7 @@ export const newQuantityValueAsync = createAsyncThunk<GlobalState, QuantityItemP
   'refero/newQuantityValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newQuantityValueAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -150,7 +162,7 @@ export const removeCodingValueAsync = createAsyncThunk<
   { state: GlobalState; dispatch: AppDispatch }
 >('refero/removeCodingValueAsync', async (payload, { dispatch, getState }) => {
   dispatch(removeCodingValueAction(payload));
-
+  await dispatch(runCalculatorsAction());
   return getState();
 });
 
@@ -158,7 +170,7 @@ export const newDecimalValueAsync = createAsyncThunk<GlobalState, DecimalValuePa
   'refero/newDecimalValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newDecimalValueAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -167,7 +179,7 @@ export const newIntegerValueAsync = createAsyncThunk<GlobalState, IntegerItemPay
   'refero/newIntegerValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newIntegerValueAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -176,7 +188,7 @@ export const newStringValueAsync = createAsyncThunk<GlobalState, StringItemPaylo
   'refero/newStringValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newStringValueAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -185,7 +197,7 @@ export const newDateValueAsync = createAsyncThunk<GlobalState, DateItemPayload, 
   'refero/newDateValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newDateValueAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -194,7 +206,7 @@ export const newTimeValueAsync = createAsyncThunk<GlobalState, TimeItemPayload, 
   'refero/newTimeValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newTimeValueAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -203,7 +215,7 @@ export const newDateTimeValueAsync = createAsyncThunk<GlobalState, DateTimeItemP
   'refero/newDateTimeValueAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(newDateTimeValueAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -212,7 +224,7 @@ export const addRepeatItemAsync = createAsyncThunk<GlobalState, RepeatItemPayloa
   'refero/addRepeatItemAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(addRepeatItemAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
@@ -221,7 +233,7 @@ export const deleteRepeatItemAsync = createAsyncThunk<GlobalState, DeleteRepeatI
   'refero/deleteRepeatItemAsync',
   async (payload, { dispatch, getState }) => {
     dispatch(deleteRepeatItemAction(payload));
-
+    await dispatch(runCalculatorsAction());
     return getState();
   }
 );
