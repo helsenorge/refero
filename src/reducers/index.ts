@@ -2,7 +2,6 @@ import { configureStore, combineReducers, ThunkDispatch, UnknownAction, ThunkAct
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 import formReducer, { Form } from './form'; // Importing the `Form` type for explicit typing
-import { listenerMiddleware } from './middleware/globalChangeMiddleware';
 
 // Define your ReferoState using the same `Form` type from the old setup
 export interface ReferoState {
@@ -22,7 +21,7 @@ const rootReducer = combineReducers({
 // Create the store using `configureStore`, as per Redux Toolkit’s recommendation
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(listenerMiddleware.middleware), // Add any custom middleware here
+  middleware: getDefaultMiddleware => getDefaultMiddleware(), // Add any custom middleware here
 });
 
 // You can directly infer AppDispatch and RootState from the store itself
