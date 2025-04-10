@@ -31,7 +31,8 @@ export default defineConfig(configEnv =>
           },
         },
         coverage: {
-          reporter: ['cobertura', 'json'],
+          include: ['src/**/*.{ts,tsx}'],
+          reporter: ['json', 'html', 'cobertura'],
         },
         reporters: ['default', 'junit', 'html'],
         outputFile: {
