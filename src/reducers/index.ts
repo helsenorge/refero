@@ -20,7 +20,8 @@ const rootReducer = combineReducers({
 
 // Create the store using `configureStore`, as per Redux Toolkit’s recommendation
 export const store = configureStore({
-  reducer: rootReducer, // Using the combined reducer
+  reducer: rootReducer,
+  middleware: getDefaultMiddleware => getDefaultMiddleware(), // Add any custom middleware here
 });
 
 // You can directly infer AppDispatch and RootState from the store itself

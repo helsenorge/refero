@@ -100,21 +100,10 @@ const ReceiverComponent = ({
     setSelectedReceiver(
       getReceiverName(receiverTreeNodes, [...selectedPath.filter((_x, index) => index < level), selectedNode.OrgenhetId])
     );
-    // setState((prevState: ReceiverComponentState) => {
-    //   const prevSelectedValues = prevselectedPath.filter((_x, index) => index < level);
-    //   const newSelectedPath = [...prevSelectedValues, selectedNode.OrgenhetId];
-    //   const selectedReceiver = isLeafNode ? getReceiverName(receiverTreeNodes, newSelectedPath) : '';
-    //   return {
-    //     selectedPath: newSelectedPath,
-    //     selectedReceiver: selectedReceiver,
-    //   };
-    // });
 
     if (isLeafNode) {
-      // set answer selected when leaf node is selected
       handleChange(getEndepunktVerdi(selectedNode.EndepunktId) || '', '', selectedNode.Navn);
     } else if (selected) {
-      // clear previous answer when another node than a leaf node is selected
       clearCodingAnswer({ code: selected[0] });
     }
   };

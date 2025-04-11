@@ -11,7 +11,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 import styles from './quantity.module.css';
 
-import { newQuantityValueAsync } from '@/actions/newValue';
+import { newValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { decimalPattern, getErrorMessage, getInputWidth, isNumber, maxValue, minValue, required } from '@/components/validation/rules';
@@ -91,9 +91,9 @@ const Quantity = (props: Props): JSX.Element | null => {
     }
 
     if (dispatch && path && item) {
-      dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(newState =>
-        onAnswerChange(newState, item, { valueQuantity: quantity })
-      );
+      dispatch(newValueAsync({ itemPath: path || [], valueQuantity: quantity, item }))
+        .unwrap()
+        .then(newState => onAnswerChange(newState, item, { valueQuantity: quantity }));
     }
 
     if (promptLoginMessage) {
