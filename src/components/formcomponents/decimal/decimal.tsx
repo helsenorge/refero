@@ -11,7 +11,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { newDecimalValueAsync } from '@/actions/newValue';
+import { newValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { decimalPattern, getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
@@ -74,7 +74,7 @@ const Decimal = (props: Props): JSX.Element | null => {
 
     if (item) {
       const newValueConverted = parseFloat(newValue);
-      dispatch(newDecimalValueAsync({ itemPath: path || [], valueDecimal: newValueConverted, item }))
+      dispatch(newValueAsync({ itemPath: path || [], valueDecimal: newValueConverted, item }))
         .unwrap()
         .then(newState => {
           return onAnswerChange(newState, item, { valueDecimal: newValueConverted });

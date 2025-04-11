@@ -15,7 +15,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { newStringValueAsync } from '@/actions/newValue';
+import { newValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
@@ -49,7 +49,7 @@ export const Text = (props: Props): JSX.Element | null => {
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch && path && item) {
-      dispatch(newStringValueAsync({ itemPath: path, valueString: value, item }))
+      dispatch(newValueAsync({ itemPath: path, valueString: value, item }))
         .unwrap()
         .then(newState => onAnswerChange(newState, item, { valueString: value }));
     }

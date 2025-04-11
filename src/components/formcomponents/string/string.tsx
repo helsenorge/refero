@@ -10,7 +10,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { newStringValueAsync } from '@/actions/newValue';
+import { newValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
@@ -43,7 +43,7 @@ export const String = (props: Props): JSX.Element | null => {
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const value = event.target.value;
     if (dispatch && path && item) {
-      await dispatch(newStringValueAsync({ itemPath: path, valueString: value, item }))
+      await dispatch(newValueAsync({ itemPath: path, valueString: value, item }))
         .unwrap()
         .then(newState => onAnswerChange(newState, item, { valueString: value }));
     }

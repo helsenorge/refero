@@ -9,7 +9,7 @@ import TextField from './text-field';
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 
-import { removeCodingValueAsync, newCodingValueAsync, newCodingStringValueAsync, removeCodingStringValueAsync } from '@/actions/newValue';
+import { removeCodingValueAsync, newValueAsync, newCodingStringValueAsync, removeCodingStringValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemControlConstants from '@/constants/itemcontrol';
@@ -152,7 +152,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
             .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
         if (item) {
-          dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+          dispatch(newValueAsync({ itemPath: path, valueCoding: coding, item }))
             .unwrap()
             .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
@@ -205,7 +205,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
             .unwrap()
             .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         } else {
-          dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item, multipleAnswers: true }))
+          dispatch(newValueAsync({ itemPath: path, valueCoding: coding, item, multipleAnswers: true }))
             .unwrap()
             .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
@@ -233,7 +233,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       if (code && path && item) {
         const coding = getAnswerValueCoding(code, systemArg, displayArg);
         const responseAnswer = { valueCoding: coding };
-        dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+        dispatch(newValueAsync({ itemPath: path, valueCoding: coding, item }))
           .unwrap()
           .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         promptLoginMessage?.();

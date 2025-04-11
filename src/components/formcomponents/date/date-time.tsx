@@ -13,7 +13,7 @@ import Label from '@helsenorge/designsystem-react/components/Label';
 import { DatePicker } from '@helsenorge/datepicker/components/DatePicker';
 
 import { useMinMaxDate } from './useMinMaxDate';
-import { newDateTimeValueAsync } from '../../../actions/newValue';
+import { newValueAsync } from '../../../actions/newValue';
 import { initialize } from '../../../util/date-fns-utils';
 import {
   getFullFnsDate,
@@ -159,7 +159,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     }
 
     if (dispatch && onAnswerChange && path && item) {
-      dispatch(newDateTimeValueAsync({ itemPath: path, valueDateTime: fullDate ?? '', item }))
+      dispatch(newValueAsync({ itemPath: path, valueDateTime: fullDate ?? '', item }))
         .unwrap()
         .then(newState => onAnswerChange(newState, item, { valueDateTime: fullDate }));
     }

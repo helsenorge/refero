@@ -10,7 +10,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { newIntegerValueAsync } from '@/actions/newValue';
+import { newValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
@@ -70,7 +70,7 @@ const Integer = (props: Props): JSX.Element | null => {
     const valueInt = parseInt((event.target as HTMLInputElement).value, 10);
 
     if (dispatch && path && item) {
-      dispatch(newIntegerValueAsync({ itemPath: path, valueInteger: valueInt, item }))
+      dispatch(newValueAsync({ itemPath: path, valueInteger: valueInt, item }))
         .unwrap()
         .then(newState => onAnswerChange(newState, item, { valueInteger: valueInt }));
     }

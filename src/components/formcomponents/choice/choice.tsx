@@ -10,7 +10,7 @@ import AutosuggestView from '../choice-common/autosuggest-view';
 import { ReadOnly } from '../read-only/readOnly';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 
-import { newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
+import { newValueAsync, removeCodingValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import itemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
@@ -98,7 +98,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
             .unwrap()
             .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
-        dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+        dispatch(newValueAsync({ itemPath: path, valueCoding: coding, item }))
           .unwrap()
           .then(newState => {
             onAnswerChange?.(newState, item, responseAnswer);
@@ -154,7 +154,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
             .unwrap()
             .then(newState => onAnswerChange?.(newState, item, responseAnswer));
         } else {
-          dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item, multipleAnswers: true }))
+          dispatch(newValueAsync({ itemPath: path, valueCoding: coding, item, multipleAnswers: true }))
             .unwrap()
             .then(newState => {
               onAnswerChange?.(newState, item, responseAnswer);
@@ -184,7 +184,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       if (code && onAnswerChange && path && item) {
         const coding = getAnswerValueCoding(code, systemArg, displayArg);
         const responseAnswer = { valueCoding: coding };
-        dispatch(newCodingValueAsync({ itemPath: path, valueCoding: coding, item }))
+        dispatch(newValueAsync({ itemPath: path, valueCoding: coding, item }))
           .unwrap()
           .then(newState => {
             onAnswerChange?.(newState, item, responseAnswer);

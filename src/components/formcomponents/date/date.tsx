@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
-import { newDateValueAsync } from '../../../actions/newValue';
+import { newValueAsync } from '../../../actions/newValue';
 import itemControlConstants from '../../../constants/itemcontrol';
 import { getItemControlExtensionValue } from '../../../util/extension';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -36,7 +36,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
     (newValue: string): void => {
       const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
       if (newValue !== existingAnswer && path && item) {
-        dispatch(newDateValueAsync({ itemPath: path, valueDate: newValue, item }))
+        dispatch(newValueAsync({ itemPath: path, valueDate: newValue, item }))
           .unwrap()
           .then(newState => {
             onAnswerChange?.(newState, item, { valueDate: newValue });

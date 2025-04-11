@@ -6,7 +6,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
-import { newTimeValueAsync } from '../../../actions/newValue';
+import { newValueAsync } from '../../../actions/newValue';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
@@ -75,7 +75,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
 
   const dispatchNewTime = (newTime: string): void => {
     if (dispatch && onAnswerChange && path && item) {
-      dispatch(newTimeValueAsync({ itemPath: path, valueTime: newTime, item }))
+      dispatch(newValueAsync({ itemPath: path, valueTime: newTime, item }))
         .unwrap()
         .then(newState => onAnswerChange(newState, item, { valueTime: newTime }));
     }

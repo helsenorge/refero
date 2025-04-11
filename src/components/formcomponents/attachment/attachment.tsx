@@ -6,7 +6,7 @@ import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import AttachmentHtml from './attachmenthtml';
 
-import { newAttachmentAsync, removeAttachmentAsync } from '@/actions/newValue';
+import { newValueAsync, removeAttachmentAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useAttachmentContext } from '@/context/attachment/useAttachmentContext';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
@@ -45,7 +45,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
       for (const file of files) {
         const onSuccess = (attachment: Attachment): void => {
           if (onAnswerChange && attachment && path) {
-            dispatch(newAttachmentAsync({ itemPath: path, valueAttachment: attachment, item, multipleAnswers: isRepeat(item) }))
+            dispatch(newValueAsync({ itemPath: path, valueAttachment: attachment, item, multipleAnswers: isRepeat(item) }))
               .unwrap()
               .then(newState => onAnswerChange?.(newState, item, { valueAttachment: attachment }));
           }
