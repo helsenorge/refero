@@ -91,7 +91,6 @@ export const Text = (props: Props): JSX.Element | null => {
     pattern: regexpPattern({ item, resources }),
     validate: (value: string): string | true | undefined =>
       scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
-    setValueAs: (value: string) => value?.trim(),
     shouldUnregister: true,
   };
 
