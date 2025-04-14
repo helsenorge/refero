@@ -180,11 +180,11 @@ export function createMaxDecimalPlacesValidator({
   const patternString = getDecimalPattern(item);
   const errorMessage = message ?? getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall';
   return (value: number): true | string => {
-    if (!patternString) {
+    const stringValue = value?.toString();
+    if (!patternString || !stringValue || isNaN(Number(stringValue))) {
       return true;
     }
 
-    const stringValue = value.toString();
     return new RegExp(patternString).test(stringValue) ? true : errorMessage;
   };
 }

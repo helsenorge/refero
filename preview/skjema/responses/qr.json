@@ -16,6 +16,15 @@
           ]
         },
         {
+          "linkId": "7420fc16-14cb-469c-8ed7-8703b2e3b4c1",
+          "text": "INTEGER",
+          "answer": [
+            {
+              "valueInteger": 5
+            }
+          ]
+        },
+        {
           "linkId": "2208fe14-c1b6-4701-825e-342a3ee80e54",
           "text": "Quantity, max 2",
           "answer": [
