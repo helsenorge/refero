@@ -1,8 +1,7 @@
 {
-  "title": "Title",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "name": "Techinal_boolean",
+  "id": "40b94b59-1e26-4234-ecdc-8685e75ef0ed",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -61,27 +60,59 @@
       }
     }
   ],
-  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
   "item": [
     {
-      "linkId": "3dec9e0d-7b78-424e-8a59-f0909510985d",
-      "type": "choice",
+      "linkId": "cd234470-3417-4063-87d6-113d44e704e1",
+      "type": "group",
+      "text": "validate decimal",
+      "required": false,
       "item": [
         {
-          "linkId": "f799ebd5-7cac-4d15-8b84-2e6037124401",
-          "type": "text",
-          "required": false,
-          "repeats": false,
+          "linkId": "9e7063ff-f58e-4970-9f65-8f9fe30558ea",
+          "type": "decimal",
+          "text": "Decimal, max 2",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+              "valueInteger": 2
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 1
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Min 1, max 10, max 2 decimals"
+            }
+          ],
+          "required": true
+        },
+        {
+          "linkId": "7420fc16-14cb-469c-8ed7-8703b2e3b4c1",
+          "type": "integer",
+          "text": "INTEGER",
+          "required": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": -10
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
+            }
+          ]
+        },
+        {
+          "linkId": "4106a74d-4139-4e2e-8b06-b3896051ae06",
+          "type": "integer",
+          "text": "Copy from with validation",
+          "required": true,
           "readOnly": true,
-          "maxLength": 250,
-          "_text": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                "valueMarkdown": "Help text"
-              }
-            ]
-          },
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -89,85 +120,109 @@
                 "coding": [
                   {
                     "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "help"
+                    "code": "data-receiver"
                   }
                 ]
               }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7420fc16-14cb-469c-8ed7-8703b2e3b4c1').answer.value"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 5
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 8
+            }
+          ],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7420fc16-14cb-469c-8ed7-8703b2e3b4c1",
+              "operator": "exists"
             }
           ]
-        }
-      ],
-      "required": true,
-      "_text": {
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "**Radio view label**"
-          }
-        ]
-      },
-      "text": "Radio view label",
-      "extension": [
-        {
-          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-          "valueString": "Legg til"
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
-          "valueInteger": 1
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-          "valueInteger": 4
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "radio-button"
+          "linkId": "2208fe14-c1b6-4701-825e-342a3ee80e54",
+          "type": "quantity",
+          "text": "Quantity, max 2",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "cm",
+                "display": "centimeter",
+                "system": "http://unitsofmeasure.org"
               }
-            ]
-          }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Min 1, max 10, max 2 decimals"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 1
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+              "valueInteger": 2
+            }
+          ],
+          "required": false
         },
         {
-          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "**Radio view sublabel**"
-        }
-      ],
-      "readOnly": true,
-      "code": [
-        {
-          "code": "ValidateReadOnly",
-          "display": "Valider skrivebeskyttet felt",
-          "system": "http://helsenorge.no/fhir/CodeSystem/ValidationOptions"
-        }
-      ],
-      "answerOption": [
-        {
-          "valueCoding": {
-            "id": "d5646b17-bb7c-4776-8186-88011b98a0bf",
-            "code": "ja",
-            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
-            "display": "Ja"
-          }
+          "linkId": "55003943-6654-4bac-f7ff-a6cda942ee5d",
+          "type": "string",
+          "text": "Text regex",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+            }
+          ],
+          "required": false
         },
         {
-          "valueCoding": {
-            "id": "352926a9-27f8-4bc1-e394-08edc439b4d7",
-            "code": "nei",
-            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
-            "display": "Nei"
-          }
+          "linkId": "7fb69594-3b5c-4d9e-8b02-5a418042f9fb",
+          "type": "integer",
+          "text": "Read only",
+          "required": true,
+          "readOnly": true,
+          "initial": [
+            {
+              "valueInteger": 50
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 5
+            }
+          ]
         },
         {
-          "valueCoding": {
-            "id": "540c894e-29ef-46bf-f961-851921c87d57",
-            "code": "vet-ikke",
-            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
-            "display": "Vet ikke"
-          }
+          "linkId": "1fdbe984-f42c-40b4-85e3-42d795f29725",
+          "type": "string",
+          "text": "TEXT TRIM?",
+          "required": true
+        },
+        {
+          "linkId": "0d074e2d-7be6-486c-f5d7-ee3ebd549ba1",
+          "type": "text",
+          "text": "TEXTAREA TRIM?",
+          "required": true
         }
       ]
     }
