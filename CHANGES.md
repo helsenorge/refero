@@ -1,3 +1,7 @@
+## 17.3.1
+
+- Fix bug with validation of regex patterns. Move to validation function in utils.
+
 ## 17.3.0
 
 - If a repeated item has initial value, set this value on the repeated item.
