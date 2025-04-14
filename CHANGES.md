@@ -1,4 +1,4 @@
-## 17.3.1
+## 17.3.2
 
 - Added trim to string values to remove leading and trailing spaces in string and text fields and trigger required validation
 
