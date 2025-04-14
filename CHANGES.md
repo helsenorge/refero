@@ -1,5 +1,9 @@
 ## 17.3.1
 
+- Added trim to string values to remove leading and trailing spaces in string and text fields and trigger required validation
+
+## 17.3.1
+
 - Fix bug with validation of regex patterns. Move to validation function in utils.
 
 ## 17.3.0

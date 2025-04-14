@@ -8,21 +8,16 @@
       "item": [
         {
           "linkId": "9e7063ff-f58e-4970-9f65-8f9fe30558ea",
-          "text": "Decimal, max 0",
-          "answer": [
-            {
-              "valueDecimal": 9
-            }
-          ]
+          "text": "Decimal, max 2"
         },
         {
           "linkId": "7420fc16-14cb-469c-8ed7-8703b2e3b4c1",
-          "text": "INTEGER",
-          "answer": [
-            {
-              "valueInteger": 5
-            }
-          ]
+          "text": "INTEGER"
+        },
+        {
+          "linkId": "4106a74d-4139-4e2e-8b06-b3896051ae06",
+          "text": "Copy from with validation",
+          "answer": []
         },
         {
           "linkId": "2208fe14-c1b6-4701-825e-342a3ee80e54",
@@ -33,17 +28,21 @@
                 "unit": "centimeter",
                 "system": "http://unitsofmeasure.org",
                 "code": "cm",
-                "value": 10.5555
+                "value": 2.555
               }
             }
           ]
         },
         {
           "linkId": "55003943-6654-4bac-f7ff-a6cda942ee5d",
-          "text": "Text regex",
+          "text": "Text regex"
+        },
+        {
+          "linkId": "7fb69594-3b5c-4d9e-8b02-5a418042f9fb",
+          "text": "Read only",
           "answer": [
             {
-              "valueString": "sdf"
+              "valueInteger": 50
             }
           ]
         }
