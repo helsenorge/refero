@@ -14,7 +14,15 @@ import styles from './quantity.module.css';
 import { newQuantityValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { decimalPattern, getErrorMessage, getInputWidth, isNumber, maxValue, minValue, required } from '@/components/validation/rules';
+import {
+  createMaxDecimalPlacesValidator,
+  getErrorMessage,
+  getInputWidth,
+  isNumber,
+  maxValue,
+  minValue,
+  required,
+} from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -114,11 +122,13 @@ const Quantity = (props: Props): JSX.Element | null => {
   const baseIncrementValue = getMinValueExtensionValue(item);
   const width = getInputWidth(maxCharacters, true, maxDecimals);
   const errorMessage = getErrorMessage(item, error);
-  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+
+  const validationRules: RegisterOptions<FieldValues, string> = {
     required: required({ item, resources }),
     max: maxValue({ item, resources }),
     min: minValue({ item, resources }),
-    pattern: decimalPattern({ item, resources }),
+    validate: createMaxDecimalPlacesValidator({ item, resources }),
+    valueAsNumber: true,
     shouldUnregister: true,
   };
 
