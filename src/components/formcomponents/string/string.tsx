@@ -73,9 +73,6 @@ export const String = (props: Props): JSX.Element | null => {
     validate: (value: string): string | true | undefined =>
       scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
-    setValueAs: (value: string): string | undefined => {
-      return value?.trim();
-    },
   };
 
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
