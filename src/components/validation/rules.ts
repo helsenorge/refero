@@ -212,7 +212,7 @@ export const maxLength = ({ item, resources, message }: ValidationRuleInput): Va
  * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
  * @param resources - the language resources from props.
  * @param message - A custom error message to be used if the validation fails.
- * @returns A Validaton Rule that checks the questionnaireItem for a minLength and returns a validation rule with the minLength and message.
+ * @returns A Validation Rule that checks the questionnaireItem for a minLength and returns a validation rule with the minLength and message.
  */
 export const minLength = ({ item, resources, message }: ValidationRuleInput): ValidationRule<number> | undefined => {
   const minLength = getMinLengthExtensionValue(item);
