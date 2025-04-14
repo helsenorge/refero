@@ -57,7 +57,7 @@ export const getErrorMessage = (item: QuestionnaireItem | undefined, error: Fiel
  * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
  * @param resources - the language resources from props.
  * @param message - A custom error message to be used if the validation fails.
- * @returns A Validaton Rule that the questionnaireItem for a required field and returns a validation rule with the message.
+ * @returns A Validation Rule that the questionnaireItem for a required field and returns a validation rule with the message.
  */
 export const required = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<boolean> => {
   return {
@@ -122,7 +122,7 @@ export const decimalPattern = ({ item, resources, message }: ValidationRuleInput
  * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
  * @param resources - the language resources from props.
  * @param message - A custom error message to be used if the validation fails.
- * @returns A Validaton Rule that checks the questionnaireItem for a regex pattern and returns a validation rule with the pattern and message.
+ * @returns A Validation Rule that checks the questionnaireItem for a regex pattern and returns a validation rule with the pattern and message.
  */
 export const regexpPattern = ({ item, resources, message }: ValidationRuleInput): ValidationRule<RegExp> | undefined => {
   const pattern = getRegexExtension(item);
