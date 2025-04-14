@@ -16,6 +16,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import {
   createMaxDecimalPlacesValidator,
+  createRegexpValidator,
   getErrorMessage,
   getInputWidth,
   isNumber,
@@ -127,7 +128,10 @@ const Quantity = (props: Props): JSX.Element | null => {
     required: required({ item, resources }),
     max: maxValue({ item, resources }),
     min: minValue({ item, resources }),
-    validate: createMaxDecimalPlacesValidator({ item, resources }),
+    validate: {
+      'max-decimal-places': createMaxDecimalPlacesValidator({ item, resources }),
+      'regexp-pattern': createRegexpValidator({ item, resources }),
+    },
     valueAsNumber: true,
     shouldUnregister: true,
   };
