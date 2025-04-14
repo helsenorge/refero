@@ -1,3 +1,7 @@
+## 17.3.2
+
+- use setValueAs in react hook form to trim text values to avoid empty strings bypassing the validation
+
 ## 17.3.1
 
 - Fix bug with validation of regex patterns. Move to validation function in utils.
