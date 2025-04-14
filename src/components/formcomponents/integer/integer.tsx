@@ -13,7 +13,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { newIntegerValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
+import { createRegexpValidator, getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -86,6 +86,10 @@ const Integer = (props: Props): JSX.Element | null => {
     required: required({ item, resources }),
     max: maxValue({ item, resources }),
     min: minValue({ item, resources }),
+    validate: {
+      'regexp-pattern': createRegexpValidator({ item, resources }),
+    },
+    valueAsNumber: true,
     shouldUnregister: true,
   };
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
