@@ -70,7 +70,7 @@ export const required = ({ item, resources, message }: ValidationRuleInput): Val
  * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
  * @param resources - the language resources from props.
  * @param message - A custom error message to be used if the validation fails.
- * @returns A Validaton Rule that checks the questionnaireItem for a maxValue and returns a validation rule with the maxValue and message.
+ * @returns A Validation Rule that checks the questionnaireItem for a maxValue and returns a validation rule with the maxValue and message.
  */
 export const maxValue = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<number> => {
   const maxValue = getMaxValueExtensionValue(item);
