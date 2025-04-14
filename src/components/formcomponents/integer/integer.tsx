@@ -89,7 +89,6 @@ const Integer = (props: Props): JSX.Element | null => {
     validate: {
       'regexp-pattern': createRegexpValidator({ item, resources }),
     },
-    valueAsNumber: true,
     shouldUnregister: true,
   };
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
