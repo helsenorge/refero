@@ -12,6 +12,7 @@ import { ValidationSummary } from './validation/validation-summary';
 import { buttonOrderMicrowebStep } from '@/types/formTypes/formButton';
 import { ReferoProps } from '@/types/referoProps';
 import { Resources } from '@/util/resources';
+import { DefaultValues } from '@/validation/defaultFormValues';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -26,7 +27,7 @@ interface RenderFormProps {
   previousStep?: () => void;
   children?: React.ReactNode;
   validationSummaryPlacement?: ValidationSummaryPlacement;
-  methods: UseFormReturn<FieldValues, unknown, undefined>;
+  methods: UseFormReturn<DefaultValues, unknown, DefaultValues>;
   onFieldsNotCorrectlyFilledOut: ReferoProps['onFieldsNotCorrectlyFilledOut'];
 }
 

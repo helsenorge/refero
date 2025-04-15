@@ -10,6 +10,7 @@
 
 - If a repeated item has initial value, set this value on the repeated item.
 - Add valueReference to QuestionnaireResponse if the item has a valueReference and initial value
+- Updated Types of react-hook-form to <code>UseFormReturn<DefaultValues, unknown, DefaultValues>;</code>
 
 ## 17.2.3
 
