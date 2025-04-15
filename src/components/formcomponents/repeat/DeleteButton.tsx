@@ -29,7 +29,9 @@ const DeleteButton = ({ item, path, mustShowConfirm }: Props): JSX.Element => {
 
   const onDeleteRepeatItemConfirmed = (): void => {
     if (dispatch && item && path) {
-      dispatch(deleteRepeatItemAsync(path, item))?.then(newState => onAnswerChange(newState, item, {}));
+      dispatch(deleteRepeatItemAsync({ itemPath: path, item }))
+        .unwrap()
+        .then(newState => onAnswerChange(newState, item, {}));
     }
     setShowConfirm(false);
   };

@@ -12,7 +12,7 @@ import SafeText from '../../referoLabel/SafeText';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { newBooleanValueAsync } from '@/actions/newValue';
+import { newValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
@@ -67,9 +67,9 @@ const Boolean = (props: Props): JSX.Element | null => {
   const handleChange = (): void => {
     const newValue = !getValue();
     if (dispatch && item && path) {
-      dispatch(newBooleanValueAsync(path, newValue, item))?.then(
-        newState => onAnswerChange && onAnswerChange(newState, item, { valueBoolean: newValue })
-      );
+      dispatch(newValueAsync({ itemPath: path, valueBoolean: newValue, item }))
+        .unwrap()
+        .then(newState => onAnswerChange?.(newState, item, { valueBoolean: newValue }));
     }
 
     promptLoginMessage?.();
