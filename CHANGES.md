@@ -1,6 +1,7 @@
 ## 17.3.2
 
 - use setValueAs in react hook form to trim text values to avoid empty strings bypassing the validation
+- Updated Types of react-hook-form to <code>UseFormReturn<DefaultValues, unknown, DefaultValues>;</code>
 
 ## 17.3.1
 
@@ -10,7 +11,6 @@
 
 - If a repeated item has initial value, set this value on the repeated item.
 - Add valueReference to QuestionnaireResponse if the item has a valueReference and initial value
-- Updated Types of react-hook-form to <code>UseFormReturn<DefaultValues, unknown, DefaultValues>;</code>
 
 ## 17.2.3
 
