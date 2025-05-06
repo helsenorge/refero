@@ -6,7 +6,7 @@ import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 import HelpButton from './HelpButton';
 
 import ItemControlConstants from '@/constants/itemcontrol';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { getText } from '@/util';
 import { findHelpItem, getHelpItemType } from '@/util/help';
 

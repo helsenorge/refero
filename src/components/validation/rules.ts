@@ -52,14 +52,26 @@ export const getErrorMessage = (item: QuestionnaireItem | undefined, error: Fiel
     return error.message;
   }
 };
-
+/**
+ * @param params - An object containing the item, resources and message.
+ * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
+ * @param resources - the language resources from props.
+ * @param message - A custom error message to be used if the validation fails.
+ * @returns A Validation Rule that the questionnaireItem for a required field and returns a validation rule with the message.
+ */
 export const required = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<boolean> => {
   return {
     value: isRequired(item),
     message: message ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
   };
 };
-
+/**
+ * @param params - An object containing the item, resources and message.
+ * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
+ * @param resources - the language resources from props.
+ * @param message - A custom error message to be used if the validation fails.
+ * @returns A Validation Rule that checks the questionnaireItem for a maxValue and returns a validation rule with the maxValue and message.
+ */
 export const maxValue = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<number> => {
   const maxValue = getMaxValueExtensionValue(item);
   const customErrorMessage = getValidationTextExtension(item);
@@ -70,7 +82,13 @@ export const maxValue = ({ item, resources, message }: ValidationRuleInput): Val
       }
     : undefined;
 };
-
+/**
+ * @param params - An object containing the item, resources and message.
+ * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
+ * @param resources - the language resources from props.
+ * @param message - A custom error message to be used if the validation fails.
+ * @returns A Validation Rule that checks the questionnaireItem for a minValue and returns a validation rule with the maxValue and message.
+ */
 export const minValue = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<number> => {
   const minValue = getMinValueExtensionValue(item);
   const customErrorMessage = getValidationTextExtension(item);
@@ -81,7 +99,13 @@ export const minValue = ({ item, resources, message }: ValidationRuleInput): Val
       }
     : undefined;
 };
-
+/**
+ * @param params - An object containing the item, resources and message.
+ * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
+ * @param resources - the language resources from props.
+ * @param message - A custom error message to be used if the validation fails.
+ * @returns A Validation Rule that checks the questionnaireItem for a regex pattern for decimals and returns a validation rule with the pattern and message.
+ */
 export const decimalPattern = ({ item, resources, message }: ValidationRuleInput): ValidationRule<RegExp> | undefined => {
   const pattern = getDecimalPattern(item);
   const customErrorMessage = getValidationTextExtension(item);
@@ -93,7 +117,13 @@ export const decimalPattern = ({ item, resources, message }: ValidationRuleInput
       }
     : undefined;
 };
-
+/**
+ * @param params - An object containing the item, resources and message.
+ * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
+ * @param resources - the language resources from props.
+ * @param message - A custom error message to be used if the validation fails.
+ * @returns A Validation Rule that checks the questionnaireItem for a regex pattern and returns a validation rule with the pattern and message.
+ */
 export const regexpPattern = ({ item, resources, message }: ValidationRuleInput): ValidationRule<RegExp> | undefined => {
   const pattern = getRegexExtension(item);
   const customErrorMessage = getValidationTextExtension(item);
@@ -105,7 +135,66 @@ export const regexpPattern = ({ item, resources, message }: ValidationRuleInput)
       }
     : undefined;
 };
+/**
+ * @param params - An object containing the item, resources and an optional custom message.
+ * @param item - The QuestionnaireItem that may include extensions to derive the regex pattern.
+ * @param resources - The language resources from props.
+ * @param message - A custom error message to be used if the validation fails.
+ * @returns A validator function which accepts a string value and returns true if valid or an error message if it fails.
+ */
+export function createRegexpValidator({
+  item,
+  resources,
+  message,
+}: {
+  item?: QuestionnaireItem;
+  resources?: { oppgiGyldigVerdi?: string };
+  message?: string;
+}): (value: string) => true | string {
+  const pattern = getRegexExtension(item);
+  const errorMessage = message ?? getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav';
+  if (!pattern) {
+    return () => true;
+  }
+  const regex = new RegExp(pattern);
+  return (value: string): true | string => {
+    return regex.test(value) ? true : errorMessage;
+  };
+}
+/**
+ * @param params - An object containing the item, resources and message.
+ * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
+ * @param resources - the language resources from props.
+ * @param message - A custom error message to be used if the validation fails.
+ * @returns A validator function that takes a numeric value and returns true if valid or an error message string.
+ */
+export function createMaxDecimalPlacesValidator({
+  item,
+  resources,
+  message,
+}: {
+  item?: QuestionnaireItem;
+  resources?: { oppgiGyldigVerdi?: string };
+  message?: string;
+}): (value: number) => true | string {
+  const patternString = getDecimalPattern(item);
+  const errorMessage = message ?? getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall';
+  return (value: number): true | string => {
+    const stringValue = value?.toString();
+    if (!patternString || !stringValue || isNaN(Number(stringValue))) {
+      return true;
+    }
 
+    return new RegExp(patternString).test(stringValue) ? true : errorMessage;
+  };
+}
+/**
+ * @param params - An object containing the item, resources and message.
+ * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
+ * @param resources - the language resources from props.
+ * @param message - A custom error message to be used if the validation fails.
+ * @returns A Validaton Rule that checks the questionnaireItem for a minLength and returns a validation rule with the minLength and message.
+ */
 export const maxLength = ({ item, resources, message }: ValidationRuleInput): ValidationRule<number> | undefined => {
   const maxLength = getMaxLength(item);
   const customErrorMessage = getValidationTextExtension(item);
@@ -118,6 +207,13 @@ export const maxLength = ({ item, resources, message }: ValidationRuleInput): Va
     : undefined;
 };
 
+/**
+ * @param params - An object containing the item, resources and message.
+ * @param item - The QuestionnaireItem that may include extensions to derive the decimal pattern.
+ * @param resources - the language resources from props.
+ * @param message - A custom error message to be used if the validation fails.
+ * @returns A Validation Rule that checks the questionnaireItem for a minLength and returns a validation rule with the minLength and message.
+ */
 export const minLength = ({ item, resources, message }: ValidationRuleInput): ValidationRule<number> | undefined => {
   const minLength = getMinLengthExtensionValue(item);
   const customErrorMessage = getValidationTextExtension(item);

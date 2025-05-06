@@ -275,6 +275,12 @@ function copyItem(
   }
   if (defItem && defItem.type !== itemType.ATTATCHMENT) {
     for (let i = 0; source.answer && i < source.answer.length; i++) {
+      if (defItem.initial && defItem.initial.length > 0) {
+        if (!target.answer) {
+          target.answer = [];
+        }
+        target.answer.push(...defItem.initial);
+      }
       if (!source.answer[i].item || source.answer[i].item?.length === 0) {
         continue;
       }
@@ -437,12 +443,13 @@ function processRemoveAttachmentValueAction(action: NewValuePayload, state: Form
 }
 function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: Form): Form {
   const responseItem = getResponseItemWithPath(payload.itemPath || [], state.FormData);
-
   if (!responseItem) {
     return state;
   }
   const answer = payload.newAnswer;
+
   responseItem.answer = answer;
+
   runEnableWhen(payload, state);
 
   return state;

@@ -12,8 +12,8 @@ import ReceiverComponentWrapper from '../receiver-component/receiver-component-w
 
 import { newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import itemControlConstants from '@/constants/itemcontrol';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import itemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
@@ -40,56 +40,38 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const dispatch = useAppDispatch();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
-
-  useEffect(() => {
-    if (!Array.isArray(answer) && answer?.valueCoding?.code && !answer?.valueCoding?.display) {
-      if (answer?.valueCoding?.code === item?.initial?.[0]?.valueCoding?.code) {
-        resetInitialAnswer(answer?.valueCoding?.code);
-      }
-    }
-  }, [answer, item]);
-
   const getAnswerValue = useCallback((): string[] | undefined => {
+    const initialSelectedOption = item?.answerOption?.find(x => x.initialSelected);
+
     if (Array.isArray(answer)) {
-      return answer.map(el => el?.valueCoding?.code).filter(Boolean) as string[];
+      return answer
+        .map(el => {
+          if (el?.valueCoding?.code) {
+            return el.valueCoding.code;
+          } else if (el?.valueReference?.reference) {
+            return el.valueReference.reference;
+          } else {
+            return undefined;
+          }
+        })
+        .filter(Boolean) as string[];
     } else if (answer?.valueCoding?.code) {
       return [answer.valueCoding.code];
-    }
-    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueInteger) {
+    } else if (answer?.valueReference?.reference) {
+      return [answer.valueReference.reference];
+    } else if (initialSelectedOption?.valueCoding?.code) {
+      return [initialSelectedOption.valueCoding.code];
+    } else if (
+      !item ||
+      !item.initial ||
+      item.initial.length === 0 ||
+      !item.initial[0].valueCoding?.code ||
+      !item.initial[0].valueReference?.reference
+    ) {
       return [];
     }
     return undefined;
   }, [answer, item]);
-
-  // const getInitialValue = useCallback((): string[] | undefined => {
-  //   const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
-
-  //   if (initialSelectedCode) {
-  //     return [initialSelectedCode];
-  //   }
-  //   const code = item?.initial?.[0]?.valueCoding?.code;
-  //   return code ? [code] : undefined;
-  // }, [item]);
-
-  const getPDFValue = (): string => {
-    if (isDataReceiver(item)) {
-      return Array.isArray(answer)
-        ? answer
-            .map((el: QuestionnaireResponseItemAnswer) => {
-              if (el && el.valueCoding && el.valueCoding.display) {
-                return el.valueCoding.display;
-              }
-            })
-            ?.join(', ')
-        : (answer && answer.valueCoding && answer.valueCoding.display) || resources?.ikkeBesvart || '';
-    }
-    const value = getAnswerValue();
-    if (!value || value.length === 0) {
-      return resources?.ikkeBesvart || '';
-    }
-    return value.map(code => getDisplay(getOptions(resources, item, containedResources), code)).join(', ');
-  };
-
   const getAnswerValueCoding = useCallback(
     (code: string, systemArg?: string, displayArg?: string): Coding => {
       const display = displayArg || getDisplay(getOptions(resources, item, containedResources), code);
@@ -120,6 +102,41 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     },
     [answerContainsCode, dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
   );
+  useEffect(() => {
+    if (!Array.isArray(answer) && answer?.valueCoding?.code && !answer?.valueCoding?.display) {
+      if (answer?.valueCoding?.code === item?.initial?.[0]?.valueCoding?.code) {
+        resetInitialAnswer(answer?.valueCoding?.code);
+      }
+    }
+  }, [answer, item, resetInitialAnswer]);
+
+  // const getInitialValue = useCallback((): string[] | undefined => {
+  //   const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
+
+  //   if (initialSelectedCode) {
+  //     return [initialSelectedCode];
+  //   }
+  //   const code = item?.initial?.[0]?.valueCoding?.code;
+  //   return code ? [code] : undefined;
+  // }, [item]);
+  const getPDFValue = (): string => {
+    if (isDataReceiver(item)) {
+      return Array.isArray(answer)
+        ? answer
+            .map((el: QuestionnaireResponseItemAnswer) => {
+              if (el && el.valueCoding && el.valueCoding.display) {
+                return el.valueCoding.display;
+              }
+            })
+            ?.join(', ')
+        : (answer && answer.valueCoding && answer.valueCoding.display) || resources?.ikkeBesvart || '';
+    }
+    const value = getAnswerValue();
+    if (!value || value.length === 0) {
+      return resources?.ikkeBesvart || '';
+    }
+    return value.map(code => getDisplay(getOptions(resources, item, containedResources), code)).join(', ');
+  };
 
   const handleCheckboxChange = useCallback(
     (code?: string): void => {
@@ -160,10 +177,9 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     [dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
   );
 
-  const renderComponentBasedOnType = (): JSX.Element | null => {
+  const renderComponentBasedOnType = (itemControlValue: ItemControlValue | undefined): JSX.Element | null => {
     const pdfValue = getPDFValue();
 
-    const itemControlValue = getItemControlValue(item);
     if (!itemControlValue) return null;
 
     const options = getOptions(resources, item, containedResources);
@@ -194,7 +210,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     }
   };
 
-  const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
+  const itemControlValue = getItemControlValue(item);
 
   const options = getOptions(resources, item, containedResources);
   const value = getAnswerValue();
@@ -204,7 +220,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     [item, itemControlValue]
   );
 
-  const isReceiverComponent = useMemo(() => itemControlValue === itemControlConstants.RECEIVERCOMPONENT, [itemControlValue]);
+  const isReceiverComponent = itemControlValue === itemControlConstants.RECEIVERCOMPONENT;
 
   const hasOptionsAndNoCanonicalValueSet = useMemo(
     () => hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item),
@@ -216,11 +232,12 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   if (!hasOptionsAndNoCanonicalValueSet && !shouldRenderAutosuggest && !isReceiverComponent) {
     return null;
   }
+
   return (
     <>
       {hasOptionsAndNoCanonicalValueSet &&
         (itemControlValue ? (
-          renderComponentBasedOnType()
+          renderComponentBasedOnType(itemControlValue)
         ) : aboveDropdownThreshold ? (
           <DropdownView options={options} handleChange={handleChange} selected={value} pdfValue={getPDFValue()} {...props}>
             {children}

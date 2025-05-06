@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import { Quantity, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import ItemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
 import { TABLE_CODES_VALUES, TableCodes } from '@/constants/tableTypes';
@@ -26,4 +26,23 @@ export function isItemControlValue(value?: string): value is ItemControlValue {
   return (
     Object.values(ItemControlConstants).some(val => val === value) || Object.values(ItemControlConstants.Group).some(val => val === value)
   );
+}
+
+export function isQuestionnaireResponseItemAnswer(candidate: unknown): candidate is QuestionnaireResponseItemAnswer {
+  if (typeof candidate !== 'object' || candidate === null) {
+    return false;
+  }
+  const hasValueProperty = Object.keys(candidate).some(key => /^value[A-Z]/.test(key));
+  const hasNestedItems = 'item' in candidate && Array.isArray(candidate.item);
+  return hasValueProperty || hasNestedItems;
+}
+/**
+ * Type guard for an array of QuestionnaireResponseItemAnswer.
+ */
+export function isQuestionnaireResponseItemAnswerArray(value: unknown): value is QuestionnaireResponseItemAnswer[] {
+  return Array.isArray(value) && value.every(isQuestionnaireResponseItemAnswer);
+}
+
+export function isQuantity(value: unknown): value is Quantity {
+  return typeof value === 'object' && value !== null && 'value' in value && 'unit' in value;
 }

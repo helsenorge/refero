@@ -8,15 +8,15 @@ import RenderForm from './renderForm';
 import StepView from './stepView';
 
 import { setSkjemaDefinitionAction } from '@/actions/form';
-import { AttachmentProvider } from '@/context/AttachmentContext';
-import { ExternalRenderProvider } from '@/context/externalRenderContext';
+import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
+import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { ReferoProps } from '@/types/referoProps';
 import { getPresentationButtonsExtension } from '@/util/extension';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
-import { createIntitialFormValues } from '@/validation/defaultFormValues';
+import { createIntitialFormValues, DefaultValues } from '@/validation/defaultFormValues';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
   const {
@@ -51,7 +51,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const questionnaire = formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item]);
-  const methods = useForm({
+  const methods = useForm<DefaultValues>({
     defaultValues: defualtVals,
     shouldFocusError: false,
     mode: 'onTouched',

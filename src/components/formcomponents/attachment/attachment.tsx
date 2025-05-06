@@ -8,8 +8,8 @@ import AttachmentHtml from './attachmenthtml';
 
 import { newAttachmentAsync, removeAttachmentAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { useAttachmentContext } from '@/context/AttachmentContext';
-import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useAttachmentContext } from '@/context/attachment/useAttachmentContext';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
