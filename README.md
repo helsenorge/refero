@@ -121,8 +121,6 @@ const App = () => {
 | onStepChange                  |          | callback                   |         | Callback when the current step in step-views changes                                                          |
 | useFormProps                  |          | UseFormProps               |         | Additional options passed to `react-hook-form`'s `useForm` hook.                                              |
 | renderCustomActionButtons     |          | callback                   |         | A callback function that allows consumers to render their own custom buttons.                                 |
-| customNavigationCallBack      |          | callback                   |         | A callback function that allows consumers to listen to navigation changes.                                    |
-| customProps                   |          | any                        |         | Any custom props that consumers want to pass to the Refero component.                                         |
 
 ### `questionnaire: Questionnaire`
 

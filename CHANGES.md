@@ -1,3 +1,7 @@
+## 17.4.0
+
+- Removed microweb related props.
+
 ## 17.3.3
 
 - use setValueAs in react hook form to trim text values to avoid empty strings bypassing the validation <- do the same for textarea
