@@ -1,4 +1,4 @@
-@import '@helsenorge/designsystem-react/scss/palette';
+@use '@helsenorge/designsystem-react/scss/palette' as palette;
 
 /* ------------------------------------------------------------------------ */
 
@@ -7,55 +7,55 @@
 /* ------------------------------------------------------------------------ */
 
 // Primary colors
-$color-primary-5: $blueberry700;
-$color-primary-5-5: $blueberry900;
-$color-primary-7: $blueberry100;
-$color-primary-8: $blueberry200;
-$color-primary-8-1: $blueberry50;
+$color-primary-5: palette.$blueberry700;
+$color-primary-5-5: palette.$blueberry900;
+$color-primary-7: palette.$blueberry100;
+$color-primary-8: palette.$blueberry200;
+$color-primary-8-1: palette.$blueberry50;
 
 // Base colours
-$color-base-0: $white;
-$color-base-1: $black;
-$color-base-2: $neutral900;
-$color-base-3: $neutral800;
-$color-base-3-1: $neutral800;
-$color-base-3-5: $neutral700;
-$color-base-4: $neutral600;
-$color-base-4-1: $neutral500;
-$color-base-4-2: $neutral300;
-$color-base-4-2-5: $neutral400;
-$color-base-4-5: $neutral200;
-$color-base-4-6: $neutral100;
-$color-base-5: $neutral100;
-$color-base-5-5: $neutral100;
-$color-base-6: $neutral100;
-$color-base-6-1: $neutral50;
-$color-base-6-2: $neutral50;
-$color-base-6-5: $white;
-$color-base-7: $black;
+$color-base-0: palette.$white;
+$color-base-1: palette.$black;
+$color-base-2: palette.$neutral900;
+$color-base-3: palette.$neutral800;
+$color-base-3-1: palette.$neutral800;
+$color-base-3-5: palette.$neutral700;
+$color-base-4: palette.$neutral600;
+$color-base-4-1: palette.$neutral500;
+$color-base-4-2: palette.$neutral300;
+$color-base-4-2-5: palette.$neutral400;
+$color-base-4-5: palette.$neutral200;
+$color-base-4-6: palette.$neutral100;
+$color-base-5: palette.$neutral100;
+$color-base-5-5: palette.$neutral100;
+$color-base-6: palette.$neutral100;
+$color-base-6-1: palette.$neutral50;
+$color-base-6-2: palette.$neutral50;
+$color-base-6-5: palette.$white;
+$color-base-7: palette.$black;
 
 // Status colours
-$color-functional-1: $kiwi900;
-$color-functional-1-lighter: $kiwi700;
-$color-functional-2: $banana400;
-$color-functional-3: $cherry600;
-$color-functional-3-lighter: $cherry500;
+$color-functional-1: palette.$kiwi900;
+$color-functional-1-lighter: palette.$kiwi700;
+$color-functional-2: palette.$banana400;
+$color-functional-3: palette.$cherry600;
+$color-functional-3-lighter: palette.$cherry500;
 
 // Helpsystem and presentation colours
-$color-pres-1: $blueberry100;
-$color-pres-2: $blueberry200;
-$color-pres-3: $blueberry50;
-$color-help-inverse: $blueberry600;
-$color-highlight-text: $banana50;
+$color-pres-1: palette.$blueberry100;
+$color-pres-2: palette.$blueberry200;
+$color-pres-3: palette.$blueberry50;
+$color-help-inverse: palette.$blueberry600;
+$color-highlight-text: palette.$banana50;
 
 // Message Box Colors
-$color-info-fill: $kiwi50;
-$color-info-border: $kiwi100;
-$color-alert-fill: $banana50;
-$color-alert-border: $banana100;
-$color-alert-background: $banana50;
-$color-error-fill: $cherry100;
-$color-error-border: $cherry200;
+$color-info-fill: palette.$kiwi50;
+$color-info-border: palette.$kiwi100;
+$color-alert-fill: palette.$banana50;
+$color-alert-border: palette.$banana100;
+$color-alert-background: palette.$banana50;
+$color-error-fill: palette.$cherry100;
+$color-error-border: palette.$cherry200;
 
 // Gamle deprecated tjenesterfarge
 $color-primary-1: #a61e7b;
@@ -73,27 +73,57 @@ $color-help-uu-to-white: #cd7b1c;
 /* ------------------------------------------------------------------------ */
 
 // Outline for hover and focus
-$outline-box-shadow-thin: 0 0 0 4px $neutral400;
-$outline-box-shadow: 0 0 0 8px $neutral400;
+$outline-box-shadow-thin: 0 0 0 4px palette.$neutral400;
+$outline-box-shadow: 0 0 0 8px palette.$neutral400;
 
 // Hover
-$hover-box-shadow-underline: 0 4px 0 0 $neutral400;
-$hover-box-shadow-inset: 0 0 0 4px $neutral400 inset;
+$hover-box-shadow-underline: 0 4px 0 0 palette.$neutral400;
+$hover-box-shadow-inset: 0 0 0 4px palette.$neutral400 inset;
 
 // Focus
 $focus-background-color: $color-primary-8-1; //same as rgba($color-primary-5, 0.1) but makes sure that it also works when the background is not white
-$focux-box-shadow-left: -4px 0 0 $neutral400;
-$focux-box-shadow-right: 4px 0 0 $neutral400;
-$focus-box-shadow-over: 0 -4px 0 $neutral400;
-$focux-box-shadow-under: 0 4px 0 $neutral400;
-$focus-box-shadow-over-and-under: 0 -4px 0 $neutral400, 0 4px 0 $neutral400;
-$focux-box-shadow-over-and-left: 0 -4px 0 $neutral400, -4px -4px 0 $neutral400, -4px 0 0 0 $neutral400;
-$focux-box-shadow-over-and-right: 0 -4px 0 $neutral400, 4px -4px 0 $neutral400, 4px 0 0 0 $neutral400;
-$focux-box-shadow-under-and-left: 0 4px 0 $neutral400, -4px 4px 0 $neutral400, -4px 0 0 0 $neutral400;
-$focux-box-shadow-under-and-right: 0 4px 0 $neutral400, 4px 4px 0 $neutral400, 4px 0 0 0 $neutral400;
-$focux-box-shadow-left-and-right: -4px 4px 0 $neutral400, 4px 4px 0 $neutral400;
-$focux-box-shadow-left-right-and-under: -4px 0 0 $neutral400, 4px 0 0 $neutral400, 0 4px 0 $neutral400, 4px 4px 0 $neutral400,
-  -4px 4px 0 $neutral400;
-$focus-box-shadow-over-and-under: 0 -4px 0 $neutral400, 0 4px 0 $neutral400;
-$focux-box-shadow-over-under-and-left: 0 -4px 0 $neutral400, -4px -4px 0 $neutral400, -4px 4px 0 $neutral400, 0 4px 0 $neutral400;
-$focux-box-shadow-over-under-and-right: 0 -4px 0 $neutral400, 4px 4px 0 $neutral400, 0 4px 0 $neutral400, 4px -4px 0 $neutral400;
+$focux-box-shadow-left: -4px 0 0 palette.$neutral400;
+$focux-box-shadow-right: 4px 0 0 palette.$neutral400;
+$focus-box-shadow-over: 0 -4px 0 palette.$neutral400;
+$focux-box-shadow-under: 0 4px 0 palette.$neutral400;
+$focus-box-shadow-over-and-under:
+  0 -4px 0 palette.$neutral400,
+  0 4px 0 palette.$neutral400;
+$focux-box-shadow-over-and-left:
+  0 -4px 0 palette.$neutral400,
+  -4px -4px 0 palette.$neutral400,
+  -4px 0 0 0 palette.$neutral400;
+$focux-box-shadow-over-and-right:
+  0 -4px 0 palette.$neutral400,
+  4px -4px 0 palette.$neutral400,
+  4px 0 0 0 palette.$neutral400;
+$focux-box-shadow-under-and-left:
+  0 4px 0 palette.$neutral400,
+  -4px 4px 0 palette.$neutral400,
+  -4px 0 0 0 palette.$neutral400;
+$focux-box-shadow-under-and-right:
+  0 4px 0 palette.$neutral400,
+  4px 4px 0 palette.$neutral400,
+  4px 0 0 0 palette.$neutral400;
+$focux-box-shadow-left-and-right:
+  -4px 4px 0 palette.$neutral400,
+  4px 4px 0 palette.$neutral400;
+$focux-box-shadow-left-right-and-under:
+  -4px 0 0 palette.$neutral400,
+  4px 0 0 palette.$neutral400,
+  0 4px 0 palette.$neutral400,
+  4px 4px 0 palette.$neutral400,
+  -4px 4px 0 palette.$neutral400;
+$focus-box-shadow-over-and-under:
+  0 -4px 0 palette.$neutral400,
+  0 4px 0 palette.$neutral400;
+$focux-box-shadow-over-under-and-left:
+  0 -4px 0 palette.$neutral400,
+  -4px -4px 0 palette.$neutral400,
+  -4px 4px 0 palette.$neutral400,
+  0 4px 0 palette.$neutral400;
+$focux-box-shadow-over-under-and-right:
+  0 -4px 0 palette.$neutral400,
+  4px 4px 0 palette.$neutral400,
+  0 4px 0 palette.$neutral400,
+  4px -4px 0 palette.$neutral400;
