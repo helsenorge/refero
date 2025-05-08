@@ -3,145 +3,46 @@
   "status": "in-progress",
   "item": [
     {
-      "linkId": "0701f3cf-73f5-48f7-8317-24c1223264a8",
-      "text": "Input scoring and calculation and copying of scoringvalue",
+      "linkId": "cd234470-3417-4063-87d6-113d44e704e1",
+      "text": "validate decimal",
       "item": [
         {
-          "linkId": "verdi1",
-          "text": "Verdi 1",
+          "linkId": "9e7063ff-f58e-4970-9f65-8f9fe30558ea",
+          "text": "Decimal, max 2"
+        },
+        {
+          "linkId": "7420fc16-14cb-469c-8ed7-8703b2e3b4c1",
+          "text": "INTEGER"
+        },
+        {
+          "linkId": "4106a74d-4139-4e2e-8b06-b3896051ae06",
+          "text": "Copy from with validation",
+          "answer": []
+        },
+        {
+          "linkId": "2208fe14-c1b6-4701-825e-342a3ee80e54",
+          "text": "Quantity, max 2",
           "answer": [
             {
-              "valueCoding": {
-                "code": "100",
-                "display": "Ja",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3"
+              "valueQuantity": {
+                "unit": "centimeter",
+                "system": "http://unitsofmeasure.org",
+                "code": "cm",
+                "value": 2.555
               }
             }
           ]
         },
         {
-          "linkId": "verdi2",
-          "text": "Verdi 2",
-          "answer": [
-            {
-              "valueCoding": {
-                "code": "200",
-                "display": "Nei",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3"
-              }
-            }
-          ]
+          "linkId": "55003943-6654-4bac-f7ff-a6cda942ee5d",
+          "text": "Text regex"
         },
         {
-          "linkId": "verdi3",
-          "text": "Verdi 3",
+          "linkId": "7fb69594-3b5c-4d9e-8b02-5a418042f9fb",
+          "text": "Read only",
           "answer": [
             {
-              "valueCoding": {
-                "code": "100",
-                "display": "Ja",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3"
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "verdi4",
-          "text": "Verdi 4",
-          "answer": [
-            {
-              "valueCoding": {
-                "code": "100",
-                "display": "Ja",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3"
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "Delsum",
-          "text": "Delsum",
-          "answer": [
-            {
-              "valueInteger": 500
-            }
-          ]
-        },
-        {
-          "linkId": "Totalsum",
-          "text": "Totalsum",
-          "answer": [
-            {
-              "valueInteger": 500
-            }
-          ]
-        },
-        {
-          "linkId": "aritmetisk_gjennomsnitt",
-          "text": "Aritmetisk gjennomsnitt basert på totalsum.",
-          "answer": [
-            {
-              "valueInteger": 125
-            }
-          ]
-        },
-        {
-          "linkId": "kopiert_felt",
-          "text": "Kopi",
-          "answer": [
-            {
-              "valueInteger": 500
-            }
-          ]
-        },
-        {
-          "linkId": "aritmetisk_gjennomsnitt_kopi",
-          "text": "Aritmetisk gjennomsnitt basert på kopiert felt",
-          "answer": [
-            {
-              "valueInteger": 125
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "linkId": "498140b3-7c26-4492-dea5-24c829552347",
-      "text": "Regning - Fhir path",
-      "item": [
-        {
-          "linkId": "Tall1",
-          "text": "Tall 1",
-          "answer": [
-            {
-              "valueInteger": 10
-            }
-          ]
-        },
-        {
-          "linkId": "Tall2",
-          "text": "Tall 2",
-          "answer": [
-            {
-              "valueInteger": 20
-            }
-          ]
-        },
-        {
-          "linkId": "Sum",
-          "text": "Sum",
-          "answer": [
-            {
-              "valueInteger": 30
-            }
-          ]
-        },
-        {
-          "linkId": "Gjennomsnitt",
-          "text": "Gjennomsnitt",
-          "answer": [
-            {
-              "valueInteger": 15
+              "valueInteger": 50
             }
           ]
         }

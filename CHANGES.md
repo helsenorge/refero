@@ -1,3 +1,20 @@
+## 17.4.0
+
+- Removed microweb related props.
+
+## 17.3.3
+
+- use setValueAs in react hook form to trim text values to avoid empty strings bypassing the validation <- do the same for textarea
+
+## 17.3.2
+
+- use setValueAs in react hook form to trim text values to avoid empty strings bypassing the validation
+- Updated Types of react-hook-form to <code>UseFormReturn<DefaultValues, unknown, DefaultValues>;</code>
+
+## 17.3.1
+
+- Fix bug with validation of regex patterns. Move to validation function in utils.
+
 ## 17.3.0
 
 - If a repeated item has initial value, set this value on the repeated item.

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { UseFormReturn } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
 
@@ -14,6 +14,7 @@ import { useExternalRenderContext } from '@/context/externalRender/useExternalRe
 import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
 import { useAppSelector } from '@/reducers';
 import { createPathForItem } from '@/util/refero-core';
+import { DefaultValues } from '@/validation/defaultFormValues';
 
 interface StepViewProps {
   isAuthorized: boolean;
@@ -21,7 +22,7 @@ interface StepViewProps {
   resources: Resources;
   onSave: () => void;
   onSubmit: () => void;
-  methods: UseFormReturn<FieldValues, unknown, undefined>;
+  methods: UseFormReturn<DefaultValues, unknown, DefaultValues>;
 }
 
 const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: StepViewProps): JSX.Element | null => {

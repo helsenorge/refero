@@ -6,8 +6,8 @@ The following table outlines the versions of our project that are currently supp
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 16.0.x  | :white_check_mark: |
-| < 16.0  | :x:                |
+| 17.0.x  | :white_check_mark: |
+| < 17.0  | :x:                |
 
 ## Reporting a Vulnerability
 

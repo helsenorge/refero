@@ -14,11 +14,20 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { newValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { decimalPattern, getErrorMessage, getInputWidth, maxValue, minValue, required } from '@/components/validation/rules';
+import {
+  createMaxDecimalPlacesValidator,
+  createRegexpValidator,
+  getErrorMessage,
+  getInputWidth,
+  maxValue,
+  minValue,
+  required,
+} from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useResetFormField } from '@/hooks/useResetFormField';
 import { useAppSelector, useAppDispatch } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getMaxDecimalPlacesExtensionValue, getMaxValueExtensionValue, getPlaceholder } from '@/util/extension';
@@ -54,7 +63,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   };
   const answerValue = getValue(item, answer);
   const value = getValues(idWithLinkIdAndItemIndex) ? getValues(idWithLinkIdAndItemIndex) : answerValue;
-
+  useResetFormField(idWithLinkIdAndItemIndex, value);
   const getPDFValue = (): string | number => {
     if (value === undefined || value === null || value === '') {
       let text = '';
@@ -91,11 +100,14 @@ const Decimal = (props: Props): JSX.Element | null => {
   const width = getInputWidth(maxCharacters, true, maxDecimals);
   const errorMessage = getErrorMessage(item, error);
 
-  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+  const validationRules: RegisterOptions<FieldValues, string> = {
     required: required({ item, resources }),
-    max: maxValue({ item, resources }),
     min: minValue({ item, resources }),
-    pattern: decimalPattern({ item, resources }),
+    max: maxValue({ item, resources }),
+    validate: {
+      'max-decimal-places': createMaxDecimalPlacesValidator({ item, resources }),
+      'regexp-pattern': createRegexpValidator({ item, resources }),
+    },
     shouldUnregister: true,
   };
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);

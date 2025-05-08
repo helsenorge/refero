@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "17.3.0",
+  "version": "17.4.0",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
@@ -130,10 +130,5 @@
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",
     "uuid": "^10.0.0"
-  },
-  "optionalDependencies": {
-    "@ast-grep/napi-linux-x64-gnu": "0.31.1",
-    "@rollup/rollup-linux-x64-gnu": "4.28.1",
-    "@swc/core-linux-x64-gnu": "^1.7.14"
   }
 }

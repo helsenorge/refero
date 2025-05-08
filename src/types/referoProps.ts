@@ -1,5 +1,5 @@
 import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
-import { FieldValues, UseFormProps, UseFormReturn } from 'react-hook-form';
+import { UseFormProps, UseFormReturn } from 'react-hook-form';
 import { Store } from 'redux';
 
 import { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
@@ -11,6 +11,8 @@ import { IQuestionnaireInspector } from '../util/questionnaireInspector';
 import { Resources } from '../util/resources';
 import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
 import { TextMessage } from './text-message';
+
+import { DefaultValues } from '@/validation/defaultFormValues';
 
 export interface RenderCustomButtonsArgs {
   /**
@@ -67,7 +69,7 @@ export interface RenderCustomButtonsArgs {
    * `reactHookFormMethods.getValues`, etc., to implement custom button behaviors
    * that interact directly with the underlying form state.
    */
-  reactHookFormMethods: UseFormReturn<FieldValues, unknown>;
+  reactHookFormMethods: UseFormReturn<DefaultValues, unknown, DefaultValues>;
 }
 
 export interface ReferoProps {
@@ -322,14 +324,4 @@ export interface ReferoProps {
    * If this prop is defined, the returned JSX element will be displayed instead of the default buttons.
    */
   renderCustomActionButtons?: (args: RenderCustomButtonsArgs) => JSX.Element;
-  /**
-   * A callback function that allows consumers to listen to navigation changes.
-   */
-  customNavigationCallBack?: (navDirection: string, navContent?: Record<string, string> | undefined) => void;
-  /**
-   * Any custom props that consumers want to pass to the Refero component.
-   */
-  customProps?: {
-    [key: string]: unknown;
-  };
 }
