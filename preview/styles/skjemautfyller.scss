@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use './_variables.scss' as variables;
 @use '@helsenorge/designsystem-react/scss/_spacers.scss' as spacers;
 @use '@helsenorge/designsystem-react/scss/_breakpoints.scss' as breakpoints;
@@ -10,7 +11,7 @@
   margin-left: 22.5%;
   width: 55%;
 }
-@media (max-width: map-get(breakpoints.$grid-breakpoints, md)) {
+@media (max-width: map.get(breakpoints.$grid-breakpoints, md)) {
   .container {
     width: 100%;
     margin-left: 0;
@@ -176,7 +177,7 @@
     border: 1px solid variables.$color-base-5-5;
     margin-bottom: 1rem;
 
-    @media (min-width: map-get(breakpoints.$grid-breakpoints, md)) {
+    @media (min-width: map.get(breakpoints.$grid-breakpoints, md)) {
       padding: 1.75rem 2rem;
     }
     .page_refero__component {
@@ -244,7 +245,7 @@
     align-items: center;
     justify-content: center;
 
-    @media (min-width: map-get(breakpoints.$grid-breakpoints, sm)) {
+    @media (min-width: map.get(breakpoints.$grid-breakpoints, sm)) {
       height: 20rem;
     }
   }
@@ -322,7 +323,7 @@
     width: 33%;
     margin: 0;
 
-    @media (min-width: map-get(breakpoints.$grid-breakpoints, sm)) {
+    @media (min-width: map.get(breakpoints.$grid-breakpoints, sm)) {
       padding: 0 2rem;
       margin-right: 1rem;
       width: auto;
@@ -332,7 +333,7 @@
   .page_refero__pausebutton {
     display: none;
 
-    @media (min-width: map-get(breakpoints.$grid-breakpoints, sm)) {
+    @media (min-width: map.get(breakpoints.$grid-breakpoints, sm)) {
       display: inline-block;
     }
   }
@@ -340,14 +341,14 @@
   .page_refero__pausebutton_stepView {
     display: flex;
 
-    @media (min-width: map-get(breakpoints.$grid-breakpoints, sm)) {
+    @media (min-width: map.get(breakpoints.$grid-breakpoints, sm)) {
       display: inline-block;
     }
   }
 }
 
 .page_refero__stickybar .page_refero__saveblock {
-  @media (min-width: map-get(breakpoints.$grid-breakpoints, xs)) {
+  @media (min-width: map.get(breakpoints.$grid-breakpoints, xs)) {
     position: sticky;
     bottom: 0;
     background-color: #fff;
