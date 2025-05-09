@@ -3,48 +3,633 @@
   "status": "in-progress",
   "item": [
     {
-      "linkId": "cd234470-3417-4063-87d6-113d44e704e1",
-      "text": "validate decimal",
+      "linkId": "2cee3cd1-409f-4d48-b847-7f069ea361e4",
+      "text": "Innledning",
       "item": [
         {
-          "linkId": "9e7063ff-f58e-4970-9f65-8f9fe30558ea",
-          "text": "Decimal, max 2"
+          "linkId": "a2d107b6-3c5c-4a20-8271-b7e39a639508",
+          "text": "Hva er viktig for deg å snakke om når du kommer til neste time? Her får du mulighet til å fortelle hvilke symptomer og informasjonsbehov du har, og prioritere hva som er viktig å ta opp i samtale med helsepersonell. Bruk av InvolverMeg kan bidra til at behandleren din kan tilpasse samtalen etter dine behov. Skjemaet vil først bli lest i forbindelse med din timeavtale, og ikke med en gang du sender det inn. Skjemaet blir ikke besvart."
         },
         {
-          "linkId": "7420fc16-14cb-469c-8ed7-8703b2e3b4c1",
-          "text": "INTEGER"
+          "linkId": "f95ac947-e7df-4c82-9db0-1c9434df9760",
+          "text": "Hvilke symptomer og informasjonsbehov har du? På de neste sidene kan du velge hvilke symptomer og informasjonsbehov du har ved å markere det som best beskriver din situasjon og prioritere det du ønsker å ta opp i samtale."
         },
         {
-          "linkId": "4106a74d-4139-4e2e-8b06-b3896051ae06",
-          "text": "Copy from with validation",
-          "answer": []
-        },
-        {
-          "linkId": "2208fe14-c1b6-4701-825e-342a3ee80e54",
-          "text": "Quantity, max 2",
-          "answer": [
+          "linkId": "189a35ba-a43f-4c33-8f2c-e7ed6be0631d",
+          "text": "Mottaker",
+          "item": [
             {
-              "valueQuantity": {
-                "unit": "centimeter",
-                "system": "http://unitsofmeasure.org",
-                "code": "cm",
-                "value": 2.555
-              }
+              "linkId": "9e66ce5e-4775-4de5-8e0e-f4c267d86890",
+              "text": "Velg sykehus som skal motta skjemaet",
+              "answer": [{ "valueCoding": { "code": "Endpoint/1", "display": "Oslo universitetssykehus HF" } }]
             }
           ]
         },
         {
-          "linkId": "55003943-6654-4bac-f7ff-a6cda942ee5d",
-          "text": "Text regex"
+          "linkId": "746eae7b-e10a-4f64-f054-57814d9909a6",
+          "text": "Pasientopplysninger",
+          "item": [
+            { "linkId": "4fb5fe6d-eed7-4a5e-9305-57bf1d3536bc", "text": "Navn" },
+            { "linkId": "22a3ed25-a087-426f-bc5c-f465c4c02029", "text": "Fødselsnummer (11 siffer)" },
+            { "linkId": "aeb2f903-a66b-4b45-9a50-74e604e1836a", "text": "Alder" },
+            { "linkId": "acb2a063-f908-4ae0-89ee-03d559c47519", "text": "Kjønn" }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "d23b40a2-97f7-4470-81c8-16a89a5ea178",
+      "text": "Fysisk helse",
+      "item": [
+        { "linkId": "adc1c0dd-b794-4bc7-8e5e-441caf70d099", "text": "Velg det du plages av og gi det en skåring fra 0 til 4" },
+        {
+          "linkId": "7160fbce-d75c-438c-973a-4c60a21485f5",
+          "text": "Hodepine",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "94223dcf-b484-4123-eb14-88575e0e6861" }] }]
         },
         {
-          "linkId": "7fb69594-3b5c-4d9e-8b02-5a418042f9fb",
-          "text": "Read only",
+          "linkId": "9791f20a-1f4d-48b4-8c61-e9c27d8e5c84",
+          "text": "Andre smerter",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "698b6c59-f31a-4552-a14e-0bfbe3a3bb2f" }] }]
+        },
+        {
+          "linkId": "de0d4a7f-c4b5-4c94-f2c0-61800e92a34c",
+          "text": "Hjertebank",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "608fc767-103e-4833-8ec6-2b0ff76de63f" }] }]
+        },
+        {
+          "linkId": "8c601b47-c155-4f95-8e01-cc0e7517446e",
+          "text": "Endring i pusten",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "cea95ad1-49fd-4bee-8935-5d8b77570537" }] }]
+        },
+        {
+          "linkId": "af003758-93ac-4029-e47c-f61584010f10",
+          "text": "Hevelse i armer eller ben",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "9e2d246e-bc51-4800-8e62-542e67e54c71" }] }]
+        },
+        {
+          "linkId": "82f0c7d9-3736-425d-d5fe-f9c6bf23f8ce",
+          "text": "Kløe eller utslett",
           "answer": [
             {
-              "valueInteger": 50
+              "valueBoolean": true,
+              "item": [
+                {
+                  "linkId": "3c3f4a19-0845-4109-89c4-6d1eb6476397",
+                  "answer": [{ "valueCoding": { "code": "2", "display": "2", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+                }
+              ]
             }
           ]
+        },
+        {
+          "linkId": "52788a0d-852a-4171-b39a-6c99aa57458f",
+          "text": "Utfordring med avføring",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "8f778a7e-2ef6-4795-8867-516032ac50fd" }] }]
+        },
+        {
+          "linkId": "f40fc461-1105-4364-8aa2-fd6b0ca3d8aa",
+          "text": "Utfordring med vannlatning",
+          "answer": [
+            {
+              "valueBoolean": true,
+              "item": [
+                {
+                  "linkId": "3d683c80-5cdb-4a93-8b30-33a32be058fc",
+                  "answer": [{ "valueCoding": { "code": "4", "display": "4", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "751fcbfb-3289-439d-85c9-3f15da1c3bcb",
+          "text": "Endring av syn",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "6a7f3f6b-65f2-4d0b-90df-3f7c0d5fd7ab" }] }]
+        },
+        {
+          "linkId": "bc154e6f-18d6-4929-9b18-ca567b997ad9",
+          "text": "Endring av muskelstyrke",
+          "answer": [
+            {
+              "valueBoolean": true,
+              "item": [
+                {
+                  "linkId": "7fa1120a-b365-4a1c-ab26-265a3a29f8e0",
+                  "answer": [{ "valueCoding": { "code": "1", "display": "1", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "eb80647d-ab6e-44f7-e4a6-81cfc5fd8bd4",
+          "text": "Endring av balanse",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "ee78f87c-d9f5-4b88-85a5-6625890dcff7" }] }]
+        },
+        {
+          "linkId": "d926c1f6-ef89-44f8-825e-09794c09a4d0",
+          "text": "Svimmel",
+          "answer": [
+            {
+              "valueBoolean": true,
+              "item": [
+                {
+                  "linkId": "eade8fdf-240f-443d-88d1-fff9827bc782",
+                  "answer": [{ "valueCoding": { "code": "2", "display": "2", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "c2604b59-0906-436c-c9d8-9c5b80355c26",
+          "text": "Kvalme",
+          "answer": [
+            {
+              "valueBoolean": true,
+              "item": [
+                {
+                  "linkId": "0f77ef8e-f5cb-46b1-fb32-7ae6f138ab0f",
+                  "answer": [{ "valueCoding": { "code": "2", "display": "2", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "782bf7cf-ef9d-4c30-ee75-8b0e72ed909d",
+          "text": "Vektøkning",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "dba4991e-217a-4148-8c0d-6575448f3892", "answer": [] }] }]
+        },
+        {
+          "linkId": "e0bba4b6-d866-40a0-808b-56ce015f6e33",
+          "text": "Vektnedgang",
+          "answer": [
+            {
+              "valueBoolean": true,
+              "item": [
+                {
+                  "linkId": "60dcce51-49e7-479e-82ff-00b09e770c2f",
+                  "answer": [{ "valueCoding": { "code": "4", "display": "4", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "9df3023f-9886-4b51-c98a-7659c9854e4b",
+          "text": "Uregelmessig menstruasjon",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "54d27446-0816-464e-8201-1e269dacfd41" }] }]
+        },
+        {
+          "linkId": "4f296278-8d0f-4793-8865-5b7d55a236af",
+          "text": "Hetetokter/nattesvette",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "456d6329-347d-4bd4-8c6a-71de101e3a08" }] }]
+        },
+        {
+          "linkId": "40b1c4df-5583-406b-89b8-d9cfc7d90cdf",
+          "text": "Menstruasjonsforstyrrelser",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "ba14d4fa-8578-4481-bb2b-9074ad323540" }] }]
+        },
+        {
+          "linkId": "04b58570-7eff-4138-f410-450422ea6435",
+          "text": "Sviktende ereksjon",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "08a6b5e6-b821-4faa-8ffe-350d437a1100" }] }]
+        }
+      ]
+    },
+    {
+      "linkId": "6e2a678d-38a5-4b80-b5a3-afdb2fdf4740",
+      "text": "Utmattelse og søvn",
+      "item": [
+        { "linkId": "a7af12a0-1a42-4364-8a07-90a407e2f1bb", "text": "Velg det du plages av og gi det en skåring fra 0 til 4" },
+        {
+          "linkId": "ee2c9ea4-f20e-49a6-edda-e368c4b77f0e",
+          "text": "Sliten av dagligdagse aktiviteter",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "d1d2048a-37d8-4d87-c8e7-b3d46605ed92" }] }]
+        },
+        {
+          "linkId": "3ae5a590-7697-4408-de99-dbd472e08e15",
+          "text": "Utslitt uten å ha gjort noe",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "7082b49a-cc1a-4bb9-a7f7-5b42b7cba6cd" }] }]
+        },
+        {
+          "linkId": "12edeb62-d9bd-4812-8b17-255fc679d2dc",
+          "text": "Behov for å sove i løpet av dagen",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "a2ce6559-a971-445b-80b8-d38c9f08f9a1" }] }]
+        },
+        {
+          "linkId": "eb1e33c9-1609-4b6b-82ab-4327760ea633",
+          "text": "Ikke uthvilt etter søvn",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "e360b2d6-7640-4554-8215-d2decacec9d7" }] }]
+        },
+        {
+          "linkId": "4861f37b-8808-42b0-edf3-fff6fb622964",
+          "text": "Søvnproblemer",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "bb9bfe97-5ae5-4c10-8d83-4a2d9798d56f" }] }]
+        }
+      ]
+    },
+    {
+      "linkId": "f74c0e4d-956c-4a21-874e-9cfc07aee89e",
+      "text": "Arbeid og utdanning",
+      "item": [
+        { "linkId": "c76fafbb-2ab7-450c-8415-40b048bffbba", "text": "Velg det du plages av og gi det en skåring fra 0 til 4" },
+        {
+          "linkId": "9ace766a-4bc1-49cb-9dd0-af288546335b",
+          "text": "Mangler forståelse på jobben/studiet",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "70611336-d861-46dc-8d69-dce543d99dc5" }] }]
+        },
+        {
+          "linkId": "3eed37d7-9171-4a59-9057-2a045f655b86",
+          "text": "Klarer ikke jobben/studiet lenger",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "6e5ec0b1-1da3-4d51-863e-41d62b55dd08" }] }]
+        },
+        {
+          "linkId": "8b6af5a7-2e89-4c08-eb96-56001a305603",
+          "text": "Jobben/studiet forverrer helsen",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "8f6df1d5-bef3-4cfe-8a19-9ded1480318f" }] }]
+        }
+      ]
+    },
+    {
+      "linkId": "cba5951f-19e1-4b2a-863c-d1576db8ae94",
+      "text": "Psykisk helse og relasjoner",
+      "item": [
+        { "linkId": "4d6a5beb-c4cf-443c-8b7d-a833729a81fd", "text": "Velg det du plages av og gi det en skåring fra 0 til 4" },
+        {
+          "linkId": "dff882b5-2aa3-4732-8028-b38d06d37a15",
+          "text": "Uro eller angst",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "4a1adb0a-ef98-40ec-84e8-2078bcc934d9" }] }]
+        },
+        {
+          "linkId": "86141752-0abb-4b1e-dfa0-9ad53f6162fe",
+          "text": "Nedstemt eller deprimert",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "2d4a87ef-90d6-4aac-efc0-20c8bb1fcce0" }] }]
+        },
+        {
+          "linkId": "9d2ebc6d-a81e-46eb-819d-fd882ada3630",
+          "text": "Svingninger i humør",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "62a4e6f5-fd27-491f-f07a-0438f585b480" }] }]
+        },
+        {
+          "linkId": "87ccab77-029c-40d6-93c4-af784655f8bc",
+          "text": "Er sensitiv for stress",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "c3d752f0-55dc-4505-d70f-9016f0ccf684" }] }]
+        },
+        {
+          "linkId": "6b4c254e-c3cf-4a4b-e876-ee25df72e3af",
+          "text": "Glemmer ofte hva folk har sagt",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "3e1176b3-9b15-4685-d449-503fc0d2436d" }] }]
+        },
+        {
+          "linkId": "6c36cd4d-582c-4c74-a2a5-6da8d1b285e3",
+          "text": "Må lese flere ganger før jeg forstår",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "62592919-665f-4190-82ab-12faf6f9727a" }] }]
+        },
+        {
+          "linkId": "09567d39-1487-43ca-ad8c-2c02304d7366",
+          "text": "Har ikke mange som kan hjelpe meg",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "0808ecac-f0ae-41ac-efcc-f8908a5111d0" }] }]
+        },
+        {
+          "linkId": "b7a91289-d814-4b59-f695-9aaf4a63e815",
+          "text": "Savner forståelse for sykdommen",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "5f23a670-21f7-427a-889c-9668e8d6f94b" }] }]
+        },
+        {
+          "linkId": "c80ec1f9-e562-4653-8c52-2b51e32f8a1e",
+          "text": "Vanskelig å være sosial",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "e7137795-6a69-4b7e-be21-6e76e24daf82" }] }]
+        },
+        {
+          "linkId": "c8088e47-0ed3-4e2b-f106-eca8a93edc6e",
+          "text": "Føler meg ensom",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "95c62112-2477-4bc0-82fa-5bdac9c2114c" }] }]
+        },
+        {
+          "linkId": "fe939802-f471-4806-8793-cbbaa23e1e92",
+          "text": "Vanskelig å følge opp barna",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "402ef787-ad83-4b26-816a-3a5793fa4ab7" }] }]
+        },
+        {
+          "linkId": "d0c81190-3028-4d40-9c14-af55f0261860",
+          "text": "Bekymret for parforholdet",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "1f85ba85-f259-4735-818c-905690b8c570" }] }]
+        },
+        {
+          "linkId": "c58723ab-b7c2-4e92-c692-25535ab1ded4",
+          "text": "Endring av sexlyst",
+          "answer": [{ "valueBoolean": false, "item": [{ "linkId": "241c683a-b986-45f9-a2a4-6d600a28ff60" }] }]
+        }
+      ]
+    },
+    {
+      "linkId": "cf0c3ae1-fa47-45c4-84eb-4cf07f9b90c3",
+      "text": "Informasjonsbehov",
+      "item": [
+        {
+          "linkId": "9d36e3f7-13fc-4a7d-cf9f-f55ae33a042c",
+          "text": "Har du behov for å snakke om:",
+          "answer": [
+            {
+              "item": [
+                { "linkId": "957600ab-3690-4c07-8761-22da0157c403", "text": "1. Hva trenger du å snakke om?" },
+                { "linkId": "56104e8e-765a-412d-949d-15c205bc8c34", "text": "2. Hva trenger du å snakke om?" },
+                { "linkId": "f1621674-0af5-4700-9d77-dc6abae12e56", "text": "3. Hva trenger du å snakke om?" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "f8816a82-6654-4453-80d1-3b04f905b4eb",
+      "text": "Velg hva som er viktig",
+      "item": [
+        {
+          "linkId": "149dfd93-edb2-46d9-867b-89f564375ee7",
+          "text": "Her ser du temaene du har valgt tidligere. Vennligst angi hvor viktig hvert tema er for deg å diskutere med helsepersonell ved din neste samtale."
+        },
+        { "linkId": "983774db-ef22-4033-a54d-a603a8c5bad3", "text": "Hodepine" },
+        { "linkId": "dfe9cb68-151f-4790-874d-655233cfea0f", "text": "Andre smerter" },
+        { "linkId": "432b7544-c5c4-49a6-ea59-ea75b94a4183", "text": "Hjertebank" },
+        { "linkId": "0a367bf7-08eb-4526-8023-e2a369cacc88", "text": "Endring i pusten" },
+        { "linkId": "97c18a82-8155-438f-bddf-4fe9dce1ded5", "text": "Hevelse i armer eller ben" },
+        {
+          "linkId": "778420e4-2a2e-471f-e13b-5cb6f10a9853",
+          "text": "Kløe eller utslett",
+          "answer": [{ "valueCoding": { "code": "3", "display": "3", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+        },
+        { "linkId": "2535b058-9401-4e6f-9cac-c239297b4118", "text": "Utfordring med avføring" },
+        {
+          "linkId": "1c593605-ab7a-4591-84cd-3bc7697c73cf",
+          "text": "Utfordring med vannlatning",
+          "answer": [{ "valueCoding": { "code": "6", "display": "6", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+        },
+        { "linkId": "e0727656-6595-4384-e12f-92c12cec8cbd", "text": "Endring av syn" },
+        {
+          "linkId": "8c43afae-c453-4676-83dc-16c085a92a73",
+          "text": "Endring av muskelstyrke",
+          "answer": [{ "valueCoding": { "code": "6", "display": "6", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+        },
+        { "linkId": "5ca9c688-e6bb-4e76-8338-b894966905ab", "text": "Endring av balanse" },
+        {
+          "linkId": "24554db7-2f78-4f71-8a22-454f1ae18059",
+          "text": "Svimmel",
+          "answer": [{ "valueCoding": { "code": "4", "display": "4", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+        },
+        {
+          "linkId": "4be84d5c-857d-48fc-fc99-9496df7c6ad0",
+          "text": "Kvalme",
+          "answer": [{ "valueCoding": { "code": "4", "display": "4", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+        },
+        { "linkId": "d54151e0-e9e2-469b-89df-6949ea28fff9", "text": "Vektøkning" },
+        {
+          "linkId": "afef6f8e-4829-4d48-e0fa-1abdf21afbcc",
+          "text": "Vektnedgang",
+          "answer": [{ "valueCoding": { "code": "5", "display": "5", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+        },
+        { "linkId": "9e137033-701d-4a86-9424-42f4ae5f3812", "text": "Uregelmessig menstruasjon" },
+        { "linkId": "5506409e-4b2b-4828-9a7e-02ee194c7de2", "text": "Hetetokter/nattesvette" },
+        { "linkId": "4b7461ad-2f65-4e1b-f4e8-3fe470d9a72e", "text": "Menstruasjonsforstyrrelser" },
+        { "linkId": "76b5d834-225b-4207-85c3-1efed7b214b6", "text": "Sviktende ereksjon" },
+        { "linkId": "b74a2e1c-1f01-47cc-8206-3f7c29ee5509", "text": "Sliten av dagligdagse aktiviteter" },
+        { "linkId": "ca517978-ab1e-435f-b6b2-0daba87d572e", "text": "Utslitt uten å ha gjort noe" },
+        { "linkId": "93ff3e0c-890f-4252-8bd4-68ccc339ff2e", "text": "Behov for å sove i løpet av dagen" },
+        { "linkId": "243abacb-0930-4361-86b6-faef730d9f91", "text": "Ikke uthvilt etter søvn" },
+        { "linkId": "ce90df5b-fa69-4482-82df-7e69350c6a5c", "text": "Søvnproblemer" },
+        { "linkId": "b3a67dc6-fce6-4cfd-dcda-4ff926c94651", "text": "Uro eller angst" },
+        { "linkId": "06f83c33-6700-49a9-845b-b60c642c3295", "text": "Nedstemt eller deprimert" },
+        { "linkId": "bf9a5c0b-fe5c-4d80-836c-836c5c4edf2e", "text": "Svingninger i humør" },
+        { "linkId": "d8061ff6-2a6b-4ca2-b6e4-2e43516d9a99", "text": "Er sensitiv for stress" },
+        { "linkId": "7558c5b6-fe0b-4f08-ed21-36aa0e1affab", "text": "Glemmer ofte hva folk har sagt" },
+        { "linkId": "6433e285-8c62-4575-c11a-f034e5d1d96d", "text": "Må lese flere ganger før jeg forstår" },
+        { "linkId": "c68fc437-14d5-4f9b-fed3-cae22b69c2ba", "text": "Har ikke mange som kan hjelpe meg" },
+        { "linkId": "f0630e1b-3160-48f0-93b4-6b07b123647a", "text": "Savner forståelse for sykdommen" },
+        { "linkId": "8a92cbec-acea-456a-8aba-f990e030e271", "text": "Vanskelig å være sosial" },
+        { "linkId": "8f01653b-58dc-4552-f38d-fcd688fc856e", "text": "Føler meg ensom" },
+        { "linkId": "36902d1d-9912-4507-8a16-3ae0ffe681dc", "text": "Vanskelig å følge opp barna" },
+        { "linkId": "5f96d4eb-8112-475f-cfa6-85564273ec06", "text": "Bekymret for parforholdet" },
+        { "linkId": "7a6fd34b-122f-498c-9da4-28cd378c3197", "text": "Endring av sexlyst" },
+        { "linkId": "5320227e-d7c0-4171-8336-4a8f52e974d6", "text": "Mangler forståelse på jobben/studiet" },
+        { "linkId": "fe9db720-6229-4e48-9f95-1df1f27a0205", "text": "Klarer ikke jobben/studiet lenger" },
+        { "linkId": "58f92a0d-b1a8-4bf0-87e2-5336f3efc4a2", "text": "Jobben/studiet forverrer helsen" },
+        { "linkId": "38ee5b76-def8-4496-8785-279bed944c51", "text": "Å få et sunnere kosthold" },
+        { "linkId": "32120a2a-cfba-4a4a-947f-b5d356935946", "text": "Å komme i bedre form" },
+        { "linkId": "e0fe7cef-d879-4297-8db1-be32becbec42", "text": "Drikke mindre alkohol" },
+        { "linkId": "a29af7b0-743b-4ea9-8371-968faf464cb0", "text": "Slutte med røyk" },
+        { "linkId": "7118aaee-f665-4572-8cf4-880590d098ad", "text": "Bivirkninger av medisiner" },
+        { "linkId": "23499bb1-4e23-49f9-e63d-8ae7f49f0e00", "text": "Endringer av behandlingen" },
+        { "linkId": "c9204ecd-84a7-45d8-d7f6-72e5fae5d0a4", "text": "Videre forløp" },
+        { "linkId": "1d955d5b-2d18-4faa-d6f1-d1c775006bb4", "text": "Økonomiske og sosiale rettigheter" },
+        { "linkId": "fa709ce5-09df-45cd-8d7a-fe7a3193f2d6", "text": "Resepter eller attester" },
+        { "linkId": "f89e16ea-615c-41b7-f0df-f3b0a6384d84", "text": "Annet du har behov for å snakke om" },
+        { "linkId": "2aaa8d51-7cf9-41dd-fa14-aff95d661af2", "answer": [] },
+        { "linkId": "9f3e9110-a114-4dd1-8221-ab25d9c13ad7" },
+        { "linkId": "b7c8cb68-e590-4109-8708-1f08d0e8551c", "answer": [] },
+        { "linkId": "21a842a8-9d94-4952-8e4d-e2729eba1f3e" },
+        { "linkId": "c66bd611-4d33-418b-89b9-6f2f4f387be7", "answer": [] },
+        { "linkId": "50b299e2-c614-436f-ce61-52efccfea8e2" }
+      ]
+    },
+    { "linkId": "78860de9-c14e-426f-ed9f-29e5e0a83024" },
+    {
+      "linkId": "073f15d9-eca7-4ad2-f4cc-781efcefa635",
+      "text": "Oppsummering",
+      "item": [
+        { "linkId": "9f33ed2d-c170-477c-87ed-63496d2e3957", "text": "Dato" },
+        { "linkId": "500d4451-3d76-43b7-9a05-b0814cea8267", "text": "Oppsummering av det du ønsker å ta opp i samtale ved neste time" },
+        {
+          "linkId": "9686edc9-2456-4f24-d141-69f7cad752c6",
+          "text": "Oppsummering av det pasienten ønsker å ta opp i samtale ved neste time"
+        },
+        {
+          "linkId": "42587df4-4055-4cbb-ce54-e56844981c19",
+          "item": [
+            { "linkId": "cad59f76-7f68-4e16-98f8-60f33ef50f9b", "text": "Hodepine" },
+            { "linkId": "1c7f4a6c-dfff-41ee-8b8a-840922a17521", "text": "Hodepine - viktighet", "answer": [] },
+            { "linkId": "216eea12-ef22-4f21-cdfb-69f7b5b9a17f", "text": "Hodepine - plagsomhet", "answer": [] },
+            { "linkId": "d589a35c-76ea-47ac-f589-9167a130c98d", "text": "Andre smerter" },
+            { "linkId": "3f4587dd-ecd7-425e-8079-f216caccae33", "text": "Andre smerter - viktighet", "answer": [] },
+            { "linkId": "dd0afc39-46c6-42a6-891e-85424a3f1235", "text": "Andre smerter - plagsomhet", "answer": [] },
+            { "linkId": "c655fe0a-e2f3-4b12-e2cd-4253f80131e1", "text": "Hjertebank" },
+            { "linkId": "fc33c1c0-533f-4f7c-97d9-a1ae38d4fa6f", "text": "Hjertebank - viktighet", "answer": [] },
+            { "linkId": "e4208279-14fd-41ed-85a6-36e102e7a7e4", "text": "Hjertebank - plagsomhet", "answer": [] },
+            { "linkId": "dade3f22-a39c-41e9-c62b-10c0578f730d", "text": "Endring i pusten" },
+            { "linkId": "382da5ef-addd-4aa6-80d3-9dcd4d041bd8", "text": "Endring i pusten - viktighet", "answer": [] },
+            { "linkId": "c7b6291c-7052-4192-84a4-260e761d69b4", "text": "Endring i pusten - plagsomhet", "answer": [] },
+            { "linkId": "581ca823-9e2c-449c-8e11-b0f363dc7b49", "text": "Hevelse i armer eller ben" },
+            { "linkId": "4fefeee4-e759-49af-800d-f57044fd659a", "text": "Hevelse i armer eller ben - viktighet", "answer": [] },
+            { "linkId": "e124cd6c-1058-482a-db3e-97e07291dca8", "text": "Hevelse i armer eller ben - plagsomhet", "answer": [] },
+            { "linkId": "921d76ad-bc8a-42f3-9570-abc4c2f0545e", "text": "Kløe eller utslett" },
+            { "linkId": "05024d76-07e0-4671-8f0b-cc38e9589dac", "text": "Kløe eller utslett - viktighet", "answer": [] },
+            {
+              "linkId": "1e9dc105-4b53-4bd1-9530-ab38d37c3f3c",
+              "text": "Kløe eller utslett - plagsomhet",
+              "answer": [{ "valueCoding": { "code": "2", "display": "2", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+            },
+            { "linkId": "b443552d-f664-42cf-8a94-2a390f4e886f", "text": "Utfordring med avføring" },
+            { "linkId": "b259604f-4c8f-4ad9-8e39-088d4bd72139", "text": "Utfordring med avføring - viktighet", "answer": [] },
+            { "linkId": "7f95d941-acd0-4fa3-920d-7a8e7a359d7d", "text": "Utfordring med avføring - plagsomhet", "answer": [] },
+            { "linkId": "40747c25-89eb-4889-a890-2bd8d4f8cef8", "text": "Utfordring med vannlatning" },
+            { "linkId": "2f3ba8b5-2f11-4d60-8bfa-7ad8119cbe10", "text": "Utfordring med vannlatning - viktighet", "answer": [] },
+            {
+              "linkId": "6f8e1651-fc97-4233-981f-2e01b8af24b7",
+              "text": "Utfordring med vannlatning - plagsomhet",
+              "answer": [{ "valueCoding": { "code": "4", "display": "4", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+            },
+            { "linkId": "834a785d-84fe-46d7-dbba-0c3f9e562127", "text": "Endring av syn" },
+            { "linkId": "3ef4c931-5e3c-4fde-8a19-787f4fd32a33", "text": "Endring av syn - viktighet", "answer": [] },
+            { "linkId": "8925d865-6d80-41c4-f60a-e5efcd8b0a15", "text": "Endring av syn - plagsomhet", "answer": [] },
+            { "linkId": "834c870e-e35e-4edb-8604-fe34f6d8b318", "text": "Endring av muskelstyrke" },
+            { "linkId": "08202a60-f03f-4d81-c102-3d1fd8eb46fc", "text": "Endring av muskelstyrke - viktighet", "answer": [] },
+            {
+              "linkId": "a4c64d52-46d9-4104-8897-94609b93a7a5",
+              "text": "Endring av muskelstyrke - plagsomhet",
+              "answer": [{ "valueCoding": { "code": "1", "display": "1", "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6" } }]
+            },
+            { "linkId": "58c7407d-f04a-45cd-8d35-c94f902f0537", "text": "Endring av balanse" },
+            { "linkId": "f93f78f3-a46f-41a1-e3d6-760852098cbd", "text": "Endring av balanse - viktighet", "answer": [] },
+            { "linkId": "9d96d217-44df-437e-fdad-81971a1c074e", "text": "Endring av balanse - plagsomhet", "answer": [] },
+            { "linkId": "fcc1b17c-90b0-4787-8299-885cfe3648bb", "text": "Svimmel" },
+            { "linkId": "a02cff48-3807-4f54-855a-7e6ae61a0462", "text": "Svimmel - viktighet", "answer": [] },
+            { "linkId": "d7cc5912-231e-4422-f86d-1d9ab63c229e", "text": "Svimmel - plagsomhet", "answer": [] },
+            { "linkId": "4229cbf9-e005-46ab-bd63-a184af5809ff", "text": "Kvalme" },
+            { "linkId": "b923367f-d0e3-4711-bbe3-2ce8db8580fa", "text": "Kvalme - viktighet", "answer": [] },
+            { "linkId": "dfdab130-a25b-40ec-8d81-7af4e571c918", "text": "Kvalme - plagsomhet", "answer": [] },
+            { "linkId": "f9874922-420a-4f63-8a00-5d75199314d3", "text": "Vektøkning" },
+            { "linkId": "a7f15e4e-2aa5-49ef-e802-b09675cec16d", "text": "Vektøkning - viktighet", "answer": [] },
+            { "linkId": "b525d674-ceeb-43a2-84ae-3d746c9bda4e", "text": "Vektøkning - plagsomhet", "answer": [] },
+            { "linkId": "137c4654-89c6-43f4-83e1-835728769663", "text": "Vektnedgang" },
+            { "linkId": "e48fbb99-ae24-4a02-87c9-e271a16c17b0", "text": "Vektnedgang - viktighet", "answer": [] },
+            { "linkId": "aab33d28-4dd0-4cca-8238-e3c6be3f74f9", "text": "Vektnedgang - plagsomhet", "answer": [] },
+            { "linkId": "b10c3976-a8e8-4b03-80c3-cdd1a4d426ae", "text": "Uregelmessig menstruasjon" },
+            { "linkId": "8ac45f35-4173-4edd-ff7b-74be2d0bc3fa", "text": "Uregelmessig menstruasjon - viktighet", "answer": [] },
+            { "linkId": "efd998ab-4ffd-4f1a-f22a-95a7a9b93dda", "text": "Uregelmessig menstruasjon - plagsomhet", "answer": [] },
+            { "linkId": "333009c5-d038-40c8-d33b-333c5522c2a0", "text": "Hetetokter/nattesvette" },
+            { "linkId": "b1fb337c-b620-4f20-8c29-60e2d3e8d3b6", "text": "Hetetokter/nattesvette - viktighet", "answer": [] },
+            { "linkId": "4d5fba23-048d-4b00-ccdb-9458d7e41060", "text": "Hetetokter/nattesvette - plagsomhet", "answer": [] },
+            { "linkId": "7cc8c181-fd2e-4b01-8ff7-0197e8a72f89", "text": "Menstruasjonsforstyrrelser" },
+            { "linkId": "62618c1f-e093-47b6-8f68-e58040c61d9d", "text": "Menstruasjonsforstyrrelser - viktighet", "answer": [] },
+            { "linkId": "fecacf67-a696-41d6-8aae-b59110374346", "text": "Menstruasjonsforstyrrelser - plagsomhet", "answer": [] },
+            { "linkId": "186177db-0969-4eda-e43c-5b843891af4f", "text": "Sviktende ereksjon" },
+            { "linkId": "184748b4-5039-45e1-9e20-2febbde2e303", "text": "Sviktende ereksjon - viktighet", "answer": [] },
+            { "linkId": "501529db-cad2-4027-b053-c156aaa2e80d", "text": "Sviktende ereksjon - plagsomhet", "answer": [] },
+            { "linkId": "baf0a2b1-945d-4ed5-d9e0-445d9859fd06", "text": "Sliten av dagligdagse aktiviteter" },
+            { "linkId": "236a5e65-4e65-4eca-faae-856a3bbd051f", "text": "Sliten av dagligdagse aktiviteter - viktighet", "answer": [] },
+            { "linkId": "56b65ad4-7c61-482b-8592-22f7111bcd09", "text": "Sliten av dagligdagse aktiviteter - plagsomhet", "answer": [] },
+            { "linkId": "15117810-42f5-491b-886e-b6158bd6403a", "text": "Utslitt uten å ha gjort noe" },
+            { "linkId": "ef6bcbc2-852f-44a1-9623-22d2b3e70e7b", "text": "Utslitt uten å ha gjort noe - viktighet", "answer": [] },
+            { "linkId": "15e2d223-c0ae-4578-b5e1-d5139e35db42", "text": "Utslitt uten å ha gjort noe - plagsomhet", "answer": [] },
+            { "linkId": "934eed5d-5d22-4ad8-9d45-a5fd13f19f61", "text": "Behov for å sove i løpet av dagen" },
+            { "linkId": "6bc8eed1-685f-487b-b872-65b04855315e", "text": "Behov for å sove i løpet av dagen - viktighet", "answer": [] },
+            { "linkId": "ca945a23-739b-49e3-8ee2-bb2869312628", "text": "Behov for å sove i løpet av dagen - plagsomhet", "answer": [] },
+            { "linkId": "77d96adb-6372-43b2-9275-1aa5156ff963", "text": "Ikke uthvilt etter søvn" },
+            { "linkId": "34ed52ac-2c50-47bd-841b-0b06758e485c", "text": "Ikke uthvilt etter søvn - viktighet", "answer": [] },
+            { "linkId": "8c025226-6b27-421e-8e40-042b4b54a327", "text": "Ikke uthvilt etter søvn - plagsomhet", "answer": [] },
+            { "linkId": "5689cabe-3f38-4e98-94c5-b398921ce14a", "text": "Søvnproblemer" },
+            { "linkId": "48ce7f23-f0f8-402e-8126-af5c84cf6a59", "text": "Søvnproblemer - viktighet", "answer": [] },
+            { "linkId": "9ffcc466-e60c-45cc-89b3-9885b3b1e43b", "text": "Søvnproblemer - plagsomhet", "answer": [] },
+            { "linkId": "0ba93a5e-f57c-468d-930b-f643dfc125f1", "text": "Uro eller angst" },
+            { "linkId": "df40c213-0296-44d6-8440-7b394f7c30f6", "text": "Uro eller angst - viktighet", "answer": [] },
+            { "linkId": "b912302e-a957-4d5f-aed4-77aac5dad82e", "text": "Uro eller angst - plagsomhet", "answer": [] },
+            { "linkId": "2880c4bf-0858-4030-ded9-1fc3ecb6618f", "text": "Nedstemt eller deprimert" },
+            { "linkId": "e59c8d54-d5b2-4718-8b42-0c56d81b7f8d", "text": "Nedstemt eller deprimert - viktighet", "answer": [] },
+            { "linkId": "a964fff8-6c20-4dff-8efb-c1c5836d9d84", "text": "Nedstemt eller deprimert - plagsomhet", "answer": [] },
+            { "linkId": "9c10914f-48be-499b-c398-cb31b0a26c07", "text": "Svingninger i humør" },
+            { "linkId": "c6a0ac83-377b-4da7-ca70-20e9f5499ea7", "text": "Svingninger i humør - viktighet", "answer": [] },
+            { "linkId": "6d04fe68-0f4f-4a5e-8054-25fd806c88b1", "text": "Svingninger i humør - plagsomhet", "answer": [] },
+            { "linkId": "af39ffe3-e5f6-4b8c-b60c-135e4bdab698", "text": "Er sensitiv for stress" },
+            { "linkId": "897d24e1-1a5d-4202-f577-d7cd17b0acdb", "text": "Er sensitiv for stress - viktighet", "answer": [] },
+            { "linkId": "b8d1bc96-5e31-4cf4-82b8-0de578125ac8", "text": "Er sensitiv for stress - plagsomhet", "answer": [] },
+            { "linkId": "7b08455d-aba7-4d0c-df16-22d3af390225", "text": "Glemmer ofte hva folk har sagt" },
+            { "linkId": "b0291799-e725-4aa0-82ac-001d79dbe935", "text": "Glemmer ofte hva folk har sagt - viktighet", "answer": [] },
+            { "linkId": "bc040b6e-c3e3-4d22-d40c-a3d0bd9a9b0b", "text": "Glemmer ofte hva folk har sagt - plagsomhet", "answer": [] },
+            { "linkId": "fff9c5a6-d05e-4edd-bd01-fe347ad9eab3", "text": "Må lese flere ganger før jeg forstår" },
+            { "linkId": "0fa33c9a-63f9-44e3-8053-a0b6af205006", "text": "Må lese flere ganger før jeg forstår - viktighet", "answer": [] },
+            { "linkId": "985e4f66-baf7-4359-b41b-6da184a9bf4b", "text": "Må lese flere ganger før jeg forstår - plagsomhet", "answer": [] },
+            { "linkId": "17d3b7fe-d6bb-46bf-8ac0-59c763034e3d", "text": "Har ikke mange som kan hjelpe meg" },
+            { "linkId": "30ae64a6-1efb-48ef-fa19-189548be2726", "text": "Har ikke mange som kan hjelpe meg - viktighet", "answer": [] },
+            { "linkId": "88fdaac6-6f51-4f16-85c5-b4da6cc4189f", "text": "Har ikke mange som kan hjelpe meg - plagsomhet", "answer": [] },
+            { "linkId": "089a9bda-12a4-4124-82ac-e7331d62a0bd", "text": "Savner forståelse for sykdommen" },
+            { "linkId": "06a83097-43b2-4183-df2c-f5d65cdb1242", "text": "Savner forståelse for sykdommen - viktighet", "answer": [] },
+            { "linkId": "51c4e5a0-b4b3-4158-99b9-4bcab3b3a31c", "text": "Savner forståelse for sykdommen - plagsomhet", "answer": [] },
+            { "linkId": "ed90ae8d-ea18-44ad-d009-c36e207b52c8", "text": "Vanskelig å være sosial" },
+            { "linkId": "08f4fbd4-68d6-4e43-f1e3-328523ca3134", "text": "Vanskelig å være sosial - viktighet", "answer": [] },
+            { "linkId": "85d868a3-95aa-4e9d-8797-acdab78b5186", "text": "Vanskelig å være sosial - plagsomhet", "answer": [] },
+            { "linkId": "dc025ebb-f713-42e1-b2cb-9a9fef6fb7d6", "text": "Føler meg ensom" },
+            { "linkId": "3d801912-8742-4c95-94ae-a7cbadd5e869", "text": "Føler meg ensom - viktighet", "answer": [] },
+            { "linkId": "5bf6f0f3-6d5f-4775-81c8-825c44b9d034", "text": "Føler meg ensom - plagsomhet", "answer": [] },
+            { "linkId": "3ea4c1ff-21a6-4302-fcd8-68264f3a3b5b", "text": "Vanskelig å følge opp barna" },
+            { "linkId": "3aeab9bb-9247-49fd-f184-95b553043cac", "text": "Vanskelig å følge opp barna - viktighet", "answer": [] },
+            { "linkId": "5fa3e262-8645-4501-efc0-6647ecc28ec3", "text": "Vanskelig å følge opp barna - plagsomhet", "answer": [] },
+            { "linkId": "0269f6b8-f7e9-4433-bb83-b615d01a09a1", "text": "Bekymret for parforholdet" },
+            { "linkId": "fa9bee13-3f62-4371-83c9-1e560ae794d4", "text": "Bekymret for parforholdet - viktighet", "answer": [] },
+            { "linkId": "924ff1dd-40ea-450e-add0-1f287a404ba8", "text": "Bekymret for parforholdet - plagsomhet", "answer": [] },
+            { "linkId": "05cc9951-5f71-4765-ad6f-3da11c511eed", "text": "Endring av sexlyst" },
+            { "linkId": "5374b2f7-0044-4c05-e4d6-9091a4c8d754", "text": "Endring av sexlyst - viktighet", "answer": [] },
+            { "linkId": "dbfe797b-eaa9-4102-bb46-c6083794eece", "text": "Endring av sexlyst - plagsomhet", "answer": [] },
+            { "linkId": "a8ada7d3-4375-405c-f68b-00b9756f2b93", "text": "Mangler forståelse på jobben/studiet" },
+            { "linkId": "9629e460-20a7-417d-fa20-f028ae9cdd11", "text": "Mangler forståelse på jobben/studiet - viktighet", "answer": [] },
+            { "linkId": "4de809c0-7b93-498f-86a6-e37105232ca5", "text": "Mangler forståelse på jobben/studiet - plagsomhet", "answer": [] },
+            { "linkId": "a8d691ed-e318-4aca-9961-7b28de42e88a", "text": "Klarer ikke jobben/studiet lenger" },
+            { "linkId": "b3c1137e-65d1-440b-800e-1bd5782e7994", "text": "Klarer ikke jobben/studiet lenger - viktighet", "answer": [] },
+            { "linkId": "08ffd3ea-a01a-4e13-c3eb-e894c07df7a4", "text": "Klarer ikke jobben/studiet lenger - plagsomhet", "answer": [] },
+            { "linkId": "50ce535e-19de-414e-82f5-4961e7ffd586", "text": "Jobben/studiet forverrer helsen" },
+            { "linkId": "1c2a374d-c69e-4da6-8a99-e114ce8f9732", "text": "Jobben/studiet forverrer helsen - viktighet", "answer": [] },
+            { "linkId": "efe5a64a-8985-4989-c76a-a45497c60ce8", "text": "Jobben/studiet forverrer helsen - plagsomhet", "answer": [] },
+            { "linkId": "99b79413-33c5-4a4e-f203-2ef29e206ee1", "text": "Snakke om: Å få et sunnere kosthold" },
+            { "linkId": "bac970ef-98f7-476b-a891-d5435bdd522a", "text": "Å få et sunnere kosthold - viktighet", "answer": [] },
+            { "linkId": "208ea7c6-6ccf-42ad-ef3c-8bccfea88741", "text": "Å få et sunnere kosthold - plagsomhet --", "answer": [] },
+            { "linkId": "c12599ac-f2e9-439b-f80e-b82fb8b7fab1", "text": "Snakke om: Å komme i bedre form" },
+            { "linkId": "bac18f07-7ca0-4c0b-fb53-02ee7a3f4182", "text": "Å komme i bedre form - viktighet", "answer": [] },
+            { "linkId": "6104db5e-1eb3-4e3e-a29e-857a965780a0", "text": "Å komme i bedre form - plagsomhet --", "answer": [] },
+            { "linkId": "04aaca61-65e8-4c13-8707-cc92a259a003", "text": "Snakke om: Drikke mindre alkohol" },
+            { "linkId": "befb13fc-3eb0-42c0-80a0-18046f510334", "text": "Drikke mindre alkohol - viktighet", "answer": [] },
+            { "linkId": "9640b55d-e692-483e-fd98-6269c1c667b6", "text": "Drikke mindre alkohol - plagsomhet --", "answer": [] },
+            { "linkId": "576b57ad-224a-47f4-fe4c-b7d604d94fe0", "text": "Snakke om: Slutte med røyk" },
+            { "linkId": "1c740903-4763-4f85-c69d-f8330a563e23", "text": "Slutte med røyk - viktighet", "answer": [] },
+            { "linkId": "24ac9e3b-fafa-41c0-8946-a9c77e654122", "text": "Slutte med røyk - plagsomhet --", "answer": [] },
+            { "linkId": "47a0f0eb-5aeb-4cb9-83e8-cbbdb88ea134", "text": "Snakke om: Bivirkninger av medisiner" },
+            { "linkId": "f78c588e-086a-443b-93d2-542aa75c6857", "text": "Bivirkninger av medisiner - viktighet", "answer": [] },
+            { "linkId": "4165096e-8357-436c-a53d-ef20c1fe8939", "text": "Bivirkninger av medisiner - plagsomhet --", "answer": [] },
+            { "linkId": "06cab7d4-0944-402a-d0bb-e08ab2c12059", "text": "Snakke om: Endring av behandlingen" },
+            { "linkId": "7cc6d8ca-0bd5-4d45-81e9-2d918050793c", "text": "Endring av behandlingen - viktighet", "answer": [] },
+            { "linkId": "3161c97f-7447-4bab-9911-b22a7571b4e8", "text": "Endring av behandlingen - plagsomhet --", "answer": [] },
+            { "linkId": "af67a25a-1949-4fa5-8813-7acfd4d7fb11", "text": "Snakke om: Videre forløp" },
+            { "linkId": "7ab7e7fc-cef9-49d2-85d4-087288a43d97", "text": "Videre forløp - viktighet", "answer": [] },
+            { "linkId": "398150d6-c2f3-41a3-ceac-e25960f19ae1", "text": "Videre forløp - plagsomhet --", "answer": [] },
+            { "linkId": "4079c1bc-aabd-4038-8f10-c64baa564db5", "text": "Snakke om: Økonomiske og sosiale rettigheter" },
+            { "linkId": "751f93c0-9115-46d6-8d7e-b00afc76364a", "text": "Økonomiske og sosiale rettigheter - viktighet", "answer": [] },
+            { "linkId": "7ad2a937-de45-41f9-8943-a4bce683081c", "text": "Økonomiske og sosiale rettigheter - plagsomhet --", "answer": [] },
+            { "linkId": "3f264a45-f40e-444f-8c46-5af118d3b02a", "text": "Snakke om: Resepter eller attester" },
+            { "linkId": "337b644a-559b-4eea-98b5-4295c84f33a1", "text": "Resepter eller attester - viktighet", "answer": [] },
+            { "linkId": "fba8ddbf-8b06-4e37-dae1-e2b06ac586dd", "text": "Resepter eller attester - plagsomhet --", "answer": [] },
+            { "linkId": "63b87acd-f404-4637-85d1-c2cde397ddb8", "text": "Snakke om: Egendefinert behov 1" },
+            { "linkId": "8f9c13bc-4696-4bad-83c1-36800292050f", "text": "Egendefinert behov 1 - viktighet", "answer": [] },
+            { "linkId": "75c72b5e-4888-4b01-a115-cd9ba65b370b", "text": "Egendefinert behov 1 - plagsomhet --", "answer": [] },
+            { "linkId": "882d4fa9-828d-4d4c-d7c8-af15b06f4d9b", "text": "Snakke om: Egendefinert behov 2" },
+            { "linkId": "59600bfa-0d73-4904-c3bb-122496c1aebb", "text": "Egendefinert behov 2 - viktighet", "answer": [] },
+            { "linkId": "a517675b-1d08-4cc2-9d08-05a9c78e5c87", "text": "Egendefinert behov 2 - plagsomhet --", "answer": [] },
+            { "linkId": "3f40b06e-5297-4644-d60b-029ccd84fd77", "text": "Snakke om: Egendefinert behov 3" },
+            { "linkId": "b1554204-567d-44b5-e9f2-d2c5daf3e3f9", "text": "Egendefinert behov 3 - viktighet", "answer": [] },
+            { "linkId": "a83f74e5-9a16-40ef-816c-a64fb0f0f6d7", "text": "Egendefinert behov 3 - plagsomhet --", "answer": [] }
+          ]
+        },
+        {
+          "linkId": "9217948c-6ade-4d73-81f4-063d6fc4a8a2",
+          "item": [
+            { "linkId": "574d5fb7-a693-4c54-9a7d-488ee999b04a", "text": "Egendefinert behov 1", "answer": [] },
+            { "linkId": "61cec980-a398-4269-8c04-9568b130b115", "text": "Egendefinert behov 2", "answer": [] },
+            { "linkId": "f293f11c-6275-41e3-8696-b38ece33a47b", "text": "Egendefinert behov 3", "answer": [] }
+          ]
+        },
+        { "linkId": "a8a8a3c0-45f6-4f15-b1ef-cfdc8de32578", "text": "---------- Oppsummering slutt ----------" },
+        {
+          "linkId": "cc3b922b-aa71-49d6-deeb-9e014608b5d8",
+          "text": "Takk for at du tok deg tid til å fylle ut skjemaet. Når du trykker på “Send inn” under vil skjemaet bli sendt inn og lagret i din journal på det valgte helseforetaket."
         }
       ]
     }

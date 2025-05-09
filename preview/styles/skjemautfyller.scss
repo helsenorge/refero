@@ -37,7 +37,7 @@
     padding: 0;
   }
   form.mol_form {
-    margin-top: 1rem;
+    margin-top: spacers.getSpacer(5);
   }
   br + br {
     display: none;
@@ -50,7 +50,7 @@
 
   .page_refero__component_choice_autosuggest {
     .page_refero__no-suggestions {
-      font-size: 1rem;
+      font-size: spacers.getSpacer(5);
       max-width: 22rem;
       line-height: 1.25rem;
     }
@@ -80,7 +80,7 @@
   }
 
   .nested-fieldset {
-    margin-top: 1rem;
+    margin-top: spacers.getSpacer(5);
 
     &:empty {
       margin-top: 0;
@@ -109,19 +109,19 @@
 
   // Heading spacing
   .page_refero__content h2 {
-    margin-top: 1rem;
+    margin-top: spacers.getSpacer(5);
     margin-bottom: 1.5rem;
   }
 
   &.page_refero__markdown h2 {
     margin-top: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: spacers.getSpacer(5);
   }
 
   &.page_refero h3,
   &.page_refero h4 {
     margin-top: 0;
-    margin-bottom: 1rem;
+    margin-bottom: spacers.getSpacer(5);
   }
 
   &.page_refero__markdown h3,
@@ -142,7 +142,7 @@
   }
 
   .page_refero__repeatbutton {
-    margin: 1rem 1rem 1rem 0;
+    margin: spacers.getSpacer(5) spacers.getSpacer(5) spacers.getSpacer(5) 0;
   }
 
   .page_refero__deletebutton-wrapper + .page_refero__repeatbutton-wrapper {
@@ -150,8 +150,8 @@
   }
 
   .page_refero__deletebutton--margin-top {
-    margin-top: 1rem;
-    margin-right: 1rem;
+    margin-top: spacers.getSpacer(5);
+    margin-right: spacers.getSpacer(5);
   }
 
   .page_refero__formtitlewrapper {
@@ -172,10 +172,10 @@
   }
 
   &__component {
-    padding: 1rem;
+    padding: spacers.getSpacer(5);
     background-color: variables.$color-base-6-2;
     border: 1px solid variables.$color-base-5-5;
-    margin-bottom: 1rem;
+    margin-bottom: spacers.getSpacer(5);
 
     @media (min-width: map.get(breakpoints.$grid-breakpoints, md)) {
       padding: 1.75rem 2rem;
@@ -255,15 +255,15 @@
   }
 
   &__unit {
-    margin-left: 1rem;
+    margin-left: spacers.getSpacer(5);
     vertical-align: bottom;
   }
 
   .page_refero__buttonwrapper {
-    margin-top: 1rem;
+    margin-top: spacers.getSpacer(5);
 
     & .atom_displaybutton {
-      margin-right: 1rem;
+      margin-right: spacers.getSpacer(5);
       margin-bottom: 0.5rem;
     }
   }
@@ -325,7 +325,7 @@
 
     @media (min-width: map.get(breakpoints.$grid-breakpoints, sm)) {
       padding: 0 2rem;
-      margin-right: 1rem;
+      margin-right: spacers.getSpacer(5);
       width: auto;
     }
   }
@@ -352,7 +352,7 @@
     position: sticky;
     bottom: 0;
     background-color: #fff;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem spacers.getSpacer(5);
     z-index: 2;
     box-shadow: 0px -1px 5px 0px rgba(0, 0, 0, 0.15);
   }
