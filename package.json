@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "17.4.0",
+  "version": "18.0.0",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
@@ -107,7 +107,6 @@
     "resolve": "^1.22.8",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-generate-package-json": "^3.2.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-visualizer": "^5.12.0",
     "sass": "^1.77.6",
     "ts-node": "^10.9.2",
@@ -121,7 +120,7 @@
   },
   "dependencies": {
     "@helsenorge/core-utils": "^35.0.0",
-    "@helsenorge/eslint-config": "^34.1.2",
+    "@helsenorge/eslint-config": "^35.0.0",
     "classnames": "^2.3.2",
     "date-fns": "^4.1.0",
     "fhirpath": "3.18.0",

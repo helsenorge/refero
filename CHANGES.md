@@ -1,3 +1,15 @@
+## 18.0.0
+
+- Upgrade Vite to v.6.x.x
+- Upgrade vitest to v.3.x.x
+- Upgrade @helsenorge/designsystem-react to v.11.x.x
+- Upgrade @helsenorge/datepicker to v.11.x.x
+- Upgrade @helsenorge/core-utils to v.35.x.x
+- Upgrade @helsenorge/eslint-config to v.35.x.x
+- Upgrade @helsenorge/autosuggest to v.35.x.x
+- Upgrade @helsenorge/file-upload to v.35.x.x
+- Changes to the stylesheets for local development
+
 ## 17.4.0
 
 - Removed microweb related props.
