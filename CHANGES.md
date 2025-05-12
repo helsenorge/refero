@@ -12,6 +12,10 @@
 
 ## 17.4.0
 
+- Gave unique keys to dropdown options to fix bug where the same option was added multiple times
+
+## 17.4.0
+
 - Removed microweb related props.
 
 ## 17.3.3
