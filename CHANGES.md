@@ -1,4 +1,4 @@
-## 17.4.0
+## 17.4.1
 
 - Gave unique keys to dropdown options to fix bug where the same option was added multiple times
 
