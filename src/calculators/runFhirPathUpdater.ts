@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import {  newAnswerValuesAction } from '@/actions/newValue';
+import { newAnswerValuesAction } from '@/actions/newValue';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
@@ -23,13 +23,8 @@ export const runFhirPathQrUpdater = async ({
   fhirPathUpdater,
 }: InputParams): Promise<void> => {
   if (!questionnaire || !questionnaireResponse || !fhirPathUpdater) return;
-  // Evaluate all expressions and get the updated response
   const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
-  //TODO: Figure out a way to not run this on all changes
-  // if (JSON.stringify(updatedResponse) === JSON.stringify(questionnaireResponse)) {
-  //   return;
-  // }
-  // Calculate FHIR scores using the same updated response
+
   const fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
 
   updateQuestionnaireResponseWithScore(fhirScores, questionnaire, dispatch, questionnaireResponse, actionRequester);
