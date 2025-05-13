@@ -1,6 +1,6 @@
 ## 17.4.1
 
-- Gave unique keys to dropdown options to fix bug where the same option was added multiple times
+- Gave unique id's to Choice and Open-Choice options. Used the id's as keys to fix bug where the same option was added multiple times.
 
 ## 17.4.0
 

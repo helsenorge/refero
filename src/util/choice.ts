@@ -11,6 +11,7 @@ import {
   ValueSetComposeIncludeConcept,
   ValueSetComposeInclude,
 } from 'fhir/r4';
+import { v4 as uuid } from 'uuid';
 
 import { Options } from '../types/formTypes/radioGroupOptions';
 
@@ -25,7 +26,6 @@ import Constants, { OPEN_CHOICE_ID } from '@/constants/index';
 import itemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
 import ItemType from '@/constants/itemType';
 
-
 export function hasCanonicalValueSet(item?: QuestionnaireItem): boolean {
   return !!item?.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
 }
@@ -34,6 +34,23 @@ export function hasOptions(resources: Resources | undefined, item?: Questionnair
   const options = getOptions(resources, item, containedResources);
   return !!options && options.length > 0;
 }
+
+const generateOptionsWithIds = (options: Options[] | undefined): Options[] | undefined => {
+  const seenIds = new Set<string>();
+  let counter = 1;
+
+  return options?.map(option => {
+    let newId = option.id || `${option.label}-${option.type}`;
+
+    while (seenIds.has(newId)) {
+      newId = `${option.id || ''}-${counter}`;
+      counter++;
+    }
+
+    seenIds.add(newId);
+    return { ...option, id: newId };
+  });
+};
 
 export function getOptions(
   resources: Resources | undefined,
@@ -60,12 +77,14 @@ export function getOptions(
       options = [];
     }
     options.push({
+      id: uuid(),
       label: resources?.openChoiceOption || '',
       type: OPEN_CHOICE_ID,
     });
+    return options;
   }
-
-  return options;
+  const optionsWithIds = generateOptionsWithIds(options);
+  return optionsWithIds;
 }
 
 function getValueSet(answerValueSet: QuestionnaireItem['answerValueSet'], containedResources?: Resource[]): string | undefined {
