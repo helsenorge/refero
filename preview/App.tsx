@@ -1,5 +1,4 @@
 import './styles/skjemautfyller.scss';
-import './styles/sidebar.scss';
 
 import FormFillerPreview from './FormFillerPreview';
 
