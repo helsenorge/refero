@@ -37,16 +37,12 @@ export function hasOptions(resources: Resources | undefined, item?: Questionnair
 
 const generateOptionsWithIds = (options: Options[] | undefined): Options[] | undefined => {
   const seenIds = new Set<string>();
-  let counter = 1;
 
   return options?.map(option => {
     let newId = option.id || `${option.label}-${option.type}`;
-
     while (seenIds.has(newId)) {
-      newId = `${option.id || ''}-${counter}`;
-      counter++;
+      newId = `${option.id || ''}-${seenIds.size + 1}`;
     }
-
     seenIds.add(newId);
     return { ...option, id: newId };
   });
