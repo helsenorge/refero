@@ -25,6 +25,7 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
       preprocessorOptions: {
         scss: {
           includePaths: ['node_modules'],
+          api: 'legacy',
         },
       },
       postcss: {
