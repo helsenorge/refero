@@ -7,7 +7,6 @@ import '../../util/__tests__/defineFetch';
 import RenderingOptionsData from './__data__/renderingOptions';
 import { selectCheckboxOption } from '../../../test/selectors';
 import itemcontrol from '../../constants/itemcontrol';
-import itemControlConstants from '../../constants/itemcontrol';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
 import ChoiceCopyFrom from './__data__/copyFrom/choice';
 import { renderRefero, screen, waitFor } from '../../../test/test-utils';
@@ -26,7 +25,7 @@ describe('Component renders help items', () => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
-      expect(helpType).toBe(itemControlConstants.HELP);
+      expect(helpType).toBe(itemcontrol.HELP);
       expect(opening).toBe(expectedOpeningStatus);
 
       return <div className="helpButton">{'help button'}</div>;
@@ -42,7 +41,7 @@ describe('Component renders help items', () => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
-      expect(helpType).toBe(itemControlConstants.HELP);
+      expect(helpType).toBe(itemcontrol.HELP);
       expect(opening).toBe(expectedOpeningStatus);
 
       return opening ? <div className="helpElement">{'help element'}</div> : <React.Fragment />;

@@ -40,7 +40,7 @@ const FormButtons = ({
   isAuthorized,
   loginButton,
 }: FormButtonsInterface): JSX.Element => {
-  let buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
+  const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
   
   return (
     <div className={`${styles.formButtonsWrapper} page_refero__buttons`}>

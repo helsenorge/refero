@@ -1,5 +1,9 @@
 ## 18.0.0
 
+- Change batch update of elements with fhirPathCalculator and better checks for necessary updates
+
+## 18.0.0
+
 - Upgrade Vite to v.6.x.x
 - Upgrade vitest to v.3.x.x
 - Upgrade @helsenorge/designsystem-react to v.11.x.x

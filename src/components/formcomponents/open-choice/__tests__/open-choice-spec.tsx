@@ -12,7 +12,6 @@ import {
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
 import itemcontrol from '../../../../constants/itemcontrol';
-import itemType from '../../../../constants/itemType';
 import '../../../../util/__tests__/defineFetch';
 import ItemType from '../../../../constants/itemType';
 import { createItemControlExtension } from '../../../__tests__/utils';
@@ -127,7 +126,7 @@ function createQuestionnaire({ ...rest }: Partial<Questionnaire>): Questionnaire
   };
 }
 
-function createItem({ type = itemType.OPENCHOICE, linkId = '1', ...rest }: QuestionnaireItem): QuestionnaireItem {
+function createItem({ type = ItemType.OPENCHOICE, linkId = '1', ...rest }: QuestionnaireItem): QuestionnaireItem {
   return {
     linkId,
     type,
