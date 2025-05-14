@@ -1,12 +1,11 @@
 import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire, Bundle } from 'fhir/r4';
 
-import Constants from '../constants/index';
-import itemType from '../constants/itemType';
-import ItemType from '../constants/itemType';
-import StatusConstants from '../constants/status';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 import { getCalculatedExpressionExtension, getCopyExtension, getMinOccursExtensionValue } from '../util/extension';
 
+import Constants from '@/constants/';
+import ItemType from '@/constants/itemType';
+import StatusConstants from '@/constants/status';
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
 import { isHelpItem } from '@/util/help';
 
@@ -65,7 +64,7 @@ function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: Quest
 
 function getMinOccurs(i: QuestionnaireItem): number {
   // Attachment handles "repeats" itself
-  if (i.type === itemType.ATTATCHMENT) {
+  if (i.type === ItemType.ATTATCHMENT) {
     return 1;
   }
 

@@ -4,8 +4,7 @@ import { QuestionnaireItem } from 'fhir/r4';
 
 import GroupHeader from './GroupHeader';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import GenerateQuestionnaireComponents from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import GenerateQuestionnaireComponents, { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';

@@ -29,16 +29,13 @@ export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootSt
       if (!updatedQuestionnaireResponse) {
         return rejectWithValue('Missing updated questionnaire response');
       }
-      const fhirActionRequester = new ActionRequester(questionnaire, updatedQuestionnaireResponse);
 
-      await runFhirPathQrUpdater({
+      runFhirPathQrUpdater({
         questionnaire,
         questionnaireResponse: updatedQuestionnaireResponse,
         dispatch,
-        actionRequester: fhirActionRequester,
         fhirPathUpdater: new FhirPathExtensions(questionnaire),
       });
-      fhirActionRequester.dispatchAllActions(dispatch);
     } catch (error) {
       return rejectWithValue(error);
     }
