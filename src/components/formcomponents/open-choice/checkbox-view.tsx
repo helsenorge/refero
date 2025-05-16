@@ -76,7 +76,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         {options?.map((option, index) => (
           <Checkbox
             {...rest}
-            key={`${option.type}-${index}`}
+            key={option.id}
             inputId={`${getId(id)}-hn-${index}`}
             testId={`${getId(id)}-${index}-checkbox-openchoice`}
             label={

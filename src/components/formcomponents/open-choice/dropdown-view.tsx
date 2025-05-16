@@ -101,7 +101,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
             {resources?.selectDefaultPlaceholder || ''}
           </option>
           {options?.map(option => (
-            <option key={getId(id) + option.label} value={option.type}>
+            <option key={option.id} value={option.type}>
               {option.label}
             </option>
           ))}

@@ -75,7 +75,7 @@ const RadioView = (props: Props): JSX.Element | null => {
         {options?.map((option: Options, index: number) => (
           <RadioButton
             {...rest}
-            key={`${getId(id)}-${index.toString()}`}
+            key={option.id}
             inputId={`${getId(id)}-hn-${index}`}
             testId={`${getId(id)}-${index}-radio-open-choice`}
             value={option.type}

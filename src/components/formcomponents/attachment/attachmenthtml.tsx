@@ -15,7 +15,12 @@ import {
 
 import { getNumberOfFilesValidationText, getValidationTextForAttachment } from './attachment-validation';
 import styles from '../common-styles.module.css';
-import { convertBytesToMBString, getAttachmentMaxSizeBytesToUse, validateRequired } from './attachmentUtil';
+import {
+  convertBytesToMBString,
+  getAttachmentMaxSizeBytesToUse,
+  getAttachmentMaxSizePerFileBytesToUse,
+  validateRequired,
+} from './attachmentUtil';
 import { useAttachmentSync } from './useAttachmentSync';
 import { ReadOnly } from '../read-only/readOnly';
 
@@ -81,12 +86,16 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
   const numberOfFilesValidationText = getNumberOfFilesValidationText(item, minFiles, maxFiles, resources);
   const fileTypesValidationText = getValidationTextForAttachment(item, resources?.attachmentError_fileType);
-  const maxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
-
+  const maxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize);
+  const maxValueBytesPerFile = getAttachmentMaxSizePerFileBytesToUse(item);
   const validFileTypes: MimeTypes[] = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const filSizeValidationText = resources?.attachmentError_fileSize?.replace(
     '{0}',
-    convertBytesToMBString(getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item))
+    convertBytesToMBString(getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize))
+  );
+  const filSizeValidationTextPerFile = resources?.attachmentError_fileSize?.replace(
+    '{0}',
+    convertBytesToMBString(getAttachmentMaxSizePerFileBytesToUse(item))
   );
   const {
     setAcceptedFiles,
@@ -98,7 +107,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     internalRegister,
     [
       validateFileType(validFileTypes, fileTypesValidationText),
-      validateFileSize(0, maxValueBytes, getValidationTextForAttachment(item, filSizeValidationText || 'total file size')),
+      validateFileSize(0, maxValueBytesPerFile, getValidationTextForAttachment(item, filSizeValidationTextPerFile || 'file size')),
     ],
     [
       validateNumberOfFiles(minFiles ?? 0, maxFiles ?? 20, numberOfFilesValidationText || 'Number of files'),

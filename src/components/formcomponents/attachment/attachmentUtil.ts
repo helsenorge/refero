@@ -40,20 +40,27 @@ export const getFileExtension = (filename: string): string => {
   return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
 };
 
-export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefined, item?: QuestionnaireItem): number {
+export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefined): number {
+  if (defaultMaxProps !== undefined) {
+    return defaultMaxProps;
+  }
+  return constants.MAX_FILE_SIZE;
+}
+export function getAttachmentMaxSizePerFileBytesToUse(item?: QuestionnaireItem): number {
   if (item) {
     const questionnaireMaxRuleSizeMB = getMaxSizeExtensionValue(item);
     if (questionnaireMaxRuleSizeMB !== undefined) {
       return convertMBToBytes(questionnaireMaxRuleSizeMB);
     }
   }
-  if (defaultMaxProps !== undefined) {
-    return defaultMaxProps;
-  }
-  return constants.MAX_FILE_SIZE;
+
+  return constants.MAX_FILE_SIZE_PER_FILE;
 }
+
 export const validateRequired = (item?: QuestionnaireItem, resources?: Resources, files?: UploadFile[]): string | true => {
   const validationTextExtension = getValidationTextExtension(item);
   const filesLength = files?.length ?? 0;
-  return item?.required && filesLength <= 0 ? validationTextExtension ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd' : true;
+  return item?.required && filesLength <= 0
+    ? (validationTextExtension ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd')
+    : true;
 };
