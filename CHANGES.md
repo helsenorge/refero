@@ -9,6 +9,7 @@
 - Upgrade @helsenorge/autosuggest to v.35.x.x
 - Upgrade @helsenorge/file-upload to v.35.x.x
 - Changes to the stylesheets for local development
+
 ## 17.4.2
 
 - changed maximum size of all attachments to 25MB
