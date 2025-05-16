@@ -131,6 +131,7 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnun": "^4.40.2",
-    "@rollup/rollup-linux-x64-gnu": "^4.40.2"
+    "@rollup/rollup-linux-x64-gnu": "^4.40.2",
+    "@ast-grep/napi-linux-x64-gnu": "^0.38.1"
   }
 }
