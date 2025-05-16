@@ -1,4 +1,8 @@
-## 17.4.2
+## 17.4.2-beta02
+
+- Changed error text for max files to show both max and min files
+
+## 17.4.2.beta01
 
 - changed maximum size of all attachments to 25MB
 
