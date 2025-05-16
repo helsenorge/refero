@@ -128,5 +128,8 @@
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",
     "uuid": "^10.0.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnun": "^4.40.2"
   }
 }
