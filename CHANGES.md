@@ -10,6 +10,14 @@
 - Upgrade @helsenorge/file-upload to v.35.x.x
 - Changes to the stylesheets for local development
 
+## 17.4.2
+
+- changed maximum size of all attachments to 25MB
+
+## 17.4.1
+
+- Gave unique id's to Choice and Open-Choice options. Used the id's as keys to fix bug where the same option was added multiple times.
+
 ## 17.4.0
 
 - Removed microweb related props.

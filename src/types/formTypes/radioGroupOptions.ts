@@ -1,4 +1,5 @@
 export interface Options {
+  id?: string;
   type: string;
   label: string;
   ariaLabel?: string;
