@@ -1,3 +1,7 @@
+## 18.0.2
+
+- merge hotfix form 17.4.2 to main branch
+
 ## 18.0.0
 
 - Upgrade Vite to v.6.x.x
