@@ -46,6 +46,7 @@ describe('runFhirPathQrUpdater', () => {
       addTimeAnswer: vi.fn(),
       setNewAnswer: vi.fn(),
       isCheckbox: vi.fn(),
+      dispatchAllActions: vi.fn(),
     } as unknown as ActionRequester;
 
     vi.clearAllMocks();
@@ -88,7 +89,11 @@ describe('runFhirPathQrUpdater', () => {
     expect(mockFhirPathUpdater.evaluateAllExpressions).toHaveBeenCalledWith(mockQuestionnaireResponse);
     expect(mockFhirPathUpdater.calculateFhirScore).toHaveBeenCalledWith(updatedResponse);
     expect(referoCore.getQuestionnaireDefinitionItem).toHaveBeenCalledWith('test-item', mockQuestionnaire.item);
-    expect(referoCore.getResponseItemAndPathWithLinkId).toHaveBeenCalledWith('test-item', updatedResponse);
+    expect(referoCore.getResponseItemAndPathWithLinkId).toHaveBeenCalledWith('test-item', {
+      ...updatedResponse,
+      item: [],
+      status: 'in-progress',
+    });
     expect(mockDispatch).toHaveBeenCalledWith(newAnswerValueAction(expect.any(Object)));
   });
 

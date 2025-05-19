@@ -79,7 +79,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     }
 
     return undefined;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   };
 
   const value = getValue();

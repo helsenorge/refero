@@ -13,6 +13,9 @@ export const REMOVE_CODINGSTRING_VALUE: REMOVE_CODINGSTRING_VALUE = 'refero/REMO
 export const REMOVE_CODING_VALUE = 'refero/REMOVE_CODING_VALUE';
 export type NEW_ANSWER_VALUE = 'refero/NEW_ANSWER_VALUE';
 export const NEW_ANSWER_VALUE: NEW_ANSWER_VALUE = 'refero/NEW_ANSWER_VALUE';
+export type NEW_ANSWER_VALUES = 'refero/NEW_ANSWER_VALUES';
+export const NEW_ANSWER_VALUES: NEW_ANSWER_VALUES = 'refero/NEW_ANSWER_VALUES';
+
 export type ADD_REPEAT_ITEM = 'refero/ADD_REPEAT_ITEM';
 export const ADD_REPEAT_ITEM: ADD_REPEAT_ITEM = 'refero/ADD_REPEAT_ITEM';
 export type DELETE_REPEAT_ITEM = 'refero/DELETE_REPEAT_ITEM';
@@ -55,6 +58,7 @@ export type TimeItemPayload = Pick<NewValuePayload, 'itemPath' | 'valueTime' | '
 export type DateTimeItemPayload = Pick<NewValuePayload, 'itemPath' | 'valueDateTime' | 'item'>;
 export type DeleteRepeatItemPayload = Pick<NewValuePayload, 'itemPath' | 'item'>;
 export type AnswerValueItemPayload = Pick<NewValuePayload, 'itemPath' | 'item' | 'newAnswer'>;
+export type AnswerValuesItemPayload = Pick<NewValuePayload, 'itemPath' | 'item' | 'newAnswer'>[];
 
 export const newValue = createAction<NewValuePayload>(NEW_VALUE);
 
@@ -115,6 +119,7 @@ export function newBooleanValueAsync(itemPath: Array<Path>, value: boolean, item
   };
 }
 export const newAnswerValueAction = createAction<AnswerValueItemPayload>(NEW_ANSWER_VALUE);
+export const newAnswerValuesAction = createAction<AnswerValuesItemPayload>(NEW_ANSWER_VALUES);
 
 export const newCodingValueAction = createAction<CodingValueItemPayload>(NEW_VALUE);
 /*

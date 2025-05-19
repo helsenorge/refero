@@ -1,3 +1,7 @@
+## 18.0.3
+
+- Change batch update of elements with fhirPathCalculator and better checks for necessary updates
+
 ## 18.0.2
 
 - merge hotfix form 17.4.2 to main branch
