@@ -96,12 +96,16 @@ export const getNumberOfFilesValidationText = (
     (maxFiles && !minFiles && resources?.attachmentError_maxFiles) ||
     (maxFiles && minFiles && resources?.attachmentError_minFiles_and_maxFiles) ||
     undefined;
-
+  if (maxFiles && minFiles) {
+    validationText = validationText?.replace('{0}', minFiles?.toString());
+    validationText = validationText?.replace('{1}', maxFiles?.toString());
+    return getValidationTextForAttachment(item, validationText);
+  }
   if (minFiles) {
     validationText = validationText?.replace('{0}', minFiles?.toString());
   }
   if (maxFiles) {
-    validationText = validationText?.replace('{1}', maxFiles?.toString());
+    validationText = validationText?.replace('{0}', maxFiles?.toString());
   }
 
   return getValidationTextForAttachment(item, validationText);

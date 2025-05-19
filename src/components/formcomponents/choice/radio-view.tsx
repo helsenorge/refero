@@ -77,7 +77,7 @@ const RadioView = (props: Props): JSX.Element => {
               onChange(e);
             }}
             value={option.type}
-            key={getId(id) + index}
+            key={option.id}
             inputId={`${getId(id)}-hn-${index}`}
             testId={`${getId(id)}-${index}-radio-choice`}
             onColor="ongrey"
