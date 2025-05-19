@@ -12,7 +12,8 @@ export default {
   CHOICE_DROPDOWN_TRESHOLD: 6,
   DEFAULT_HEADER_TAG: 2,
   ITEM_TYPE_GROUP: 'group',
-  MAX_FILE_SIZE: 25000000,
+  MAX_FILE_SIZE: 25 * 1024 * 1024,
+  MAX_FILE_SIZE_PER_FILE: 5 * 1024 * 1024,
 } as const;
 
 export const VALID_FILE_TYPES: Array<MimeTypes> = ['image/jpeg', 'image/png', 'application/pdf'];
