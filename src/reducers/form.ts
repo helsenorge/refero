@@ -451,9 +451,11 @@ function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: For
   if (!responseItem) {
     return state;
   }
-  const answer = payload.newAnswer;
 
-  responseItem.answer = answer;
+  const answer = payload.newAnswer;
+  if (responseItem.answer && responseItem.answer?.length > 0) {
+    responseItem.answer = answer;
+  }
 
   runEnableWhen(payload, state);
 
