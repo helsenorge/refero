@@ -37,7 +37,7 @@
   },
   "scripts": {
     "lint": "eslint src/**/* --fix",
-    "test": "vitest run",
+    "test": "vitest",
     "test:watch": "vitest dev",
     "test:ui": "vitest --ui",
     "test:preview": "vite preview --outDir html",
