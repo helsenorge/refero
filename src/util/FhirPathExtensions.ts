@@ -11,6 +11,7 @@ import {
 
 import { getCalculatedExpressionExtension, getCopyExtension, getQuestionnaireUnitExtensionValue } from './extension';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
+import { getAllResponseitemsByLinkIdAndQuestionnaireResponse } from './refero-core';
 import { createDummySectionScoreItem } from './scoring';
 import { isQuantity } from './typeguards';
 import itemType from '../constants/itemType';
@@ -100,31 +101,10 @@ export class FhirPathExtensions {
     for (const [key, value] of this.fhirScoreCache) {
       const expressionExtension = getCalculatedExpressionExtension(value) || getCopyExtension(value);
       if (!expressionExtension) continue;
-      answerPad[key] = this.evaluateExpression(value, expressionExtension, questionnaireResponse); //this.valueOfQuestionFhirpathItem(value, questionnaireResponse);
+      answerPad[key] = this.evaluateExpression(value, expressionExtension, questionnaireResponse);
     }
     return answerPad;
   }
-
-  // private valueOfQuestionFhirpathItem(
-  //   item: QuestionnaireItem,
-  //   questionnaireResponse: QuestionnaireResponse
-  // ): number | undefined | string | Coding | boolean | Coding[] | Quantity {
-  //   const expressionExtension = getCalculatedExpressionExtension(item) || getCopyExtension(item);
-  //   if (!expressionExtension) return undefined;
-
-  //   const result = evaluateFhirpathExpressionToGetString(expressionExtension, questionnaireResponse);
-  //   if (!result.length) return undefined;
-
-  //   if (item.type === itemType.INTEGER) {
-  //     return result.map((x: number) => (isNaN(x) || !isFinite(x) ? undefined : Math.round(x)));
-  //   }
-  //   // if (item.type === itemType.CHOICE || item.type === itemType.OPENCHOICE) {
-  //   //   if (this.isCheckbox(item)) {
-  //   //     return result;
-  //   //   }
-  //   // }
-  //   return result;
-  // }
 
   public hasFhirPaths(): boolean {
     const hasScoringInItem = (item: QuestionnaireItem): boolean => {
@@ -155,40 +135,62 @@ export class FhirPathExtensions {
   ): QuestionnaireResponseItemAnswer[] | null => {
     if (expressionExtension.valueString) {
       const result = evaluateFhirpathExpressionToGetString(expressionExtension, response);
+      const qrItem = getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
+      const itemAnswer: QuestionnaireResponseItemAnswer[] = [];
       if (result.length > 0) {
         switch (qItem.type) {
           case itemType.BOOLEAN:
-            return result.map((x: boolean | string | number) => ({ valueBoolean: Boolean(x) }));
+            itemAnswer.push(...result.map((x: boolean | string | number) => ({ valueBoolean: Boolean(x) })));
+            break;
           case itemType.DECIMAL:
-            return result.map((x: boolean | string | number) => ({
-              valueDecimal: getDecimalValue(qItem, x !== undefined && x !== null ? Number(x) : undefined),
-            }));
+            itemAnswer.push(
+              ...result.map((x: boolean | string | number) => ({
+                valueDecimal: getDecimalValue(qItem, x !== undefined && x !== null ? Number(x) : undefined),
+              }))
+            );
+            break;
           case itemType.INTEGER:
-            return result.map((x: boolean | string | number) => ({
-              valueInteger: isNaN(Number(x)) || !isFinite(Number(x)) ? undefined : Math.round(Number(x)),
-            }));
+            itemAnswer.push(
+              ...result.map((x: boolean | string | number) => ({
+                valueInteger: isNaN(Number(x)) || !isFinite(Number(x)) ? undefined : Math.round(Number(x)),
+              }))
+            );
+            break;
           case itemType.QUANTITY:
-            return result.map((x: string | number | Quantity) => ({
-              valueQuantity: isQuantity(x) ? x : this.createQuantity(qItem, getQuestionnaireUnitExtensionValue(qItem), x),
-            }));
+            itemAnswer.push(
+              ...result.map((x: string | number | Quantity) => ({
+                valueQuantity: isQuantity(x) ? x : this.createQuantity(qItem, getQuestionnaireUnitExtensionValue(qItem), x),
+              }))
+            );
+            break;
           case itemType.DATE:
-            return result.map((x: boolean | string | number) => ({ valueDate: String(x) }));
+            itemAnswer.push(...result.map((x: boolean | string | number) => ({ valueDate: String(x) })));
+            break;
           case itemType.DATETIME:
-            return result.map((x: boolean | string | number) => ({ valueDateTime: String(x) }));
+            itemAnswer.push(...result.map((x: boolean | string | number) => ({ valueDateTime: String(x) })));
+            break;
           case itemType.TIME:
-            return result.map((x: boolean | string | number) => ({ valueTime: String(x) }));
+            itemAnswer.push(...result.map((x: boolean | string | number) => ({ valueTime: String(x) })));
+            break;
           case itemType.STRING:
           case itemType.TEXT:
-            return result.map((x: boolean | string | number) => ({ valueString: String(x) }));
+            itemAnswer.push(...result.map((x: boolean | string | number) => ({ valueString: String(x) })));
+            break;
           case itemType.CHOICE:
           case itemType.OPENCHOICE:
-            return result.map((x: boolean | string | number | Coding | Quantity) => ({ valueCoding: x }));
+            itemAnswer.push(...result.map((x: boolean | string | number | Coding | Quantity) => ({ valueCoding: x })));
+            break;
           case itemType.ATTATCHMENT:
-            return result.map((x: boolean | string | number) => ({ valueAttachment: x }));
+            itemAnswer.push(...result.map((x: boolean | string | number) => ({ valueAttachment: x })));
+            break;
           default:
             break;
         }
       }
+      return itemAnswer.map((x: QuestionnaireResponseItemAnswer, index: number) => ({
+        ...(x && { ...x }),
+        ...(qrItem?.[0]?.answer?.[index]?.item && { item: qrItem?.[0]?.answer?.[index]?.item }),
+      }));
     }
     return null;
   };
@@ -229,7 +231,7 @@ export class FhirPathExtensions {
             if (newAnswer) {
               newQrItem = {
                 ...newQrItem,
-                answer: [...newAnswer],
+                ...(newAnswer && newAnswer.length > 0 && { answer: [...newAnswer] }),
               };
             }
 
