@@ -453,9 +453,7 @@ function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: For
   }
 
   const answer = payload.newAnswer;
-  if (responseItem.answer && responseItem.answer?.length > 0) {
-    responseItem.answer = answer;
-  }
+  responseItem.answer = answer;
 
   runEnableWhen(payload, state);
 

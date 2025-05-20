@@ -1,0 +1,138 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": "Questionnaire/35a435a7-27a7-4bd2-a79b-92fac9100710",
+  "item": [
+    {
+      "linkId": "23d46719-0f20-4ae2-88e0-b01ead6ee74b",
+      "text": "gruppe",
+      "item": [
+        {
+          "linkId": "f6c51b39-1095-4a59-8479-fdde8bb15389",
+          "text": "Har du løkljlkj?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "f776e26d-31c0-4c46-8eb8-0899cc91af9b",
+                  "text": "Beskriv",
+                  "answer": [
+                    {
+                      "item": [
+                        {
+                          "linkId": "476023c5-b45a-49b8-b3d3-9a791d72b786",
+                          "text": "text 2",
+                          "answer": [
+                            {
+                              "valueString": "bbb"
+                            }
+                          ]
+                        }
+                      ],
+                      "valueString": "aaa"
+                    }
+                  ]
+                }
+              ],
+              "valueCoding": {
+                "code": "1",
+                "display": "Ja",
+                "system": "urn:oid:2.16.578.1.12.4.1.1101"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "f6c51b39-1095-4a59-8479-fdde8bb15389",
+          "text": "Har du løkljlkj?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "f776e26d-31c0-4c46-8eb8-0899cc91af9b",
+                  "answer": [
+                    {
+                      "item": [
+                        {
+                          "linkId": "476023c5-b45a-49b8-b3d3-9a791d72b786",
+                          "answer": [
+                            {
+                              "valueString": "ddd"
+                            }
+                          ],
+                          "text": "text 2"
+                        }
+                      ],
+                      "valueString": "ccc"
+                    }
+                  ],
+                  "text": "Beskriv"
+                }
+              ],
+              "valueCoding": {
+                "code": "1",
+                "display": "Ja",
+                "system": "urn:oid:2.16.578.1.12.4.1.1101"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "53ab4055-bbd5-4305-8e06-7ffe0310b4f4",
+      "text": "oppsummering",
+      "item": [
+        {
+          "linkId": "dfb12dad-542f-4a80-8e6b-0f109ff121df",
+          "text": "Oppsummering",
+          "item": [
+            {
+              "linkId": "3c5bcf11-2c67-46e5-9e1a-c63b354eb839",
+              "text": "Har du løkljlkj?",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "c2c3575c-92e1-4795-8369-ba8ecec81341",
+                      "text": "Beskriv",
+                      "answer": [
+                        {
+                          "valueString": "aaa",
+                          "item": [
+                            {
+                              "linkId": "319431c9-9ded-458d-cd5f-c6c81d900861",
+                              "text": "text 2",
+                              "answer": [
+                                {
+                                  "valueString": "bbb"
+                                },
+                                {
+                                  "valueString": "ddd"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "valueString": "ccc"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "valueCoding": {
+                    "code": "1",
+                    "display": "Ja",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1101"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

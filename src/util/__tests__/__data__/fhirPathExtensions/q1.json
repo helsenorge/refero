@@ -1,0 +1,121 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "35a435a7-27a7-4bd2-a79b-92fac9100710",
+  "name": "MA_Opp",
+  "title": "oppsummering test",
+  "version": "0.3",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "versionId": "15",
+    "lastUpdated": "2025-05-19T10:01:05.111+00:00",
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "security": [
+      {
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
+        "code": "3",
+        "display": "Helsehjelp (Full)"
+      }
+    ],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "url": "Questionnaire/35a435a7-27a7-4bd2-a79b-92fac9100710",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "5e173300-14eb-45bc-904e-0788a4743ee9",
+      "type": "group",
+      "text": "Group 1",
+      "item": [
+        {
+          "linkId": "43c882ba-dedb-4f30-d9cd-640b50634e88",
+          "type": "choice",
+          "text": "Choice 1",
+          "required": false,
+          "answerValueSet": "#1101"
+        },
+        {
+          "linkId": "5f012220-c510-4c10-d191-c4a3ada8f2d6",
+          "type": "string",
+          "text": "text 1",
+          "required": false
+        }
+      ],
+      "required": false
+    }
+  ]
+}

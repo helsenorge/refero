@@ -187,10 +187,14 @@ export class FhirPathExtensions {
             break;
         }
       }
-      return itemAnswer.map((x: QuestionnaireResponseItemAnswer, index: number) => ({
+      const qrItemAnswer = itemAnswer.map((x: QuestionnaireResponseItemAnswer, index: number) => ({
         ...(x && { ...x }),
         ...(qrItem?.[0]?.answer?.[index]?.item && { item: qrItem?.[0]?.answer?.[index]?.item }),
       }));
+      if (qrItemAnswer.length === 0) {
+        return qrItem?.[0].answer || [];
+      }
+      return qrItemAnswer;
     }
     return null;
   };
