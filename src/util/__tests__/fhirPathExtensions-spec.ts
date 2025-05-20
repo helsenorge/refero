@@ -135,8 +135,6 @@ describe('fhirPatExtensions', () => {
     it('Should evaluate all expressions and update response items with calculated values', () => {
       const fhirPathUpdater = new FhirPathExtensions(q);
       const evaluatedResponse = fhirPathUpdater.evaluateAllExpressions(qr5);
-      console.log('qr5', JSON.stringify(qr5, null, 2));
-      console.log('evaluatedResponse', JSON.stringify(evaluatedResponse, null, 2));
 
       expect(evaluatedResponse).toEqual(qr1);
     });
