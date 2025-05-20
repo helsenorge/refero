@@ -98,7 +98,6 @@
                       "text": "Beskriv",
                       "answer": [
                         {
-                          "valueString": "aaa",
                           "item": [
                             {
                               "linkId": "319431c9-9ded-458d-cd5f-c6c81d900861",
@@ -113,20 +112,10 @@
                               ]
                             }
                           ]
-                        },
-                        {
-                          "valueString": "ccc"
                         }
                       ]
                     }
                   ]
-                },
-                {
-                  "valueCoding": {
-                    "code": "1",
-                    "display": "Ja",
-                    "system": "urn:oid:2.16.578.1.12.4.1.1101"
-                  }
                 }
               ]
             }
