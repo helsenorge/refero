@@ -1,3 +1,7 @@
+## 18.0.4
+
+- Update runFhirPathQrUpdater to also check for children nested inside answers when updating items with fhirpath
+
 ## 18.0.3
 
 - Change batch update of elements with fhirPathCalculator and better checks for necessary updates
