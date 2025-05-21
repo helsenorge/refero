@@ -131,15 +131,7 @@
                   }
                 }
               ],
-              "required": false,
-              "item": [
-                {
-                  "linkId": "476023c5-b45a-49b8-b3d3-9a791d72b786",
-                  "type": "string",
-                  "text": "text 2",
-                  "required": false
-                }
-              ]
+              "required": false
             }
           ]
         }
@@ -226,40 +218,7 @@
                     }
                   ],
                   "required": false,
-                  "readOnly": true,
-                  "item": [
-                    {
-                      "linkId": "319431c9-9ded-458d-cd5f-c6c81d900861",
-                      "type": "string",
-                      "text": "text 2",
-                      "required": false,
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                          "valueCodeableConcept": {
-                            "coding": [
-                              {
-                                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                                "code": "data-receiver"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                          "valueString": "QuestionnaireResponse.descendants().where(linkId='476023c5-b45a-49b8-b3d3-9a791d72b786').answer.value"
-                        }
-                      ],
-                      "readOnly": true,
-                      "enableWhen": [
-                        {
-                          "answerBoolean": true,
-                          "question": "476023c5-b45a-49b8-b3d3-9a791d72b786",
-                          "operator": "exists"
-                        }
-                      ]
-                    }
-                  ]
+                  "readOnly": true
                 }
               ]
             }

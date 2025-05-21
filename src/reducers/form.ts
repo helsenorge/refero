@@ -33,6 +33,8 @@ import {
   RemoveCodingStringPayload,
   RemoveCodingValuePayload,
   newAnswerValueAction,
+  newAnswerValuesAction,
+  AnswerValuesItemPayload,
 } from '@/actions/newValue';
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
 import itemType from '@/constants/itemType';
@@ -85,6 +87,9 @@ const formSlice = createSlice({
       })
       .addCase(newAnswerValueAction, (state, action: PayloadAction<AnswerValueItemPayload>) => {
         processNewAnswerValueAction(action.payload, state);
+      })
+      .addCase(newAnswerValuesAction, (state, action: PayloadAction<AnswerValuesItemPayload>) => {
+        processNewAnswerValuesAction(action.payload, state);
       })
       .addCase(newCodingStringValueAction, (state, action: PayloadAction<CodingStringPayload>) => {
         processNewCodingStringValueAction(action.payload, state);
@@ -383,15 +388,20 @@ function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: For
   if (!responseItem) {
     return state;
   }
-  const answer = payload.newAnswer;
 
+  const answer = payload.newAnswer;
   responseItem.answer = answer;
 
   runEnableWhen(payload, state);
 
   return state;
 }
-
+function processNewAnswerValuesAction(payload: AnswerValuesItemPayload, state: Form): Form {
+  for (const item of payload) {
+    processNewAnswerValueAction(item, state);
+  }
+  return state;
+}
 function processNewValueAction(payload: NewValuePayload, state: Form): Form {
   const responseItem = getResponseItemWithPath(payload.itemPath || [], state.FormData);
 

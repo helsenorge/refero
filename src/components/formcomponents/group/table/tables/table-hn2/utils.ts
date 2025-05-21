@@ -14,12 +14,11 @@ import {
 } from '../utils';
 
 import CodingSystems, { TableColumnName, TableOrderingColum } from '@/constants/codingsystems';
-import codeSystems from '@/constants/codingsystems';
 import ItemType from '@/constants/itemType';
 
 export const groupItemsByColumn = (items: QuestionnaireItem[]): Map<number, QuestionnaireItem[]> =>
   items.reduce((acc, item) => {
-    const columnIndex = findIndexByCode(item, codeSystems.TableColumn);
+    const columnIndex = findIndexByCode(item, CodingSystems.TableColumn);
     const itemsInColumn = acc.get(columnIndex) || [];
     return acc.set(columnIndex, [...itemsInColumn, item]);
   }, new Map<number, QuestionnaireItem[]>());
@@ -57,7 +56,7 @@ export const createColumnsForRow = (
     }
     return {
       id: item.linkId,
-      index: findIndexByCode(item, codeSystems.TableColumn),
+      index: findIndexByCode(item, CodingSystems.TableColumn),
       type: item.type,
       text: getValueFromItemsToShow(item, itemsToShow),
     };
@@ -96,7 +95,7 @@ export const getTableHN2bodyObject = (
 
 /* SORTING  */
 export const getIndexToSortBy = (coding: Coding[]): number | undefined => {
-  const sortCode = getCodeFromCodingSystem(coding, codeSystems.TableOrderingColum);
+  const sortCode = getCodeFromCodingSystem(coding, CodingSystems.TableOrderingColum);
   return sortCode ? Number(sortCode) - 1 : undefined;
 };
 

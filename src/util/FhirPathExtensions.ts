@@ -7,10 +7,12 @@ import {
   Extension,
   Coding,
   Quantity,
+  Attachment,
 } from 'fhir/r4';
 
 import { getCalculatedExpressionExtension, getCopyExtension, getQuestionnaireUnitExtensionValue } from './extension';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
+import { getAllResponseitemsByLinkIdAndQuestionnaireResponse } from './refero-core';
 import { createDummySectionScoreItem } from './scoring';
 import { isQuantity } from './typeguards';
 import itemType from '../constants/itemType';
@@ -100,31 +102,10 @@ export class FhirPathExtensions {
     for (const [key, value] of this.fhirScoreCache) {
       const expressionExtension = getCalculatedExpressionExtension(value) || getCopyExtension(value);
       if (!expressionExtension) continue;
-      answerPad[key] = this.evaluateExpression(value, expressionExtension, questionnaireResponse); //this.valueOfQuestionFhirpathItem(value, questionnaireResponse);
+      answerPad[key] = this.evaluateExpression(value, expressionExtension, questionnaireResponse);
     }
     return answerPad;
   }
-
-  // private valueOfQuestionFhirpathItem(
-  //   item: QuestionnaireItem,
-  //   questionnaireResponse: QuestionnaireResponse
-  // ): number | undefined | string | Coding | boolean | Coding[] | Quantity {
-  //   const expressionExtension = getCalculatedExpressionExtension(item) || getCopyExtension(item);
-  //   if (!expressionExtension) return undefined;
-
-  //   const result = evaluateFhirpathExpressionToGetString(expressionExtension, questionnaireResponse);
-  //   if (!result.length) return undefined;
-
-  //   if (item.type === itemType.INTEGER) {
-  //     return result.map((x: number) => (isNaN(x) || !isFinite(x) ? undefined : Math.round(x)));
-  //   }
-  //   // if (item.type === itemType.CHOICE || item.type === itemType.OPENCHOICE) {
-  //   //   if (this.isCheckbox(item)) {
-  //   //     return result;
-  //   //   }
-  //   // }
-  //   return result;
-  // }
 
   public hasFhirPaths(): boolean {
     const hasScoringInItem = (item: QuestionnaireItem): boolean => {
@@ -155,106 +136,148 @@ export class FhirPathExtensions {
   ): QuestionnaireResponseItemAnswer[] | null => {
     if (expressionExtension.valueString) {
       const result = evaluateFhirpathExpressionToGetString(expressionExtension, response);
+      const qrItem = getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
+      const itemAnswer: QuestionnaireResponseItemAnswer[] = [];
       if (result.length > 0) {
         switch (qItem.type) {
           case itemType.BOOLEAN:
-            return result.map((x: boolean | string | number) => ({ valueBoolean: Boolean(x) }));
+            itemAnswer.push(...result.map((x: boolean): QuestionnaireResponseItemAnswer => ({ valueBoolean: Boolean(x) })));
+            break;
           case itemType.DECIMAL:
-            return result.map((x: boolean | string | number) => ({
-              valueDecimal: getDecimalValue(qItem, x !== undefined && x !== null ? Number(x) : undefined),
-            }));
+            itemAnswer.push(
+              ...result.map(
+                (x: string | number): QuestionnaireResponseItemAnswer => ({
+                  valueDecimal: getDecimalValue(qItem, x !== undefined && x !== null ? Number(x) : undefined),
+                })
+              )
+            );
+            break;
           case itemType.INTEGER:
-            return result.map((x: boolean | string | number) => ({
-              valueInteger: isNaN(Number(x)) || !isFinite(Number(x)) ? undefined : Math.round(Number(x)),
-            }));
+            itemAnswer.push(
+              ...result.map(
+                (x: string | number): QuestionnaireResponseItemAnswer => ({
+                  valueInteger: isNaN(Number(x)) || !isFinite(Number(x)) ? undefined : Math.round(Number(x)),
+                })
+              )
+            );
+            break;
           case itemType.QUANTITY:
-            return result.map((x: string | number | Quantity) => ({
-              valueQuantity: isQuantity(x) ? x : this.createQuantity(qItem, getQuestionnaireUnitExtensionValue(qItem), x),
-            }));
+            itemAnswer.push(
+              ...result.map(
+                (x: string | number | Quantity): QuestionnaireResponseItemAnswer => ({
+                  valueQuantity: isQuantity(x) ? x : this.createQuantity(qItem, getQuestionnaireUnitExtensionValue(qItem), x),
+                })
+              )
+            );
+            break;
           case itemType.DATE:
-            return result.map((x: boolean | string | number) => ({ valueDate: String(x) }));
+            itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueDate: String(x) })));
+            break;
           case itemType.DATETIME:
-            return result.map((x: boolean | string | number) => ({ valueDateTime: String(x) }));
+            itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueDateTime: String(x) })));
+            break;
           case itemType.TIME:
-            return result.map((x: boolean | string | number) => ({ valueTime: String(x) }));
+            itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueTime: String(x) })));
+            break;
           case itemType.STRING:
           case itemType.TEXT:
-            return result.map((x: boolean | string | number) => ({ valueString: String(x) }));
+            itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueString: String(x) })));
+            break;
           case itemType.CHOICE:
           case itemType.OPENCHOICE:
-            return result.map((x: boolean | string | number | Coding | Quantity) => ({ valueCoding: x }));
+            itemAnswer.push(...result.map((x: Coding | Quantity): QuestionnaireResponseItemAnswer => ({ valueCoding: x })));
+            break;
           case itemType.ATTATCHMENT:
-            return result.map((x: boolean | string | number) => ({ valueAttachment: x }));
+            itemAnswer.push(...result.map((x: Attachment): QuestionnaireResponseItemAnswer => ({ valueAttachment: x })));
+            break;
           default:
             break;
         }
       }
+      const qrItemAnswer = itemAnswer.map((x: QuestionnaireResponseItemAnswer, index: number) => ({
+        ...(x && { ...x }),
+        ...(qrItem?.[0]?.answer?.[index]?.item && { item: qrItem?.[0]?.answer?.[index]?.item }),
+      }));
+      if (qrItemAnswer.length === 0) {
+        return qrItem?.[0].answer || [];
+      }
+      return qrItemAnswer;
     }
     return null;
   };
 
-  private evaluateCalculatedExpressions(questionnaireResponse: QuestionnaireResponse): QuestionnaireResponse {
-    // Function to evaluate an expression and return a new answer
-
+  private evaluateCalculatedExpressions(qr: QuestionnaireResponse): QuestionnaireResponse {
     const traverseItems = (
       qItems: QuestionnaireItem[],
       qrItems: QuestionnaireResponseItem[],
       response: QuestionnaireResponse
     ): QuestionnaireResponseItem[] => {
-      const newQrItems: QuestionnaireResponseItem[] = [];
+      const result: QuestionnaireResponseItem[] = [];
 
       for (const qItem of qItems) {
-        // Find all qrItems with matching linkId
-        const matchingQrItems = qrItems.filter(qrItem => qrItem.linkId === qItem.linkId);
+        const matches = qrItems.filter(x => x.linkId === qItem.linkId);
 
-        if (matchingQrItems.length === 0) {
-          // Handle case where there's no matching qrItem
-          // Optional: Create a new qrItem if needed
-        } else {
-          const updatedQrItems = matchingQrItems.map(qrItem => {
-            let newQrItem: QuestionnaireResponseItem = { ...qrItem };
+        for (const qrItem of matches) {
+          let newQrItem: QuestionnaireResponseItem = { ...qrItem };
 
-            const calculatedExpression = getCalculatedExpressionExtension(qItem);
-            const copyExtension = getCopyExtension(qItem);
+          const calcExt = getCalculatedExpressionExtension(qItem);
+          const copyExt = getCopyExtension(qItem);
+          let newAnswer: QuestionnaireResponseItemAnswer[] | null = null;
 
-            let newAnswer: QuestionnaireResponseItemAnswer[] | null = null;
+          if (calcExt && !copyExt) {
+            newAnswer = this.evaluateExpression(qItem, calcExt, response);
+          }
+          if (copyExt) {
+            newAnswer = this.evaluateExpression(qItem, copyExt, response);
+          }
 
-            if (calculatedExpression && !copyExtension) {
-              newAnswer = this.evaluateExpression(qItem, calculatedExpression, response);
+          const origAnswers = qrItem.answer ?? [];
+          const finalAnswers: QuestionnaireResponseItemAnswer[] = [];
+
+          if (!newAnswer || newAnswer.length === 0) {
+            for (const orig of origAnswers) {
+              const a = { ...orig };
+              if (a.item && qItem.item) {
+                a.item = traverseItems(qItem.item, a.item, response);
+              }
+              finalAnswers.push(a);
             }
+          } else {
+            for (let i = 0; i < newAnswer.length; i++) {
+              const comp = { ...newAnswer[i] };
 
-            if (copyExtension) {
-              newAnswer = this.evaluateExpression(qItem, copyExtension, response);
-            }
-            if (newAnswer) {
-              newQrItem = {
-                ...newQrItem,
-                answer: [...newAnswer],
-              };
-            }
+              if (!comp.item && origAnswers[i]?.item) {
+                comp.item = origAnswers[i].item;
+              }
+              if (comp.item && qItem.item) {
+                comp.item = traverseItems(qItem.item, comp.item, response);
+              }
 
-            if (qItem?.item && qrItem?.item) {
-              newQrItem = {
-                ...newQrItem,
-                item: traverseItems(qItem.item, qrItem.item, response),
-              };
+              finalAnswers.push(comp);
             }
-            return newQrItem;
-          });
+          }
 
-          newQrItems.push(...updatedQrItems);
+          if (finalAnswers.length > 0) {
+            newQrItem = { ...newQrItem, answer: finalAnswers };
+          }
+
+          if (qrItem.item && qItem.item) {
+            newQrItem = {
+              ...newQrItem,
+              item: traverseItems(qItem.item, qrItem.item, response),
+            };
+          }
+
+          result.push(newQrItem);
         }
       }
 
-      return newQrItems;
+      return result;
     };
 
-    const newQuestionnaireResponse: QuestionnaireResponse = {
-      ...questionnaireResponse,
-      item: questionnaireResponse.item
-        ? traverseItems(this.questionnaire.item || [], questionnaireResponse.item, questionnaireResponse)
-        : undefined,
+    return {
+      ...qr,
+      item: qr.item ? traverseItems(this.questionnaire.item || [], qr.item, qr) : undefined,
     };
-    return newQuestionnaireResponse;
   }
 }

@@ -15,7 +15,6 @@ import {
   getHyperlinkExtensionValue,
   getCopyExtension,
 } from './extension';
-import CodingSystemConstants from '../constants/codingsystems';
 import codeSystems from '../constants/codingsystems';
 import { Extensions } from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
@@ -82,7 +81,7 @@ export function isDataReceiver(item?: QuestionnaireItem): boolean {
 export function isHiddenItem(item?: QuestionnaireItem): boolean | undefined {
   return (
     getQuestionnaireHiddenExtensionValue(item) ||
-    getQuestionnaireItemCodeValue(item, CodingSystemConstants.RenderingOptions) === RenderOptionCode.KunPdf
+    getQuestionnaireItemCodeValue(item, codeSystems.RenderingOptions) === RenderOptionCode.KunPdf
   );
 }
 

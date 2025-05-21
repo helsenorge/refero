@@ -98,6 +98,33 @@ export function getQuestionnaireResponseItemWithLinkid(
   return undefined;
 }
 
+export const getAllResponseitemsByLinkIdAndQuestionnaireResponse = (
+  linkId: string | undefined,
+  qr: QuestionnaireResponse | undefined
+): QuestionnaireResponseItem[] => {
+  const items: QuestionnaireResponseItem[] = [];
+  if (!qr || !qr.item || !linkId || qr.item.length === 0) {
+    return items;
+  }
+  function traverseItems(item: QuestionnaireResponseItem): void {
+    if (item.linkId === linkId) {
+      items.push(item);
+    }
+    if (item.item) {
+      item.item.forEach(traverseItems);
+    }
+    if (item.answer) {
+      item.answer.forEach(answer => {
+        if (answer.item) {
+          answer.item.forEach(traverseItems);
+        }
+      });
+    }
+  }
+  qr.item.forEach(traverseItems);
+  return items;
+};
+
 export function getQuestionnaireResponseItemsWithLinkId(
   linkId: string,
   responseItems: QuestionnaireResponseItem[],
