@@ -25,9 +25,9 @@ export const RepeatButton = ({ item, parentPath, responseItems, disabled }: Prop
   const onAnswerChange = useOnAnswerChange();
   const onAddRepeatItem = (): void => {
     if (dispatch && item) {
-      dispatch(addRepeatItemAsync(parentPath, item, responseItems))?.then(newState => {
-        return onAnswerChange && onAnswerChange(newState, item);
-      });
+      dispatch(addRepeatItemAsync({ parentPath, item, responseItems }))
+        .unwrap()
+        .then(newState => onAnswerChange && onAnswerChange(newState, item));
     }
   };
   const text = getRepeatsTextExtension(item);

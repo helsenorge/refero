@@ -25,7 +25,7 @@ import skjema from './skjema/q.json';
 import qr from './skjema/responses/qr.json';
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
-import rootReducer from '../src/reducers/index';
+import rootReducer, { store } from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 
@@ -169,7 +169,6 @@ function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | nu
 }
 
 const FormFillerPreview = (): JSX.Element => {
-  const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
   const [lang, setLang] = useState<number>(0);
 
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
