@@ -39,8 +39,9 @@
     "lint": "eslint src/**/* --fix",
     "test": "vitest",
     "test:watch": "vitest dev",
-    "test:ui": "vitest --ui",
+    "test:ui": "vitest --ui --coverage",
     "test:preview": "vite preview --outDir html",
+    "coverage": "vitest run --coverage",
     "dev": "vite",
     "dev:preview": "vite -- --host",
     "build:lib": "vite build",
@@ -88,7 +89,8 @@
     "@types/rollup-plugin-peer-deps-external": "^2.2.5",
     "@types/uuid": "^2.0.35",
     "@ungap/structured-clone": "^1.2.0",
-    "@vitejs/plugin-react": "^4.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^3.0.0",
     "@vitest/ui": "^3.0.0",
     "autoprefixer": "^10.4.19",
     "browserslist": "^4.23.1",
@@ -128,5 +130,9 @@
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",
     "uuid": "^10.0.0"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.40.2",
+    "@ast-grep/napi-linux-x64-gnu": "^0.38.1"
   }
 }

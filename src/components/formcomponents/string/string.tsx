@@ -10,7 +10,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { newStringValueAsync } from '@/actions/newValue';
+import { newValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
@@ -40,11 +40,12 @@ export const String = (props: Props): JSX.Element | null => {
   const answer = useGetAnswer(linkId, path);
   const value = getStringValue(answer);
   useResetFormField(idWithLinkIdAndItemIndex, value);
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch && path && item) {
-      const newState = await dispatch(newStringValueAsync(path, value, item));
-      onAnswerChange(newState, item, { valueString: value });
+      dispatch(newValueAsync({ itemPath: path, valueString: value, item }))
+        .unwrap()
+        .then(newState => onAnswerChange(newState, item, { valueString: value }));
     }
 
     if (promptLoginMessage) {

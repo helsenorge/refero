@@ -3,7 +3,7 @@ import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { newAnswerValuesAction } from '@/actions/newValue';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
-import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
+import { FhirPathExtensions } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
 
@@ -27,22 +27,12 @@ export const runFhirPathQrUpdater = async ({
 
   const fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
 
-  updateQuestionnaireResponseWithScore(fhirScores, questionnaire, dispatch, questionnaireResponse, actionRequester);
-};
-
-const updateQuestionnaireResponseWithScore = (
-  scores: AnswerPad,
-  questionnaire: Questionnaire,
-  dispatch: AppDispatch,
-  questionnaireResponse: QuestionnaireResponse,
-  actionRequester?: ActionRequester
-): void => {
   const answerValues = [];
-  for (const linkId in scores) {
+  for (const linkId in fhirScores) {
     const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
     if (!item) continue;
     const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
-    const value = scores[linkId];
+    const value = fhirScores[linkId];
     const newAnswer = isQuestionnaireResponseItemAnswerArray(value) ? value : [];
     for (const itemAndPath of itemsAndPaths) {
       if (JSON.stringify(itemAndPath.item.answer) === JSON.stringify(newAnswer)) {

@@ -11,7 +11,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { newDecimalValueAsync } from '@/actions/newValue';
+import { newValueAsync } from '@/actions/newValue';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import {
@@ -83,9 +83,11 @@ const Decimal = (props: Props): JSX.Element | null => {
 
     if (item) {
       const newValueConverted = parseFloat(newValue);
-      dispatch(newDecimalValueAsync(path || [], newValueConverted, item))?.then(newState => {
-        return onAnswerChange(newState, item, { valueDecimal: newValueConverted });
-      });
+      dispatch(newValueAsync({ itemPath: path || [], valueDecimal: newValueConverted, item }))
+        .unwrap()
+        .then(newState => {
+          return onAnswerChange(newState, item, { valueDecimal: newValueConverted });
+        });
     }
 
     if (promptLoginMessage) {
