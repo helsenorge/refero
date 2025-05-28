@@ -40,10 +40,10 @@ export const String = (props: Props): JSX.Element | null => {
   const answer = useGetAnswer(linkId, path);
   const value = getStringValue(answer);
   useResetFormField(idWithLinkIdAndItemIndex, value);
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch && path && item) {
-      await dispatch(newValueAsync({ itemPath: path, valueString: value, item }))
+      dispatch(newValueAsync({ itemPath: path, valueString: value, item }))
         .unwrap()
         .then(newState => onAnswerChange(newState, item, { valueString: value }));
     }
