@@ -1,28 +1,23 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "35a435a7-27a7-4bd2-a79b-92fac9100710",
-  "name": "MA_Opp",
-  "title": "oppsummering test",
-  "version": "0.3",
+  "id": "2226550f-d115-4b48-d36b-6de2ce578c59",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
-    "versionId": "15",
-    "lastUpdated": "2025-05-19T10:01:05.111+00:00",
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "security": [
-      {
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
-        "code": "3",
-        "display": "Helsehjelp (Full)"
-      }
-    ],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
         "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
       }
     ]
   },
@@ -65,78 +60,30 @@
       }
     }
   ],
-  "url": "Questionnaire/35a435a7-27a7-4bd2-a79b-92fac9100710",
-  "contained": [
-    {
-      "resourceType": "ValueSet",
-      "id": "1101",
-      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
-      "version": "1.0",
-      "name": "urn:oid:1101",
-      "title": "Ja / Nei (structor)",
-      "status": "draft",
-      "publisher": "NHN",
-      "compose": {
-        "include": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.1101",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Ja"
-              },
-              {
-                "code": "2",
-                "display": "Nei"
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ],
+  "url": "Questionnaire/2226550f-d115-4b48-d36b-6de2ce578c59",
   "item": [
     {
-      "linkId": "23d46719-0f20-4ae2-88e0-b01ead6ee74b",
-      "code": [
-        {
-          "system": "http://helsenorge.no/fhir/CodeSystem/TableOrderingFunctions",
-          "code": "DESC",
-          "display": "Descending"
-        }
-      ],
-      "text": "gruppe",
+      "linkId": "9241285f-00a3-4bed-ef74-5c172604e850",
       "type": "group",
+      "text": "Test Fhirpath",
       "required": false,
       "item": [
         {
-          "linkId": "f6c51b39-1095-4a59-8479-fdde8bb15389",
-          "text": "Har du løkljlkj?",
-          "type": "choice",
+          "linkId": "e0b47bfb-73e7-47ba-99ea-34b36a1ecd86",
+          "type": "string",
+          "text": "Level 1",
           "required": false,
-          "answerValueSet": "#1101",
-          "repeats": true,
           "item": [
             {
-              "linkId": "f776e26d-31c0-4c46-8eb8-0899cc91af9b",
-              "text": "Beskriv",
+              "linkId": "d0903149-c1ef-4ca3-8907-a87b82d8108a",
               "type": "string",
-              "enableWhen": [
-                {
-                  "question": "f6c51b39-1095-4a59-8479-fdde8bb15389",
-                  "operator": "=",
-                  "answerCoding": {
-                    "system": "urn:oid:2.16.578.1.12.4.1.1101",
-                    "code": "1"
-                  }
-                }
-              ],
+              "text": "Level 2",
               "required": false,
               "item": [
                 {
-                  "linkId": "476023c5-b45a-49b8-b3d3-9a791d72b786",
+                  "linkId": "1723ee0d-281e-401c-84ae-4a7b57b832c1",
                   "type": "string",
-                  "text": "text 2",
+                  "text": "Level 3",
                   "required": false
                 }
               ]
@@ -146,18 +93,47 @@
       ]
     },
     {
-      "linkId": "53ab4055-bbd5-4305-8e06-7ffe0310b4f4",
-      "text": "oppsummering",
+      "linkId": "8a0d5bea-e0f9-43ef-8b36-afe90fe89a0b",
       "type": "group",
+      "text": "Summary",
       "required": false,
       "item": [
         {
-          "linkId": "dfb12dad-542f-4a80-8e6b-0f109ff121df",
-          "text": "Oppsummering",
-          "type": "group",
+          "linkId": "f07d2726-5475-4a95-8e9d-06d79425fde9",
+          "type": "string",
+          "text": "Level 1 - sum",
           "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='e0b47bfb-73e7-47ba-99ea-34b36a1ecd86').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "e0b47bfb-73e7-47ba-99ea-34b36a1ecd86",
+              "operator": "exists"
+            }
+          ],
           "item": [
             {
+              "linkId": "3c53228a-ccd1-4991-aa5a-8db2fc71a960",
+              "type": "string",
+              "text": "Level 2 - sum",
+              "required": false,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -172,24 +148,23 @@
                 },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='f6c51b39-1095-4a59-8479-fdde8bb15389').answer.value"
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='d0903149-c1ef-4ca3-8907-a87b82d8108a').answer.value"
                 }
               ],
-              "linkId": "3c5bcf11-2c67-46e5-9e1a-c63b354eb839",
-              "text": "Har du løkljlkj?",
-              "type": "choice",
+              "readOnly": true,
               "enableWhen": [
                 {
-                  "question": "f6c51b39-1095-4a59-8479-fdde8bb15389",
-                  "operator": "exists",
-                  "answerBoolean": true
+                  "answerBoolean": true,
+                  "question": "d0903149-c1ef-4ca3-8907-a87b82d8108a",
+                  "operator": "exists"
                 }
               ],
-              "required": false,
-              "readOnly": true,
-              "answerValueSet": "#1101",
               "item": [
                 {
+                  "linkId": "430a37f3-7301-4e6f-a33a-b119b072854d",
+                  "type": "string",
+                  "text": "Level 3 - sum",
+                  "required": false,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -204,64 +179,2861 @@
                     },
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                      "valueString": "QuestionnaireResponse.descendants().where(linkId='f776e26d-31c0-4c46-8eb8-0899cc91af9b').answer.value"
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='1723ee0d-281e-401c-84ae-4a7b57b832c1').answer.value"
                     }
                   ],
-                  "linkId": "c2c3575c-92e1-4795-8369-ba8ecec81341",
-                  "text": "Beskriv",
-                  "type": "string",
+                  "readOnly": true,
                   "enableWhen": [
                     {
-                      "question": "f6c51b39-1095-4a59-8479-fdde8bb15389",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1101",
-                        "code": "1"
-                      }
-                    },
-                    {
                       "answerBoolean": true,
-                      "question": "f776e26d-31c0-4c46-8eb8-0899cc91af9b",
+                      "question": "1723ee0d-281e-401c-84ae-4a7b57b832c1",
                       "operator": "exists"
-                    }
-                  ],
-                  "required": false,
-                  "readOnly": true,
-                  "item": [
-                    {
-                      "linkId": "319431c9-9ded-458d-cd5f-c6c81d900861",
-                      "type": "string",
-                      "text": "text 2",
-                      "required": false,
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                          "valueCodeableConcept": {
-                            "coding": [
-                              {
-                                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                                "code": "data-receiver"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                          "valueString": "QuestionnaireResponse.descendants().where(linkId='476023c5-b45a-49b8-b3d3-9a791d72b786').answer.value"
-                        }
-                      ],
-                      "readOnly": true,
-                      "enableWhen": [
-                        {
-                          "answerBoolean": true,
-                          "question": "476023c5-b45a-49b8-b3d3-9a791d72b786",
-                          "operator": "exists"
-                        }
-                      ]
                     }
                   ]
                 }
               ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "aebea230-6ec2-46d1-b640-202d2960d962",
+      "type": "group",
+      "text": "Calculator fhirpath\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false
+        },
+        {
+          "linkId": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "repeats": true
+        }
+      ]
+    },
+    {
+      "linkId": "d7dcf468-d089-48ab-c68b-9b16006eb0d3",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "720d466b-ab8e-4be6-d8c4-b13916b83e98",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "1534f626-67bb-455c-cbd5-75041fa8456e",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "bac6d12c-50c1-4e13-c0a7-f0c5a246b86b",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "720d466b-ab8e-4be6-d8c4-b13916b83e98",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "97dd1056-5072-4629-8d8a-2e403ab74722",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "107c24ae-13b0-4e58-f4d9-6ea959035278",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "b69b5333-6c9b-4912-e5f2-c53fb62951ef",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "4158473e-f088-44d5-d427-7795e18b52dd",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "107c24ae-13b0-4e58-f4d9-6ea959035278",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "6b04883b-6ded-4999-83d6-e0c1a064de1e",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "846a119e-e2f6-4d15-9773-24930fb4d5c8",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "467d5ac6-fdf3-49b3-819d-cdac0a776c68",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "60b93f2e-3d66-4c04-882f-9c58a18d9ea1",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "846a119e-e2f6-4d15-9773-24930fb4d5c8",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "fb9ca5ca-061d-43af-dccc-eaaaf63c0ed6",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "012c4b6b-7b91-4c27-867a-f0eda7b24df6",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "d6921a11-1c7d-408b-8617-40b7faaf9619",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "f4a53712-a618-48ed-e087-2f5de442bf69",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "012c4b6b-7b91-4c27-867a-f0eda7b24df6",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "5fca0e64-dc97-41f2-8ae4-db7cc5581561",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "a0954a0a-3d40-4434-fe50-99aa9106f7c4",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "81117f93-f2da-4faa-85d2-68e331411f91",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "50f62927-5fa3-4e41-8f53-0b998dbd5689",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "a0954a0a-3d40-4434-fe50-99aa9106f7c4",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "545989f6-de3d-49c6-86b3-0d859c66be79",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "27681f49-85e1-48e1-c4cf-5cff1d6c4ec8",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "9f318b12-e13e-42a2-ff4c-c20896a5a608",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "cd5b8f4b-e33c-42ae-d92f-b68d787f1e64",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "27681f49-85e1-48e1-c4cf-5cff1d6c4ec8",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "9a88bed6-48cb-479c-b3ea-ff11899d3199",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "1e6b7967-93cf-4a48-8181-a3df387a8fd5",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "71627c8c-6c1b-4bb3-f12d-cfbe970f6944",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "4ef12f75-782e-4d6f-f8b0-2642ad64c0a3",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "1e6b7967-93cf-4a48-8181-a3df387a8fd5",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "a346e826-a4db-48f5-825f-bc4bcb46f154",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "df992726-5b24-4900-9358-617359910e2b",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "5602c957-c658-4dea-f9f4-29045b887805",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "cb7e11a2-57ef-4867-9a21-f62ea159565b",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "df992726-5b24-4900-9358-617359910e2b",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "af4a6644-1486-4f1c-9a3b-5102b6f304bb",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "79e006af-c5ec-4745-efb3-f235ff163fbc",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "c791c81b-9226-4137-8311-20febf2aa2f5",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "588010eb-7cff-408f-8a38-68dc54871344",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "79e006af-c5ec-4745-efb3-f235ff163fbc",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "a86700f7-c8e0-4ff6-d765-fc408341ac7b",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "9e5e12fd-86be-4e92-8f96-b773faa38b29",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "0a44a23a-2544-4477-8dbb-95d34c240fa9",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "2e722fb6-8847-4121-edc6-9991448a8e60",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "9e5e12fd-86be-4e92-8f96-b773faa38b29",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "b922bb20-f86a-4718-8337-6292ceec0b01",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "f0902885-e162-4a71-8fa4-b2fc18f959f9",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "cea25835-57df-4bb2-c97a-46e21af8f635",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "d24ade96-9494-471a-8b0b-c6ab1844305e",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "f0902885-e162-4a71-8fa4-b2fc18f959f9",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "0727857d-4897-4ad6-b465-a37864167667",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "51d72bd4-5df6-4708-9bd3-ebfb97e79c7e",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "f27ced27-1433-4394-84d3-b3d330434e1a",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "931339bf-1566-43bf-dffe-800050154a1f",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "51d72bd4-5df6-4708-9bd3-ebfb97e79c7e",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "3003a506-d26b-4cf7-80be-d28c8ee704b4",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "bbd5ed1c-bc17-483f-885b-7083b368bd10",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "263238e6-4e73-4051-8592-e21383f30fc2",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "15385047-b179-4611-9d25-94b2adfdb537",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "bbd5ed1c-bc17-483f-885b-7083b368bd10",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "28e4a51f-eda9-4a88-a64e-4ffd56b07393",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "ff8c654b-15b4-40ad-84a8-3ad73abdf413",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "d66b8ed1-3c21-45b9-da3e-9a7ea670dd6a",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "9f55f1b8-df79-40e0-9815-a5cc450ed9b7",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "ff8c654b-15b4-40ad-84a8-3ad73abdf413",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "6ff76366-a941-4cf0-82a5-dbc43490b13f",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "fda93d11-e6ff-4962-f40c-6bffc705637f",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "bade79fe-eb20-4493-972f-e8f64bad9ffb",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "a03c0961-f120-42d3-b2a7-a8400a73940d",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "fda93d11-e6ff-4962-f40c-6bffc705637f",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "166ff340-aa19-489a-82d4-974288c9fb01",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "00414e52-b277-4a23-8d88-3d523d6d4b50",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "0a273da5-3acf-4d03-81ba-96c44ce044ba",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "6aec3a54-b6ff-4245-826b-2c8b33119a6b",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "00414e52-b277-4a23-8d88-3d523d6d4b50",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "6df45159-e059-4bfd-9df1-2cf17b4c4274",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "f6c2bc12-bd9e-4d59-8604-feaebb9aec93",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "6d936800-c754-4d41-e1dc-455a392aa080",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "232ea2a7-3b45-4592-ebaf-2047b1b18819",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "f6c2bc12-bd9e-4d59-8604-feaebb9aec93",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "a692e6b9-346c-4874-deed-264965327a21",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "d137afe3-e605-4a94-810e-5355c4737df7",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "3352932a-9f16-40e0-8807-71399a9c695e",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "7eda9003-4d0d-438f-8641-ae1267c99e0b",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "d137afe3-e605-4a94-810e-5355c4737df7",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "36f3de03-7964-4f9a-e22f-a0788a9a1653",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "51772ce4-5bf2-4a3d-b609-1e64c60ceaf0",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "1d4031b5-2e89-4893-8668-f43dca47f4c4",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "8c595d32-3bff-4009-ad6c-d3c9023f004d",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "51772ce4-5bf2-4a3d-b609-1e64c60ceaf0",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "c0f170ba-f706-4346-91c2-65638b24c5ca",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "ebe43de2-871d-465a-8507-b6987c184f50",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "cb79fa9d-e76f-4034-82d8-2edaf292342a",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "91d9db0f-b7aa-44d6-c760-b57b7c56aa0d",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "ebe43de2-871d-465a-8507-b6987c184f50",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "c997ef45-7d8e-4e41-f126-d303c432e63e",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "3b4d855e-dd97-4ea9-9f7a-87e14177c9f3",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "91713002-00fe-4c51-d8f8-b536e1e8af9a",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "29d73601-c25f-4966-d50c-36b45fa36c61",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3b4d855e-dd97-4ea9-9f7a-87e14177c9f3",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "945cb674-0644-44db-e256-231400d017b6",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "9e9ebd2c-d3fc-4fc1-83e0-7d2b12e7f293",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "cc2813fa-8510-4454-8d39-56b7d64f3298",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "bc922f9e-1207-4682-8a4e-23c5b9ba3e36",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "9e9ebd2c-d3fc-4fc1-83e0-7d2b12e7f293",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "6449316f-a8e2-4a4d-8902-19a5ef5d9422",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "2a3522d6-1fd7-4e0e-9c3f-3f807886d098",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "208f0f3a-6ad2-4dd0-d380-451efae21377",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "c50f51cf-8087-461e-facf-266f88a1ac85",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "2a3522d6-1fd7-4e0e-9c3f-3f807886d098",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "dd8971e1-48e2-4318-86d9-1ad9c43f3ef8",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "704a4e55-6a57-4a39-b498-fd3d114c1da9",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "a8c2ff0e-e822-49a5-d778-874e0243f80e",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "2d451bd1-685a-4e64-8d1e-4fcc80396486",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "704a4e55-6a57-4a39-b498-fd3d114c1da9",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "dc9cdd56-398a-4c0e-8c0a-fcb5bcbfe995",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "d387c369-05eb-49c9-8795-5ef4a2ac155c",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "951e226c-4bdf-4e65-d586-d0d1e43e8113",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "6544f38e-0abb-4e38-88e3-ac3c7c68a9ab",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "d387c369-05eb-49c9-8795-5ef4a2ac155c",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "196627a3-662a-4496-ff78-a3899579f81f",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "1f9aaa2b-0a3c-488d-bf62-7cfc30fe650d",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "b0a0401a-cc4f-42bf-8157-a13f9409394f",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "b768ee52-fc22-4e7e-d4c5-2e7c5f273843",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "1f9aaa2b-0a3c-488d-bf62-7cfc30fe650d",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "6b7c1197-cdde-4c2f-e8d1-a5607abea2df",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "e33f80e8-385e-4b36-8ce8-6e71bfbc0d7e",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "d86f5f6d-6103-4679-ab2e-155ab4bcf97c",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "6d77873a-88ca-4d6f-8adf-e6e29e9ec66b",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "e33f80e8-385e-4b36-8ce8-6e71bfbc0d7e",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "3c63d9f9-2a32-4ce5-f033-a0dbd2713d7c",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "716347d9-53e2-47df-820c-723cedae1ad0",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "a93c7852-89c1-48d4-c2e4-b74fedd53448",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "090fa607-16b9-42dd-b855-3cb7d0bcf15a",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "716347d9-53e2-47df-820c-723cedae1ad0",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "de531c32-9bca-4d2c-c490-7839bf5a556a",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "d606f0b0-216a-4869-847c-b14affc6c881",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "98033eba-f8ee-4b0b-cfe9-f87c88966b2c",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "dd09f0b1-e0cd-4d20-8aba-341e6e1b1314",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "d606f0b0-216a-4869-847c-b14affc6c881",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "59b812f5-d126-4342-e737-5947e6cf16d4",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "e84b4d38-e7b4-4a1d-86ed-5dc457ca839a",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "8c54443a-0a6f-4bd6-8e97-7f747ecfa47b",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "0241406b-7062-468b-8f3b-58c14cf9302b",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "e84b4d38-e7b4-4a1d-86ed-5dc457ca839a",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "fc586511-f439-416e-8506-9fe7e54153fb",
+      "type": "group",
+      "text": "Calculator fhirpath sum\n",
+      "required": false,
+      "item": [
+        {
+          "linkId": "0690b796-b01b-4950-9377-c2a8532f86a1",
+          "type": "integer",
+          "text": "Num 1",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "7bc3b7f0-f5e7-4cd0-d2f3-683a40f0bd68",
+              "operator": "exists"
+            }
+          ],
+          "repeats": true
+        },
+        {
+          "linkId": "1bb91583-57ed-4fc5-c48e-29bff14c6067",
+          "type": "integer",
+          "text": "Num 2",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3d58fb6f-a107-451a-ec27-5a148ed01b37').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "3d58fb6f-a107-451a-ec27-5a148ed01b37",
+              "operator": "exists"
+            }
+          ]
+        },
+        {
+          "linkId": "0c807486-3f63-48c1-b37b-3009b2b3d930",
+          "type": "integer",
+          "text": "Total sum",
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "0690b796-b01b-4950-9377-c2a8532f86a1",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "descendants().where(linkId='720d466b-ab8e-4be6-d8c4-b13916b83e98').answer.valueInteger + descendants().where(linkId='1534f626-67bb-455c-cbd5-75041fa8456e').answer.valueInteger"
             }
           ]
         }
