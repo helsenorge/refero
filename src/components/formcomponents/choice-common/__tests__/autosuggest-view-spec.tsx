@@ -510,7 +510,5 @@ describe('autosuggest-view', () => {
 });
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await waitFor(async () => {
-    return await renderRefero({ questionnaire, props: { ...props, resources } });
-  });
+  return await renderRefero({ questionnaire, props: { ...props, resources } });
 };

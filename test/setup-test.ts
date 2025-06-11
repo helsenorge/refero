@@ -3,6 +3,7 @@ import { vi } from 'vitest';
 
 import './__mocks__/matchMedia';
 import './__mocks__/IntersectionObserver';
+import { cleanup } from '@testing-library/react';
 // import './__mocks__/ResizeObserver';
 // import './__mocks__/useLayoutEvent';
 // import './__mocks__/useSize';
@@ -35,6 +36,42 @@ Object.defineProperty(window, 'scrollTo', {
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
 const scrollIntoViewMock = vi.fn();
 vi.stubGlobal('scrollIntoView', scrollIntoViewMock);
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(), // deprecated but still used in some libraries
+    removeListener: vi.fn(), // deprecated but still used in some libraries
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+});
+vi.mock('@/workers/fhir-path.worker.ts?worker', () => {
+  // This is a fake Worker class constructor that we will export as the `default`.
+  const MockWorker = vi.fn().mockImplementation(() => {
+    return {
+      // Mock the methods
+      postMessage: vi.fn(),
+      terminate: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+
+      onmessage: vi.fn(),
+      onerror: vi.fn(),
+    };
+  });
+
+  return {
+    default: MockWorker,
+  };
+});
+
 afterEach(() => {
   vi.useRealTimers();
+  vi.clearAllMocks();
+  cleanup();
 });

@@ -1,4 +1,4 @@
-import { userEvent, Matcher, renderRefero, screen, waitFor } from '@test/test-utils.tsx';
+import { userEvent, Matcher, renderRefero, screen } from '@test/test-utils.tsx';
 import { Questionnaire } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -174,5 +174,5 @@ async function createWrapper(questionnaire: Questionnaire, props: Partial<Refero
     onDeleteAttachment: vi.fn(),
     uploadAttachment: vi.fn(),
   };
-  return await waitFor(async () => await renderRefero({ questionnaire, props: { ...attahchmentProps, ...props }, resources: resource }));
+  return await renderRefero({ questionnaire, props: { ...attahchmentProps, ...props }, resources: resource });
 }
