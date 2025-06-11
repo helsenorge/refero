@@ -1,12 +1,14 @@
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
+import workerCode from '../workers/fhir-path.worker.ts?raw';
+import Worker from '../workers/fhir-path.worker.ts?worker';
+
 import { newAnswerValuesAction } from '@/actions/newValue';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
 import { AnswerPad } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
-import workerCode from '../workers/fhir-path.worker.ts?raw';
 import { WorkerResponse } from '@/workers/fhir-path-worker';
 type InputParams = {
   questionnaire: Questionnaire;
@@ -101,6 +103,7 @@ export const runFhirPathQrUpdater = async ({
       dispatch(newAnswerValuesAction(answerValues));
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error during FHIR Path update:', error);
     if (error instanceof Error) {
       throw error;

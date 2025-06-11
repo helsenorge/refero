@@ -5,6 +5,7 @@ import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { describe, it, expect, vi, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
 
 import { runFhirPathQrUpdater } from '../runFhirPathUpdater';
+
 import { newAnswerValuesAction } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
 import { AppDispatch } from '@/reducers';
@@ -53,6 +54,7 @@ describe('runFhirPathQrUpdater with real worker', () => {
 
   it('should return early if questionnaire is missing', async () => {
     await runFhirPathQrUpdater({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       questionnaire: null as any,
       questionnaireResponse: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
       dispatch: mockDispatch,
