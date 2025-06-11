@@ -1,10 +1,8 @@
 /// <reference lib="webworker" />
 
-import { FhirPathExtensions } from '../util/FhirPathExtensions'; // Assuming path is correct
 import { WorkerInput, WorkerResponse } from './fhir-path-worker';
+import { FhirPathExtensions } from '../util/FhirPathExtensions';
 
-// Define the shape of messages we expect from the main thread
-// Listen for messages from the main thread
 self.addEventListener('message', (event: MessageEvent<WorkerInput>) => {
   const { questionnaire, questionnaireResponse } = event.data;
 
