@@ -60,7 +60,8 @@ describe('Component renders and calculates score', () => {
     await waitFor(() => {
       const item = findItem('3', container);
       expect(item).toHaveValue(42);
-
+    });
+    await waitFor(async () => {
       const fhirpathItem = screen.getByLabelText(/Fhir sum element/i);
       expect(fhirpathItem).toHaveValue(42);
     });
