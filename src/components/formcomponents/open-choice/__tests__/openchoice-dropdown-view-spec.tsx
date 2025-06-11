@@ -141,7 +141,9 @@ describe('Dropdown-view - choice', () => {
         { property: 'initial', value: [expectedAnswer] },
         { property: 'repeats', value: false },
       ]);
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       expect((screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement).selected).toBe(true);
     });
   });

@@ -50,23 +50,33 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
-vi.mock('@/workers/fhir-path.worker.ts?worker', () => {
-  // This is a fake Worker class constructor that we will export as the `default`.
-  const MockWorker = vi.fn().mockImplementation(() => {
-    return {
-      // Mock the methods
-      postMessage: vi.fn(),
-      terminate: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
+vi.mock('@/workers/fhir-path.worker.ts?worker', async importOriginal => {
+  // Get the original module's exports if needed (optional)
+  const original = await importOriginal<typeof import('@/workers/fhir-path.worker.ts?worker')>();
 
-      onmessage: vi.fn(),
-      onerror: vi.fn(),
-    };
+  // Create a fake class that we can spy on
+  const MockWorker = vi.fn(() => {
+    // Constructor logic if needed (usually not)
+  });
+
+  // Mock the methods on the prototype. This is what instances will inherit.
+  MockWorker.prototype.postMessage = vi.fn();
+  MockWorker.prototype.terminate = vi.fn();
+  MockWorker.prototype.addEventListener = vi.fn();
+  MockWorker.prototype.removeEventListener = vi.fn();
+  // Ensure onmessage/onerror are mock functions on the instance
+  Object.defineProperty(MockWorker.prototype, 'onmessage', {
+    get: vi.fn(() => vi.fn()),
+    set: vi.fn(),
+  });
+  Object.defineProperty(MockWorker.prototype, 'onerror', {
+    get: vi.fn(() => vi.fn()),
+    set: vi.fn(),
   });
 
   return {
-    default: MockWorker,
+    ...original, // Spread original exports
+    default: MockWorker, // Override the default export with our mock class
   };
 });
 

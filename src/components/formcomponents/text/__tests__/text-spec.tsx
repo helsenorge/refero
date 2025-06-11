@@ -81,7 +81,6 @@ describe('Text', () => {
       await waitFor(async () => {
         await createWrapper(questionnaire);
       });
-
       expect(screen.getByLabelText(/String/i)).toHaveValue('test');
     });
   });

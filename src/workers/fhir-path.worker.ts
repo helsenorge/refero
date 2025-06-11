@@ -9,17 +9,12 @@ self.addEventListener('message', (event: MessageEvent<WorkerInput>) => {
   const { questionnaire, questionnaireResponse } = event.data;
 
   try {
-    // console.log('Worker: Received task. Starting computation...');
-
     const fhirPathUpdater = new FhirPathExtensions(questionnaire);
-
     const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
-
     const fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
 
     self.postMessage({ type: 'success', payload: { fhirScores } } as WorkerResponse);
   } catch (error) {
-    console.error('WORKER THREW AN UNCAUGHT ERROR:', error);
     self.postMessage({
       type: 'error',
       payload: {
