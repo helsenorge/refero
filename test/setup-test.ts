@@ -1,9 +1,9 @@
+import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 
 import './__mocks__/matchMedia';
 import './__mocks__/IntersectionObserver';
-import { cleanup } from '@testing-library/react';
 // import './__mocks__/ResizeObserver';
 // import './__mocks__/useLayoutEvent';
 // import './__mocks__/useSize';

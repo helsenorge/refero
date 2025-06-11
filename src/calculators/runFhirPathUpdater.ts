@@ -1,5 +1,7 @@
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
+import Worker from '../workers/fhir-path.worker.ts?worker';
+
 import { newAnswerValuesAction } from '@/actions/newValue';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
@@ -101,6 +103,7 @@ export const runFhirPathQrUpdater = async ({
       dispatch(newAnswerValuesAction(answerValues));
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error during FHIR Path update:', error);
     if (error instanceof Error) {
       throw error;
