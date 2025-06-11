@@ -44,6 +44,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     uploadAttachment,
     useFormProps,
   } = props;
+
   IE11HackToWorkAroundBug187484();
   const dispatch = useAppDispatch();
   const formDefinition = useAppSelector(state => getFormDefinition(state));
@@ -77,6 +78,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         })
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.language, props.syncQuestionnaireResponse]);
   const externalRenderProps = {
     onRequestHelpElement,

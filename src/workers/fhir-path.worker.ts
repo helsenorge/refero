@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 
-import { WorkerInput, WorkerResponse } from './fhir-path-worker';
-import { FhirPathExtensions } from '../util/FhirPathExtensions';
+import { FhirPathExtensions } from '@/util/FhirPathExtensions';
+import { WorkerInput, WorkerResponse } from '@/workers/fhir-path-worker';
 
 self.addEventListener('message', (event: MessageEvent<WorkerInput>) => {
   const { questionnaire, questionnaireResponse } = event.data;

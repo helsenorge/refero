@@ -1,14 +1,13 @@
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import Worker from '../workers/fhir-path.worker.ts?worker';
+import InlineWorker from '../workers/fhir-path.worker.ts?worker&inline';
 
 import { newAnswerValuesAction } from '@/actions/newValue';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
-import { AnswerPad } from '@/util/FhirPathExtensions';
+import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
-import workerCode from '../workers/fhir-path.worker.ts?raw';
 import { WorkerResponse } from '@/workers/fhir-path-worker';
 type InputParams = {
   questionnaire: Questionnaire;
@@ -22,16 +21,10 @@ const performHeavyComputationWithWorker = (
   questionnaire: Questionnaire
 ): Promise<{ fhirScores: AnswerPad }> => {
   return new Promise((resolve, reject) => {
-    const blob = new Blob([workerCode], { type: 'application/javascript' });
-
-    // 2. Create a temporary object URL for the Blob.
-    const workerUrl = URL.createObjectURL(blob);
-
     // 3. Create the worker from this temporary URL.
-    const worker = new Worker(workerUrl);
+    const worker = new InlineWorker();
     const cleanup = (): void => {
       // signal.removeEventListener('abort', handleAbort);
-      URL.revokeObjectURL(workerUrl);
       worker.terminate();
     };
 
@@ -73,8 +66,17 @@ export const runFhirPathQrUpdater = async ({
 }: InputParams): Promise<void> => {
   if (!questionnaire || !questionnaireResponse) return;
   try {
-    const { fhirScores } = await performHeavyComputationWithWorker(questionnaireResponse, questionnaire);
+    let fhirScores: AnswerPad;
+    if (window.Worker) {
+      // If yes, use the high-performance worker version
 
+      const { fhirScores: scores } = await performHeavyComputationWithWorker(questionnaireResponse, questionnaire);
+      fhirScores = scores;
+    } else {
+      const fhirPathUpdater = new FhirPathExtensions(questionnaire);
+      const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
+      fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
+    }
     const answerValues = [];
     for (const linkId in fhirScores) {
       const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
