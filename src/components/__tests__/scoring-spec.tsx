@@ -1,4 +1,4 @@
-vi.unmock('@/workers/fhir-path.worker.ts?worker');
+vi.unmock('@/workers/fhir-path.worker.ts?worker&inline');
 import '@vitest/web-worker';
 import '../../util/__tests__/defineFetch';
 import { performance } from 'perf_hooks';

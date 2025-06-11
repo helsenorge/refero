@@ -22,6 +22,21 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
     server: {
       port: 3000,
     },
+    worker: {
+      // We want Vite's plugins (like tsconfigPaths for resolving '@')
+      // to run on the worker's code before it's inlined.
+      plugins: () => [
+        tsconfigPaths({
+          projects: [path.resolve(__dirname, 'tsconfig.build.json')],
+        }),
+      ],
+      // This ensures the inlined worker code is bundled correctly.
+      rollupOptions: {
+        output: {
+          format: 'es',
+        },
+      },
+    },
     css: {
       preprocessorOptions: {
         scss: {
@@ -87,8 +102,6 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
         targets: [{ src: '*.md', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) }],
         hook: 'writeBundle',
       }),
-      // --- REVERTED TO THE SIMPLE VERSION ---
-      // This now works because the worker filename is predictable.
       generatePackageJson({
         outputFolder: path.resolve(__dirname, OUTPUT_DIRECTORY),
         baseContents: pkg => ({

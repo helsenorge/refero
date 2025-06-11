@@ -50,9 +50,9 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
-vi.mock('@/workers/fhir-path.worker.ts?worker', async importOriginal => {
+vi.mock('@/workers/fhir-path.worker.ts?worker&inline', async importOriginal => {
   // Get the original module's exports if needed (optional)
-  const original = await importOriginal<typeof import('@/workers/fhir-path.worker.ts?worker')>();
+  const original = await importOriginal<typeof import('@/workers/fhir-path.worker.ts?worker&inline')>();
 
   // Create a fake class that we can spy on
   const MockWorker = vi.fn(() => {
