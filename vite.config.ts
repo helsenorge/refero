@@ -11,7 +11,9 @@ import dts from 'vite-plugin-dts';
 import { externalizeDeps } from 'vite-plugin-externalize-deps';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
 const OUTPUT_DIRECTORY = 'lib';
+
 export default defineConfig(({ command, isPreview }): UserConfig => {
   const dev = command === 'serve' && !isPreview;
 
@@ -45,21 +47,25 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
     },
     build: {
       outDir: path.resolve(__dirname, OUTPUT_DIRECTORY),
-      manifest: true,
+      // Set manifest to false, as we no longer need to read it.
+      manifest: false,
       cssMinify: 'esbuild',
       sourcemap: false,
       commonjsOptions: {
         transformMixedEsModules: true,
       },
-
       lib: {
         entry: path.resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
         name: 'Refero',
-        fileName: (format): string => `refero.${format}.js`,
+        fileName: 'refero.es',
+      },
+      rollupOptions: {
+        output: {
+          chunkFileNames: '[name].js',
+        },
       },
     },
-
     plugins: [
       visualizer({ filename: './bundle-stats.html' }),
       externalizeDeps({
@@ -81,6 +87,8 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
         targets: [{ src: '*.md', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) }],
         hook: 'writeBundle',
       }),
+      // --- REVERTED TO THE SIMPLE VERSION ---
+      // This now works because the worker filename is predictable.
       generatePackageJson({
         outputFolder: path.resolve(__dirname, OUTPUT_DIRECTORY),
         baseContents: pkg => ({
@@ -98,6 +106,10 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
             '.': {
               import: './refero.es.js',
               types: './types/index.d.ts',
+            },
+            // We can now safely hardcode the worker's path.
+            './worker': {
+              import: './fhir-path.worker.js',
             },
           },
         }),
