@@ -1,3 +1,7 @@
+## 19.0.0-beta01
+
+- webworker for fhirPathCalculator, which will improve performance for large questionnaires.
+
 ## 18.1.0-beta01
 
 - Added tests for valueSets for slider
