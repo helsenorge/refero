@@ -67,12 +67,13 @@ export const runFhirPathQrUpdater = async ({
   if (!questionnaire || !questionnaireResponse) return;
   try {
     let fhirScores: AnswerPad;
-    if (window.Worker) {
+    if (typeof window !== 'undefined' && window.Worker) {
       // If yes, use the high-performance worker version
-
       const { fhirScores: scores } = await performHeavyComputationWithWorker(questionnaireResponse, questionnaire);
       fhirScores = scores;
     } else {
+      // eslint-disable-next-line no-console
+      console.warn('Web Workers not supported or not available. Running calculations on the main thread.');
       const fhirPathUpdater = new FhirPathExtensions(questionnaire);
       const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
       fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
