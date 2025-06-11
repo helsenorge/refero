@@ -1,5 +1,6 @@
-## 19.0.0-beta01
+## 19.0.0-beta02
 
+- updated worker build
 - webworker for fhirPathCalculator, which will improve performance for large questionnaires.
 
 ## 18.0.4
