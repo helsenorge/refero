@@ -6,7 +6,7 @@ import { ActionRequester } from '@/util/actionRequester';
 import { AnswerPad } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
-import Worker from '../workers/fhir-path.worker.ts?worker';
+import workerCode from '../workers/fhir-path.worker.ts?raw';
 import { WorkerResponse } from '@/workers/fhir-path-worker';
 type InputParams = {
   questionnaire: Questionnaire;
@@ -20,9 +20,16 @@ const performHeavyComputationWithWorker = (
   questionnaire: Questionnaire
 ): Promise<{ fhirScores: AnswerPad }> => {
   return new Promise((resolve, reject) => {
-    const worker = new Worker();
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+
+    // 2. Create a temporary object URL for the Blob.
+    const workerUrl = URL.createObjectURL(blob);
+
+    // 3. Create the worker from this temporary URL.
+    const worker = new Worker(workerUrl);
     const cleanup = (): void => {
       // signal.removeEventListener('abort', handleAbort);
+      URL.revokeObjectURL(workerUrl);
       worker.terminate();
     };
 
