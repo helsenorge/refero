@@ -57,8 +57,9 @@ describe('Decimal', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
-
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       expect(screen.getByLabelText(/Decimal/i)).toHaveValue(12.3);
     });
   });

@@ -73,8 +73,9 @@ describe('Quantity', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
-
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       expect(screen.getByLabelText(/Quantity/i)).toHaveValue(12.3);
     });
   });

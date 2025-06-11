@@ -68,7 +68,7 @@ describe('Boolean', () => {
           ],
         })),
       };
-      await act(async () => {
+      await waitFor(async () => {
         await createWrapper(questionnaire);
       });
       expect(screen.getByLabelText(/Boolean/i)).toBeChecked();

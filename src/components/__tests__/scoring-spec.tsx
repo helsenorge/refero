@@ -17,7 +17,7 @@ import { clickByLabelText, clickByTestId, typeByLabelText } from '../../../test/
 import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 import { getCalculatedExpressionExtension } from '../../util/extension';
 
-describe.skip('Component renders and calculates score', () => {
+describe('Component renders and calculates score', () => {
   it('fhirpath score should be updated when decimal questions are answered', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='1').answer.value", FhirpathScoreDataModel);
     const { container } = await createWrapper(questionnaire);
@@ -27,9 +27,10 @@ describe.skip('Component renders and calculates score', () => {
     const item = findItem('1', container);
 
     expect(item).toHaveValue(42);
-    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
-
-    expect(fhirpathItem).toHaveValue(42);
+    await waitFor(async () => {
+      const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
+      expect(fhirpathItem).toHaveValue(42);
+    });
   });
 
   it('fhirpath score should be updated when integer questions are answered', async () => {
@@ -37,29 +38,32 @@ describe.skip('Component renders and calculates score', () => {
     const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('2', 42, container);
-
-    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
-    expect(fhirpathItem).toHaveValue(42);
+    await waitFor(async () => {
+      const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
+      expect(fhirpathItem).toHaveValue(42);
+    });
   });
   it('fhirpath score should be updated when integer questions are answered - should work with zeros', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", FhirpathScoreDataModel);
     const { container } = await createWrapper(questionnaire);
     await inputAnswer('2', 0, container);
-
-    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
-    expect(fhirpathItem).toHaveValue(0);
+    await waitFor(async () => {
+      const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
+      expect(fhirpathItem).toHaveValue(0);
+    });
   });
   it('fhirpath score should be updated when quantity questions are answered', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='3').answer.value.value", FhirpathScoreDataModel);
     const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('3', 42, container);
+    await waitFor(() => {
+      const item = findItem('3', container);
+      expect(item).toHaveValue(42);
 
-    const item = findItem('3', container);
-    expect(item).toHaveValue(42);
-
-    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
-    expect(fhirpathItem).toHaveValue(42);
+      const fhirpathItem = screen.getByLabelText(/Fhir sum element/i);
+      expect(fhirpathItem).toHaveValue(42);
+    });
   });
 
   it('fhirpath score should handle complex queries and should be part of totalscore', async () => {
@@ -76,12 +80,14 @@ describe.skip('Component renders and calculates score', () => {
     expect(item).toHaveValue(21);
 
     await inputAnswer('2', 21, container);
-
-    item = findItem('2', container);
-    expect(item).toHaveValue(21);
-
-    const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
-    expect(fhirpathItem).toHaveValue(42);
+    await waitFor(async () => {
+      item = findItem('2', container);
+      expect(item).toHaveValue(21);
+    });
+    await waitFor(async () => {
+      const fhirpathItem = screen.getByLabelText(/Fhir sum element/i);
+      expect(fhirpathItem).toHaveValue(42);
+    });
   });
 
   it('fhirpath score should update with blank score when answer is NaN', async () => {
@@ -212,40 +218,46 @@ describe('Code Scoring', () => {
     await createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Decimal 1/i, '42.451', false);
-
-    const sum1 = screen.getByDisplayValue(42.451);
-    expect(sum1).toBeInTheDocument();
-
-    await typeByLabelText(/Decimal 2/i, '1.041', false);
-
-    const sum2 = screen.getByDisplayValue(1.041);
-    expect(sum2).toBeInTheDocument();
-
-    const sum3 = screen.getByText(43);
-    expect(sum3).toBeInTheDocument();
-
-    const sum4 = screen.getByText(43.49);
-    expect(sum4).toBeInTheDocument();
-  });
-
-  it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer more than 5', async () => {
-    await createWrapper(CodeScoreDataModel);
-
-    await typeByLabelText(/Decimal 1/i, '42.551', false);
-    const sum = screen.getByDisplayValue(42.551);
-    expect(sum).toBeInTheDocument();
+    await waitFor(async () => {
+      const sum1 = await screen.findByDisplayValue(42.451);
+      expect(sum1).toBeInTheDocument();
+    });
 
     await typeByLabelText(/Decimal 2/i, '1.041', false);
     await waitFor(async () => {
       const sum2 = await screen.findByDisplayValue(1.041);
       expect(sum2).toBeInTheDocument();
     });
+
     await waitFor(async () => {
-      const sum3 = await screen.findByDisplayValue(44);
+      const sum3 = await screen.findByText(43);
       expect(sum3).toBeInTheDocument();
     });
     await waitFor(async () => {
-      const sum4 = await screen.findByDisplayValue(43.59);
+      const sum4 = await screen.findByText(43.49);
+      expect(sum4).toBeInTheDocument();
+    });
+  });
+
+  it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer more than 5', async () => {
+    await createWrapper(CodeScoreDataModel);
+
+    await typeByLabelText(/Decimal 1/i, '42.551', false);
+    await waitFor(async () => {
+      const sum = await screen.findByDisplayValue(42.551);
+      expect(sum).toBeInTheDocument();
+    });
+    await typeByLabelText(/Decimal 2/i, '1.041', false);
+    await waitFor(async () => {
+      const sum2 = await screen.findByDisplayValue(1.041);
+      expect(sum2).toBeInTheDocument();
+    });
+    await waitFor(async () => {
+      const sum3 = await screen.findByText(44);
+      expect(sum3).toBeInTheDocument();
+    });
+    await waitFor(async () => {
+      const sum4 = await screen.findByText(43.59);
       expect(sum4).toBeInTheDocument();
     });
   });
@@ -254,16 +266,17 @@ describe('Code Scoring', () => {
     await createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Integer 1/i, '42', false);
-    const sum = screen.getByDisplayValue(42);
+    const sum = await screen.findByDisplayValue(42);
     expect(sum).toBeInTheDocument();
 
     await typeByLabelText(/Integer 2/i, '2', false);
 
     const sum2 = screen.getAllByDisplayValue(2);
     expect(sum2[0]).toHaveValue(2);
-
-    const sum3 = screen.getByText(44);
-    expect(sum3).toBeInTheDocument();
+    await waitFor(async () => {
+      const sum3 = screen.getByText(44);
+      expect(sum3).toBeInTheDocument();
+    });
   });
 
   it('Section scoring on quantity grouping', async () => {

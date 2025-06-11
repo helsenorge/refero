@@ -13,7 +13,7 @@ import ItemControlConstants from '@/constants/itemcontrol';
 import valueSet from '@/constants/valuesets';
 import { Valueset } from '@/util/__tests__/__data__/valuesets/valueset-8459';
 
-describe.skip('Copy value from item', () => {
+describe('Copy value from item', () => {
   it('should copy STRING value', async () => {
     const sender = createSenderItem(ItemType.STRING);
     const reciever = createRecieverItem(ItemType.STRING);
@@ -236,7 +236,7 @@ describe.skip('Copy value from item', () => {
       expect(elm).toBeInTheDocument();
       await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
-    it('should copy SLIDER value', async () => {
+    it.skip('should copy SLIDER value', async () => {
       const sender = createSenderChoiceItem(ItemType.CHOICE, createItemControlExtension(ItemControlConstants.SLIDER));
       const reciever = createReciverChoiceItem(ItemType.CHOICE, ItemControlConstants.SLIDER);
       const q = createQuestionnaire(sender, reciever);
