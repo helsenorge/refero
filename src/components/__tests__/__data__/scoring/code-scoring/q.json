@@ -161,7 +161,7 @@
           "extension": [
             {
               "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='2.1').answer.value + QuestionnaireResponse.descendants().where(linkId='2.2').answer.value"
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='2.1').answer.valueInteger + QuestionnaireResponse.descendants().where(linkId='2.2').answer.valueInteger"
             }
           ],
           "readOnly": true

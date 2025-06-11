@@ -19,7 +19,6 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
     root: dev ? path.resolve(__dirname, './preview') : path.resolve(__dirname, ''),
     server: {
       port: 3000,
-      origin: 'bs-local.com',
     },
     css: {
       preprocessorOptions: {
@@ -58,6 +57,18 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
         formats: ['es'],
         name: 'Refero',
         fileName: (format): string => `refero.${format}.js`,
+      },
+      rollupOptions: {
+        // Define both your main library and your worker as entry points.
+        input: {
+          'refero.es': path.resolve(__dirname, 'src/index.ts'),
+          'fhir-path.worker': path.resolve(__dirname, 'src/workers/fhir-path.worker.ts'),
+        },
+        output: {
+          entryFileNames: `[name].js`,
+          chunkFileNames: `[name].js`,
+          assetFileNames: `[name].[ext]`,
+        },
       },
     },
 
@@ -100,6 +111,9 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
               import: './refero.es.js',
               types: './types/index.d.ts',
             },
+          },
+          './worker': {
+            import: './fhir-path.worker.js',
           },
         }),
       }),

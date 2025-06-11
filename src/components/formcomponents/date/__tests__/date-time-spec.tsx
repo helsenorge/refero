@@ -75,7 +75,9 @@ describe('Date time', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       const dateInput = screen.getByLabelText(/Dato/i);
       const hoursElement = screen.getByTestId(/hours-test/i);
       const minutesElement = screen.getByTestId(/minutes-test/i);
@@ -459,5 +461,5 @@ describe('Date time', () => {
 });
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await waitFor(async () => await renderRefero({ questionnaire, props: { ...props, resources } }));
+  return await renderRefero({ questionnaire, props: { ...props, resources } });
 };

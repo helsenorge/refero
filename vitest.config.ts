@@ -30,6 +30,7 @@ export default defineConfig(configEnv =>
             classNameStrategy: 'non-scoped',
           },
         },
+        pool: 'threads',
         coverage: {
           reporter: ['cobertura', 'json'],
         },
