@@ -39,7 +39,7 @@ describe('runFhirPathQrUpdater with real inline worker via factory', () => {
 
   it('should return early if questionnaire is missing', async () => {
     await runFhirPathQrUpdater({
-      questionnaire: null as any,
+      questionnaire: null as Questionnaire | null,
       questionnaireResponse: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
       dispatch: mockDispatch,
     });
