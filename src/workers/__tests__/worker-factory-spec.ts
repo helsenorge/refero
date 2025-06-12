@@ -28,7 +28,7 @@ describe('worker-factory', () => {
     postMessage: vi.Mock;
     terminate: vi.Mock;
     onmessage: (event: MessageEvent) => void;
-    onerror: any;
+    onerror: (this: Worker, ev: ErrorEvent) => any | null;
   };
 
   beforeEach(() => {
