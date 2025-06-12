@@ -27,7 +27,7 @@ describe('worker-factory', () => {
   let mockWorkerInstance: {
     postMessage: vi.Mock;
     terminate: vi.Mock;
-    onmessage: any;
+    onmessage: (event: MessageEvent) => void;
     onerror: any;
   };
 
