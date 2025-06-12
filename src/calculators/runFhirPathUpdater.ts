@@ -1,14 +1,12 @@
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import InlineWorker from '../workers/fhir-path.worker.ts?worker&inline';
-
 import { newAnswerValuesAction } from '@/actions/newValue';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
-import { WorkerResponse } from '@/workers/fhir-path-worker';
+import { postTaskToFhirPathWorker } from '@/workers/worker-factory';
 type InputParams = {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
@@ -16,48 +14,6 @@ type InputParams = {
   actionRequester?: ActionRequester;
 };
 
-const performHeavyComputationWithWorker = (
-  questionnaireResponse: QuestionnaireResponse,
-  questionnaire: Questionnaire
-): Promise<{ fhirScores: AnswerPad }> => {
-  return new Promise((resolve, reject) => {
-    // 3. Create the worker from this temporary URL.
-    const worker = new InlineWorker();
-    const cleanup = (): void => {
-      // signal.removeEventListener('abort', handleAbort);
-      worker.terminate();
-    };
-
-    // const handleAbort = (): void => {
-    //   cleanup();
-    //   reject(new DOMException('Aborted', 'AbortError'));
-    // };
-
-    // if (signal.aborted) {
-    //   return handleAbort();
-    // }
-    // signal.addEventListener('abort', handleAbort);
-
-    worker.onmessage = (event: MessageEvent<WorkerResponse>): void => {
-      const { type, payload } = event.data;
-      if (type === 'success') {
-        resolve(payload);
-      } else if (type === 'error') {
-        const error = new Error(payload.message);
-        error.stack = payload.stack;
-        reject(error);
-      }
-      cleanup();
-    };
-
-    worker.onerror = (err): void => {
-      reject(err);
-      cleanup();
-    };
-
-    worker.postMessage({ questionnaire, questionnaireResponse });
-  });
-};
 export const runFhirPathQrUpdater = async ({
   questionnaire,
   questionnaireResponse,
@@ -67,11 +23,18 @@ export const runFhirPathQrUpdater = async ({
   if (!questionnaire || !questionnaireResponse) return;
   try {
     let fhirScores: AnswerPad;
-    if (window.Worker) {
-      // If yes, use the high-performance worker version
+    if (typeof window !== 'undefined' && window.Worker) {
+      // Use the factory to run the calculation
+      try {
+        const { fhirScores: scores } = await postTaskToFhirPathWorker(questionnaireResponse, questionnaire);
+        fhirScores = scores;
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('FhirPathWorker is busy')) {
+          return; // Exit early and wait for the next trigger.
+        }
 
-      const { fhirScores: scores } = await performHeavyComputationWithWorker(questionnaireResponse, questionnaire);
-      fhirScores = scores;
+        throw error;
+      }
     } else {
       const fhirPathUpdater = new FhirPathExtensions(questionnaire);
       const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
