@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/workers/worker-factory.spec.ts
 
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
 
 // We will import the factory dynamically inside tests.
 import InlineWorker from '@/workers/fhir-path.worker.ts?worker&inline';
@@ -25,8 +26,8 @@ describe('worker-factory', () => {
   // This is a key part of the fix. We need a reference to the mock instance
   // to simulate messages, but we only get it after the factory is imported.
   let mockWorkerInstance: {
-    postMessage: vi.Mock;
-    terminate: vi.Mock;
+    postMessage: Mock;
+    terminate: Mock;
     onmessage: any;
     onerror: any;
   };
