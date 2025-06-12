@@ -28,7 +28,7 @@ describe('worker-factory', () => {
   let mockWorkerInstance: {
     postMessage: Mock;
     terminate: Mock;
-    onmessage: any;
+    onmessage: (event: MessageEvent) => void;
     onerror: any;
   };
 
