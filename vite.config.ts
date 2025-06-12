@@ -11,7 +11,9 @@ import dts from 'vite-plugin-dts';
 import { externalizeDeps } from 'vite-plugin-externalize-deps';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
 const OUTPUT_DIRECTORY = 'lib';
+
 export default defineConfig(({ command, isPreview }): UserConfig => {
   const dev = command === 'serve' && !isPreview;
 
@@ -19,7 +21,21 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
     root: dev ? path.resolve(__dirname, './preview') : path.resolve(__dirname, ''),
     server: {
       port: 3000,
-      origin: 'bs-local.com',
+    },
+    worker: {
+      // We want Vite's plugins (like tsconfigPaths for resolving '@')
+      // to run on the worker's code before it's inlined.
+      plugins: () => [
+        tsconfigPaths({
+          projects: [path.resolve(__dirname, 'tsconfig.build.json')],
+        }),
+      ],
+      // This ensures the inlined worker code is bundled correctly.
+      rollupOptions: {
+        output: {
+          format: 'es',
+        },
+      },
     },
     css: {
       preprocessorOptions: {
@@ -46,21 +62,20 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
     },
     build: {
       outDir: path.resolve(__dirname, OUTPUT_DIRECTORY),
-      manifest: true,
+      // Set manifest to false, as we no longer need to read it.
+      manifest: false,
       cssMinify: 'esbuild',
       sourcemap: false,
       commonjsOptions: {
         transformMixedEsModules: true,
       },
-
       lib: {
         entry: path.resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
         name: 'Refero',
-        fileName: (format): string => `refero.${format}.js`,
+        fileName: 'refero.es',
       },
     },
-
     plugins: [
       visualizer({ filename: './bundle-stats.html' }),
       externalizeDeps({

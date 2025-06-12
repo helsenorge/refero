@@ -71,8 +71,9 @@ describe('Time', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
-
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       const minutesElement = await screen.findByTestId('time-2');
 
       const hoursInput = screen.getByLabelText(/Klokkeslett/i);
@@ -144,8 +145,10 @@ describe('Time', () => {
       await createWrapper(questionnaire);
       const input = '14';
       await repeatNTimes(input, 3, /Klokkeslett/i);
-      await waitFor(async () => expect(screen.queryAllByLabelText(/Klokkeslett/i)).toHaveLength(4));
-      await waitFor(async () => expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument());
+
+      expect(screen.queryAllByLabelText(/Klokkeslett/i)).toHaveLength(4);
+
+      expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
   describe('delete button', () => {
@@ -448,5 +451,5 @@ describe('Time', () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await waitFor(async () => await renderRefero({ questionnaire, props: { ...props, resources } }));
+  return await renderRefero({ questionnaire, props: { ...props, resources } });
 };

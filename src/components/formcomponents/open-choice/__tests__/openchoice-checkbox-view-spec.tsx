@@ -129,8 +129,9 @@ describe('checkbox-view - openchoice', () => {
         { property: 'repeats', value: true },
       ]);
 
-      await createWrapper(questionnaire);
-
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       expect(screen.getByLabelText(/Ja/i)).toBeChecked();
     });
   });

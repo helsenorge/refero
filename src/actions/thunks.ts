@@ -1,11 +1,30 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { runFhirPathQrUpdater } from '@/calculators/runFhirPathUpdater';
 import { runScoringCalculator } from '@/calculators/runScoringCalculator';
 import { AppDispatch, RootState } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
-import { FhirPathExtensions } from '@/util/FhirPathExtensions';
+import { debounce } from '@/util/debounce';
 import { ScoringCalculator } from '@/util/scoringCalculator';
+
+const scoringCalculatorCache = new WeakMap<Questionnaire, ScoringCalculator>();
+
+function getScoringCalculator(questionnaire: Questionnaire): ScoringCalculator {
+  let calc = scoringCalculatorCache.get(questionnaire);
+  if (!calc) {
+    calc = new ScoringCalculator(questionnaire);
+    scoringCalculatorCache.set(questionnaire, calc);
+  }
+  return calc;
+}
+
+const debouncedFhirPathRunner = debounce(
+  (params: { questionnaire: Questionnaire; questionnaireResponse: QuestionnaireResponse; dispatch: AppDispatch }) => {
+    runFhirPathQrUpdater(params);
+  },
+  50
+);
 
 export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootState; dispatch: AppDispatch }>(
   'questionnaireResponse/update',
@@ -21,7 +40,7 @@ export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootSt
     try {
       const scoringActionRequester = new ActionRequester(questionnaire, questionnaireResponse);
 
-      await runScoringCalculator(questionnaire, questionnaireResponse, scoringActionRequester, new ScoringCalculator(questionnaire));
+      await runScoringCalculator(questionnaire, questionnaireResponse, scoringActionRequester, getScoringCalculator(questionnaire));
 
       scoringActionRequester.dispatchAllActions(dispatch);
 
@@ -29,12 +48,10 @@ export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootSt
       if (!updatedQuestionnaireResponse) {
         return rejectWithValue('Missing updated questionnaire response');
       }
-
-      runFhirPathQrUpdater({
+      debouncedFhirPathRunner({
         questionnaire,
         questionnaireResponse: updatedQuestionnaireResponse,
         dispatch,
-        fhirPathUpdater: new FhirPathExtensions(questionnaire),
       });
     } catch (error) {
       return rejectWithValue(error);

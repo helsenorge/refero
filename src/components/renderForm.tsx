@@ -46,7 +46,6 @@ const RenderForm = ({
   isAuthorized,
   onFieldsNotCorrectlyFilledOut,
 }: RenderFormProps): JSX.Element | null => {
-  
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} color="black" />;
   }
@@ -75,7 +74,7 @@ const RenderForm = ({
     ? methods.handleSubmit(handleNextStep, onErrorReactHookForm)
     : methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm);
   const onPauseButtonClicked = isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView;
-  
+
   return (
     <React.Fragment>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>

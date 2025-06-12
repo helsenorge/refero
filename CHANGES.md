@@ -1,3 +1,10 @@
+## 19.0.0-beta05
+
+- updated worker build
+- webworker for fhirPathCalculator, which will improve performance for large questionnaires.
+- Inline webworker
+- Made the webworker into a singleton, so that it is only created once and reused for all calculations
+
 ## 18.0.4
 
 - Update runFhirPathQrUpdater to also check for children nested inside answers when updating items with fhirpath

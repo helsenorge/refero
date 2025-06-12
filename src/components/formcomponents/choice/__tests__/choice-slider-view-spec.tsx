@@ -56,8 +56,8 @@ describe('Slider-view', () => {
           initial: [expectedAnswer],
         })),
       };
-      const { container } = await createWrapper(questionnaire);
       await waitFor(async () => {
+        const { container } = await createWrapper(questionnaire);
         const inputEl = container.querySelector(`input[name="${questionnaire?.item?.[0].linkId}"]`);
         expect(inputEl).toHaveAttribute('value', '2');
       });
@@ -422,7 +422,5 @@ describe('Slider-view', () => {
 });
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await waitFor(async () => {
-    return await renderRefero({ questionnaire, props: { ...props, resources } });
-  });
+  return await renderRefero({ questionnaire, props: { ...props, resources } });
 };

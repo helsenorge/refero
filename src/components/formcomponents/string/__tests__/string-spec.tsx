@@ -72,10 +72,11 @@ describe('string', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
       await waitFor(async () => {
-        expect(screen.getByLabelText(/String/i)).toHaveValue('test');
+        await createWrapper(questionnaire);
       });
+
+      expect(screen.getByLabelText(/String/i)).toHaveValue('test');
     });
   });
   describe('help button', () => {
