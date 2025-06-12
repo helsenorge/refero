@@ -1,4 +1,4 @@
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import { Extension, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { AnswerPad } from '../util/FhirPathExtensions'; // Assumes AnswerPad is exported from this file
 
@@ -9,7 +9,11 @@ export interface WorkerInput {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
 }
-
+export interface FhirPathExpressionWorkerInput {
+  questionnaire: Questionnaire;
+  questionnaireResponse: QuestionnaireResponse;
+  extension: Extension;
+}
 /**
  * The shape of the data sent FROM the worker TO the main thread.
  * This is a discriminated union, which allows for robust type checking.
