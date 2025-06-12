@@ -29,7 +29,7 @@ describe('worker-factory', () => {
     postMessage: Mock;
     terminate: Mock;
     onmessage: (event: MessageEvent) => void;
-    onerror: any;
+    onerror: (this: Worker, ev: ErrorEvent) => any | null;
   };
 
   beforeEach(() => {
