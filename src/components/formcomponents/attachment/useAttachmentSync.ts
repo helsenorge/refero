@@ -8,6 +8,7 @@ import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { getAttachmentsFromAnswer } from './helpers';
 
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { getId } from '@/util';
 import { Path } from '@/util/refero-core';
 
 type UseAttachmentSyncParams = {
@@ -49,7 +50,7 @@ export const useAttachmentSync = ({
 
   const handleUpload = (files: UploadFile[]): void => {
     const newFiles = files.map(file => {
-      file.id = `${file.id}-${new Date().getTime()}`;
+      file.id = getId();
       return file;
     });
     internalUpdateRef.current = true;
@@ -58,10 +59,13 @@ export const useAttachmentSync = ({
   };
 
   const handleDelete = (fileId: string): void => {
-    internalUpdateRef.current = true;
-    onDelete(fileId);
-    setAcceptedFiles(prevState => prevState.filter(x => x.id !== fileId));
-    setRejectedFiles(prevState => prevState.filter(x => x.id !== fileId));
+    console.log('handleDelete', fileId);
+    if (fileId) {
+      internalUpdateRef.current = true;
+      onDelete(fileId);
+      setAcceptedFiles(prevState => prevState.filter(x => x.id !== fileId));
+      setRejectedFiles(prevState => prevState.filter(x => x.id !== fileId));
+    }
   };
 
   useEffect(() => {
@@ -118,6 +122,6 @@ export const useAttachmentSync = ({
     disableButton,
     handleUpload,
     handleDelete,
-    value: getAttachmentsFromAnswer(),
+    value: getAttachmentsFromAnswer(answer),
   };
 };
