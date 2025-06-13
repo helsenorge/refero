@@ -59,7 +59,6 @@ export const useAttachmentSync = ({
   };
 
   const handleDelete = (fileId: string): void => {
-    console.log('handleDelete', fileId);
     if (fileId) {
       internalUpdateRef.current = true;
       onDelete(fileId);
