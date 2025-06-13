@@ -61,7 +61,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   };
 
   const onDelete = (fileId: string): void => {
-    if (onDeleteAttachment && item) {
+    if (onDeleteAttachment && item && fileId) {
       const onSuccess = (): void => {
         if (dispatch) {
           const attachment: Attachment = { id: fileId };

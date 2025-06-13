@@ -1,28 +1,22 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "35a435a7-27a7-4bd2-a79b-92fac9100710",
-  "name": "MA_Opp",
-  "title": "oppsummering test",
-  "version": "0.3",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
-    "versionId": "15",
-    "lastUpdated": "2025-05-19T10:01:05.111+00:00",
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "security": [
-      {
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
-        "code": "3",
-        "display": "Helsehjelp (Full)"
-      }
-    ],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
         "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
       }
     ]
   },
@@ -65,207 +59,29 @@
       }
     }
   ],
-  "url": "Questionnaire/35a435a7-27a7-4bd2-a79b-92fac9100710",
-  "contained": [
-    {
-      "resourceType": "ValueSet",
-      "id": "1101",
-      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
-      "version": "1.0",
-      "name": "urn:oid:1101",
-      "title": "Ja / Nei (structor)",
-      "status": "draft",
-      "publisher": "NHN",
-      "compose": {
-        "include": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.1101",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Ja"
-              },
-              {
-                "code": "2",
-                "display": "Nei"
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ],
+  "id": "73e9f68b-c8a0-4356-801e-eff22ed6bd46",
+  "url": "Questionnaire/73e9f68b-c8a0-4356-801e-eff22ed6bd46",
   "item": [
     {
-      "linkId": "23d46719-0f20-4ae2-88e0-b01ead6ee74b",
-      "code": [
+      "linkId": "077ac4f5-2bf5-4e39-d4a1-32d4d4d9762f",
+      "type": "group",
+      "text": "Content",
+      "item": [
         {
-          "system": "http://helsenorge.no/fhir/CodeSystem/TableOrderingFunctions",
-          "code": "DESC",
-          "display": "Descending"
+          "linkId": "c37784bd-306f-4587-b818-9e4889ebee8b",
+          "type": "attachment",
+          "text": "Attachment repeats",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+              "valueDecimal": 5
+            }
+          ],
+          "required": false,
+          "repeats": true
         }
       ],
-      "text": "gruppe",
-      "type": "group",
-      "required": false,
-      "item": [
-        {
-          "linkId": "f6c51b39-1095-4a59-8479-fdde8bb15389",
-          "text": "Har du løkljlkj?",
-          "type": "choice",
-          "required": false,
-          "answerValueSet": "#1101",
-          "repeats": true,
-          "item": [
-            {
-              "linkId": "f776e26d-31c0-4c46-8eb8-0899cc91af9b",
-              "text": "Beskriv",
-              "type": "string",
-              "enableWhen": [
-                {
-                  "question": "f6c51b39-1095-4a59-8479-fdde8bb15389",
-                  "operator": "=",
-                  "answerCoding": {
-                    "system": "urn:oid:2.16.578.1.12.4.1.1101",
-                    "code": "1"
-                  }
-                }
-              ],
-              "required": false,
-              "item": [
-                {
-                  "linkId": "476023c5-b45a-49b8-b3d3-9a791d72b786",
-                  "type": "string",
-                  "text": "text 2",
-                  "required": false
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "linkId": "53ab4055-bbd5-4305-8e06-7ffe0310b4f4",
-      "text": "oppsummering",
-      "type": "group",
-      "required": false,
-      "item": [
-        {
-          "linkId": "dfb12dad-542f-4a80-8e6b-0f109ff121df",
-          "text": "Oppsummering",
-          "type": "group",
-          "required": false,
-          "item": [
-            {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "data-receiver"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='f6c51b39-1095-4a59-8479-fdde8bb15389').answer.value"
-                }
-              ],
-              "linkId": "3c5bcf11-2c67-46e5-9e1a-c63b354eb839",
-              "text": "Har du løkljlkj?",
-              "type": "choice",
-              "enableWhen": [
-                {
-                  "question": "f6c51b39-1095-4a59-8479-fdde8bb15389",
-                  "operator": "exists",
-                  "answerBoolean": true
-                }
-              ],
-              "required": false,
-              "readOnly": true,
-              "answerValueSet": "#1101",
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                            "code": "data-receiver"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                      "valueString": "QuestionnaireResponse.descendants().where(linkId='f776e26d-31c0-4c46-8eb8-0899cc91af9b').answer.value"
-                    }
-                  ],
-                  "linkId": "c2c3575c-92e1-4795-8369-ba8ecec81341",
-                  "text": "Beskriv",
-                  "type": "string",
-                  "enableWhen": [
-                    {
-                      "question": "f6c51b39-1095-4a59-8479-fdde8bb15389",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1101",
-                        "code": "1"
-                      }
-                    },
-                    {
-                      "answerBoolean": true,
-                      "question": "f776e26d-31c0-4c46-8eb8-0899cc91af9b",
-                      "operator": "exists"
-                    }
-                  ],
-                  "required": false,
-                  "readOnly": true,
-                  "item": [
-                    {
-                      "linkId": "319431c9-9ded-458d-cd5f-c6c81d900861",
-                      "type": "string",
-                      "text": "text 2",
-                      "required": false,
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                          "valueCodeableConcept": {
-                            "coding": [
-                              {
-                                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                                "code": "data-receiver"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                          "valueString": "QuestionnaireResponse.descendants().where(linkId='476023c5-b45a-49b8-b3d3-9a791d72b786').answer.value"
-                        }
-                      ],
-                      "readOnly": true,
-                      "enableWhen": [
-                        {
-                          "answerBoolean": true,
-                          "question": "476023c5-b45a-49b8-b3d3-9a791d72b786",
-                          "operator": "exists"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      "required": false
     }
   ]
 }
