@@ -1,3 +1,7 @@
+## 18.0.5
+
+- random id on attachments on upload to avoid issues with multiple attachments with the same id
+
 ## 18.0.4
 
 - Update runFhirPathQrUpdater to also check for children nested inside answers when updating items with fhirpath
