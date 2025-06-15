@@ -151,7 +151,9 @@ describe('Radio-view - choice', () => {
         { property: 'initial', value: [expectedAnswer] },
       ]);
 
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
 
       expect(screen.getByLabelText(/Ja/i)).toBeChecked();
     });

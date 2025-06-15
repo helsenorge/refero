@@ -6,13 +6,12 @@ import { ActionRequester } from '@/util/actionRequester';
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
-
+import { postTaskToFhirPathWorker } from '@/workers/worker-factory';
 type InputParams = {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
   dispatch: AppDispatch;
   actionRequester?: ActionRequester;
-  fhirPathUpdater?: FhirPathExtensions;
 };
 
 export const runFhirPathQrUpdater = async ({
@@ -20,48 +19,63 @@ export const runFhirPathQrUpdater = async ({
   questionnaireResponse,
   dispatch,
   actionRequester,
-  fhirPathUpdater,
 }: InputParams): Promise<void> => {
-  if (!questionnaire || !questionnaireResponse || !fhirPathUpdater) return;
-  const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
+  if (!questionnaire || !questionnaireResponse) return;
+  try {
+    let fhirScores: AnswerPad;
+    if (typeof window !== 'undefined' && window.Worker) {
+      // Use the factory to run the calculation
+      try {
+        const { fhirScores: scores } = await postTaskToFhirPathWorker(questionnaireResponse, questionnaire);
+        fhirScores = scores;
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('FhirPathWorker is busy')) {
+          return; // Exit early and wait for the next trigger.
+        }
 
-  const fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
-
-  updateQuestionnaireResponseWithScore(fhirScores, questionnaire, dispatch, questionnaireResponse, actionRequester);
-};
-
-const updateQuestionnaireResponseWithScore = (
-  scores: AnswerPad,
-  questionnaire: Questionnaire,
-  dispatch: AppDispatch,
-  questionnaireResponse: QuestionnaireResponse,
-  actionRequester?: ActionRequester
-): void => {
-  const answerValues = [];
-  for (const linkId in scores) {
-    const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
-    if (!item) continue;
-    const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
-    const value = scores[linkId];
-    const newAnswer = isQuestionnaireResponseItemAnswerArray(value) ? value : [];
-    for (const itemAndPath of itemsAndPaths) {
-      if (JSON.stringify(itemAndPath.item.answer) === JSON.stringify(newAnswer)) {
-        continue;
+        throw error;
       }
-      if (actionRequester) {
-        actionRequester.setNewAnswer(linkId, newAnswer, itemAndPath.path[0]?.index);
-      } else {
-        answerValues.push({
-          itemPath: itemAndPath.path,
-          newAnswer,
-          item,
-        });
+    } else {
+      // eslint-disable-next-line no-console
+      console.warn('Web Workers not supported or not available. Running calculations on the main thread.');
+      const fhirPathUpdater = new FhirPathExtensions(questionnaire);
+      const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
+      fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
+    }
+    const answerValues = [];
+    for (const linkId in fhirScores) {
+      const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
+      if (!item) continue;
+      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
+      const value = fhirScores[linkId];
+      const newAnswer = isQuestionnaireResponseItemAnswerArray(value) ? value : [];
+      for (const itemAndPath of itemsAndPaths) {
+        if (JSON.stringify(itemAndPath.item.answer) === JSON.stringify(newAnswer)) {
+          continue;
+        }
+        if (actionRequester) {
+          actionRequester.setNewAnswer(linkId, newAnswer, itemAndPath.path[0]?.index);
+        } else {
+          answerValues.push({
+            itemPath: itemAndPath.path,
+            newAnswer,
+            item,
+          });
+        }
       }
     }
-  }
-  if (actionRequester) {
-    actionRequester.dispatchAllActions(dispatch);
-  } else if (answerValues.length !== 0) {
-    dispatch(newAnswerValuesAction(answerValues));
+    if (actionRequester) {
+      actionRequester.dispatchAllActions(dispatch);
+    } else if (answerValues.length !== 0) {
+      dispatch(newAnswerValuesAction(answerValues));
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error during FHIR Path update:', error);
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error('An unknown error occurred during FHIR Path update');
+    }
   }
 };

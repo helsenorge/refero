@@ -98,7 +98,6 @@ export class FhirPathExtensions {
 
   public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
     const answerPad: AnswerPad = {};
-
     for (const [key, value] of this.fhirScoreCache) {
       const expressionExtension = getCalculatedExpressionExtension(value) || getCopyExtension(value);
       if (!expressionExtension) continue;
@@ -136,6 +135,7 @@ export class FhirPathExtensions {
   ): QuestionnaireResponseItemAnswer[] | null => {
     if (expressionExtension.valueString) {
       const result = evaluateFhirpathExpressionToGetString(expressionExtension, response);
+
       const qrItem = getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
       const itemAnswer: QuestionnaireResponseItemAnswer[] = [];
       if (result.length > 0) {

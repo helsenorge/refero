@@ -1,3 +1,10 @@
+## 19.0.0-beta05
+
+- updated worker build
+- webworker for fhirPathCalculator, which will improve performance for large questionnaires.
+- Inline webworker
+- Made the webworker into a singleton, so that it is only created once and reused for all calculations
+
 ## 18.0.5
 
 - random id on attachments on upload to avoid issues with multiple attachments with the same id
