@@ -5,6 +5,10 @@
 - Inline webworker
 - Made the webworker into a singleton, so that it is only created once and reused for all calculations
 
+## 18.0.5
+
+- random id on attachments on upload to avoid issues with multiple attachments with the same id
+
 ## 18.0.4
 
 - Update runFhirPathQrUpdater to also check for children nested inside answers when updating items with fhirpath
