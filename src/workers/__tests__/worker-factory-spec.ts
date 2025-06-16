@@ -108,19 +108,25 @@ describe('worker-factory', () => {
       expect(err.stack).toBe(errorStack);
     });
   });
-
   it('should reject the promise if the worker dispatches a generic error event', async () => {
     const { postTaskToFhirPathWorker } = await import('../worker-factory');
+
+    // Create a plain Error object, which is what we now expect to receive.
+    const underlyingError = new Error('Generic worker error');
+
+    // Create the ErrorEvent that will wrap our error. This is what we pass to the handler.
     const mockErrorEvent = new ErrorEvent('error', {
-      error: new Error('Generic worker error'),
+      error: underlyingError,
     });
 
     const promise = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
 
-    // Simulate the worker's onerror handler being called
+    // Simulate the worker's onerror handler being called with the event
     mockWorkerInstance.onerror!(mockErrorEvent);
 
-    await expect(promise).rejects.toBe(mockErrorEvent);
+    // ✅ THE FIX: Assert that the promise rejects with the UNDERLYING error,
+    // not the event wrapper. `toBe` checks for strict object identity.
+    await expect(promise).rejects.toBe(underlyingError);
   });
 
   it('should allow a new task after the previous one successfully completes', async () => {

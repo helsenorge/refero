@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { newAnswerValuesAction } from '@/actions/newValue';
@@ -31,6 +32,9 @@ export const runFhirPathQrUpdater = async ({
       } catch (error) {
         if (error instanceof Error && error.message.includes('FhirPathWorker is busy')) {
           return; // Exit early and wait for the next trigger.
+        } else {
+          // If the error is not related to the worker being busy, rethrow it.
+          console.error('Error in FHIR Path worker:', error);
         }
 
         throw error;
@@ -68,7 +72,6 @@ export const runFhirPathQrUpdater = async ({
       dispatch(newAnswerValuesAction(answerValues));
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.error('Error during FHIR Path update:', error);
     if (error instanceof Error) {
       throw error;

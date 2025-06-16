@@ -19,6 +19,7 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
 
   return {
     root: dev ? path.resolve(__dirname, './preview') : path.resolve(__dirname, ''),
+    base: './',
     server: {
       port: 3000,
     },
@@ -31,11 +32,7 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
         }),
       ],
       // This ensures the inlined worker code is bundled correctly.
-      rollupOptions: {
-        output: {
-          format: 'es',
-        },
-      },
+      format: 'es',
     },
     css: {
       preprocessorOptions: {
