@@ -9,29 +9,38 @@ let onGoingCalculation: ((result: { fhirScores: AnswerPad }) => void) | null = n
 let onGoingError: ((reason?: Error | ErrorEvent) => void) | null = null;
 
 function createWorker(): Worker {
-  const worker = new Worker(new URL('./fhir-path.worker.ts', import.meta.url), {
+  const worker = new Worker(new URL('./fhir-path.worker.ts?worker', import.meta.url), {
     type: 'module',
   });
+
   worker.onmessage = (event: MessageEvent<WorkerResponse>): void => {
-    if (!onGoingCalculation) return;
-
-    const { type, payload } = event.data;
-    if (type === 'success') {
-      onGoingCalculation(payload);
-    } else if (type === 'error' && onGoingError) {
-      const error = new Error(payload.message);
-      error.stack = payload.stack;
-      onGoingError(error);
+    if (!onGoingCalculation) {
+      return;
     }
-
+    try {
+      const { type, payload } = event.data;
+      if (type === 'success') {
+        onGoingCalculation(payload);
+      } else if (type === 'error' && onGoingError) {
+        const error = new Error(payload.message);
+        error.stack = payload.stack;
+        onGoingError(error);
+      }
+    } catch (error) {
+      if (onGoingError) {
+        onGoingError(error as Error);
+      }
+    }
     onGoingCalculation = null;
     onGoingError = null;
   };
 
-  worker.onerror = (err): void => {
+  worker.onerror = (event): void => {
+    // Log the specific error message and stack if they exist on the event
     if (onGoingError) {
-      onGoingError(err);
+      onGoingError(event.error || event);
     }
+
     onGoingCalculation = null;
     onGoingError = null;
   };

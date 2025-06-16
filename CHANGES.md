@@ -5,6 +5,7 @@
 - Inline webworker
 - Made the webworker into a singleton, so that it is only created once and reused for all calculations
 - Change to mocular worker
+- not use inline webworker, but use a separate worker file
 
 ## 18.1.0-beta01
 
