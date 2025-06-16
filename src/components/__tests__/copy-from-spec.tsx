@@ -1,5 +1,5 @@
 import '../../util/__tests__/defineFetch';
-vi.unmock('@/workers/fhir-path.worker.ts?worker&inline');
+vi.unmock('@/workers/fhir-path.worker.ts');
 import '@vitest/web-worker';
 import { clickByLabelText } from '@test/selectors';
 import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from 'fhir/r4';

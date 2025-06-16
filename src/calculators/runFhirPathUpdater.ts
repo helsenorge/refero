@@ -36,8 +36,6 @@ export const runFhirPathQrUpdater = async ({
         throw error;
       }
     } else {
-      // eslint-disable-next-line no-console
-      console.warn('Web Workers not supported or not available. Running calculations on the main thread.');
       const fhirPathUpdater = new FhirPathExtensions(questionnaire);
       const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
       fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
