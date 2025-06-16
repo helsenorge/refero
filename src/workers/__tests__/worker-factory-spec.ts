@@ -1,109 +1,149 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * @vitest-environment jsdom
+ */
+
 // src/workers/worker-factory.spec.ts
 
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
 
-// We will import the factory dynamically inside tests.
-import InlineWorker from '@/workers/fhir-path.worker.ts?worker&inline';
-
-// --- Mock the Worker ---
-vi.mock('@/workers/fhir-path.worker.ts?worker&inline', () => {
-  const MockWorker = vi.fn(() => ({
-    postMessage: vi.fn(),
-    terminate: vi.fn(),
-    onmessage: null,
-    onerror: null,
-  }));
-  return { default: MockWorker };
-});
+// --- The New Mocking Strategy ---
 
 describe('worker-factory', () => {
-  const MockedInlineWorker = vi.mocked(InlineWorker);
-  const mockQuestionnaire = {} as Questionnaire;
-  const mockQuestionnaireResponse = {} as QuestionnaireResponse;
+  const mockQuestionnaire = { resourceType: 'Questionnaire' } as Questionnaire;
+  const mockQuestionnaireResponse = { resourceType: 'QuestionnaireResponse' } as QuestionnaireResponse;
 
-  // This is a key part of the fix. We need a reference to the mock instance
-  // to simulate messages, but we only get it after the factory is imported.
-  let mockWorkerInstance: {
+  type MockWorkerInstance = {
     postMessage: Mock;
     terminate: Mock;
-    onmessage: any;
-    onerror: any;
+    onmessage: ((event: MessageEvent) => void) | null;
+    onerror: ((event: ErrorEvent) => void) | null;
   };
 
+  // This will be our mock Worker constructor
+  const MockWorker = vi.fn();
+  // This will hold the single instance our mock constructor creates
+  let mockWorkerInstance: MockWorkerInstance;
+
   beforeEach(() => {
-    // This hook runs AFTER vi.resetModules() from the previous test's afterEach.
-    // It's a good place to set up for the upcoming test.
+    // Reset mocks for a clean slate
     vi.clearAllMocks();
+
+    // Define the mock instance that our constructor will return
+    mockWorkerInstance = {
+      postMessage: vi.fn(),
+      terminate: vi.fn(),
+      onmessage: null,
+      onerror: null,
+    };
+
+    // When `new Worker()` is called in the code, it will run this implementation,
+    // which returns our predefined mock instance.
+    MockWorker.mockImplementation(() => mockWorkerInstance);
+
+    // Replace the global `Worker` class with our mock constructor.
+    vi.stubGlobal('Worker', MockWorker);
   });
 
   afterEach(() => {
-    // Resetting modules is the correct way to test singletons.
+    // Restore the original global `Worker` class
+    vi.unstubAllGlobals();
+    // Reset modules to test the singleton behavior correctly
     vi.resetModules();
   });
 
-  it('should create only one worker instance on multiple calls', async () => {
-    // Dynamically import to get a fresh instance due to resetModules
-    const factory1 = await import('../worker-factory');
-    const factory2 = await import('../worker-factory');
+  it('should create only one worker and reject concurrent tasks', async () => {
+    const { postTaskToFhirPathWorker } = await import('../worker-factory');
 
-    // Start a task with the first import, but don't resolve it.
-    factory1.postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
+    const firstPromise = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
+    const secondPromise = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
 
-    // Now, start a task with the second import.
-    // This call should use the SAME underlying worker instance.
-    const promiseFromSecondCall = factory2.postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
+    // Assert: The Worker constructor should have been called only once.
+    expect(MockWorker).toHaveBeenCalledTimes(1);
+    // The first argument to the constructor should be a URL object.
+    expect(MockWorker.mock.calls[0][0]).toBeInstanceOf(URL);
+    expect(MockWorker.mock.calls[0][0].href).toContain('fhir-path.worker.ts');
 
-    // Assert
-    // The constructor should have only been called once, proving it's a singleton.
-    expect(MockedInlineWorker).toHaveBeenCalledTimes(1);
-    // The second call should be rejected because the first one is still "in progress".
-    // This handles the "unhandled rejection" error correctly.
-    await expect(promiseFromSecondCall).rejects.toThrow('FhirPathWorker is busy');
+    await expect(secondPromise).rejects.toThrow('FhirPathWorker is busy. A calculation is already in progress.');
+
+    // Cleanup to prevent unhandled rejection warnings in the test runner
+    mockWorkerInstance.onmessage!({ data: { type: 'success', payload: {} } } as MessageEvent);
+    await expect(firstPromise).resolves.toEqual({});
   });
 
   it('should post a task and resolve with the success payload', async () => {
     const { postTaskToFhirPathWorker } = await import('../worker-factory');
     const mockScores = { fhirScores: { 'item-1': 100 } };
 
-    // Act
     const promise = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
 
-    // Get the created worker instance from the mock
-    mockWorkerInstance = MockedInlineWorker.mock.results[0].value;
-
-    // Assert: Check that a message was posted
+    expect(mockWorkerInstance.postMessage).toHaveBeenCalledTimes(1);
     expect(mockWorkerInstance.postMessage).toHaveBeenCalledWith({
       questionnaire: mockQuestionnaire,
       questionnaireResponse: mockQuestionnaireResponse,
     });
 
     // Simulate the worker sending a "success" message back
-    mockWorkerInstance.onmessage({
+    // The `!` tells TypeScript that `onmessage` will not be null here.
+    mockWorkerInstance.onmessage!({
       data: { type: 'success', payload: mockScores },
-    });
+    } as MessageEvent);
 
-    // Assert: The promise should resolve with the correct data
     await expect(promise).resolves.toEqual(mockScores);
   });
 
   it('should reject the promise if the worker sends an error message', async () => {
     const { postTaskToFhirPathWorker } = await import('../worker-factory');
     const errorMessage = 'Something went wrong';
+    const errorStack = '...stack trace...';
 
-    // Act
     const promise = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
 
-    // Get the created worker instance
-    mockWorkerInstance = MockedInlineWorker.mock.results[0].value;
+    mockWorkerInstance.onmessage!({
+      data: { type: 'error', payload: { message: errorMessage, stack: errorStack } },
+    } as MessageEvent);
 
-    // Simulate the worker sending an "error" message back
-    mockWorkerInstance.onmessage({
-      data: { type: 'error', payload: { message: errorMessage, stack: '...stack trace...' } },
+    await expect(promise).rejects.toThrow(errorMessage);
+    await promise.catch(err => {
+      expect(err.stack).toBe(errorStack);
+    });
+  });
+
+  it('should reject the promise if the worker dispatches a generic error event', async () => {
+    const { postTaskToFhirPathWorker } = await import('../worker-factory');
+    const mockErrorEvent = new ErrorEvent('error', {
+      error: new Error('Generic worker error'),
     });
 
-    // Assert: The promise should be rejected with the correct error.
-    await expect(promise).rejects.toThrow(errorMessage);
+    const promise = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
+
+    // Simulate the worker's onerror handler being called
+    mockWorkerInstance.onerror!(mockErrorEvent);
+
+    await expect(promise).rejects.toBe(mockErrorEvent);
+  });
+
+  it('should allow a new task after the previous one successfully completes', async () => {
+    const { postTaskToFhirPathWorker } = await import('../worker-factory');
+    const firstScores = { fhirScores: { 'item-1': 100 } };
+    const secondScores = { fhirScores: { 'item-2': 200 } };
+
+    // --- First Task ---
+    const promise1 = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
+    mockWorkerInstance.onmessage!({
+      data: { type: 'success', payload: firstScores },
+    } as MessageEvent);
+    await expect(promise1).resolves.toEqual(firstScores);
+
+    // --- Second Task ---
+    const promise2 = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
+    mockWorkerInstance.onmessage!({
+      data: { type: 'success', payload: secondScores },
+    } as MessageEvent);
+    await expect(promise2).resolves.toEqual(secondScores);
+
+    // Assert worker is reused, not recreated
+    expect(MockWorker).toHaveBeenCalledTimes(1);
+    expect(mockWorkerInstance.postMessage).toHaveBeenCalledTimes(2);
   });
 });
