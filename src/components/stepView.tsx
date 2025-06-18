@@ -12,10 +12,10 @@ import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnair
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
+import { useSetFocusOnFirstElement } from '@/hooks/useSetFocusOnFirstElement';
 import { useAppSelector } from '@/reducers';
 import { createPathForItem } from '@/util/refero-core';
 import { DefaultValues } from '@/validation/defaultFormValues';
-import { useSetFocusOnFirstElement } from '@/hooks/useSetFocusOnFirstElement';
 
 interface StepViewProps {
   isAuthorized: boolean;
