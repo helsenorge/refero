@@ -1,3 +1,7 @@
+## 18.0.7
+
+- Created a hook to set focus on the first element in stepview
+
 ## 18.0.6
 
 - Fixed aria-label on links that did not match the visible link text
