@@ -160,7 +160,7 @@ function getMarkdownValue(
     const ariaLabel = getAriaLabelTextForLink(href, text, linkOpensInNewTabText);
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
-    } target="_blank" rel="noopener noreferrer" class="external" aria-label=${ariaLabel}>${text}</a>`;
+    } target="_blank" rel="noopener noreferrer" class="external" aria-label="${ariaLabel}">${text}</a>`;
     return urlString;
   };
 
@@ -169,7 +169,7 @@ function getMarkdownValue(
     const ariaLabel = getAriaLabelTextForLink(href, text, linkOpensInNewTabText);
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href
-    )}" rel="noopener noreferrer" aria-label=${ariaLabel}>${text}</a>`;
+    )}" rel="noopener noreferrer" aria-label="${ariaLabel}">${text}</a>`;
     return urlString;
   };
 

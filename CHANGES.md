@@ -1,3 +1,7 @@
+## 18.0.6
+
+- Fixed aria-label on links that did not match the visible link text
+
 ## 18.0.5
 
 - random id on attachments on upload to avoid issues with multiple attachments with the same id
