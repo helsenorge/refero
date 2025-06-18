@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { UseFormReturn } from 'react-hook-form';
 
@@ -15,6 +15,7 @@ import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
 import { useAppSelector } from '@/reducers';
 import { createPathForItem } from '@/util/refero-core';
 import { DefaultValues } from '@/validation/defaultFormValues';
+import { useSetFocusOnFirstElement } from '@/hooks/useSetFocusOnFirstElement';
 
 interface StepViewProps {
   isAuthorized: boolean;
@@ -30,10 +31,12 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: S
   const [stepIndex, setStepIndex] = React.useState(0);
   const { onStepChange } = useExternalRenderContext();
   const isEnabled = useCheckIfEnabled();
+  const stepContainerRef = useSetFocusOnFirstElement(stepIndex);
   const topLevelElements = getTopLevelElements(formDefinition) || [];
   const visibleElements = topLevelElements.filter(topLevelElement => {
     return isEnabled(topLevelElement, createPathForItem(undefined, topLevelElement));
   });
+
   const nextStep = (): void => {
     setStepIndex(prevIndex => (prevIndex < visibleElements.length - 1 ? prevIndex + 1 : prevIndex));
   };
@@ -54,7 +57,7 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: S
   }
 
   return (
-    <>
+    <div ref={stepContainerRef}>
       <RenderForm
         isAuthorized={isAuthorized}
         isStepView={true}
@@ -70,7 +73,7 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: S
       >
         <RenderQuestionnaireItems items={[visibleElements[stepIndex]]} pdf={false} />
       </RenderForm>
-    </>
+    </div>
   );
 };
 
