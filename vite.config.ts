@@ -24,14 +24,11 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
       port: 3000,
     },
     worker: {
-      // We want Vite's plugins (like tsconfigPaths for resolving '@')
-      // to run on the worker's code before it's inlined.
       plugins: () => [
         tsconfigPaths({
           projects: [path.resolve(__dirname, 'tsconfig.build.json')],
         }),
       ],
-      // This ensures the inlined worker code is bundled correctly.
       format: 'es',
     },
     css: {
@@ -54,9 +51,11 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
         { find: '@formcomponents', replacement: path.resolve(__dirname, 'src/components/formcomponents') },
         { find: '@constants', replacement: path.resolve(__dirname, 'src/constants') },
         { find: '@test', replacement: path.resolve(__dirname, 'test') },
+        { find: '@workers', replacement: path.resolve(__dirname, 'src/workers') },
         { find: /^~(.*)$/, replacement: '$1' },
       ],
     },
+
     build: {
       outDir: path.resolve(__dirname, OUTPUT_DIRECTORY),
       // Set manifest to false, as we no longer need to read it.
