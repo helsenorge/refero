@@ -351,4 +351,8 @@ export interface Resources {
    * Tilbake
    */
   microwebstep_navigasjon_tilbake_button: string;
+  /**
+   * Oppgis i
+   */
+  quantity_unit_sublabel: string;
 }
