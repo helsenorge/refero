@@ -59,26 +59,25 @@
       }
     }
   ],
-  "id": "73e9f68b-c8a0-4356-801e-eff22ed6bd46",
-  "url": "Questionnaire/73e9f68b-c8a0-4356-801e-eff22ed6bd46",
+  "id": "86276fdf-7a6d-4a0c-cea4-4a6142697d15",
+  "url": "Questionnaire/86276fdf-7a6d-4a0c-cea4-4a6142697d15",
   "item": [
     {
-      "linkId": "077ac4f5-2bf5-4e39-d4a1-32d4d4d9762f",
-      "type": "group",
-      "text": "Content",
-      "item": [
+      "linkId": "e9b3569c-1002-4af0-8013-9e63e113378f",
+      "type": "quantity",
+      "text": "Du må skrive inn noe",
+      "extension": [
         {
-          "linkId": "c37784bd-306f-4587-b818-9e4889ebee8b",
-          "type": "attachment",
-          "text": "Attachment repeats",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
-              "valueDecimal": 5
-            }
-          ],
-          "required": false,
-          "repeats": true
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "Plis gjør det vær så snill"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "cm",
+            "display": "centimeter",
+            "system": "http://unitsofmeasure.org"
+          }
         }
       ],
       "required": false
