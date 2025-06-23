@@ -267,6 +267,6 @@ export const getResources = (language: string): Resources => {
     dateLabel_year: 'År',
     dateLabel_month: 'Måned',
     maxCharactersText: 'tegn',
-    quantity_unit_sublabel: 'Oppgis i',
+    quantity_unit_sublabel: 'Oppgi i',
   };
 };

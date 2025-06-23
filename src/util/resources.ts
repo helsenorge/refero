@@ -352,7 +352,7 @@ export interface Resources {
    */
   microwebstep_navigasjon_tilbake_button: string;
   /**
-   * Oppgis i
+   * Oppgi i
    */
   quantity_unit_sublabel: string;
 }

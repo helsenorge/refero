@@ -39,7 +39,7 @@ describe('Quantity', () => {
         })),
       };
       await createWrapper(questionnaire);
-      expect(screen.getByText('Oppgis i centimeter')).toBeInTheDocument();
+      expect(screen.getByText('Oppgi i centimeter')).toBeInTheDocument();
     });
   });
   describe('initialvalue', () => {
