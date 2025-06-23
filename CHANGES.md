@@ -1,3 +1,7 @@
+## 18.0.8
+
+- Replaced the unit label after the quanity input-field with a sublabel
+
 ## 18.0.7
 
 - Created a hook to set focus on the first element in stepview
