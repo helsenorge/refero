@@ -87,6 +87,16 @@ export function getExtension(url: string, item?: QuestionnaireItem | Element | Q
   }
   return filteredExtension[0];
 }
+export function getExtensionFromExtensions(url: string, extensions?: Extension[]): Extension | undefined {
+  if (!extensions || extensions.length === 0) {
+    return undefined;
+  }
+  const filteredExtension: Array<Extension> = extensions.filter((e: Extension) => e.url === url);
+  if (!filteredExtension || filteredExtension.length === 0) {
+    return undefined;
+  }
+  return filteredExtension[0];
+}
 
 export function getPlaceholder(item?: QuestionnaireItem): string | undefined {
   if (!item || !item.extension || item.extension.length === 0) {

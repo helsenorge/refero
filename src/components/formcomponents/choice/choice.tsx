@@ -187,16 +187,17 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       handleChange,
       selected: getAnswerValue(),
       pdfValue,
+      options,
       ...props,
     };
 
     switch (itemControlValue) {
       case itemControlConstants.DROPDOWN:
-        return <DropdownView options={options} {...commonProps} />;
+        return <DropdownView {...commonProps} />;
       case itemControlConstants.CHECKBOX:
-        return <CheckboxView options={options} {...commonProps} handleChange={handleCheckboxChange} />;
+        return <CheckboxView {...commonProps} handleChange={handleCheckboxChange} />;
       case itemControlConstants.RADIOBUTTON:
-        return <RadioView options={options} {...commonProps} />;
+        return <RadioView {...commonProps} />;
       case itemControlConstants.SLIDER:
         return <SliderView {...commonProps} />;
       case itemControlConstants.DATARECEIVER:
