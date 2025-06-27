@@ -21,12 +21,23 @@ interface Props {
 const TextView = ({ id, testId, item, value, textClass, children }: Props): JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
+
+  const safeTextId = `${getId(id)}-textview`;
+
+  console.log(getText(item, onRenderMarkdown));
+
   return (
     <div data-testid={testId} id={getId(id)}>
       <>
-        <SafeText as="b" text={getText(item, onRenderMarkdown)} />
+        <SafeText safeTextId={safeTextId} as="b" text={getText(item, onRenderMarkdown)} />
 
-        <RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} padding={true} />
+        <RenderHelpButton
+          isHelpVisible={isHelpVisible}
+          item={item}
+          setIsHelpVisible={setIsHelpVisible}
+          padding={true}
+          ariaLabeledBy={safeTextId}
+        />
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       </>
       <div className={textClass || ''}>{value}</div>

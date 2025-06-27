@@ -14,10 +14,11 @@ type Props = {
   item?: QuestionnaireItem;
   setIsHelpVisible: React.Dispatch<React.SetStateAction<boolean>>;
   isHelpVisible: boolean;
+  ariaLabeledBy?: string;
   padding?: boolean;
 };
 
-export const RenderHelpButton = ({ item, setIsHelpVisible, isHelpVisible, padding }: Props): JSX.Element | null => {
+export const RenderHelpButton = ({ item, setIsHelpVisible, isHelpVisible, ariaLabeledBy, padding }: Props): JSX.Element | null => {
   const { onRequestHelpButton } = useExternalRenderContext();
 
   if (!item) return null;
@@ -28,13 +29,13 @@ export const RenderHelpButton = ({ item, setIsHelpVisible, isHelpVisible, paddin
 
   if (onRequestHelpButton) {
     return (
-      <HelpButton item={helpItem} padding={padding} callback={setIsHelpVisible}>
+      <HelpButton item={helpItem} padding={padding} callback={setIsHelpVisible} ariaLabeledBy={ariaLabeledBy}>
         {onRequestHelpButton(item, helpItem, helpItemType, getText(helpItem), isHelpVisible)}
       </HelpButton>
     );
   }
   return (
-    <HelpButton item={helpItem} padding={padding} callback={setIsHelpVisible}>
+    <HelpButton item={helpItem} padding={padding} callback={setIsHelpVisible} ariaLabeledBy={ariaLabeledBy}>
       <Icon svgIcon={HelpSign} />
     </HelpButton>
   );

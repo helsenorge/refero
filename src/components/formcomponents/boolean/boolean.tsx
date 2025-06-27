@@ -34,13 +34,14 @@ export type Props = QuestionnaireComponentItemProps & {
 const Boolean = (props: Props): JSX.Element | null => {
   const { path, pdf, id, index, idWithLinkIdAndItemIndex, linkId, children } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
-
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
+  const labelId = `${getId(id)}-label-boolean`;
+  const labelIdReadOnly = `${getId(id)}-label-boolean-readonly`;
 
   const dispatch = useAppDispatch();
   const { onRenderMarkdown, promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
@@ -92,9 +93,17 @@ const Boolean = (props: Props): JSX.Element | null => {
           testId={`${getId(id)}-readonly`}
           label={
             <Label
+              labelId={labelIdReadOnly}
               testId={`${getId(id)}-label-readonly`}
               labelTexts={[{ text: item?.text || '', type: 'subdued' }]}
-              afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+              afterLabelChildren={
+                <RenderHelpButton
+                  item={item}
+                  setIsHelpVisible={setIsHelpVisible}
+                  isHelpVisible={isHelpVisible}
+                  ariaLabeledBy={labelIdReadOnly}
+                />
+              }
             />
           }
           checked={getValue()}
@@ -116,12 +125,14 @@ const Boolean = (props: Props): JSX.Element | null => {
           inputId={getId(id)}
           label={
             <Label
-              labelId={`${getId(id)}-label-boolean`}
+              labelId={labelId}
               testId={`${getId(id)}-label-boolean`}
               labelTexts={[{ text: item?.text || '', type: 'subdued' }]}
               htmlFor={getId(id)}
               className="page_refero__label label_helpButton_align"
-              afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+              afterLabelChildren={
+                <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} ariaLabeledBy={labelId} />
+              }
             >
               <SafeText text={labelText} />
             </Label>

@@ -10,7 +10,7 @@ import SafeText from '@/components/referoLabel/SafeText';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
-import { getText } from '@/util';
+import { getId, getText } from '@/util';
 import { Resources } from '@/util/resources';
 
 type GroupHeaderProps = {
@@ -31,10 +31,17 @@ const GroupHeader = ({ item, resources, headerTag, isHelpVisible, setIsHelpVisib
 
   const HeaderTag = `h${headerTag ?? 2}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   const headerText = getHeaderText(item, questionnaire, resources, onRenderMarkdown);
+  const safeTextId = `${getId(item?.id)}-group-header`;
   return (
     <>
-      <SafeText as={HeaderTag} text={headerText} className={'page_refero__heading'} />
-      <RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} padding={true} />
+      <SafeText safeTextId={safeTextId} as={HeaderTag} text={headerText} className={'page_refero__heading'} />
+      <RenderHelpButton
+        isHelpVisible={isHelpVisible}
+        item={item}
+        setIsHelpVisible={setIsHelpVisible}
+        padding={true}
+        ariaLabeledBy={safeTextId}
+      />
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
     </>
   );
