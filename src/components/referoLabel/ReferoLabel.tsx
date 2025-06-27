@@ -14,7 +14,7 @@ import styles from './referoLabel.module.css';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
-import { getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
+import { getId, getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
 import { Resources } from '@/util/resources';
 
 type Props = {
@@ -29,6 +29,7 @@ type Props = {
   sublabelTestId?: string;
   dateLabel?: string;
   attachmentLabel?: string;
+  quantityUnitSubLabel?: string;
   afterLabelChildren?: JSX.Element | null;
   children?: React.ReactNode;
 };
@@ -45,6 +46,7 @@ export const ReferoLabel = ({
   sublabelTestId,
   dateLabel,
   attachmentLabel,
+  quantityUnitSubLabel,
   afterLabelChildren,
   children,
 }: Props): JSX.Element => {
@@ -53,6 +55,7 @@ export const ReferoLabel = ({
   const { onRenderMarkdown } = useExternalRenderContext();
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = labelText ? labelText : getLabelText(item, onRenderMarkdown, questionnaire, resources);
+  const id = getId(item?.id);
 
   return (
     <>
@@ -89,7 +92,8 @@ export const ReferoLabel = ({
       </div>
       {children}
       {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
-      {attachmentLabel && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={attachmentLabel} />}
+      {attachmentLabel && <SubLabel subLabelText={attachmentLabel} testId={`${id}-attachment-sublabel`} />}
+      {quantityUnitSubLabel && <SubLabel subLabelText={quantityUnitSubLabel} testId={`${id}-quantity-unit-sublabel`} />}
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
     </>
   );

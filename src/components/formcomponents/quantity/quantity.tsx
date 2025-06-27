@@ -118,6 +118,14 @@ const Quantity = (props: Props): JSX.Element | null => {
     return '';
   };
 
+  const getUnitSubLabel = (): string => {
+    const unit = getUnit();
+    if (unit) {
+      return `${resources?.quantity_unit_sublabel} ${unit}`;
+    }
+    return '';
+  };
+
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const maxDecimals = getMaxDecimalPlacesExtensionValue(item) ? getMaxDecimalPlacesExtensionValue(item) : undefined;
   const baseIncrementValue = getMinValueExtensionValue(item);
@@ -162,6 +170,7 @@ const Quantity = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-quantity-label`}
           testId={`${getId(id)}-quantity-label`}
           sublabelId={`${getId(id)}-quantity-sublabel`}
+          quantityUnitSubLabel={getUnitSubLabel()}
         />
 
         <div className={styles.inputWrapper}>
@@ -181,7 +190,6 @@ const Quantity = (props: Props): JSX.Element | null => {
             inputMode="decimal"
             baseIncrementValue={baseIncrementValue}
           />
-          <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
         </div>
 
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />

@@ -88,6 +88,7 @@ export const getResources = (language: string): Resources => {
       dateLabel_year: 'Year',
       dateLabel_month: 'Month',
       maxCharactersText: 'characters',
+      quantity_unit_sublabel: 'Enter in',
     };
   }
   if (language === 'fr-FR') {
@@ -177,6 +178,7 @@ export const getResources = (language: string): Resources => {
       dateLabel_year: 'Year',
       dateLabel_month: 'Month',
       maxCharactersText: 'caractères',
+      quantity_unit_sublabel: 'Enter in',
     };
   }
   return {
@@ -265,5 +267,6 @@ export const getResources = (language: string): Resources => {
     dateLabel_year: 'År',
     dateLabel_month: 'Måned',
     maxCharactersText: 'tegn',
+    quantity_unit_sublabel: 'Oppgi i',
   };
 };

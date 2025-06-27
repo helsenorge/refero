@@ -552,7 +552,7 @@ describe.skip('needsExtraColumn', () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
-  it('should return true if any answer has a non-empty last column value', () => {
+  it.skip('should return true if any answer has a non-empty last column value', () => {
     (tableUtils.getEnabledQuestionnaireItemsWithAnswers as Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: 'A' } }] },
@@ -588,7 +588,7 @@ describe.skip('needsExtraColumn', () => {
     expect(extraColumnNeeded).toBe(true);
   });
 
-  it('should return false if items have no children', () => {
+  it.skip('should return false if items have no children', () => {
     (tableUtils.getEnabledQuestionnaireItemsWithAnswers as Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: 'A' } }] },
