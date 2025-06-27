@@ -1,3 +1,8 @@
+## 18.1.0-beta01
+
+- Added tests for valueSets for slider
+- Added support for valueSets in slider-view
+
 ## 18.0.8
 
 - Replaced the unit label after the quanity input-field with a sublabel
