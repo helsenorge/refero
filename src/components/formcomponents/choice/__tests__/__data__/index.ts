@@ -6,5 +6,6 @@ const checkboxView: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/che
 const dropdownView: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/dropdown-view.json').toString());
 const radioView: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/radio-view.json').toString());
 const sliderView: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/slider-view.json').toString());
+const sliderViewValueSet: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/slider-view-value-set.json').toString());
 
-export { checkboxView, dropdownView, radioView, sliderView };
+export { checkboxView, dropdownView, radioView, sliderView, sliderViewValueSet };
