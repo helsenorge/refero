@@ -1,0 +1,228 @@
+{
+  "title": "Title",
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "name": "Techinal_boolean",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "ba3b7a19-05bc-4734-8b84-497f27604139",
+      "version": "1.0",
+      "name": "Decimal_value_set2",
+      "title": "Decimal_value_set2",
+      "date": "2025-06-27T06:47:23.037Z",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "id": "2f9ef7e4-5d96-4437-821c-90ba6f569e3c",
+            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
+            "concept": [
+              {
+                "id": "d5646b17-bb7c-4776-8186-88011b98a0bf",
+                "code": "ja",
+
+                "display": "Ja",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
+                    "valueString": "&#9917"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 1.1
+                  }
+                ]
+              },
+              {
+                "id": "352926a9-27f8-4bc1-e394-08edc439b4d7",
+                "code": "nei",
+                "display": "Nei",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 2.2
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
+                    "valueString": "&#9917"
+                  }
+                ]
+              },
+              {
+                "id": "540c894e-29ef-46bf-f961-851921c87d57",
+                "code": "vet-ikke",
+                "display": "Vet ikke",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
+                    "valueString": "&#9917"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 3.3
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "3dec9e0d-7b78-424e-8a59-f0909510985d",
+      "type": "choice",
+      "code": [
+        {
+          "code": "label",
+          "display": "Display value",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+        },
+        {
+          "code": "LabelLeft",
+          "display": "min",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        },
+        {
+          "code": "LabelRight",
+          "display": "max",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        }
+      ],
+      "item": [
+        {
+          "linkId": "f799ebd5-7cac-4d15-8b84-2e6037124401",
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "maxLength": 250,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Help text"
+              }
+            ]
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "help"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "required": true,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Slider view label**"
+          }
+        ]
+      },
+      "text": "Slider view label",
+      "extension": [
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
+        },
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "**Slider view sublabel**"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "slider"
+              }
+            ]
+          }
+        }
+      ],
+      "repeats": true,
+      "answerValueSet": "#ba3b7a19-05bc-4734-8b84-497f27604139"
+    }
+  ]
+}
