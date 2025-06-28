@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react';
+import { ReactNode } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
@@ -66,7 +66,7 @@ export const ExternalRenderProvider = ({
 }: ExternalRenderProviderProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const isExternalUpdate = useAppSelector(state => state.refero.form.FormData.isExternalUpdate);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   const handleOnChange = (
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer,
@@ -78,36 +78,20 @@ export const ExternalRenderProvider = ({
     }
     onChange?.(item, answer, actionRequester, questionnaireInspector);
   };
-  const contextValue = useMemo(
-    () => ({
-      onRequestHelpElement,
-      onRequestHelpButton,
-      onRenderMarkdown,
-      fetchValueSet,
-      fetchReceivers,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-      promptLoginMessage,
-      resources,
-      autoSuggestProps,
-      validateScriptInjection,
-      globalOnChange: handleOnChange,
-    }),
-    [
-      onRequestHelpElement,
-      onRequestHelpButton,
-      onRenderMarkdown,
-      fetchValueSet,
-      fetchReceivers,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-      promptLoginMessage,
-      resources,
-      autoSuggestProps,
-      validateScriptInjection,
-      handleOnChange,
-    ]
-  );
+  const contextValue = {
+    onRequestHelpElement,
+    onRequestHelpButton,
+    onRenderMarkdown,
+    fetchValueSet,
+    fetchReceivers,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+    promptLoginMessage,
+    resources,
+    autoSuggestProps,
+    validateScriptInjection,
+    globalOnChange: handleOnChange,
+  };
 
   return <ExternalRenderContext.Provider value={contextValue}>{children}</ExternalRenderContext.Provider>;
 };

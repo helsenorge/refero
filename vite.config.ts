@@ -12,6 +12,10 @@ import { externalizeDeps } from 'vite-plugin-externalize-deps';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
 const OUTPUT_DIRECTORY = 'lib';
+const ReactCompilerConfig = {
+  runtimeModule: '@/mycache',
+  target: '18',
+};
 export default defineConfig(({ command, isPreview }): UserConfig => {
   const dev = command === 'serve' && !isPreview;
 
@@ -76,7 +80,11 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
         include: ['src'],
         exclude: ['__test__', '__mocks__', '__data__'],
       }),
-      react(),
+      react({
+        babel: {
+          plugins: [['babel-plugin-react-compiler', ReactCompilerConfig]],
+        },
+      }),
       libInjectCss(),
       copy({
         targets: [{ src: '*.md', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) }],
