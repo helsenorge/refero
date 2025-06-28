@@ -79,7 +79,6 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     }
 
     return undefined;
-     
   };
 
   const value = getValue();
@@ -248,6 +247,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       handleChange: handleChange,
       selected: value,
       renderOpenField: renderTextField,
+      options,
       ...props,
     };
 
@@ -255,11 +255,11 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
     switch (itemControlValue) {
       case ItemControlConstants.DROPDOWN:
-        return <DropdownView options={options} pdfValue={pdfValue} {...commonProps} />;
+        return <DropdownView pdfValue={pdfValue} {...commonProps} />;
       case ItemControlConstants.CHECKBOX:
-        return <CheckboxView options={options} pdfValue={pdfValue} {...commonProps} handleChange={handleCheckboxChange} />;
+        return <CheckboxView pdfValue={pdfValue} {...commonProps} handleChange={handleCheckboxChange} />;
       case ItemControlConstants.RADIOBUTTON:
-        return <RadioView options={options} pdfValue={pdfValue} {...commonProps} />;
+        return <RadioView pdfValue={pdfValue} {...commonProps} />;
       case ItemControlConstants.SLIDER:
         return <SliderView {...commonProps} />;
       default:
