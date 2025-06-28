@@ -143,7 +143,7 @@
       "item": [
         {
           "linkId": "00574d79-369a-4837-a642-0c994811091d",
-          "type": "choice",
+          "type": "open-choice",
           "text": "Slider 1",
           "code": [
             {
@@ -235,7 +235,7 @@
         },
         {
           "linkId": "883c93e6-caff-4aa0-c8b7-f0ef9442fc3e",
-          "type": "choice",
+          "type": "open-choice",
           "text": "Slider 2",
           "code": [
             {

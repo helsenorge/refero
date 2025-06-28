@@ -1,0 +1,87 @@
+{
+  "resourceType": "ValueSet",
+  "id": "61c052d3-3d85-409e-8e0b-504936c305c3",
+  "version": "1.0",
+  "name": "Innvolver_Meg_Viktighet",
+  "title": "Innvolver Meg Viktighet",
+  "date": "2025-06-27T10:11:17.338Z",
+  "status": "draft",
+  "publisher": "NHN",
+  "compose": {
+    "include": [
+      {
+        "id": "c4cebdd4-1a69-4824-8250-3b59c3c5bf59",
+        "system": "urn:uuid:4f6411ed-ce3a-4690-8a1d-5c3daa668da6",
+        "concept": [
+          {
+            "id": "844c9497-f8d9-46dc-8225-6a950031d487",
+            "code": "0",
+
+            "display": "0",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 }]
+          },
+          {
+            "id": "5780e2ea-88f7-4032-9910-2ad4aeefa73c",
+            "code": "1",
+            "display": "1",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1 }]
+          },
+          {
+            "id": "3f9e7f43-2078-489d-84cb-d0b3cc1d5225",
+            "code": "2",
+            "display": "2",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 }]
+          },
+          {
+            "id": "090bfedb-4cba-4b81-ae08-02d5d3167a29",
+            "code": "3",
+            "display": "3",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 3 }]
+          },
+          {
+            "id": "86050c24-1290-4b4b-d5eb-3361ae202596",
+            "code": "4",
+            "display": "4",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 4 }]
+          },
+          {
+            "id": "60ea45eb-e16c-4c0a-af75-344adf32bc2a",
+            "code": "5",
+            "display": "5",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 5 }]
+          },
+          {
+            "id": "18de6617-448c-4024-8125-53ed442efe12",
+            "code": "6",
+            "display": "6",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 6 }]
+          },
+          {
+            "id": "ef42e499-1e50-46dd-8312-f9e86ff809d8",
+            "code": "7",
+            "display": "7",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 7 }]
+          },
+          {
+            "id": "6f00b654-1a52-4402-852b-d159e80eddd0",
+            "code": "8",
+            "display": "8",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 8 }]
+          },
+          {
+            "id": "6170ef31-dcf8-41f0-8c52-30ecae8a3cae",
+            "code": "9",
+            "display": "9",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 9 }]
+          },
+          {
+            "id": "e56c6a9b-5801-4fd2-8c3a-e7d1c7502836",
+            "code": "10",
+            "display": "10",
+            "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 10 }]
+          }
+        ]
+      }
+    ]
+  }
+}
