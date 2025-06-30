@@ -71,11 +71,6 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
         name: 'Refero',
         fileName: 'refero.es',
       },
-      rollupOptions: {
-        output: {
-          chunkFileNames: '[name].js',
-        },
-      },
     },
     plugins: [
       visualizer({ filename: './bundle-stats.html' }),
