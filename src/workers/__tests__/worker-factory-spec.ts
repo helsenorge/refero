@@ -6,13 +6,20 @@
 
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { vi, describe, it, expect, beforeEach, afterEach, Mock } from 'vitest';
+const MockInlineWorker = vi.fn();
 
+vi.mock('../fhir-path.worker.ts?worker&inline', () => {
+  // This mock factory will be called when the module is imported.
+  // It should return an object with a `default` property, which is our mock constructor.
+  return {
+    default: MockInlineWorker,
+  };
+});
 // --- The New Mocking Strategy ---
 
 describe('worker-factory', () => {
   const mockQuestionnaire = { resourceType: 'Questionnaire' } as Questionnaire;
   const mockQuestionnaireResponse = { resourceType: 'QuestionnaireResponse' } as QuestionnaireResponse;
-
   type MockWorkerInstance = {
     postMessage: Mock;
     terminate: Mock;
@@ -21,7 +28,6 @@ describe('worker-factory', () => {
   };
 
   // This will be our mock Worker constructor
-  const MockWorker = vi.fn();
   // This will hold the single instance our mock constructor creates
   let mockWorkerInstance: MockWorkerInstance;
 
@@ -39,10 +45,10 @@ describe('worker-factory', () => {
 
     // When `new Worker()` is called in the code, it will run this implementation,
     // which returns our predefined mock instance.
-    MockWorker.mockImplementation(() => mockWorkerInstance);
+    MockInlineWorker.mockImplementation(() => mockWorkerInstance);
 
     // Replace the global `Worker` class with our mock constructor.
-    vi.stubGlobal('Worker', MockWorker);
+    vi.stubGlobal('Worker', MockInlineWorker);
   });
 
   afterEach(() => {
@@ -56,17 +62,15 @@ describe('worker-factory', () => {
     const { postTaskToFhirPathWorker } = await import('../worker-factory');
 
     const firstPromise = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
-    const secondPromise = postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire);
 
-    // Assert: The Worker constructor should have been called only once.
-    expect(MockWorker).toHaveBeenCalledTimes(1);
+    await expect(postTaskToFhirPathWorker(mockQuestionnaireResponse, mockQuestionnaire)).rejects.toThrow(
+      'FhirPathWorker is busy. A calculation is already in progress.'
+    );
+
+    expect(MockInlineWorker).toHaveBeenCalledTimes(1);
     // The first argument to the constructor should be a URL object.
-    expect(MockWorker.mock.calls[0][0]).toBeInstanceOf(URL);
-    expect(MockWorker.mock.calls[0][0].href).toContain('fhir-path.worker.ts');
+    expect(MockInlineWorker.mock.calls[0][0]).toEqual({ name: 'fhirPathWorker' });
 
-    await expect(secondPromise).rejects.toThrow('FhirPathWorker is busy. A calculation is already in progress.');
-
-    // Cleanup to prevent unhandled rejection warnings in the test runner
     mockWorkerInstance.onmessage!({ data: { type: 'success', payload: {} } } as MessageEvent);
     await expect(firstPromise).resolves.toEqual({});
   });
@@ -149,7 +153,7 @@ describe('worker-factory', () => {
     await expect(promise2).resolves.toEqual(secondScores);
 
     // Assert worker is reused, not recreated
-    expect(MockWorker).toHaveBeenCalledTimes(1);
+    expect(MockInlineWorker).toHaveBeenCalledTimes(1);
     expect(mockWorkerInstance.postMessage).toHaveBeenCalledTimes(2);
   });
 });

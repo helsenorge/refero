@@ -1,3 +1,7 @@
+## 19.0.0-beta08
+
+- Inline worker
+
 ## 19.0.0-beta06
 
 - updated worker build

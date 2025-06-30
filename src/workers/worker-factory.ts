@@ -1,7 +1,7 @@
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { WorkerResponse } from './fhir-path-worker';
-// import InlineWorker from './fhir-path.worker.ts?worker&inline';
+import InlineWorker from './fhir-path.worker.ts?worker&inline';
 
 import { AnswerPad } from '@/util/FhirPathExtensions';
 
@@ -10,10 +10,13 @@ let onGoingCalculation: ((result: { fhirScores: AnswerPad }) => void) | null = n
 let onGoingError: ((reason?: Error | ErrorEvent) => void) | null = null;
 
 function createWorker(): Worker {
-  const worker = new Worker(new URL('./fhir-path.worker.ts?worker', import.meta.url), {
-    type: 'module',
+  const worker = new InlineWorker({
     name: 'fhirPathWorker',
   });
+  // (new URL('./fhir-path.worker.ts?worker', import.meta.url), {
+  //   type: 'module',
+  //   name: 'fhirPathWorker',
+  // });
 
   worker.onmessage = (event: MessageEvent<WorkerResponse>): void => {
     if (!onGoingCalculation) {
