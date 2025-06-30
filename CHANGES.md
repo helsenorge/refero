@@ -1,4 +1,4 @@
-## 18.1.0-beta01
+## 18.1.0
 
 - Added tests for valueSets for slider
 - Added support for valueSets in slider-view
