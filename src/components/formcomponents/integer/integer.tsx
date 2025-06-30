@@ -63,7 +63,6 @@ const Integer = (props: Props): JSX.Element | null => {
     return value;
   };
   const value = getValue();
-
   useResetFormField(idWithLinkIdAndItemIndex, value);
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {

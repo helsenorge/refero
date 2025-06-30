@@ -1,3 +1,16 @@
+## 19.0.0-beta08
+
+- Inline worker
+
+## 19.0.0-beta06
+
+- updated worker build
+- webworker for fhirPathCalculator, which will improve performance for large questionnaires.
+- Inline webworker
+- Made the webworker into a singleton, so that it is only created once and reused for all calculations
+- Change to modular worker
+- not use inline webworker, but use a separate worker file
+
 ## 18.1.0-beta01
 
 - Added tests for valueSets for slider
