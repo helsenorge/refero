@@ -1,4 +1,4 @@
-import { Matcher, screen, userEvent } from './test-utils';
+import { Matcher, screen, userEvent, within } from './test-utils';
 
 export async function selectCheckboxOption(id: Matcher): Promise<void> {
   expect(screen.getByLabelText(id)).toBeInTheDocument();
@@ -115,3 +115,9 @@ export async function typeAndTabByLabelText(id: Matcher, value: string): Promise
   await userEvent.type(screen.getByLabelText(id), value);
   await userEvent.tab();
 }
+
+export const getByLabelTextInsideElement = (elementTestId: string, labelText: Matcher): HTMLElement => {
+  const elementToSearchIn = screen.getByTestId(elementTestId);
+  const elementToFind = within(elementToSearchIn).getByLabelText(labelText);
+  return elementToFind;
+};

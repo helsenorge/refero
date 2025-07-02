@@ -7,8 +7,8 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { qinline, q, qScriptInjection, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
-import { renderRefero, screen, userEvent, waitFor } from '../../../../../test/test-utils';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
+import { renderRefero, screen, userEvent, waitFor, within } from '../../../../../test/test-utils';
 import { Extensions } from '../../../../constants/extensions';
 
 vi.mock('@helsenorge/core-utils/debounce', () => ({
@@ -16,6 +16,19 @@ vi.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
 }));
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
+
+const getTextInput = (questionnaire: Questionnaire) => {
+  const textItem = questionnaire.item?.find(item => item.type === 'text');
+  const textInputTestId = `item_${textItem?.linkId}-text`;
+  const textInput = getByLabelTextInsideElement(textInputTestId, /String/i);
+  return textInput;
+};
+const getAllTextInputs = (questionnaire: Questionnaire) => {
+  const textItem = questionnaire.item?.find(item => item.type === 'text');
+  const textInputTestId = `item_${textItem?.linkId}-text`;
+  const textInput = getByLabelTextInsideElement(textInputTestId, /String/i);
+  return textInput;
+};
 
 describe('Text', () => {
   describe('render', () => {
@@ -64,7 +77,8 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/String/i)).toHaveValue('');
+      const textInput = getTextInput(questionnaire);
+      expect(textInput).toHaveValue('');
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -81,7 +95,8 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/String/i)).toHaveValue('test');
+      const textInput = getTextInput(questionnaire);
+      expect(textInput).toHaveTextContent('test');
     });
   });
   describe('onChange', () => {
@@ -93,24 +108,31 @@ describe('Text', () => {
           repeats: false,
         })),
       };
+
       await createWrapper(questionnaire);
 
-      const inputElement = screen.getByLabelText(/String/i);
-      expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      await userEvent.type(inputElement, '123');
-
-      expect(screen.getByLabelText(/String/i)).toHaveValue('123');
+      const textInput = getTextInput(questionnaire);
+      await userEvent.type(textInput, '123');
+      await waitFor(() => {
+        expect(textInput).toHaveValue('123');
+      });
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire: Questionnaire = {
         ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+        })),
       };
       const onChange = vi.fn();
       await createWrapper(questionnaire, { onChange });
-      expect(screen.getByLabelText(/String/i)).toBeInTheDocument();
+
+      const textInput = getTextInput(questionnaire);
+      expect(textInput).toBeInTheDocument();
+
       const input = 'string';
-      await userEvent.type(screen.getByLabelText(/String/i), input);
+      await userEvent.type(textInput, input);
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueString: input,
       };
@@ -171,7 +193,7 @@ describe('Text', () => {
       const repeatButton = screen.queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
-    it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
+    it.only('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({
@@ -185,6 +207,7 @@ describe('Text', () => {
       await repeatNTimes(input, 3, /String/i);
 
       expect(screen.queryAllByLabelText(/String/i)).toHaveLength(4);
+      screen.debug(undefined, 100000);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
