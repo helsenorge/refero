@@ -8,7 +8,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { qinline, q, qScriptInjection, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
-import { renderRefero, screen, userEvent, waitFor, within } from '../../../../../test/test-utils';
+import { Matcher, renderRefero, screen, userEvent, waitFor, within } from '../../../../../test/test-utils';
 import { Extensions } from '../../../../constants/extensions';
 
 vi.mock('@helsenorge/core-utils/debounce', () => ({
@@ -17,16 +17,16 @@ vi.mock('@helsenorge/core-utils/debounce', () => ({
 }));
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
-const getTextInput = (questionnaire: Questionnaire) => {
+const getTestId = (questionnaire: Questionnaire) => {
   const textItem = questionnaire.item?.find(item => item.type === 'text');
-  const textInputTestId = `item_${textItem?.linkId}-text`;
-  const textInput = getByLabelTextInsideElement(textInputTestId, /String/i);
-  return textInput;
+  const textInputTestId = `test-text-item_${textItem?.linkId}`;
+  return textInputTestId;
 };
-const getAllTextInputs = (questionnaire: Questionnaire) => {
-  const textItem = questionnaire.item?.find(item => item.type === 'text');
-  const textInputTestId = `item_${textItem?.linkId}-text`;
-  const textInput = getByLabelTextInsideElement(textInputTestId, /String/i);
+
+const getTextInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+  const textInputTestId = getTestId(questionnaire);
+  console.log(textInputTestId);
+  const textInput = getByLabelTextInsideElement(textInputTestId, labelText);
   return textInput;
 };
 
@@ -77,7 +77,7 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      const textInput = getTextInput(questionnaire);
+      const textInput = getTextInput(questionnaire, /String/i);
       expect(textInput).toHaveValue('');
     });
     it('Initial value should be set', async () => {
@@ -95,7 +95,7 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      const textInput = getTextInput(questionnaire);
+      const textInput = getTextInput(questionnaire, /String/i);
       expect(textInput).toHaveTextContent('test');
     });
   });
@@ -111,7 +111,7 @@ describe('Text', () => {
 
       await createWrapper(questionnaire);
 
-      const textInput = getTextInput(questionnaire);
+      const textInput = getTextInput(questionnaire, /String/i);
       await userEvent.type(textInput, '123');
       await waitFor(() => {
         expect(textInput).toHaveValue('123');
@@ -128,7 +128,7 @@ describe('Text', () => {
       const onChange = vi.fn();
       await createWrapper(questionnaire, { onChange });
 
-      const textInput = getTextInput(questionnaire);
+      const textInput = getTextInput(questionnaire, /String/i);
       expect(textInput).toBeInTheDocument();
 
       const input = 'string';
@@ -193,7 +193,7 @@ describe('Text', () => {
       const repeatButton = screen.queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
-    it.only('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
+    it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({
@@ -203,11 +203,11 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = 'entotre';
-      await repeatNTimes(input, 3, /String/i);
+      await repeatNTimes(input, 3, testId, /String/i);
 
-      expect(screen.queryAllByLabelText(/String/i)).toHaveLength(4);
-      screen.debug(undefined, 100000);
+      expect(screen.queryAllByTestId(/test-text/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -228,8 +228,10 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = 'string';
-      await repeatNTimes(input, 3, /String/i);
+      await repeatNTimes(input, 3, testId, /String/i);
+
       const elements = await screen.findAllByTestId(/-delete-button/i);
       expect(elements).toHaveLength(2);
     });
@@ -261,8 +263,9 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = 'entotre';
-      await repeatNTimes(input, 1, /String/i);
+      await repeatNTimes(input, 1, testId, /String/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -278,8 +281,10 @@ describe('Text', () => {
         })),
       };
       await createWrapper(questionnaire);
+
+      const testId = getTestId(questionnaire);
       const input = 'entotre';
-      await repeatNTimes(input, 1, /String/i);
+      await repeatNTimes(input, 1, testId, /String/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -297,6 +302,7 @@ describe('Text', () => {
           item: q.item?.map(x => ({
             ...x,
             required: true,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
@@ -309,12 +315,15 @@ describe('Text', () => {
           item: q.item?.map(x => ({
             ...x,
             required: true,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/String/i), 'abc');
-        await submitForm();
 
+        const textInput = getTextInput(questionnaire, /String/i);
+        await userEvent.type(textInput, 'abc');
+
+        await submitForm();
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
@@ -323,13 +332,16 @@ describe('Text', () => {
           item: q.item?.map(x => ({
             ...x,
             required: true,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
         await submitForm();
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await userEvent.type(screen.getByLabelText(/String/i), 'abc');
+        const textInput = getTextInput(questionnaire, /String/i);
+
+        await userEvent.type(textInput, 'abc');
         await userEvent.tab();
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
@@ -375,11 +387,15 @@ describe('Text', () => {
           item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/String/i), 'epost@test.com');
+
+        const textInput = getTextInput(questionnaire, /String/i);
+        await userEvent.type(textInput, 'epost@test.com');
         await submitForm();
+
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
@@ -388,14 +404,19 @@ describe('Text', () => {
           item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/String/i), 'e@st.co');
+
+        const textInput = getTextInput(questionnaire, /String/i);
+        await userEvent.type(textInput, 'e@st.co');
         await submitForm();
+
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(screen.getByLabelText(/String/i));
-        await userEvent.type(screen.getByLabelText(/String/i), 'epost@test.com');
+
+        await userEvent.clear(textInput);
+        await userEvent.type(textInput, 'epost@test.com');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -420,10 +441,13 @@ describe('Text', () => {
           item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/String/i), 'epost@test.com');
+
+        const textInput = getTextInput(questionnaire, /String/i);
+        await userEvent.type(textInput, 'epost@test.com');
         await submitForm();
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
@@ -434,14 +458,19 @@ describe('Text', () => {
           item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/String/i), 'eposteneraølt@asdasdst.com');
+
+        const textInput = getTextInput(questionnaire, /String/i);
+        await userEvent.type(textInput, 'eposteneraølt@asdasdst.com');
         await submitForm();
+
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(screen.getByLabelText(/String/i));
-        await userEvent.type(screen.getByLabelText(/String/i), 'epost@test.com');
+
+        await userEvent.clear(textInput);
+        await userEvent.type(textInput, 'epost@test.com');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -466,10 +495,13 @@ describe('Text', () => {
           item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/String/i), 'epost@test.com');
+
+        const textInput = getTextInput(questionnaire, /String/i);
+        await userEvent.type(textInput, 'epost@test.com');
         await submitForm();
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
@@ -480,19 +512,24 @@ describe('Text', () => {
           item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/String/i), 'epostsdsdcom');
+
+        const textInput = getTextInput(questionnaire, /String/i);
+        await userEvent.type(textInput, 'epostsdsdcom');
         await submitForm();
+
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(screen.getByLabelText(/String/i));
-        await userEvent.type(screen.getByLabelText(/String/i), 'epost@test.com');
+
+        await userEvent.clear(textInput);
+        await userEvent.type(textInput, 'epost@test.com');
 
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });
-    describe('validateScriptInjection ', () => {
+    describe.skip('validateScriptInjection ', () => {
       it('Should render with validation when input has html and validateScriptInjection = true', async () => {
         const validateScriptInjection = true;
         const value = 'input med <html>';

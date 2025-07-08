@@ -9,13 +9,29 @@ export async function clickButtonTimes(id: Matcher, times: number): Promise<void
     await userEvent.click(screen.getByTestId(id));
   }
 }
-export async function repeatNTimes(input: string, n: number, labelText: Matcher): Promise<void> {
+
+// export async function repeatNTimes(input: string, n: number, labelText: Matcher): Promise<void> {
+//   for (let i = 0; i < n; i++) {
+//     await userEvent.type(screen.queryAllByLabelText(labelText)[i], input);
+//     await clickButtonTimes(/-repeat-button/i, 1);
+//     await userEvent.type(screen.queryAllByLabelText(labelText)[i + 1], input);
+//   }
+// }
+
+export async function repeatNTimes(input: string, n: number, testId: string, labelText: Matcher): Promise<void> {
   for (let i = 0; i < n; i++) {
-    await userEvent.type(screen.queryAllByLabelText(labelText)[i], input);
+    const currentTestId = testId + `^${i}`;
+    const textInput = getByLabelTextInsideElement(currentTestId, labelText);
+    await userEvent.type(textInput, input);
+
     await clickButtonTimes(/-repeat-button/i, 1);
-    await userEvent.type(screen.queryAllByLabelText(labelText)[i + 1], input);
+
+    const nextTestId = testId + `^${i + 1}`;
+    const nextTextInput = getByLabelTextInsideElement(nextTestId, labelText);
+    await userEvent.type(nextTextInput, input);
   }
 }
+
 export async function repeatDateTimeNTimes(
   dateLabelText: Matcher,
   hoursTestId: string,
