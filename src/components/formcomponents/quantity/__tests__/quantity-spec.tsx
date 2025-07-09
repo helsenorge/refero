@@ -1,4 +1,4 @@
-import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
+import { Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -6,10 +6,22 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { q, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
+
+const getTestId = (questionnaire: Questionnaire) => {
+  const quantityItem = questionnaire.item?.find(item => item.type === 'quantity');
+  const quantityTestId = `test-quantity-item_${quantityItem?.linkId}`;
+  return quantityTestId;
+};
+
+const getQuantityInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+  const quantityInputTestId = getTestId(questionnaire);
+  const quantityInput = getByLabelTextInsideElement(quantityInputTestId, labelText);
+  return quantityInput;
+};
 
 describe('Quantity', () => {
   describe('Render', () => {
@@ -53,7 +65,9 @@ describe('Quantity', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Quantity/i)).toHaveValue(null);
+      const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+
+      expect(quantityInput).toHaveValue(null);
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -75,7 +89,9 @@ describe('Quantity', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Quantity/i)).toHaveValue(12.3);
+      const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+
+      expect(quantityInput).toHaveValue(12.3);
     });
   });
   describe('help button', () => {
@@ -133,10 +149,11 @@ describe('Quantity', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '2.2';
-      await repeatNTimes(input, 3, /Quantity/i);
+      await repeatNTimes(input, 3, testId, /Quantity/i);
 
-      expect(screen.queryAllByLabelText(/Quantity/i)).toHaveLength(4);
+      expect(screen.queryAllByTestId(/test-quantity/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -148,8 +165,9 @@ describe('Quantity', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '2.2';
-      await repeatNTimes(input, 2, /Quantity/i);
+      await repeatNTimes(input, 2, testId, /Quantity/i);
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -168,8 +186,10 @@ describe('Quantity', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
+
+      const testId = getTestId(questionnaire);
       const input = '2.2';
-      await repeatNTimes(input, 1, /Quantity/i);
+      await repeatNTimes(input, 1, testId, /Quantity/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -182,8 +202,10 @@ describe('Quantity', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
+
+      const testId = getTestId(questionnaire);
       const input = '2.2';
-      await repeatNTimes(input, 1, /Quantity/i);
+      await repeatNTimes(input, 1, testId, /Quantity/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -199,7 +221,7 @@ describe('Quantity', () => {
         ...q,
         item: q.item?.map(x => ({
           ...x,
-          repeats: true,
+          repeats: false,
           extension: [
             ...(q.extension ?? []), // Spread the existing extensions or use an empty array if undefined
             {
@@ -215,35 +237,39 @@ describe('Quantity', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Quantity/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
-      expect(screen.getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-      await userEvent.type(screen.getByLabelText(/Quantity/i), '123');
-      expect(screen.getByLabelText(/Quantity/i)).toHaveValue(123);
+      const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+
+      expect(quantityInput).toBeInTheDocument();
+      expect(quantityInput).toHaveAttribute('type', 'number');
+      expect(quantityInput).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+      await userEvent.type(quantityInput, '123');
+      expect(quantityInput).toHaveValue(123);
     });
     it('Should update component with value from answer - without unit', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({
           ...x,
-          repeats: true,
+          repeats: false,
           extension: [...(q.extension ?? [])],
         })),
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Quantity/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
-      expect(screen.getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-      await userEvent.type(screen.getByLabelText(/Quantity/i), '123');
-      expect(screen.getByLabelText(/Quantity/i)).toHaveValue(123);
+      const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+
+      expect(quantityInput).toBeInTheDocument();
+      expect(quantityInput).toHaveAttribute('type', 'number');
+      expect(quantityInput).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+      await userEvent.type(quantityInput, '123');
+      expect(quantityInput).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({
           ...x,
-          repeats: true,
+          repeats: false,
           extension: [
             ...(q.extension ?? []), // Spread the existing extensions or use an empty array if undefined
             {
@@ -259,8 +285,12 @@ describe('Quantity', () => {
       };
       const onChange = vi.fn();
       await createWrapper(questionnaire, { onChange });
-      expect(screen.getByLabelText(/Quantity/i)).toBeInTheDocument();
-      await userEvent.type(screen.getByLabelText(/Quantity/i), '1');
+
+      const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+
+      expect(quantityInput).toBeInTheDocument();
+
+      await userEvent.type(quantityInput, '1');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueQuantity: {
           code: 'cm',
@@ -269,6 +299,7 @@ describe('Quantity', () => {
           value: 1,
         },
       };
+
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
@@ -278,7 +309,7 @@ describe('Quantity', () => {
       it('Should show error if field is required and value is empty', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
+          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
         await submitForm();
@@ -288,10 +319,13 @@ describe('Quantity', () => {
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
+          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '123');
+
+        const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+
+        await userEvent.type(quantityInput, '123');
         await submitForm();
 
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -299,15 +333,18 @@ describe('Quantity', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
+          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
         await submitForm();
 
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '123');
+        const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+
+        await userEvent.type(quantityInput, '123');
         await userEvent.tab();
+
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('readOnly value should get validation error if error exist', async () => {
@@ -336,7 +373,7 @@ describe('Quantity', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
         await submitForm();
@@ -346,10 +383,12 @@ describe('Quantity', () => {
       it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '8');
+
+        const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+        await userEvent.type(quantityInput, '8');
         await submitForm();
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
@@ -357,15 +396,17 @@ describe('Quantity', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '12');
+
+        const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+        await userEvent.type(quantityInput, '12');
         await submitForm();
 
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(screen.getByLabelText(/Quantity/i));
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '8');
+        await userEvent.clear(quantityInput);
+        await userEvent.type(quantityInput, '8');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -374,7 +415,7 @@ describe('Quantity', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
         await submitForm();
@@ -384,10 +425,12 @@ describe('Quantity', () => {
       it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '8');
+
+        const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+        await userEvent.type(quantityInput, '8');
         await submitForm();
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
@@ -395,15 +438,17 @@ describe('Quantity', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '3');
+
+        const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+        await userEvent.type(quantityInput, '3');
         await submitForm();
 
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(screen.getByLabelText(/Quantity/i));
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '8');
+        await userEvent.clear(quantityInput);
+        await userEvent.type(quantityInput, '8');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -415,6 +460,7 @@ describe('Quantity', () => {
           item: q.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
@@ -428,10 +474,13 @@ describe('Quantity', () => {
           item: q.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '6.12');
+
+        const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+        await userEvent.type(quantityInput, '6.12');
         await submitForm();
 
         expect(screen.queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
@@ -442,15 +491,18 @@ describe('Quantity', () => {
           item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '6.121212');
+
+        const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
+        await userEvent.type(quantityInput, '6.121212');
         await submitForm();
 
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(screen.getByLabelText(/Quantity/i));
-        await userEvent.type(screen.getByLabelText(/Quantity/i), '6.2');
+        await userEvent.clear(quantityInput);
+        await userEvent.type(quantityInput, '6.2');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
