@@ -1,4 +1,4 @@
-import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
+import { Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -7,10 +7,22 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { q, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { addManyPropertiesToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
-import { clickButtonTimes, repeatNTimes, submitForm, typeByLabelText } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm, typeByLabelText } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
+
+const getTestId = (questionnaire: Questionnaire) => {
+  const integerItem = questionnaire.item?.find(item => item.type === 'integer');
+  const integerInputTestId = `test-integer-item_${integerItem?.linkId}`;
+  return integerInputTestId;
+};
+
+const getIntegerInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+  const integerInputTestId = getTestId(questionnaire);
+  const integerInput = getByLabelTextInsideElement(integerInputTestId, labelText);
+  return integerInput;
+};
 
 describe('Integer', () => {
   describe('Render', () => {
@@ -43,7 +55,9 @@ describe('Integer', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Integer/i)).toHaveValue(null);
+      const integerInput = getIntegerInput(questionnaire, /Integer/i);
+
+      expect(integerInput).toHaveValue(null);
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -60,7 +74,9 @@ describe('Integer', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Integer/i)).toHaveValue(123);
+      const integerInput = getIntegerInput(questionnaire, /Integer/i);
+
+      expect(integerInput).toHaveValue(123);
     });
   });
   describe('help button', () => {
@@ -116,10 +132,12 @@ describe('Integer', () => {
         }),
       };
       await createWrapper(questionnaire);
-      const input = '2';
-      await repeatNTimes(input, 3, /Integer/i);
 
-      expect(screen.queryAllByLabelText(/Integer/i)).toHaveLength(4);
+      const testId = getTestId(questionnaire);
+      const input = '2';
+      await repeatNTimes(input, 3, testId, /Integer/i);
+
+      expect(screen.queryAllByTestId(/test-integer/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -130,8 +148,10 @@ describe('Integer', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
+
+      const testId = getTestId(questionnaire);
       const input = '2';
-      await repeatNTimes(input, 2, /Integer/i);
+      await repeatNTimes(input, 2, testId, /Integer/i);
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -147,10 +167,13 @@ describe('Integer', () => {
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       await createWrapper(questionnaire);
+
+      const testId = getTestId(questionnaire);
       const input = '2';
-      await repeatNTimes(input, 1, /Integer/i);
+      await repeatNTimes(input, 1, testId, /Integer/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
+
       await clickButtonTimes(/-delete-button/i, 1);
 
       expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
@@ -159,8 +182,9 @@ describe('Integer', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '2';
-      await repeatNTimes(input, 1, /Integer/i);
+      await repeatNTimes(input, 1, testId, /Integer/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -175,20 +199,24 @@ describe('Integer', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       await createWrapper(questionnaire);
 
-      const inputElement = screen.getByLabelText(/Integer/i);
-      expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      await userEvent.type(inputElement, '123');
+      const integerInput = getIntegerInput(questionnaire, /Integer/i);
 
-      expect(screen.getByLabelText(/Integer/i)).toHaveValue(123);
+      expect(integerInput).toBeInTheDocument();
+      expect(integerInput).toHaveAttribute('type', 'number');
+      expect(integerInput).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+      await userEvent.type(integerInput, '123');
+
+      expect(integerInput).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const onChange = vi.fn();
       await createWrapper(questionnaire, { onChange });
-      expect(screen.getByLabelText(/Integer/i)).toBeInTheDocument();
-      await userEvent.type(screen.getByLabelText(/Integer/i), '123');
+
+      const integerInput = getIntegerInput(questionnaire, /Integer/i);
+
+      expect(integerInput).toBeInTheDocument();
+      await userEvent.type(integerInput, '123');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueInteger: 123,
       };
@@ -211,7 +239,10 @@ describe('Integer', () => {
           item: q.item?.map(x => ({ ...x, required: true })),
         };
         await createWrapper(questionnaire);
-        await typeByLabelText(/Integer/i, '123');
+
+        const integerInput = getIntegerInput(questionnaire, /Integer/i);
+
+        await userEvent.type(integerInput, '123');
         await submitForm();
 
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -222,11 +253,16 @@ describe('Integer', () => {
           item: q.item?.map(x => ({ ...x, required: true })),
         };
         await createWrapper(questionnaire);
+
+        const integerInput = getIntegerInput(questionnaire, /Integer/i);
+
         await submitForm();
 
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
-        await typeByLabelText(/Integer/i, '123');
+
+        await userEvent.type(integerInput, '123');
         await userEvent.tab();
+
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('readOnly value should get validation error if error exist', async () => {
@@ -268,7 +304,10 @@ describe('Integer', () => {
           item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         await createWrapper(questionnaire);
-        await typeByLabelText(/Integer/i, '8');
+
+        const integerInput = getIntegerInput(questionnaire, /Integer/i);
+
+        await userEvent.type(integerInput, '8');
         await submitForm();
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
@@ -279,11 +318,16 @@ describe('Integer', () => {
           item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         await createWrapper(questionnaire);
-        await typeByLabelText(/Integer/i, '12');
+
+        const integerInput = getIntegerInput(questionnaire, /Integer/i);
+
+        await userEvent.type(integerInput, '12');
         await submitForm();
 
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await typeByLabelText(/Integer/i, '8', true);
+
+        await userEvent.clear(integerInput);
+        await userEvent.type(integerInput, '8');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -303,7 +347,10 @@ describe('Integer', () => {
         const questionnaire = addManyPropertiesToQuestionnaireItem(qCustomErrorMessage, [{ property: 'required', value: false }]);
 
         await createWrapper(questionnaire);
-        await typeByLabelText(/Integer/i, '8');
+
+        const integerInput = getIntegerInput(questionnaire, /Integer/i);
+
+        await userEvent.type(integerInput, '8');
         await submitForm();
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
@@ -311,15 +358,19 @@ describe('Integer', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await typeByLabelText(/Integer/i, '3');
 
+        const integerInput = getIntegerInput(questionnaire, /Integer/i);
+
+        await userEvent.type(integerInput, '3');
         await submitForm();
 
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await typeByLabelText(/Integer/i, '8', true);
+
+        await userEvent.clear(integerInput);
+        await userEvent.type(integerInput, '8');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });

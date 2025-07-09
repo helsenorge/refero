@@ -15,15 +15,15 @@ vi.mock('@helsenorge/core-utils/debounce', () => ({
 }));
 
 const getTestId = (questionnaire: Questionnaire) => {
-  const textItem = questionnaire.item?.find(item => item.type === 'string');
-  const textInputTestId = `test-string-item_${textItem?.linkId}`;
-  return textInputTestId;
+  const stringItem = questionnaire.item?.find(item => item.type === 'string');
+  const stringInputTestId = `test-string-item_${stringItem?.linkId}`;
+  return stringInputTestId;
 };
 
 const getStringInput = (questionnaire: Questionnaire, labelText: Matcher) => {
-  const textInputTestId = getTestId(questionnaire);
-  const textInput = getByLabelTextInsideElement(textInputTestId, labelText);
-  return textInput;
+  const stringInputTestId = getTestId(questionnaire);
+  const stringInput = getByLabelTextInsideElement(stringInputTestId, labelText);
+  return stringInput;
 };
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
