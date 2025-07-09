@@ -25,7 +25,6 @@ const getTestId = (questionnaire: Questionnaire) => {
 
 const getTextInput = (questionnaire: Questionnaire, labelText: Matcher) => {
   const textInputTestId = getTestId(questionnaire);
-  console.log(textInputTestId);
   const textInput = getByLabelTextInsideElement(textInputTestId, labelText);
   return textInput;
 };
@@ -529,15 +528,21 @@ describe('Text', () => {
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });
-    describe.skip('validateScriptInjection ', () => {
+    describe('validateScriptInjection ', () => {
       it('Should render with validation when input has html and validateScriptInjection = true', async () => {
         const validateScriptInjection = true;
         const value = 'input med <html>';
         await createWrapper(qScriptInjection, { validateScriptInjection });
-        await userEvent.type(await screen.findByLabelText(/String1/i), value);
-        await userEvent.type(await screen.findByLabelText(/String2 - Obligatorisk/i), 'test');
+
+        const textInput1 = getTextInput(qScriptInjection, /String1/i);
+        const textInput2 = getTextInput(qScriptInjection, /String2 - Obligatorisk/i);
+
+        await userEvent.type(textInput1, value);
+        await userEvent.type(textInput2, 'test');
         await submitForm();
+
         const actualElement = await screen.findByText(/er ikke tillatt/i);
+
         expect(actualElement).toBeInTheDocument();
       });
       it('Should render with validation when input has html and validateScriptInjection = false', async () => {

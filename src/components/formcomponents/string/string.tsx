@@ -119,7 +119,7 @@ export const String = (props: Props): JSX.Element | null => {
           }}
           type="text"
           width={width}
-          testId={`${getId(id)}-string`}
+          testId={`test-string-${getId(id)}`}
           inputId={getId(id)}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
