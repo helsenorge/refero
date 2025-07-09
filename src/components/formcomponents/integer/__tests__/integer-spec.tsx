@@ -7,7 +7,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { q, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { addManyPropertiesToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
-import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm, typeByLabelText } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };

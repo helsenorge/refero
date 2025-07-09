@@ -1,4 +1,4 @@
-import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
+import { Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -6,10 +6,22 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { q, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
+
+const getTestId = (questionnaire: Questionnaire) => {
+  const decimalItem = questionnaire.item?.find(item => item.type === 'decimal');
+  const decimalInputTestId = `test-decimal-item_${decimalItem?.linkId}`;
+  return decimalInputTestId;
+};
+
+const getDecimalInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+  const decimalInputTestId = getTestId(questionnaire);
+  const decimalInput = getByLabelTextInsideElement(decimalInputTestId, labelText);
+  return decimalInput;
+};
 
 describe('Decimal', () => {
   describe('Render', () => {
@@ -42,7 +54,9 @@ describe('Decimal', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Decimal/i)).toHaveValue(null);
+      const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
+
+      expect(decimalInput).toHaveValue(null);
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -59,7 +73,9 @@ describe('Decimal', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Decimal/i)).toHaveValue(12.3);
+      const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
+
+      expect(decimalInput).toHaveValue(12.3);
     });
   });
   describe('help button', () => {
@@ -116,9 +132,12 @@ describe('Decimal', () => {
         }),
       };
       await createWrapper(questionnaire);
+
+      const testId = getTestId(questionnaire);
       const input = '2.2';
-      await repeatNTimes(input, 3, /Decimal/i);
-      expect(screen.getAllByLabelText(/Decimal/i)).toHaveLength(4);
+      await repeatNTimes(input, 3, testId, /Decimal/i);
+
+      expect(screen.getAllByTestId(/test-decimal/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -130,8 +149,9 @@ describe('Decimal', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '2.2';
-      await repeatNTimes(input, 2, /Decimal/i);
+      await repeatNTimes(input, 2, testId, /Decimal/i);
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -151,10 +171,12 @@ describe('Decimal', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '2.2';
-      await repeatNTimes(input, 1, /Decimal/i);
+      await repeatNTimes(input, 1, testId, /Decimal/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
+
       await clickButtonTimes(/-delete-button/i, 1);
 
       expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
@@ -166,10 +188,12 @@ describe('Decimal', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '2.2';
-      await repeatNTimes(input, 1, /Decimal/i);
+      await repeatNTimes(input, 1, testId, /Decimal/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
+
       await clickButtonTimes(/-delete-button/i, 1);
 
       // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
@@ -180,23 +204,37 @@ describe('Decimal', () => {
   });
   describe('onChange', () => {
     it('Should update component with value from answer', async () => {
-      await createWrapper(q);
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
+      };
+      await createWrapper(questionnaire);
 
-      const inputElement = screen.getByLabelText(/Decimal/i);
-      expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-      await userEvent.type(inputElement, '123');
-      expect(screen.getByLabelText(/Decimal/i)).toHaveValue(123);
+      const decimalInput = getDecimalInput(q, /Decimal/i);
+
+      expect(decimalInput).toBeInTheDocument();
+      expect(decimalInput).toHaveAttribute('type', 'number');
+      expect(decimalInput).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+      await userEvent.type(decimalInput, '123');
+      expect(decimalInput).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
-      await createWrapper(q, { onChange });
-      expect(screen.getByLabelText(/Decimal/i)).toBeInTheDocument();
-      await userEvent.type(screen.getByLabelText(/Decimal/i), '1.2');
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
+      };
+      await createWrapper(questionnaire, { onChange });
+
+      const decimalInput = getDecimalInput(q, /Decimal/i);
+
+      expect(decimalInput).toBeInTheDocument();
+
+      await userEvent.type(decimalInput, '1.2');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueDecimal: 1.2,
       };
+
       expect(onChange).toHaveBeenCalledTimes(2);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
@@ -206,7 +244,7 @@ describe('Decimal', () => {
       it('Should show error if field is required and value is empty', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
+          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
         await submitForm();
@@ -216,10 +254,13 @@ describe('Decimal', () => {
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
+          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '123');
+
+        const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
+
+        await userEvent.type(decimalInput, '123');
         await submitForm();
 
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -227,14 +268,18 @@ describe('Decimal', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
+          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
+
+        const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
         await submitForm();
+
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '123');
+        await userEvent.type(decimalInput, '123');
         await userEvent.tab();
+
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('readOnly value should get validation error if error exist', async () => {
@@ -273,10 +318,12 @@ describe('Decimal', () => {
       it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '8');
+
+        const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
+        await userEvent.type(decimalInput, '8');
         await submitForm();
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
@@ -284,14 +331,18 @@ describe('Decimal', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '12');
+
+        const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
+        await userEvent.type(decimalInput, '12');
         await submitForm();
+
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(screen.getByLabelText(/Decimal/i));
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '8');
+
+        await userEvent.clear(decimalInput);
+        await userEvent.type(decimalInput, '8');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -310,10 +361,12 @@ describe('Decimal', () => {
       it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '8');
+
+        const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
+        await userEvent.type(decimalInput, '8');
         await submitForm();
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
@@ -321,14 +374,18 @@ describe('Decimal', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...qCustomErrorMessage,
-          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '3');
+
+        const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
+        await userEvent.type(decimalInput, '3');
         await submitForm();
+
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(screen.getByLabelText(/Decimal/i));
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '8');
+
+        await userEvent.clear(decimalInput);
+        await userEvent.type(decimalInput, '8');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -353,10 +410,13 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '6.12');
+
+        const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
+        await userEvent.type(decimalInput, '6.12');
         await submitForm();
 
         expect(screen.queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
@@ -367,15 +427,19 @@ describe('Decimal', () => {
           item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
+            repeats: false,
           })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '6.121212');
+
+        const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
+        await userEvent.type(decimalInput, '6.121212');
         await submitForm();
 
         expect(screen.getByText('Custom error')).toBeInTheDocument();
-        await userEvent.clear(screen.getByLabelText(/Decimal/i));
-        await userEvent.type(screen.getByLabelText(/Decimal/i), '6.12');
+
+        await userEvent.clear(decimalInput);
+        await userEvent.type(decimalInput, '6.12');
 
         expect(screen.queryByText('Custom error')).not.toBeInTheDocument();
       });
