@@ -10,25 +10,26 @@ export async function clickButtonTimes(id: Matcher, times: number): Promise<void
   }
 }
 
-// export async function repeatNTimes(input: string, n: number, labelText: Matcher): Promise<void> {
-//   for (let i = 0; i < n; i++) {
-//     await userEvent.type(screen.queryAllByLabelText(labelText)[i], input);
-//     await clickButtonTimes(/-repeat-button/i, 1);
-//     await userEvent.type(screen.queryAllByLabelText(labelText)[i + 1], input);
-//   }
-// }
-
-export async function repeatNTimes(input: string, n: number, testId: string, labelText: Matcher): Promise<void> {
+export async function repeatNTimes(input: string, n: number, testId: string, labelText: Matcher, index?: number): Promise<void> {
   for (let i = 0; i < n; i++) {
     const currentTestId = testId + `^${i}`;
-    const textInput = getByLabelTextInsideElement(currentTestId, labelText);
+    const textInput = getByLabelTextInsideElement(currentTestId, labelText, index);
     await userEvent.type(textInput, input);
 
     await clickButtonTimes(/-repeat-button/i, 1);
 
     const nextTestId = testId + `^${i + 1}`;
-    const nextTextInput = getByLabelTextInsideElement(nextTestId, labelText);
+    const nextTextInput = getByLabelTextInsideElement(nextTestId, labelText, index);
     await userEvent.type(nextTextInput, input);
+  }
+}
+
+export async function repeatCheckboxTimes(n: number, testId: string, labelText: Matcher, index?: number): Promise<void> {
+  for (let i = 0; i < n; i++) {
+    const currentTestId = testId + `^${i}`;
+    const booleanInput = getByLabelTextInsideElement(currentTestId, labelText, index);
+    await userEvent.click(booleanInput);
+    await clickButtonTimes(/-repeat-button/i, 1);
   }
 }
 
@@ -93,13 +94,7 @@ export async function clickByLabelText(id: Matcher): Promise<void> {
   expect(elm).toBeInTheDocument();
   await userEvent.click(elm);
 }
-export async function repeatCheckboxTimes(matcher: Matcher, n: number): Promise<void> {
-  for (let i = 0; i < n; i++) {
-    const elm = screen.getAllByLabelText(matcher);
-    await userEvent.click(elm[i]);
-    await clickButtonTimes(/-repeat-button/i, 1);
-  }
-}
+
 export async function repeatSliderTimes(linkId: string, n: number): Promise<void> {
   for (let i = 0; i < n; i++) {
     const elm = await screen.findByTestId(`item_${linkId}^${i}-${i}-slider-choice`);
@@ -132,8 +127,11 @@ export async function typeAndTabByLabelText(id: Matcher, value: string): Promise
   await userEvent.tab();
 }
 
-export const getByLabelTextInsideElement = (elementTestId: string, labelText: Matcher): HTMLElement => {
+export const getByLabelTextInsideElement = (elementTestId: string, labelText: Matcher, index?: number): HTMLElement => {
   const elementToSearchIn = screen.getByTestId(elementTestId);
-  const elementToFind = within(elementToSearchIn).getByLabelText(labelText);
-  return elementToFind;
+  if (index !== undefined) {
+    return within(elementToSearchIn).getAllByLabelText(labelText)[index];
+  } else {
+    return within(elementToSearchIn).getByLabelText(labelText);
+  }
 };

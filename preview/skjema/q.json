@@ -1,8 +1,8 @@
 {
-  "title": "Tittel",
+  "title": "Title",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "name": "Teknisk_string",
+  "name": "Techinal_boolean",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -61,40 +61,15 @@
       }
     }
   ],
-  "id": "a2c22f04-f4b1-45d8-8731-67239b1dbc6b",
+  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
   "item": [
     {
-      "linkId": "9f296680-528a-4496-daf8-89771bc1f19c",
-      "type": "text",
-      "extension": [
-        {
-          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "**String sublabel**"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/minLength",
-          "valueInteger": 10
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
-          "valueInteger": 1
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-          "valueInteger": 4
-        },
-        {
-          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-          "valueString": "Legg til"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/regex",
-          "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-        }
-      ],
+      "linkId": "af3cff52-5879-4db0-c671-1fb2bec90309",
+      "type": "boolean",
+      "text": "Boolean",
       "item": [
         {
-          "linkId": "886ba9d4-e7cd-4c23-b581-46ea81a1deca",
+          "linkId": "6b993066-aac0-4ad5-8d03-dc80b18e4664",
           "type": "text",
           "required": false,
           "repeats": false,
@@ -128,13 +103,25 @@
         "extension": [
           {
             "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "**String markdown**"
+            "valueMarkdown": "**Boolean**"
           }
         ]
       },
-      "text": "String markdown",
-      "maxLength": 20,
-      "repeats": true
+      "repeats": true,
+      "extension": [
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
+        }
+      ]
     }
   ]
 }

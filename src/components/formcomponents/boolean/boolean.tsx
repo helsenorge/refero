@@ -121,7 +121,7 @@ const Boolean = (props: Props): JSX.Element | null => {
       <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <Checkbox
           {...rest}
-          testId={`${getId(id)}-boolean`}
+          testId={`test-boolean-${getId(id)}`}
           inputId={getId(id)}
           label={
             <Label
