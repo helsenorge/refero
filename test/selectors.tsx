@@ -14,6 +14,7 @@ export async function repeatNTimes(input: string, n: number, testId: string, lab
   for (let i = 0; i < n; i++) {
     const currentTestId = testId + `^${i}`;
     const textInput = getByLabelTextInsideElement(currentTestId, labelText, index);
+    await userEvent.clear(textInput);
     await userEvent.type(textInput, input);
 
     await clickButtonTimes(/-repeat-button/i, 1);
