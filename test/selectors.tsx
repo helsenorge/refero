@@ -35,7 +35,7 @@ export async function repeatCheckboxTimes(n: number, testId: string, labelText: 
 }
 
 export async function repeatDateTimeNTimes(
-  dateLabelText: Matcher,
+  dateTestId: Matcher,
   hoursTestId: string,
   minutesTestId: string,
   dateString: string,
@@ -44,16 +44,16 @@ export async function repeatDateTimeNTimes(
   n: number
 ): Promise<void> {
   for (let i = 0; i < n; i++) {
-    const dateElement = screen.queryAllByLabelText(dateLabelText)[i];
+    const dateElement = screen.queryAllByTestId(dateTestId)[i];
     const hoursElement = screen.queryAllByTestId(hoursTestId)[i];
     const minutesElement = screen.queryAllByTestId(minutesTestId)[i];
 
+    const dateInput = dateElement.querySelector('input');
     const hoursInput = hoursElement.querySelector('input');
     const minutesInput = minutesElement.querySelector('input');
 
-    await userEvent.type(dateElement, dateString);
-
-    if (hoursInput && minutesInput) {
+    if (dateInput && hoursInput && minutesInput) {
+      await userEvent.type(dateInput, dateString);
       await userEvent.type(hoursInput, hoursString);
       await userEvent.type(minutesInput, minutesString);
     }

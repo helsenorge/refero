@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
 import { renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
-import { screen } from '@testing-library/react';
+import { Matcher, screen } from '@testing-library/react';
 import { format } from 'date-fns';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
@@ -9,7 +9,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { q, qMinMax, qMinMaxCustomError } from './__data__/date-time';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, repeatDateTimeNTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatDateTimeNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 import { DateFormat } from '@/types/dateTypes';
@@ -22,6 +22,18 @@ const resources = {
   errorBeforeMinDate: 'Dato kan ikke være før minimums dato',
   errorAfterMaxDate: 'Dato kan ikke være etter maksimum dato',
   dateError_time_invalid: 'Ugyldig klokkeslett',
+};
+
+const getTestId = (questionnaire: Questionnaire) => {
+  const dateItem = questionnaire.item?.find(item => item.type === 'dateTime');
+  const dateInputTestId = `test-datetime-item_${dateItem?.linkId}`;
+  return dateInputTestId;
+};
+
+const getDateInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+  const dateInputTestId = getTestId(questionnaire);
+  const dateInput = getByLabelTextInsideElement(dateInputTestId, labelText);
+  return dateInput;
 };
 
 describe('Date time', () => {
@@ -51,23 +63,17 @@ describe('Date time', () => {
   });
   describe('initialvalue', () => {
     it('Initial value should not be set', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-        })),
-      };
-      await createWrapper(questionnaire);
+      await createWrapper(q);
 
-      await waitFor(async () => expect(screen.getByLabelText(/Dato/i)).toHaveValue(''));
+      const dateInput = getDateInput(q, /Dato/i);
+
+      await waitFor(async () => expect(dateInput).toHaveValue(''));
     });
     it.skip('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({
           ...x,
-          repeats: false,
           initial: [
             {
               valueDateTime: '1994-05-31T14:30:00+02:00',
@@ -76,12 +82,12 @@ describe('Date time', () => {
         })),
       };
       await createWrapper(questionnaire);
-      const dateInput = screen.getByLabelText(/Dato/i);
+
+      const dateInput = getDateInput(questionnaire, /Dato/i);
       const hoursElement = screen.getByTestId(/hours-test/i);
       const minutesElement = screen.getByTestId(/minutes-test/i);
 
       const hoursInput = hoursElement.querySelector('input');
-
       const minutesInput = minutesElement.querySelector('input');
 
       await waitFor(async () => expect(dateInput).toHaveValue('31.05.1994'));
@@ -144,9 +150,9 @@ describe('Date time', () => {
       };
       await createWrapper(questionnaire);
 
-      await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 3);
+      await repeatDateTimeNTimes(/test-datetime/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 3);
 
-      await waitFor(async () => expect(screen.queryAllByLabelText(/Dato/i)).toHaveLength(4));
+      await waitFor(async () => expect(screen.queryAllByTestId(/test-datetime/i)).toHaveLength(4));
       await waitFor(async () => expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument());
     });
   });
@@ -158,7 +164,7 @@ describe('Date time', () => {
       };
       await createWrapper(questionnaire);
 
-      await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 2);
+      await repeatDateTimeNTimes(/test-datetime/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 2);
 
       await waitFor(async () => expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2));
     });
@@ -177,17 +183,17 @@ describe('Date time', () => {
       };
       await createWrapper(questionnaire);
 
-      await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
-      const dateElement2 = screen.queryAllByLabelText(/Dato/i)[1];
+      await repeatDateTimeNTimes(/test-datetime/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
+      const dateElement2 = screen.queryAllByTestId(/test-datetime/i)[1];
       const hoursElement2 = screen.queryAllByTestId('hours-test')[1];
       const minutesElement2 = screen.queryAllByTestId('minutes-test')[1];
       if (dateElement2 && hoursElement2 && minutesElement2) {
+        const dateInput2 = dateElement2.querySelector('input');
         const hoursInput2 = hoursElement2.querySelector('input');
         const minutesInput2 = minutesElement2.querySelector('input');
 
-        await userEvent.type(dateElement2, '12.12.2024');
-
-        if (hoursInput2 && minutesInput2) {
+        if (dateInput2 && hoursInput2 && minutesInput2) {
+          await userEvent.type(dateInput2, '12.12.2024');
           await userEvent.type(hoursInput2, '12');
           await userEvent.type(minutesInput2, '30');
         }
@@ -206,17 +212,17 @@ describe('Date time', () => {
       };
       await createWrapper(questionnaire);
 
-      await repeatDateTimeNTimes(/Dato/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
-      const dateElement2 = screen.queryAllByLabelText(/Dato/i)[1];
+      await repeatDateTimeNTimes(/test-datetime/i, 'hours-test', 'minutes-test', '12.12.2024', '12', '30', 1);
+      const dateElement2 = screen.queryAllByTestId(/test-datetime/i)[1];
       const hoursElement2 = screen.queryAllByTestId('hours-test')[1];
       const minutesElement2 = screen.queryAllByTestId('minutes-test')[1];
       if (dateElement2 && hoursElement2 && minutesElement2) {
+        const dateInput2 = dateElement2.querySelector('input');
         const hoursInput2 = hoursElement2.querySelector('input');
         const minutesInput2 = minutesElement2.querySelector('input');
 
-        await userEvent.type(dateElement2, '12.12.2024');
-
-        if (hoursInput2 && minutesInput2) {
+        if (dateInput2 && hoursInput2 && minutesInput2) {
+          await userEvent.type(dateInput2, '12.12.2024');
           await userEvent.type(hoursInput2, '12');
           await userEvent.type(minutesInput2, '30');
         }
@@ -236,21 +242,20 @@ describe('Date time', () => {
     it('Should update date field with value from answer', async () => {
       await createWrapper(q);
 
-      const inputElement = screen.getByLabelText(/Dato/i);
+      const dateInput = getDateInput(q, /Dato/i);
 
-      expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', 'text');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datepicker`);
+      expect(dateInput).toBeInTheDocument();
+      expect(dateInput).toHaveAttribute('type', 'text');
+      expect(dateInput).toHaveAttribute('id', `item_${q?.item?.[0].linkId}-datepicker`);
 
-      await userEvent.type(inputElement, '31.05.1994');
+      await userEvent.type(dateInput, '31.05.1994');
 
-      await waitFor(async () => expect(inputElement).toHaveValue('31.05.1994'));
+      await waitFor(async () => expect(dateInput).toHaveValue('31.05.1994'));
     });
     it('Should update hours field with value from answer', async () => {
       await createWrapper(q);
 
       const hoursElement = screen.getByTestId(/hours-test/i);
-
       const hoursInput = hoursElement.querySelector('input');
 
       if (hoursInput) {
@@ -264,7 +269,6 @@ describe('Date time', () => {
       await createWrapper(q);
 
       const minutesElement = screen.getByTestId(/minutes-test/i);
-
       const minutesInput = minutesElement.querySelector('input');
 
       if (minutesInput) {
@@ -276,17 +280,16 @@ describe('Date time', () => {
       const onChange = vi.fn();
       await createWrapper(q, { onChange });
 
-      const dateElement = screen.getByLabelText(/Dato/i);
       const hoursElement = await screen.findByTestId('hours-test');
       const minutesElement = await screen.findByTestId('minutes-test');
 
+      const dateInput = getDateInput(q, /Dato/i);
       const hoursInput = hoursElement.querySelector('input');
-
       const minutesInput = minutesElement.querySelector('input');
 
-      expect(screen.getByLabelText(/Dato/i)).toBeInTheDocument();
+      expect(dateInput).toBeInTheDocument();
 
-      await userEvent.type(dateElement, '12.12.2024');
+      await userEvent.type(dateInput, '12.12.2024');
       if (hoursInput && minutesInput) {
         await userEvent.type(hoursInput, '12');
         await userEvent.type(minutesInput, '30');
@@ -326,11 +329,11 @@ describe('Date time', () => {
       const hoursElement = screen.getByTestId(/hours-test/i);
       const minutesElement = screen.getByTestId(/minutes-test/i);
 
+      const dateInput = getDateInput(q, /Dato/i);
       const hoursInput = hoursElement.querySelector('input');
-
       const minutesInput = minutesElement.querySelector('input');
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '12.12.2024');
+      await userEvent.type(dateInput, '12.12.2024');
       if (hoursInput && minutesInput) {
         await userEvent.type(hoursInput, '12');
         await userEvent.type(minutesInput, '30');
@@ -342,7 +345,8 @@ describe('Date time', () => {
     it('Should show error if date is invalid', async () => {
       await createWrapper(q);
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '313131');
+      const dateInput = getDateInput(q, /Dato/i);
+      await userEvent.type(dateInput, '313131');
       await submitForm();
 
       await screen.findByText(resources.dateError_invalid);
@@ -350,7 +354,8 @@ describe('Date time', () => {
     it('Should show error message for min value', async () => {
       await createWrapper(qMinMax);
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.1904');
+      const dateInput = getDateInput(qMinMax, /Dato/i);
+      await userEvent.type(dateInput, '31.05.1904');
       await submitForm();
 
       await screen.findByText(resources.errorBeforeMinDate + ': 31.05.1994');
@@ -358,7 +363,8 @@ describe('Date time', () => {
     it('Should show error message for max value', async () => {
       await createWrapper(qMinMax);
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.2095');
+      const dateInput = getDateInput(qMinMax, /Dato/i);
+      await userEvent.type(dateInput, '31.05.2095');
       await submitForm();
 
       await screen.findByText(resources.errorAfterMaxDate + ': 31.05.2094');
@@ -366,7 +372,8 @@ describe('Date time', () => {
     it('Should show custom error message for min value', async () => {
       await createWrapper(qMinMaxCustomError);
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.1904');
+      const dateInput = getDateInput(qMinMaxCustomError, /Dato/i);
+      await userEvent.type(dateInput, '31.05.1904');
       await submitForm();
 
       await screen.findByText('Custom errormessage');
@@ -374,7 +381,8 @@ describe('Date time', () => {
     it('Should show custom error message for max value', async () => {
       await createWrapper(qMinMaxCustomError);
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.2095');
+      const dateInput = getDateInput(qMinMaxCustomError, /Dato/i);
+      await userEvent.type(dateInput, '31.05.2095');
       await submitForm();
 
       await screen.findByText('Custom errormessage');
@@ -382,7 +390,8 @@ describe('Date time', () => {
     it('Should not show error if date value is between min value and max value', async () => {
       await createWrapper(qMinMax);
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.2024');
+      const dateInput = getDateInput(qMinMax, /Dato/i);
+      await userEvent.type(dateInput, '31.05.2024');
       await submitForm();
 
       await waitFor(async () => expect(screen.queryByText(resources.errorBeforeMinDate + ': 31.05.1994')).not.toBeInTheDocument());
@@ -394,11 +403,11 @@ describe('Date time', () => {
       const hoursElement = screen.getByTestId(/hours-test/i);
       const minutesElement = screen.getByTestId(/minutes-test/i);
 
+      const dateInput = getDateInput(qMinMax, /Dato/i);
       const hoursInput = hoursElement.querySelector('input');
-
       const minutesInput = minutesElement.querySelector('input');
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.1994');
+      await userEvent.type(dateInput, '31.05.1994');
       if (hoursInput) {
         await userEvent.clear(hoursInput);
         await userEvent.type(hoursInput, '90');
@@ -417,11 +426,11 @@ describe('Date time', () => {
       const hoursElement = screen.getByTestId(/hours-test/i);
       const minutesElement = screen.getByTestId(/minutes-test/i);
 
+      const dateInput = getDateInput(qMinMax, /Dato/i);
       const hoursInput = hoursElement.querySelector('input');
-
       const minutesInput = minutesElement.querySelector('input');
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.1994');
+      await userEvent.type(dateInput, '31.05.1994');
       if (hoursInput) {
         await userEvent.clear(hoursInput);
         await userEvent.type(hoursInput, '00');
