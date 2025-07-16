@@ -104,7 +104,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
         {...rest}
         inputId={`${getId(id)}-input`}
         type="number"
-        testId={getId(id)}
+        testId={`test-year-${getId(id)}`}
         onChange={e => {
           onYearChange(e.target.value);
           onChange(e);
