@@ -180,7 +180,7 @@ export const DateYearMonthInput = ({
           {...restYear}
           type="number"
           inputId={`${getId(id)}-input`}
-          testId={getId(id)}
+          testId={`test-yearmonth-${getId(id)}`}
           onChange={e => {
             const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-month`);
             handleYearChange(e.target.value, monthValue);

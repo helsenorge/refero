@@ -1,5 +1,5 @@
 import { renderRefero, userEvent } from '@test/test-utils.tsx';
-import { screen, waitFor } from '@testing-library/react';
+import { Matcher, screen, waitFor } from '@testing-library/react';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -7,7 +7,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { q, qMinMax, qMinMaxCustomError } from './__data__/date-month';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = {
@@ -20,6 +20,18 @@ const resources = {
   yearmonth_field_invalid: 'Ugyldig verdi',
   yearmonth_field_invalid_year: 'Du må skrive inn et gyldig årstall',
   errorAfterMaxDate: 'Dato kan ikke være etter maksimum dato',
+};
+
+const getTestId = (questionnaire: Questionnaire) => {
+  const dateItem = questionnaire.item?.find(item => item.type === 'date');
+  const dateInputTestId = `test-yearmonth-item_${dateItem?.linkId}`;
+  return dateInputTestId;
+};
+
+const getDateInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+  const dateInputTestId = getTestId(questionnaire);
+  const dateInput = getByLabelTextInsideElement(dateInputTestId, labelText);
+  return dateInput;
 };
 
 describe('Date month', () => {
@@ -43,16 +55,11 @@ describe('Date month', () => {
   });
   describe('initialvalue', () => {
     it('Initial value should not be set', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-        })),
-      };
-      await createWrapper(questionnaire);
+      await createWrapper(q);
 
-      expect(screen.getByLabelText(/Dato/i)).toHaveValue(null);
+      const dateInput = getDateInput(q, /Dato/i);
+
+      expect(dateInput).toHaveValue(null);
     });
 
     it('Initial value should be set', async () => {
@@ -60,7 +67,6 @@ describe('Date month', () => {
         ...q,
         item: q.item?.map(x => ({
           ...x,
-          repeats: false,
           initial: [
             {
               valueDate: '1994-05',
@@ -70,32 +76,31 @@ describe('Date month', () => {
       };
       await createWrapper(questionnaire);
 
+      const dateInput = getDateInput(questionnaire, /Dato/i);
+
       const monthElement = await screen.findByTestId('month-select');
-      // eslint-disable-next-line testing-library/no-node-access
       const monthInput = monthElement.querySelector('select');
 
-      expect(screen.getByLabelText(/Dato/i)).toHaveValue(1994);
+      expect(dateInput).toHaveValue(1994);
       expect(monthInput).toHaveValue('05');
     });
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
       const { container } = await createWrapper(q);
-      // eslint-disable-next-line testing-library/no-node-access
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
       const { container } = await createWrapper(q);
-      // eslint-disable-next-line testing-library/no-node-access
+
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
-      // eslint-disable-next-line testing-library/no-node-access
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
-      // eslint-disable-next-line testing-library/no-node-access
+
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
         await userEvent.click(helpButton);
       }
-      // eslint-disable-next-line testing-library/no-node-access
+
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
   });
@@ -132,10 +137,12 @@ describe('Date month', () => {
         }),
       };
       await createWrapper(questionnaire);
-      const input = '1994';
-      await repeatNTimes(input, 3, /Dato/i);
 
-      expect(screen.queryAllByLabelText(/Dato/i)).toHaveLength(4);
+      const testId = getTestId(questionnaire);
+      const input = '1994';
+      await repeatNTimes(input, 3, testId, /Dato/i);
+
+      expect(screen.queryAllByTestId(/test-yearmonth/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -146,8 +153,10 @@ describe('Date month', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
+
+      const testId = getTestId(questionnaire);
       const input = '1994';
-      await repeatNTimes(input, 2, /Dato/i);
+      await repeatNTimes(input, 2, testId, /Dato/i);
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -167,10 +176,12 @@ describe('Date month', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '1994';
-      await repeatNTimes(input, 1, /Dato/i);
+      await repeatNTimes(input, 1, testId, /Dato/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
+
       await clickButtonTimes(/-delete-button/i, 1);
 
       expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
@@ -182,13 +193,12 @@ describe('Date month', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '1994';
-      await repeatNTimes(input, 1, /Dato/i);
+      await repeatNTimes(input, 1, testId, /Dato/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
-
-      // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
       await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
@@ -198,23 +208,28 @@ describe('Date month', () => {
     it('Should update component with value from answer', async () => {
       await createWrapper(q);
 
-      const inputElement = screen.getByLabelText(/Dato/i);
-      expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-input`);
-      await userEvent.type(inputElement, '1994');
-      expect(screen.getByLabelText(/Dato/i)).toHaveValue(1994);
+      const dateInput = getDateInput(q, /Dato/i);
+
+      expect(dateInput).toBeInTheDocument();
+      expect(dateInput).toHaveAttribute('type', 'number');
+      expect(dateInput).toHaveAttribute('id', `item_${q?.item?.[0].linkId}-input`);
+
+      await userEvent.type(dateInput, '1994');
+
+      expect(dateInput).toHaveValue(1994);
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
       await createWrapper(q, { onChange });
-      expect(screen.getByLabelText(/Dato/i)).toBeInTheDocument();
+
+      const dateInput = getDateInput(q, /Dato/i);
+
+      expect(dateInput).toBeInTheDocument();
 
       const monthElement = await screen.findByTestId('month-select');
-      // eslint-disable-next-line testing-library/no-node-access
       const monthSelect = monthElement.querySelector('select');
 
-      await userEvent.type(screen.getByLabelText(/Dato/i), '1994');
+      await userEvent.type(dateInput, '1994');
       if (monthSelect) {
         await userEvent.selectOptions(monthSelect, '05');
       }
@@ -245,7 +260,10 @@ describe('Date month', () => {
           item: q.item?.map(x => ({ ...x, required: true })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.1994');
+
+        const dateInput = getDateInput(questionnaire, /Dato/i);
+
+        await userEvent.type(dateInput, '31.05.1994');
         await submitForm();
 
         expect(screen.queryByText(resources.yearmonth_field_required)).not.toBeInTheDocument();
@@ -257,13 +275,14 @@ describe('Date month', () => {
         };
         await createWrapper(questionnaire);
         await submitForm();
+
         expect(screen.getByText(resources.yearmonth_field_required)).toBeInTheDocument();
 
+        const dateInput = getDateInput(questionnaire, /Dato/i);
         const monthElement = await screen.findByTestId('month-select');
-        // eslint-disable-next-line testing-library/no-node-access
         const monthSelect = monthElement.querySelector('select');
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1994');
+        await userEvent.type(dateInput, '1994');
         await userEvent.tab();
         if (monthSelect) {
           await userEvent.selectOptions(monthSelect, '05');
@@ -274,67 +293,68 @@ describe('Date month', () => {
       it('Should show error if date is invalid', async () => {
         await createWrapper(q);
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '333');
-
+        const dateInput = getDateInput(q, /Dato/i);
+        await userEvent.type(dateInput, '333');
         await submitForm();
+
         expect(screen.getByText(resources.yearmonth_field_invalid)).toBeInTheDocument();
       });
       it('Should show error message for min value, if month is correct but year is too low', async () => {
         await createWrapper(qMinMax);
 
+        const dateInput = getDateInput(qMinMax, /Dato/i);
         const monthElement = await screen.findByTestId('month-select');
-        // eslint-disable-next-line testing-library/no-node-access
         const monthSelect = monthElement.querySelector('select');
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1993');
+        await userEvent.type(dateInput, '1993');
         await userEvent.tab();
         if (monthSelect) {
           await userEvent.selectOptions(monthSelect, '05');
         }
-
         await submitForm();
+
         expect(screen.getByText(resources.errorBeforeMinDate + ': mai 1994')).toBeInTheDocument();
       });
       it('Should show error message for max value, if month is correct but year is too high', async () => {
         await createWrapper(qMinMax);
 
+        const dateInput = getDateInput(qMinMax, /Dato/i);
         const monthElement = await screen.findByTestId('month-select');
-        // eslint-disable-next-line testing-library/no-node-access
         const monthSelect = monthElement.querySelector('select');
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1997');
+        await userEvent.type(dateInput, '1997');
         await userEvent.tab();
         if (monthSelect) {
           await userEvent.selectOptions(monthSelect, '05');
         }
-
         await submitForm();
+
         expect(screen.getByText(resources.errorAfterMaxDate + ': mai 1996')).toBeInTheDocument();
       });
       it('Should show error message for min value, if year is correct but month is too low', async () => {
         await createWrapper(qMinMax);
 
+        const dateInput = getDateInput(qMinMax, /Dato/i);
         const monthElement = await screen.findByTestId('month-select');
-        // eslint-disable-next-line testing-library/no-node-access
         const monthSelect = monthElement.querySelector('select');
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1994');
+        await userEvent.type(dateInput, '1994');
         await userEvent.tab();
         if (monthSelect) {
           await userEvent.selectOptions(monthSelect, '04');
         }
-
         await submitForm();
+
         expect(screen.getByText(resources.errorBeforeMinDate + ': mai 1994')).toBeInTheDocument();
       });
       it('Should show error message for max value, if year is correct but month is too high', async () => {
         await createWrapper(qMinMax);
 
+        const dateInput = getDateInput(qMinMax, /Dato/i);
         const monthElement = await screen.findByTestId('month-select');
-        // eslint-disable-next-line testing-library/no-node-access
         const monthSelect = monthElement.querySelector('select');
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1996');
+        await userEvent.type(dateInput, '1996');
         await userEvent.tab();
         if (monthSelect) {
           await userEvent.selectOptions(monthSelect, '06');
@@ -346,25 +366,26 @@ describe('Date month', () => {
       it('Should show custom error message if error', async () => {
         await createWrapper(qMinMaxCustomError);
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1997');
-
+        const dateInput = getDateInput(qMinMaxCustomError, /Dato/i);
+        await userEvent.type(dateInput, '1997');
         await submitForm();
+
         expect(screen.getByText('Custom errormessage')).toBeInTheDocument();
       });
       it('Should not show error if date value is between min value and max value', async () => {
         await createWrapper(qMinMax);
 
+        const dateInput = getDateInput(qMinMax, /Dato/i);
         const monthElement = await screen.findByTestId('month-select');
-        // eslint-disable-next-line testing-library/no-node-access
         const monthSelect = monthElement.querySelector('select');
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1995');
+        await userEvent.type(dateInput, '1995');
         await userEvent.tab();
         if (monthSelect) {
           await userEvent.selectOptions(monthSelect, '05');
         }
-
         await submitForm();
+
         expect(screen.queryByText(resources.errorAfterMaxDate + ': mai 1994')).not.toBeInTheDocument();
         expect(screen.queryByText(resources.errorBeforeMinDate + ': mai 1996')).not.toBeInTheDocument();
       });
@@ -378,11 +399,11 @@ describe('Date month', () => {
 
         expect(screen.getByText(resources.yearmonth_field_required)).toBeInTheDocument();
 
+        const dateInput = getDateInput(questionnaire, /Dato/i);
         const monthElement = await screen.findByTestId('month-select');
-        // eslint-disable-next-line testing-library/no-node-access
         const monthSelect = monthElement.querySelector('select');
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '2024');
+        await userEvent.type(dateInput, '2024');
         if (monthSelect) {
           await userEvent.selectOptions(monthSelect, '05');
         }
