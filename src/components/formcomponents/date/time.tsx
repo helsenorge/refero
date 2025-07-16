@@ -217,7 +217,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
             type="number"
             min={0}
             max={23}
-            testId={`time-1`}
+            testId={`test-hours-${getId(id)}`}
             onChange={e => {
               handleHoursChange(e.target.value);
               onChangeHours(e);
@@ -233,7 +233,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
             type="number"
             min={0}
             max={59}
-            testId={`time-2`}
+            testId={`test-minutes-${getId(id)}`}
             onChange={e => {
               handleMinutesChange(e.target.value);
               onChangeMinutes(e);

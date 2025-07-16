@@ -49,7 +49,7 @@
         { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Custom errormessage" }
       ],
       "required": true,
-      "repeats": true,
+      "repeats": false,
       "item": [
         {
           "linkId": "a84b4f4a-4ded-40f1-84e8-004a87a36d75",

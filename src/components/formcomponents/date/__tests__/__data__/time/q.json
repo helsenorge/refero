@@ -48,7 +48,7 @@
         { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueTime": "16:45:00" }
       ],
       "required": true,
-      "repeats": true,
+      "repeats": false,
       "item": [
         {
           "linkId": "a84b4f4a-4ded-40f1-84e8-004a87a36d75",
