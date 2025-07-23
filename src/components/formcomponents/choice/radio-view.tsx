@@ -79,7 +79,7 @@ const RadioView = (props: Props): JSX.Element => {
             value={option.type}
             key={option.id}
             inputId={`${getId(id)}-hn-${index}`}
-            testId={`${getId(id)}-${index}-radio-choice`}
+            testId={`test-choice-radio-${getId(id)}-${index}`}
             onColor="ongrey"
             label={<Label testId={`${getId(id)}-${index}-radio-choice-label`} labelTexts={[{ text: option.label, type: 'subdued' }]} />}
             checked={selectedValue === option?.type}
