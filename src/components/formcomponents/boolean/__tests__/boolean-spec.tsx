@@ -6,7 +6,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { q } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, getByLabelTextInsideElement, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatBooleanNTimes, submitForm } from '../../../../../test/selectors';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
@@ -136,7 +136,7 @@ describe('Boolean', () => {
       await createWrapper(questionnaire);
 
       const testId = getTestId(questionnaire);
-      await repeatCheckboxTimes(3, testId, /Boolean/i, 0);
+      await repeatBooleanNTimes(3, testId, /Boolean/i, 0);
 
       expect(screen.queryAllByTestId(/test-boolean/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -151,7 +151,7 @@ describe('Boolean', () => {
       await createWrapper(questionnaire);
 
       const testId = getTestId(questionnaire);
-      await repeatCheckboxTimes(2, testId, /Boolean/i, 0);
+      await repeatBooleanNTimes(2, testId, /Boolean/i, 0);
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -172,7 +172,7 @@ describe('Boolean', () => {
       await createWrapper(questionnaire);
 
       const testId = getTestId(questionnaire);
-      await repeatCheckboxTimes(1, testId, /Boolean/i, 0);
+      await repeatBooleanNTimes(1, testId, /Boolean/i, 0);
       const deleteButton = screen.getByTestId(/-delete-button/i);
 
       expect(deleteButton).toBeInTheDocument();
@@ -189,7 +189,7 @@ describe('Boolean', () => {
       await createWrapper(questionnaire);
 
       const testId = getTestId(questionnaire);
-      await repeatCheckboxTimes(1, testId, /Boolean/i, 0);
+      await repeatBooleanNTimes(1, testId, /Boolean/i, 0);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 

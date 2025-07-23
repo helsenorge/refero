@@ -25,10 +25,18 @@ export async function repeatNTimes(input: string, n: number, testId: string, lab
   }
 }
 
-export async function repeatCheckboxTimes(n: number, testId: string, labelText: Matcher, index?: number): Promise<void> {
+export async function repeatBooleanNTimes(n: number, testId: string, labelText: Matcher, index?: number): Promise<void> {
   for (let i = 0; i < n; i++) {
     const currentTestId = testId + `^${i}`;
     const booleanInput = getByLabelTextInsideElement(currentTestId, labelText, index);
+    await userEvent.click(booleanInput);
+    await clickButtonTimes(/-repeat-button/i, 1);
+  }
+}
+
+export async function repeatCheckboxNTimes(labelText: Matcher, n: number): Promise<void> {
+  for (let i = 0; i < n; i++) {
+    const booleanInput = screen.getAllByLabelText(labelText)[i];
     await userEvent.click(booleanInput);
     await clickButtonTimes(/-repeat-button/i, 1);
   }
