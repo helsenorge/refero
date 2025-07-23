@@ -90,7 +90,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
           width={getWith(options)}
           selectId={getId(id)}
           className="page_refero__input"
-          testId={getId(id)}
+          testId={`test-openchoice-dropdown-${getId(id)}`}
           onChange={(e): void => {
             handleFormChange(e);
             onChange(e);

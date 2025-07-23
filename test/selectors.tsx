@@ -121,16 +121,25 @@ export async function clickSliderValue(linkId: Matcher, index: number): Promise<
   await userEvent.click(itemToClick);
 }
 export async function repeatDropDownTimes(
-  id: Matcher,
   n: number,
+  testId: string,
+  labelText: Matcher,
   optionName: string | RegExp | ((accessibleName: string, element: Element) => boolean) | undefined
 ): Promise<void> {
   for (let i = 0; i < n; i++) {
-    await userEvent.selectOptions(screen.getAllByLabelText(id)[i], screen.getAllByRole('option', { name: optionName })[i]);
+    const currentTestId = testId + `^${i}`;
+    const dropdownInput = getByLabelTextInsideElement(currentTestId, labelText);
+
+    await userEvent.selectOptions(dropdownInput, screen.getAllByRole('option', { name: optionName })[i]);
     await clickButtonTimes(/-repeat-button/i, 1);
-    await userEvent.selectOptions(screen.getAllByLabelText(id)[i + 1], screen.getAllByRole('option', { name: optionName })[i + 1]);
+
+    const nextTestId = testId + `^${i + 1}`;
+    const nextDropdownInput = getByLabelTextInsideElement(nextTestId, labelText);
+
+    await userEvent.selectOptions(nextDropdownInput, screen.getAllByRole('option', { name: optionName })[i + 1]);
   }
 }
+
 export async function typeAndTabByLabelText(id: Matcher, value: string): Promise<void> {
   await userEvent.type(screen.getByLabelText(id), value);
   await userEvent.tab();
