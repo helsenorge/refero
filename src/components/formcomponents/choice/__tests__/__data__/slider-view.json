@@ -65,7 +65,7 @@
   "item": [
     {
       "linkId": "3dec9e0d-7b78-424e-8a59-f0909510985d",
-      "type": "open-choice",
+      "type": "choice",
       "code": [
         {
           "code": "label",

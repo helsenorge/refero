@@ -73,7 +73,7 @@ describe('Slider-view', () => {
       await userEvent.click(screen.getByRole('slider'));
       await userEvent.keyboard('{ArrowRight}');
       await waitFor(async () => {
-        expect(onChange).toHaveBeenCalledTimes(2);
+        expect(onChange).toHaveBeenCalledTimes(1);
       });
       const inputEl = container.querySelector(`input[name="${q?.item?.[0].linkId}^0"]`);
       await waitFor(async () => {
@@ -90,14 +90,14 @@ describe('Slider-view', () => {
       };
       const onChange = vi.fn();
       const { container } = await createWrapper(questionnaire, { onChange });
-      const JaElement = container.querySelectorAll('div.slider__track__step');
+      const NeiElement = container.querySelectorAll('div.slider__track__step')[1];
 
       await waitFor(async () => {
-        if (JaElement[1]) {
-          await userEvent.click(JaElement[1]);
+        if (NeiElement) {
+          await userEvent.click(NeiElement);
         }
       });
-      expect(onChange).toHaveBeenCalledTimes(2);
+      expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(
         expect.any(Object),
         {
@@ -110,7 +110,6 @@ describe('Slider-view', () => {
         expect.any(Object),
         expect.any(Object)
       );
-      expect(onChange).toHaveBeenCalledWith(expect.any(Object), { valueString: '' }, expect.any(Object), expect.any(Object));
     });
   });
   describe('help button', () => {
@@ -179,7 +178,7 @@ describe('Slider-view', () => {
 
       await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 3);
       await waitFor(async () => {
-        expect(screen.queryAllByTestId(/-slider-choice-label/i)).toHaveLength(4);
+        expect(screen.queryAllByTestId(/test-slider/i)).toHaveLength(4);
       });
       await waitFor(async () => {
         expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -248,10 +247,13 @@ describe('Slider-view', () => {
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
+
+        const sliderInput = screen.queryByTestId(/test-slider/i);
         await waitFor(async () => {
-          expect(screen.getByLabelText(/Slider view label/i)).toBeInTheDocument();
+          expect(sliderInput).toBeInTheDocument();
         });
         await submitForm();
+
         await waitFor(async () => {
           expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
         });

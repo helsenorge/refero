@@ -106,17 +106,17 @@ export async function clickByLabelText(id: Matcher): Promise<void> {
 
 export async function repeatSliderTimes(linkId: string, n: number): Promise<void> {
   for (let i = 0; i < n; i++) {
-    const elm = await screen.findByTestId(`item_${linkId}^${i}-${i}-slider-choice`);
+    const elm = await screen.findByTestId(`test-slider-item_${linkId}^${i}`);
     const itemToClick = elm.querySelectorAll('div.slider__track__step')[0];
     await userEvent.click(itemToClick);
     await clickButtonTimes(/-repeat-button/i, 1);
-    const elm2 = await screen.findByTestId(`item_${linkId}^${i + 1}-${i + 1}-slider-choice`);
+    const elm2 = await screen.findByTestId(`test-slider-item_${linkId}^${i + 1}`);
     const itemToClick2 = elm2.querySelectorAll('div.slider__track__step')[0];
     await userEvent.click(itemToClick2);
   }
 }
-export async function clickSliderValue(linkId: Matcher, index: number, sliderItemIndex: undefined | number = 0): Promise<void> {
-  const elm = await screen.findByTestId(`item_${linkId}-${sliderItemIndex}-slider-choice`);
+export async function clickSliderValue(linkId: Matcher, index: number): Promise<void> {
+  const elm = await screen.findByTestId(`test-slider-item_${linkId}`);
   const itemToClick = elm.querySelectorAll('div.slider__track__step')[index];
   await userEvent.click(itemToClick);
 }
