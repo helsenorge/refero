@@ -1,11 +1,11 @@
-import { waitFor, userEvent, renderRefero, screen } from '@test/test-utils.tsx';
+import { waitFor, userEvent, renderRefero, screen, Matcher, getAllByTestId } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { vi } from 'vitest';
 
 import { q } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, submitForm } from '../../../../../test/selectors';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import { Extensions } from '../../../../constants/extensions';
 import valueSet from '../../../../constants/valuesets';
@@ -13,7 +13,6 @@ import valueSet from '../../../../constants/valuesets';
 import { ReferoProps } from '@/types/referoProps';
 
 vi.mock('@helsenorge/core-utils/debounce', () => ({
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unsafe-function-type
   debounce: (fn: Function) => fn,
 }));
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', openChoiceOption: 'annet' };
@@ -35,6 +34,19 @@ const successReturnValueSet: ValueSet = {
     ],
   },
 };
+
+const getTestId = (questionnaire: Questionnaire) => {
+  const autosuggestItem = questionnaire.item?.find(item => item.type === 'choice');
+  const autosuggestInputTestId = `test-autosuggest-item_${autosuggestItem?.linkId}`;
+  return autosuggestInputTestId;
+};
+
+const getAutosuggestInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+  const autosuggestTestId = getTestId(questionnaire);
+  const autosuggestInput = getByLabelTextInsideElement(autosuggestTestId, labelText);
+  return autosuggestInput;
+};
+
 describe('autosuggest-view', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -88,27 +100,28 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _errorCallback: (error: string) => void
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
       await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
 
-      await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'fyr');
+      const autosuggestInput = screen.getAllByTestId(/test-autosuggest/i)[0];
+      await userEvent.type(autosuggestInput, 'fyr');
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
 
-      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[1], 'fyr');
+      const autosuggestInput2 = screen.getAllByTestId(/test-autosuggest/i)[1];
+      await userEvent.type(autosuggestInput2, 'fyr');
       await userEvent.click(screen.getByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
 
-      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[2], 'fyr');
+      const autosuggestInput3 = screen.getAllByTestId(/test-autosuggest/i)[2];
+      await userEvent.type(autosuggestInput3, 'fyr');
       await userEvent.click(screen.getByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
 
-      expect(screen.queryAllByLabelText(/Mistenkt legemiddel/i)).toHaveLength(4);
+      expect(screen.queryAllByTestId(/test-autosuggest/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -126,11 +139,14 @@ describe('autosuggest-view', () => {
         successCallback(successReturnValueSet);
       };
       await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
-      await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'f');
 
+      const autosuggestInput = screen.getAllByTestId(/test-autosuggest/i)[0];
+      await userEvent.type(autosuggestInput, 'f');
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
-      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[1], 'fyr');
+
+      const autosuggestInput2 = screen.getAllByTestId(/test-autosuggest/i)[1];
+      await userEvent.type(autosuggestInput2, 'fyr');
       await userEvent.click(screen.getByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
 
@@ -155,17 +171,18 @@ describe('autosuggest-view', () => {
         successCallback(successReturnValueSet);
       };
       await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
-      await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'f');
 
+      const autosuggestInput = screen.getAllByTestId(/test-autosuggest/i)[0];
+      await userEvent.type(autosuggestInput, 'f');
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
 
-      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[1], 'f');
+      const autosuggestInput2 = screen.getAllByTestId(/test-autosuggest/i)[1];
+      await userEvent.type(autosuggestInput2, 'f');
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
-
       expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
     it('Should remove item when delete button is clicked', async () => {
@@ -181,19 +198,19 @@ describe('autosuggest-view', () => {
         successCallback(successReturnValueSet);
       };
       await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
-      await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'f');
 
+      const autosuggestInput = screen.getAllByTestId(/test-autosuggest/i)[0];
+      await userEvent.type(autosuggestInput, 'f');
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
 
-      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[1], 'f');
+      const autosuggestInput2 = screen.getAllByTestId(/test-autosuggest/i)[1];
+      await userEvent.type(autosuggestInput2, 'f');
       await userEvent.click(await screen.findByText(/Fyrstekake/i));
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);
-
-      // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
       await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
@@ -221,10 +238,12 @@ describe('autosuggest-view', () => {
           successCallback(successReturnValueSet);
         };
         await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
-        await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'fyr');
-        await userEvent.click(screen.getByText(/Fyrstekake/i));
 
+        const autosuggestInput = screen.getAllByTestId(/test-autosuggest/i)[0];
+        await userEvent.type(autosuggestInput, 'fyr');
+        await userEvent.click(screen.getByText(/Fyrstekake/i));
         await submitForm();
+
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
@@ -247,8 +266,10 @@ describe('autosuggest-view', () => {
 
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'fyr');
+        const autosuggestInput = screen.getAllByTestId(/test-autosuggest/i)[0];
+        await userEvent.type(autosuggestInput, 'fyr');
         await userEvent.click(screen.getByText('Fyrstekake'));
+
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('readOnly value should get validation error if error exist', async () => {

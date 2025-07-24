@@ -211,6 +211,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
       </ReadOnly>
     );
   }
+
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup error={errorMessage} errorWrapperClassName={styles.paddingBottom}>
@@ -227,6 +228,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           inputProps={{
             ...rest,
             id: getId(id),
+            'data-testid': `test-autosuggest-${getId(id)}` as any,
             width,
             onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
               onChangeInput(e, AutosuggestChangeEvent);
