@@ -55,11 +55,6 @@ export const String = (props: Props): JSX.Element | null => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     handleChange(event);
   };
-  // const debouncedHandleChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
-  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-  //   event.persist();
-  //   debouncedHandleChange(event);
-  // };
 
   const maxCharacters = getMaxLength(item);
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;

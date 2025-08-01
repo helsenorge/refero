@@ -17,14 +17,14 @@ vi.mock('@helsenorge/core-utils/debounce', () => ({
 }));
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
-const getTestId = (questionnaire: Questionnaire) => {
-  const textItem = questionnaire.item?.find(item => item.type === 'text');
+const getTestId = (questionnaire: Questionnaire, index: number) => {
+  const textItem = questionnaire.item?.filter(item => item.type === 'text')[index];
   const textInputTestId = `test-text-item_${textItem?.linkId}`;
   return textInputTestId;
 };
 
-const getTextInput = (questionnaire: Questionnaire, labelText: Matcher) => {
-  const textInputTestId = getTestId(questionnaire);
+const getTextInput = (questionnaire: Questionnaire, labelText: Matcher, index: number) => {
+  const textInputTestId = getTestId(questionnaire, index);
   const textInput = getByLabelTextInsideElement(textInputTestId, labelText);
   return textInput;
 };
@@ -76,7 +76,7 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      const textInput = getTextInput(questionnaire, /String/i);
+      const textInput = getTextInput(questionnaire, /String/i, 0);
       expect(textInput).toHaveValue('');
     });
     it('Initial value should be set', async () => {
@@ -94,7 +94,7 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      const textInput = getTextInput(questionnaire, /String/i);
+      const textInput = getTextInput(questionnaire, /String/i, 0);
       expect(textInput).toHaveTextContent('test');
     });
   });
@@ -110,7 +110,7 @@ describe('Text', () => {
 
       await createWrapper(questionnaire);
 
-      const textInput = getTextInput(questionnaire, /String/i);
+      const textInput = getTextInput(questionnaire, /String/i, 0);
       await userEvent.type(textInput, '123');
       await waitFor(() => {
         expect(textInput).toHaveValue('123');
@@ -127,7 +127,7 @@ describe('Text', () => {
       const onChange = vi.fn();
       await createWrapper(questionnaire, { onChange });
 
-      const textInput = getTextInput(questionnaire, /String/i);
+      const textInput = getTextInput(questionnaire, /String/i, 0);
       expect(textInput).toBeInTheDocument();
 
       const input = 'string';
@@ -202,7 +202,7 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      const testId = getTestId(questionnaire);
+      const testId = getTestId(questionnaire, 0);
       const input = 'entotre';
       await repeatNTimes(input, 3, testId, /String/i);
 
@@ -227,7 +227,7 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      const testId = getTestId(questionnaire);
+      const testId = getTestId(questionnaire, 0);
       const input = 'string';
       await repeatNTimes(input, 3, testId, /String/i);
 
@@ -262,7 +262,7 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      const testId = getTestId(questionnaire);
+      const testId = getTestId(questionnaire, 0);
       const input = 'entotre';
       await repeatNTimes(input, 1, testId, /String/i);
 
@@ -281,7 +281,7 @@ describe('Text', () => {
       };
       await createWrapper(questionnaire);
 
-      const testId = getTestId(questionnaire);
+      const testId = getTestId(questionnaire, 0);
       const input = 'entotre';
       await repeatNTimes(input, 1, testId, /String/i);
 
@@ -319,7 +319,7 @@ describe('Text', () => {
         };
         await createWrapper(questionnaire);
 
-        const textInput = getTextInput(questionnaire, /String/i);
+        const textInput = getTextInput(questionnaire, /String/i, 0);
         await userEvent.type(textInput, 'abc');
 
         await submitForm();
@@ -338,7 +338,7 @@ describe('Text', () => {
         await submitForm();
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        const textInput = getTextInput(questionnaire, /String/i);
+        const textInput = getTextInput(questionnaire, /String/i, 0);
 
         await userEvent.type(textInput, 'abc');
         await userEvent.tab();
@@ -391,7 +391,7 @@ describe('Text', () => {
         };
         await createWrapper(questionnaire);
 
-        const textInput = getTextInput(questionnaire, /String/i);
+        const textInput = getTextInput(questionnaire, /String/i, 0);
         await userEvent.type(textInput, 'epost@test.com');
         await submitForm();
 
@@ -408,7 +408,7 @@ describe('Text', () => {
         };
         await createWrapper(questionnaire);
 
-        const textInput = getTextInput(questionnaire, /String/i);
+        const textInput = getTextInput(questionnaire, /String/i, 0);
         await userEvent.type(textInput, 'e@st.co');
         await submitForm();
 
@@ -445,7 +445,7 @@ describe('Text', () => {
         };
         await createWrapper(questionnaire);
 
-        const textInput = getTextInput(questionnaire, /String/i);
+        const textInput = getTextInput(questionnaire, /String/i, 0);
         await userEvent.type(textInput, 'epost@test.com');
         await submitForm();
 
@@ -462,7 +462,7 @@ describe('Text', () => {
         };
         await createWrapper(questionnaire);
 
-        const textInput = getTextInput(questionnaire, /String/i);
+        const textInput = getTextInput(questionnaire, /String/i, 0);
         await userEvent.type(textInput, 'eposteneraølt@asdasdst.com');
         await submitForm();
 
@@ -499,7 +499,7 @@ describe('Text', () => {
         };
         await createWrapper(questionnaire);
 
-        const textInput = getTextInput(questionnaire, /String/i);
+        const textInput = getTextInput(questionnaire, /String/i, 0);
         await userEvent.type(textInput, 'epost@test.com');
         await submitForm();
 
@@ -516,7 +516,7 @@ describe('Text', () => {
         };
         await createWrapper(questionnaire);
 
-        const textInput = getTextInput(questionnaire, /String/i);
+        const textInput = getTextInput(questionnaire, /String/i, 0);
         await userEvent.type(textInput, 'epostsdsdcom');
         await submitForm();
 
@@ -534,8 +534,8 @@ describe('Text', () => {
         const value = 'input med <html>';
         await createWrapper(qScriptInjection, { validateScriptInjection });
 
-        const textInput1 = getTextInput(qScriptInjection, /String1/i);
-        const textInput2 = getTextInput(qScriptInjection, /String2 - Obligatorisk/i);
+        const textInput1 = getTextInput(qScriptInjection, /String1/i, 0);
+        const textInput2 = getTextInput(qScriptInjection, /String2 - Obligatorisk/i, 1);
 
         await userEvent.type(textInput1, value);
         await userEvent.type(textInput2, 'test');
@@ -551,10 +551,13 @@ describe('Text', () => {
         await createWrapper(qScriptInjection, {
           validateScriptInjection,
         });
-        await userEvent.type(await screen.findByLabelText(/String2 - Obligatorisk/i), value);
+
+        const textInput2 = getTextInput(qScriptInjection, /String2 - Obligatorisk/i, 1);
+        await userEvent.type(textInput2, value);
         await submitForm();
         const actualElement = await screen.findByDisplayValue(value);
         const actualAlert = screen.queryByRole('alert');
+
         expect(actualElement).toBeInTheDocument();
         expect(actualAlert).not.toBeInTheDocument();
       });
@@ -562,7 +565,9 @@ describe('Text', () => {
         const validateScriptInjection = true;
         const value = 'input uten html';
         await createWrapper(qScriptInjection, { validateScriptInjection });
-        await userEvent.type(await screen.findByLabelText(/String2 - Obligatorisk/i), value);
+
+        const textInput2 = getTextInput(qScriptInjection, /String2 - Obligatorisk/i, 1);
+        await userEvent.type(textInput2, value);
         const actualAlert = screen.queryByRole('alert');
         const item = await screen.findByDisplayValue(value);
 
