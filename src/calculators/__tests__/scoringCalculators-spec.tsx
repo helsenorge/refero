@@ -10,14 +10,14 @@ describe('scoring calculations', () => {
   describe('Input scoring and calculation and copying of scoringvalue', () => {
     it('should render', async () => {
       await createWrapper(q);
-      expect(screen.getByTestId('item_Gjennomsnitt')).toBeInTheDocument();
+      expect(screen.getByTestId('test-integer-item_Gjennomsnitt')).toBeInTheDocument();
     });
     it('should calculate the based on the input values', async () => {
       await createWrapper(q);
-      const input1 = screen.getByTestId('item_verdi1-0-radio-choice');
-      const input2 = screen.getByTestId('item_verdi2-0-radio-choice');
-      const input3 = screen.getByTestId('item_verdi3-1-radio-choice');
-      const input4 = screen.getByTestId('item_verdi4-0-radio-choice');
+      const input1 = screen.getByTestId('test-choice-radio-item_verdi1-0');
+      const input2 = screen.getByTestId('test-choice-radio-item_verdi2-0');
+      const input3 = screen.getByTestId('test-choice-radio-item_verdi3-1');
+      const input4 = screen.getByTestId('test-choice-radio-item_verdi4-0');
 
       const delsum = screen.getByTestId('item_Delsum-readonly');
       const totalsum = screen.getByTestId('item_Totalsum-readonly');
