@@ -287,7 +287,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
       await inputAnswer('1', 0.1, container);
-      const date = screen.getByTestId(/test-year/i).querySelector('input');
+      const date = screen.getByTestId(/test-year-/i).querySelector('input');
 
       expect(date).toHaveValue(2024);
     });
@@ -299,7 +299,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
       await inputAnswer('1', 0.1, container);
-      const date = screen.getByTestId(/test-year/i).querySelector('input');
+      const date = screen.getByTestId(/test-year-/i).querySelector('input');
 
       expect(date).toHaveValue(null);
     });
@@ -338,9 +338,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
     await inputAnswer('1', 0.1, container);
 
-    const hoursElement = screen.getByTestId(/time-1/i);
+    const hoursElement = screen.getByTestId(/test-hours/i);
     const hoursInput = hoursElement.querySelector('input');
-    const minutesElement = screen.getByTestId(/time-2/i);
+    const minutesElement = screen.getByTestId(/test-minutes/i);
     const minutesInput = minutesElement.querySelector('input');
 
     if (hoursInput) {
@@ -361,9 +361,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
     await inputAnswer('1', 0.1, container);
 
-    const hoursElement = screen.getByTestId(/time-1/i);
+    const hoursElement = screen.getByTestId(/test-hours/i);
     const hoursInput = hoursElement.querySelector('input');
-    const minutesElement = screen.getByTestId(/time-2/i);
+    const minutesElement = screen.getByTestId(/test-minutes/i);
     const minutesInput = minutesElement.querySelector('input');
 
     expect(hoursInput).toHaveValue(null);
