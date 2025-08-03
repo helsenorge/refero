@@ -135,7 +135,7 @@ describe('Date day', () => {
       const repeatButton = screen.queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
-    it.only('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
+    it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
