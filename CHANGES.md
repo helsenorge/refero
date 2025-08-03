@@ -1,6 +1,12 @@
-## 18.0.9
+## 18.1.1
 
 - Connect helpButton to label via arialabeledby
+- Rewrite tests to use testId
+
+## 18.1.0
+
+- Added tests for valueSets for slider
+- Added support for valueSets in slider-view
 
 ## 18.0.8
 

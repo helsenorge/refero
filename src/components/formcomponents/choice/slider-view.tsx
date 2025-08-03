@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -19,15 +19,17 @@ import { Extensions } from '@/constants/extensions';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
+import { Options } from '@/types/formTypes/radioGroupOptions';
 import { getId, isReadOnly } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
-import { getExtension } from '@/util/extension';
+import { getExtensionFromExtensions } from '@/util/extension';
 import { isString } from '@/util/typeguards';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
   pdfValue?: string | number;
+  options?: Options[];
 };
 enum SliderDisplayTypes {
   Label = 'label',
@@ -38,24 +40,25 @@ enum SliderDisplayTypes {
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView = (props: SliderProps): JSX.Element | null => {
-  const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children, pdfValue } = props;
+  const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children, pdfValue, options } = props;
+
   const { resources } = useExternalRenderContext();
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
-
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
   const onValueChange = (index: number): void => {
-    const code = item?.answerOption?.[index]?.valueCoding?.code;
+    const code = options?.[index].type;
     if (code) {
       handleChange(code);
     }
   };
 
   const getSelectedStep = (): number | undefined => {
-    if (item?.answerOption && selected && selected[0]) {
-      const stepCodes = getCodes(item.answerOption);
+    if (options && selected && selected[0]) {
+      const stepCodes = getCodes(options);
+
       for (let i = 0; i < stepCodes.length; i++) {
         if (stepCodes[i] === selected[0]) {
           return i;
@@ -67,7 +70,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
   };
 
   const displayType = getCodingSystemCodes(item, codeSystems.SliderDisplayType);
-  const sliderSteps = item?.answerOption?.map(option =>
+  const sliderSteps = options?.map(option =>
     mapToSliderStep(option, (displayType?.[0]?.code as SliderDisplayTypes) || SliderDisplayTypes.OrdinalValue)
   );
   const leftRightLabels = getLeftRightLabels(item);
@@ -133,15 +136,15 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
   );
 };
 
-function mapToSliderStep(answerOptions: QuestionnaireItemAnswerOption, displayType: SliderDisplayTypes): SliderStep {
+function mapToSliderStep(option: Options, displayType: SliderDisplayTypes): SliderStep {
   return {
-    label: getStepLabel(answerOptions, displayType),
-    emojiUniCode: getStepEmoji(answerOptions),
+    label: getStepLabel(option, displayType),
+    emojiUniCode: getStepEmoji(option),
   };
 }
 
-function getCodes(answerOptions?: QuestionnaireItemAnswerOption[]): string[] {
-  return answerOptions?.map(option => option.valueCoding?.code).filter(isString) || [];
+function getCodes(options?: Options[]): string[] {
+  return options?.map(option => option.type).filter(isString) || [];
 }
 
 function getLeftRightLabels(item?: QuestionnaireItem): LeftRightLabels | undefined {
@@ -155,13 +158,14 @@ function getLeftRightLabels(item?: QuestionnaireItem): LeftRightLabels | undefin
   };
 }
 
-function getStepLabel(option: QuestionnaireItemAnswerOption, displayType: SliderDisplayTypes): number | string | undefined {
-  if (displayType === SliderDisplayTypes.OrdinalValue) return getExtension(Extensions.ORDINAL_VALUE_URL, option.valueCoding)?.valueDecimal;
-  return option.valueCoding?.display;
+function getStepLabel(option: Options, displayType: SliderDisplayTypes): number | string | undefined {
+  if (displayType === SliderDisplayTypes.OrdinalValue)
+    return getExtensionFromExtensions(Extensions.ORDINAL_VALUE_URL, option.extensions)?.valueDecimal;
+  return option.label;
 }
 
-function getStepEmoji(option: QuestionnaireItemAnswerOption): string | undefined {
-  const emojiLabel = getExtension(Extensions.VALUESET_LABEL_URL, option.valueCoding)?.valueString?.trim();
+function getStepEmoji(option: Options): string | undefined {
+  const emojiLabel = getExtensionFromExtensions(Extensions.VALUESET_LABEL_URL, option.extensions)?.valueString?.trim();
   if (!emojiLabel) return undefined;
 
   return convertToEmoji(emojiLabel);

@@ -1,3 +1,5 @@
+import { Extension } from 'fhir/r4';
+
 export interface Options {
   id?: string;
   type: string;
@@ -6,4 +8,5 @@ export interface Options {
   disabled?: boolean;
   content?: JSX.Element;
   hjelpetrigger?: JSX.Element;
+  extensions?: Extension[];
 }

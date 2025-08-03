@@ -316,44 +316,52 @@ function createRadiogroupOptionFromQuestionnaireExtension(extension: Extension, 
 
 function createRadiogroupOptionFromQuestionnaireOption(option: QuestionnaireItemAnswerOption, readOnly: boolean): Options | undefined {
   if (option.valueString) {
-    return createRadiogroupOptionFromValueString(option.valueString, readOnly);
+    return createRadiogroupOptionFromValueString(option.valueString, readOnly, option.extension);
   } else if (option.valueInteger) {
-    return createRadiogroupOptionFromValueInteger(option.valueInteger, readOnly);
+    return createRadiogroupOptionFromValueInteger(option.valueInteger, readOnly, option.extension);
   } else if (option.valueTime) {
-    return createRadiogroupOptionFromValueTime(option.valueTime, readOnly);
+    return createRadiogroupOptionFromValueTime(option.valueTime, readOnly, option.extension);
   } else if (option.valueDate) {
-    return createRadiogroupOptionFromValueDate(option.valueDate, readOnly);
+    return createRadiogroupOptionFromValueDate(option.valueDate, readOnly, option.extension);
   } else if (option.valueReference) {
-    return createRadiogroupOptionFromValueReference(option.valueReference, readOnly);
+    return createRadiogroupOptionFromValueReference(option.valueReference, readOnly, option.valueReference.extension);
   } else if (option.valueCoding) {
-    return createRadiogroupOptionFromValueCoding(option.valueCoding, readOnly);
+    return createRadiogroupOptionFromValueCoding({ coding: option.valueCoding, readOnly, extensions: option.valueCoding.extension });
   }
 
   return undefined;
 }
 
-function createRadiogroupOptionFromValueCoding(coding: Coding, readOnly: boolean): Options {
-  return createRadiogroupOption(String(coding.code), String(coding.display), readOnly);
+function createRadiogroupOptionFromValueCoding({
+  coding,
+  readOnly,
+  extensions,
+}: {
+  coding: Coding;
+  readOnly: boolean;
+  extensions?: Extension[];
+}): Options {
+  return createRadiogroupOption(String(coding.code), String(coding.display), readOnly, extensions);
 }
 
-function createRadiogroupOptionFromValueReference(reference: Reference, readOnly: boolean): Options {
-  return createRadiogroupOption(String(reference.reference), String(reference.display), readOnly);
+function createRadiogroupOptionFromValueReference(reference: Reference, readOnly: boolean, extensions?: Extension[]): Options {
+  return createRadiogroupOption(String(reference.reference), String(reference.display), readOnly, extensions);
 }
 
-function createRadiogroupOptionFromValueDate(value: string, readOnly: boolean): Options {
-  return createRadiogroupOption(String(value), String(value), readOnly);
+function createRadiogroupOptionFromValueDate(value: string, readOnly: boolean, extensions?: Extension[]): Options {
+  return createRadiogroupOption(String(value), String(value), readOnly, extensions);
 }
 
-function createRadiogroupOptionFromValueTime(value: string, readOnly: boolean): Options {
-  return createRadiogroupOption(String(value), String(value), readOnly);
+function createRadiogroupOptionFromValueTime(value: string, readOnly: boolean, extensions?: Extension[]): Options {
+  return createRadiogroupOption(String(value), String(value), readOnly, extensions);
 }
 
-function createRadiogroupOptionFromValueInteger(value: number, readOnly: boolean): Options {
-  return createRadiogroupOption(String(value), String(value), readOnly);
+function createRadiogroupOptionFromValueInteger(value: number, readOnly: boolean, extensions?: Extension[]): Options {
+  return createRadiogroupOption(String(value), String(value), readOnly, extensions);
 }
 
-function createRadiogroupOptionFromValueString(value: string, readOnly: boolean): Options {
-  return createRadiogroupOption(value, value, readOnly);
+function createRadiogroupOptionFromValueString(value: string, readOnly: boolean, extensions?: Extension[]): Options {
+  return createRadiogroupOption(value, value, readOnly, extensions);
 }
 
 export function getContainedOptions(item: QuestionnaireItem, containedResources?: Resource[]): Array<Options> | undefined {
@@ -386,7 +394,7 @@ function getComposedOptions(valueSet: ValueSet, disabled: boolean): Array<Option
       return;
     }
     i.concept.map((r: ValueSetComposeIncludeConcept) => {
-      options.push(createRadiogroupOption(String(r.code), String(r.display), disabled));
+      options.push(createRadiogroupOption(String(r.code), String(r.display), disabled, r.extension));
     });
   });
   return options;
@@ -401,16 +409,17 @@ function getExpansionOptions(valueSet: ValueSet, disabled: boolean): Array<Optio
   }
   const options: Array<Options> = [];
   valueSet.expansion.contains.map((r: ValueSetExpansionContains) => {
-    options.push(createRadiogroupOption(String(r.code), String(r.display), disabled));
+    options.push(createRadiogroupOption(String(r.code), String(r.display), disabled, r.extension));
   });
   return options;
 }
 
-function createRadiogroupOption(type: string, label: string, disabled: boolean): Options {
+function createRadiogroupOption(type: string, label: string, disabled: boolean, extensions?: Extension[]): Options {
   return {
     type: type,
     label: label,
     disabled,
+    extensions: extensions || [],
   };
 }
 
