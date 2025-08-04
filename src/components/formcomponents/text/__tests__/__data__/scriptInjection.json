@@ -63,7 +63,7 @@
   "item": [
     {
       "linkId": "cfb396cc-696d-462a-f3ce-9f0f59fb45d4",
-      "type": "string",
+      "type": "text",
       "extension": [
         {
           "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
@@ -75,7 +75,7 @@
     },
     {
       "linkId": "179e2765-0d77-4774-84f8-a07674315111",
-      "type": "string",
+      "type": "text",
       "extension": [
         {
           "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
@@ -87,7 +87,7 @@
     },
     {
       "linkId": "70375289-f0b8-430c-8f08-27f13764b2e1",
-      "type": "string",
+      "type": "text",
       "extension": [
         {
           "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",

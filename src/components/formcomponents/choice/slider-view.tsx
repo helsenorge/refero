@@ -117,7 +117,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
           labelLeft={leftRightLabels?.leftLabel}
           labelRight={leftRightLabels?.rightLabel}
           steps={sliderSteps}
-          testId={`${getId(id)}-${index}-slider-choice`}
+          testId={`test-slider-${getId(id)}`}
           onChange={(e): void => {
             const val = e.target.value;
             if (isInteger(val)) {

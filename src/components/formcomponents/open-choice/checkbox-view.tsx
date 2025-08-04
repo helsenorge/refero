@@ -78,7 +78,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
             {...rest}
             key={option.id}
             inputId={`${getId(id)}-hn-${index}`}
-            testId={`${getId(id)}-${index}-checkbox-openchoice`}
+            testId={`test-openchoice-checkbox-${getId(id)}-${index}`}
             label={
               <Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label, type: 'subdued' }]} />
             }

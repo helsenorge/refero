@@ -140,7 +140,7 @@ const Decimal = (props: Props): JSX.Element | null => {
           {...rest}
           type="number"
           inputId={getId(id)}
-          testId={getId(id)}
+          testId={`test-decimal-${getId(id)}`}
           value={value}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"

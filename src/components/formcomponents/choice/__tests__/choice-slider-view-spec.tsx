@@ -91,11 +91,11 @@ describe('Slider-view', () => {
         };
         const onChange = vi.fn();
         const { container } = await createWrapper(questionnaire, { onChange });
-        const JaElement = container.querySelectorAll('div.slider__track__step');
+        const NeiElement = container.querySelectorAll('div.slider__track__step')[1];
 
         await waitFor(async () => {
-          if (JaElement[1]) {
-            await userEvent.click(JaElement[1]);
+          if (NeiElement) {
+            await userEvent.click(NeiElement);
           }
         });
         expect(onChange).toHaveBeenCalledTimes(1);
@@ -179,7 +179,7 @@ describe('Slider-view', () => {
 
         await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 3);
         await waitFor(async () => {
-          expect(screen.queryAllByTestId(/-slider-choice-label/i)).toHaveLength(4);
+          expect(screen.queryAllByTestId(/test-slider/i)).toHaveLength(4);
         });
         await waitFor(async () => {
           expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -248,10 +248,13 @@ describe('Slider-view', () => {
             item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
           };
           await createWrapper(questionnaire);
+
+          const sliderInput = screen.queryByTestId(/test-slider/i);
           await waitFor(async () => {
-            expect(screen.getByLabelText(/Slider view label/i)).toBeInTheDocument();
+            expect(sliderInput).toBeInTheDocument();
           });
           await submitForm();
+
           await waitFor(async () => {
             expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
           });
@@ -286,71 +289,80 @@ describe('Slider-view', () => {
             ...q,
             item: q.item?.map(x => ({
               ...x,
-              readOnly: true,
-              required: true,
-              code: [
-                {
-                  code: 'ValidateReadOnly',
-                  display: 'Valider skrivebeskyttet felt',
-                  system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
-                },
-              ],
+              repeats: false,
+              initial: [],
             })),
           };
-          await createWrapper(questionnaire);
-          await submitForm();
-
-          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          const { container } = await createWrapper(questionnaire);
+          await waitFor(async () => {
+            const inputEl = container.querySelector(`input[name="${questionnaire?.item?.[0].linkId}"]`);
+            expect(inputEl).toHaveAttribute('value', '1');
+          });
+        });
+        it('Initial value should be set', async () => {
+          const questionnaire: Questionnaire = {
+            ...q,
+            item: q.item?.map(x => ({
+              ...x,
+              repeats: false,
+              initial: [expectedAnswer],
+            })),
+          };
+          const { container } = await createWrapper(questionnaire);
+          await waitFor(async () => {
+            const inputEl = container.querySelector(`input[name="${questionnaire?.item?.[0].linkId}"]`);
+            expect(inputEl).toHaveAttribute('value', '2');
+          });
         });
       });
-    });
 
-    describe('Validation functions', () => {
-      test('isValidDecimal', () => {
-        expect(isValidDecimal('123')).toBe(true);
-        expect(isValidDecimal('abc')).toBe(false);
-        expect(isValidDecimal('123abc')).toBe(false);
-        expect(isValidDecimal('')).toBe(false);
-      });
+      describe('Validation functions', () => {
+        test('isValidDecimal', () => {
+          expect(isValidDecimal('123')).toBe(true);
+          expect(isValidDecimal('abc')).toBe(false);
+          expect(isValidDecimal('123abc')).toBe(false);
+          expect(isValidDecimal('')).toBe(false);
+        });
 
-      test('isValidHtmlCode', () => {
-        expect(isValidHtmlCode('&#128512;')).toBe(true);
-        expect(isValidHtmlCode('&#x1F600;')).toBe(true);
-        expect(isValidHtmlCode('&#123abc;')).toBe(false);
-        expect(isValidHtmlCode('&128512;')).toBe(false);
-        expect(isValidHtmlCode('&#abc;')).toBe(false);
-        expect(isValidHtmlCode('')).toBe(false);
-      });
+        test('isValidHtmlCode', () => {
+          expect(isValidHtmlCode('&#128512;')).toBe(true);
+          expect(isValidHtmlCode('&#x1F600;')).toBe(true);
+          expect(isValidHtmlCode('&#123abc;')).toBe(false);
+          expect(isValidHtmlCode('&128512;')).toBe(false);
+          expect(isValidHtmlCode('&#abc;')).toBe(false);
+          expect(isValidHtmlCode('')).toBe(false);
+        });
 
-      test('isValidHex', () => {
-        // Valid hex values
-        expect(isValidHex('0x1F600')).toBe(true);
-        expect(isValidHex('1F600')).toBe(true);
-        expect(isValidHex('123')).toBe(true);
-        expect(isValidHex('abc')).toBe(true);
-        expect(isValidHex('123abc')).toBe(true);
+        test('isValidHex', () => {
+          // Valid hex values
+          expect(isValidHex('0x1F600')).toBe(true);
+          expect(isValidHex('1F600')).toBe(true);
+          expect(isValidHex('123')).toBe(true);
+          expect(isValidHex('abc')).toBe(true);
+          expect(isValidHex('123abc')).toBe(true);
 
-        // Invalid hex values
-        expect(isValidHex('0xGHI')).toBe(false);
-        expect(isValidHex('GHI')).toBe(false);
-        expect(isValidHex('')).toBe(false);
-        expect(isValidHex('0x')).toBe(false);
-        expect(isValidHex('0x1F6001')).toBe(true);
-        expect(isValidHex('1F6001')).toBe(true);
-      });
+          // Invalid hex values
+          expect(isValidHex('0xGHI')).toBe(false);
+          expect(isValidHex('GHI')).toBe(false);
+          expect(isValidHex('')).toBe(false);
+          expect(isValidHex('0x')).toBe(false);
+          expect(isValidHex('0x1F6001')).toBe(true);
+          expect(isValidHex('1F6001')).toBe(true);
+        });
 
-      test('isValidUnicodeHex', () => {
-        // Valid Unicode hex values
-        expect(isValidUnicodeHex('U+1F600')).toBe(true);
-        expect(isValidUnicodeHex('U+1234')).toBe(true);
+        test('isValidUnicodeHex', () => {
+          // Valid Unicode hex values
+          expect(isValidUnicodeHex('U+1F600')).toBe(true);
+          expect(isValidUnicodeHex('U+1234')).toBe(true);
 
-        // Invalid Unicode hex values
-        expect(isValidUnicodeHex('1F600')).toBe(false);
-        expect(isValidUnicodeHex('U+GHI')).toBe(false);
-        expect(isValidUnicodeHex('U+abc')).toBe(false);
-        expect(isValidUnicodeHex('')).toBe(false);
-        expect(isValidUnicodeHex('U+123')).toBe(false);
-        expect(isValidUnicodeHex('U+1F6001')).toBe(true);
+          // Invalid Unicode hex values
+          expect(isValidUnicodeHex('1F600')).toBe(false);
+          expect(isValidUnicodeHex('U+GHI')).toBe(false);
+          expect(isValidUnicodeHex('U+abc')).toBe(false);
+          expect(isValidUnicodeHex('')).toBe(false);
+          expect(isValidUnicodeHex('U+123')).toBe(false);
+          expect(isValidUnicodeHex('U+1F6001')).toBe(true);
+        });
       });
     });
   };

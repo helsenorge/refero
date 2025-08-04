@@ -1,4 +1,4 @@
-import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
+import { Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -6,9 +6,21 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { q } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, clickByLabelText, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatBooleanNTimes, submitForm } from '../../../../../test/selectors';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
+
+const getTestId = (questionnaire: Questionnaire): string => {
+  const booleanItem = questionnaire.item?.find(item => item.type === 'boolean');
+  const booleanInputTestId = `test-boolean-item_${booleanItem?.linkId}`;
+  return booleanInputTestId;
+};
+
+const getBooleanInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
+  const booleanInputTestId = getTestId(questionnaire);
+  const booleanInput = getByLabelTextInsideElement(booleanInputTestId, labelText, 0);
+  return booleanInput;
+};
 
 describe('Boolean', () => {
   beforeEach(() => {
@@ -45,7 +57,9 @@ describe('Boolean', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Boolean/i)).not.toBeChecked();
+      const booleanInput = getBooleanInput(questionnaire, /Boolean/i);
+
+      expect(booleanInput).not.toBeChecked();
     });
     it('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
@@ -62,7 +76,9 @@ describe('Boolean', () => {
       };
       await createWrapper(questionnaire);
 
-      expect(screen.getByLabelText(/Boolean/i)).toBeChecked();
+      const booleanInput = getBooleanInput(questionnaire, /Boolean/i);
+
+      expect(booleanInput).toBeChecked();
     });
   });
   describe('help button', () => {
@@ -118,9 +134,11 @@ describe('Boolean', () => {
         }),
       };
       await createWrapper(questionnaire);
-      await repeatCheckboxTimes(/Boolean/i, 3);
 
-      expect(screen.queryAllByLabelText(/Boolean/i)).toHaveLength(4);
+      const testId = getTestId(questionnaire);
+      await repeatBooleanNTimes(3, testId, /Boolean/i, 0);
+
+      expect(screen.queryAllByTestId(/test-boolean/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -131,7 +149,9 @@ describe('Boolean', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
-      await repeatCheckboxTimes(/Boolean/i, 2);
+
+      const testId = getTestId(questionnaire);
+      await repeatBooleanNTimes(2, testId, /Boolean/i, 0);
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -151,9 +171,12 @@ describe('Boolean', () => {
       };
       await createWrapper(questionnaire);
 
-      await repeatCheckboxTimes(/Boolean/i, 1);
+      const testId = getTestId(questionnaire);
+      await repeatBooleanNTimes(1, testId, /Boolean/i, 0);
       const deleteButton = screen.getByTestId(/-delete-button/i);
+
       expect(deleteButton).toBeInTheDocument();
+
       await clickButtonTimes(/-delete-button/i, 1);
 
       expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
@@ -165,7 +188,9 @@ describe('Boolean', () => {
       };
       await createWrapper(questionnaire);
 
-      await repeatCheckboxTimes(/Boolean/i, 1);
+      const testId = getTestId(questionnaire);
+      await repeatBooleanNTimes(1, testId, /Boolean/i, 0);
+
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);
@@ -178,24 +203,39 @@ describe('Boolean', () => {
   });
   describe('onChange', () => {
     it('Should update component with value from answer', async () => {
-      await createWrapper(q);
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: false })),
+      };
+      await createWrapper(questionnaire);
 
-      const inputElement = screen.getByLabelText(/Boolean/i);
-      expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', `checkbox`);
+      const booleanInput = getBooleanInput(questionnaire, /Boolean/i);
 
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-      await userEvent.click(inputElement);
-      expect(screen.getByLabelText(/Boolean/i)).toBeChecked();
+      expect(booleanInput).toBeInTheDocument();
+      expect(booleanInput).toHaveAttribute('type', `checkbox`);
+      expect(booleanInput).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+
+      await userEvent.click(booleanInput);
+
+      expect(booleanInput).toBeChecked();
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
-      await createWrapper(q, { onChange });
-      expect(screen.getByLabelText(/Boolean/i)).toBeInTheDocument();
-      await clickByLabelText(/Boolean/i);
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: false })),
+      };
+      await createWrapper(questionnaire, { onChange });
+
+      const booleanInput = getBooleanInput(questionnaire, /Boolean/i);
+
+      expect(booleanInput).toBeInTheDocument();
+
+      await userEvent.click(booleanInput);
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueBoolean: true,
       };
+
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
@@ -215,22 +255,28 @@ describe('Boolean', () => {
     it('Should not show error if required and has value', async () => {
       const questionnaire: Questionnaire = {
         ...q,
-        item: q.item?.map(x => ({ ...x, required: true })),
+        item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
       };
       await createWrapper(questionnaire);
-      await clickByLabelText(/Boolean/i);
+
+      const booleanInput = getBooleanInput(questionnaire, /Boolean/i);
+      await userEvent.click(booleanInput);
       await submitForm();
+
       expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
     });
     it('Should not show error if form dirty and value is changed to a valid state', async () => {
       const questionnaire: Questionnaire = {
         ...q,
-        item: q.item?.map(x => ({ ...x, required: true })),
+        item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
       };
       await createWrapper(questionnaire);
       await submitForm();
+
       expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
-      await clickByLabelText(/Boolean/i);
+
+      const booleanInput = getBooleanInput(questionnaire, /Boolean/i);
+      await userEvent.click(booleanInput);
 
       expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
     });

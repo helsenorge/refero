@@ -1,4 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import type { InputProps } from 'react-autosuggest';
 
 import { ValueSet, Coding } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
@@ -34,6 +35,11 @@ export type AutosuggestProps = QuestionnaireComponentItemProps & {
   clearCodingAnswer: (coding: Coding) => void;
   handleStringChange?: (value: string) => void;
   pdfValue?: string | number;
+};
+
+//Extending the InputProps type to use data-testId on the Autosuggest component
+type ExtendedInputProps<T> = InputProps<T> & {
+  'data-testid'?: string;
 };
 
 const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
@@ -211,6 +217,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
       </ReadOnly>
     );
   }
+
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup error={errorMessage} errorWrapperClassName={styles.paddingBottom}>
@@ -224,19 +231,22 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
         />
 
         <Autosuggest
-          inputProps={{
-            ...rest,
-            id: getId(id),
-            width,
-            onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
-              onChangeInput(e, AutosuggestChangeEvent);
-            },
-            value: inputValue,
-            type: 'search',
-            onBlur: (e: ChangeEvent<HTMLElement>, AutosuggestChangeEvent): void => {
-              onBlur(e, AutosuggestChangeEvent);
-            },
-          }}
+          inputProps={
+            {
+              ...rest,
+              id: getId(id),
+              'data-testid': `test-autosuggest-${getId(id)}`,
+              width,
+              onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+                onChangeInput(e, AutosuggestChangeEvent);
+              },
+              value: inputValue,
+              type: 'search',
+              onBlur: (e: ChangeEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+                onBlur(e, AutosuggestChangeEvent);
+              },
+            } as ExtendedInputProps<Suggestion>
+          }
           className="page_refero__autosuggest"
           suggestions={suggestions}
           onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}

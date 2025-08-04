@@ -7,9 +7,7 @@
   "status": "draft",
   "publisher": "NHN",
   "meta": {
-    "profile": [
-      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
-    ],
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
@@ -30,9 +28,7 @@
       "name": "http://www.nhn.no"
     }
   ],
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
@@ -71,7 +67,7 @@
       "linkId": "71d92d62-cad3-445b-848d-4efd281078d3",
       "type": "date",
       "required": true,
-      "repeats": true,
+      "repeats": false,
       "extension": [
         {
           "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",

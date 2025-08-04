@@ -56,6 +56,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
       </ReadOnly>
     );
   }
+
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
       <FormGroup htmlMarkup="div" onColor="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
@@ -72,7 +73,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
             {...rest}
             key={option.id}
             inputId={`${getId(id)}-hn-${index}`}
-            testId={`${getId(id)}-${index}-checkbox-choice`}
+            testId={`test-choice-checkbox-${getId(id)}-${index}`}
             label={<Label testId={`${getId(id)}-${index}-checkbox-choice-label`} labelTexts={[{ text: option.label, type: 'subdued' }]} />}
             checked={selected?.some((val?: string) => val === option.type)}
             value={option.type}
