@@ -24,8 +24,6 @@ const TextView = ({ id, testId, item, value, textClass, children }: Props): JSX.
 
   const safeTextId = `${getId(id)}-textview`;
 
-  console.log(getText(item, onRenderMarkdown));
-
   return (
     <div data-testid={testId} id={getId(id)}>
       <>

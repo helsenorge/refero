@@ -8,7 +8,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { qinline, q, qScriptInjection, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
-import { Matcher, renderRefero, screen, userEvent, waitFor, within } from '../../../../../test/test-utils';
+import { Matcher, renderRefero, screen, userEvent, waitFor } from '../../../../../test/test-utils';
 import { Extensions } from '../../../../constants/extensions';
 
 vi.mock('@helsenorge/core-utils/debounce', () => ({
