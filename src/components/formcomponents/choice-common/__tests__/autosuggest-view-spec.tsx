@@ -1,11 +1,11 @@
-import { waitFor, userEvent, renderRefero, screen, Matcher, getAllByTestId } from '@test/test-utils.tsx';
+import { waitFor, userEvent, renderRefero, screen } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { vi } from 'vitest';
 
 import { q } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
-import { clickButtonTimes, getByLabelTextInsideElement, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import { Extensions } from '../../../../constants/extensions';
 import valueSet from '../../../../constants/valuesets';
@@ -33,18 +33,6 @@ const successReturnValueSet: ValueSet = {
       },
     ],
   },
-};
-
-const getTestId = (questionnaire: Questionnaire) => {
-  const autosuggestItem = questionnaire.item?.find(item => item.type === 'choice');
-  const autosuggestInputTestId = `test-autosuggest-item_${autosuggestItem?.linkId}`;
-  return autosuggestInputTestId;
-};
-
-const getAutosuggestInput = (questionnaire: Questionnaire, labelText: Matcher) => {
-  const autosuggestTestId = getTestId(questionnaire);
-  const autosuggestInput = getByLabelTextInsideElement(autosuggestTestId, labelText);
-  return autosuggestInput;
 };
 
 describe('autosuggest-view', () => {
