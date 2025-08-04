@@ -40,7 +40,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
     const updatedInput = await screen.findByDisplayValue('42');
 
     expect(updatedInput).toBeInTheDocument();
@@ -54,7 +56,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
     const integerInput = screen.getByTestId(/test-integer/i).querySelector('input');
 
     expect(integerInput).toHaveValue(null);
@@ -67,7 +71,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     const updatedInput = await screen.findByDisplayValue('42');
     expect(updatedInput).toBeInTheDocument();
@@ -81,7 +87,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
     const decimalInput = screen.getByTestId(/test-decimal/i).querySelector('input');
 
     expect(decimalInput).toHaveValue(null);
@@ -119,7 +127,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(booleanInput).toBeChecked();
   });
@@ -132,7 +142,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(booleanInput).not.toBeChecked();
   });
@@ -144,7 +156,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(screen.queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
   });
@@ -157,7 +171,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(screen.queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
   });
@@ -169,7 +185,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
   });
@@ -182,7 +200,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
   });
@@ -194,7 +214,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(screen.queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
   });
@@ -206,7 +228,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(screen.queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
   });
@@ -217,7 +241,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(container.querySelector('#item_6b-hn-1')).toBeChecked();
   });
@@ -235,7 +261,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       await wrapper(onChange, questionnaireWithAllItemTypes);
 
       const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-      booleanInput && (await userEvent.click(booleanInput));
+      if (booleanInput) {
+        await userEvent.click(booleanInput);
+      }
 
       const dateElement = screen.getByTestId(/test-dateDay/i);
       const dateInput = dateElement.querySelector('input');
@@ -250,7 +278,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       await wrapper(onChange, questionnaireWithAllItemTypes);
 
       const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-      booleanInput && (await userEvent.click(booleanInput));
+      if (booleanInput) {
+        await userEvent.click(booleanInput);
+      }
 
       const dateElement = screen.getByTestId(/test-dateDay/i);
       const dateInput = dateElement.querySelector('input');
@@ -377,7 +407,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
     const stringInput = screen.getByTestId(/test-string/i).querySelector('input');
 
     expect(stringInput).toHaveValue('Hello World!');
@@ -391,7 +423,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(screen.queryByText('Hello World!')).not.toBeInTheDocument();
   });
@@ -403,7 +437,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(screen.getByText(/Hello/i)).toBeInTheDocument();
   });
@@ -416,7 +452,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
     const integerInput = screen.getByTestId(/test-integer/i).querySelector('input');
 
     expect(screen.getByText(/Hello/i)).toBeInTheDocument();
@@ -431,7 +469,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     const item1 = findItem('6a-hn-2', container);
     expect(item1).toBeChecked();
@@ -448,7 +488,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
     expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
@@ -463,7 +505,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
     const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-    booleanInput && (await userEvent.click(booleanInput));
+    if (booleanInput) {
+      await userEvent.click(booleanInput);
+    }
 
     expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
     expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
@@ -479,7 +523,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithRepeats);
 
     const integerInput = screen.getByTestId(/test-integer/i).querySelector('input');
-    integerInput && (await userEvent.type(integerInput, '1'));
+    if (integerInput) {
+      await userEvent.type(integerInput, '1');
+    }
     const items = screen.getAllByTestId(/test-decimal/i);
 
     expect(items).toHaveLength(3);
@@ -497,7 +543,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithRepeats);
 
     const integerInput = screen.getByTestId(/test-integer/i).querySelector('input');
-    integerInput && (await userEvent.type(integerInput, '1'));
+    if (integerInput) {
+      await userEvent.type(integerInput, '1');
+    }
     const items = screen.getAllByTestId(/test-decimal/i);
 
     expect(items).toHaveLength(3);
@@ -513,7 +561,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithNestedItems);
 
     const decimalInput = screen.getByTestId(/test-decimal/i).querySelector('input');
-    decimalInput && (await userEvent.type(decimalInput, '1'));
+    if (decimalInput) {
+      await userEvent.type(decimalInput, '1');
+    }
     const integerInput = screen.getAllByTestId(/test-integer/i)[2].querySelector('input');
 
     expect(integerInput).toHaveValue(42);
@@ -526,7 +576,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithNestedItems);
 
     const decimalInput = screen.getByTestId(/test-decimal/i).querySelector('input');
-    decimalInput && (await userEvent.type(decimalInput, '1'));
+    if (decimalInput) {
+      await userEvent.type(decimalInput, '1');
+    }
 
     expect(screen.queryByLabelText(/nested under non-group/i)).toHaveValue(42);
   });
@@ -539,7 +591,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithNestedItems);
 
     const decimalInput = screen.getByTestId(/test-decimal/i).querySelector('input');
-    decimalInput && (await userEvent.type(decimalInput, '1'));
+    if (decimalInput) {
+      await userEvent.type(decimalInput, '1');
+    }
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -556,7 +610,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithNestedItems);
 
     const decimalInput = screen.getByTestId(/test-decimal/i).querySelector('input');
-    decimalInput && (await userEvent.type(decimalInput, '1'));
+    if (decimalInput) {
+      await userEvent.type(decimalInput, '1');
+    }
 
     expect(result.length).toBe(0);
   });
@@ -569,7 +625,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithNestedItems);
 
     const decimalInput = screen.getByTestId(/test-decimal/i).querySelector('input');
-    decimalInput && (await userEvent.type(decimalInput, '1'));
+    if (decimalInput) {
+      await userEvent.type(decimalInput, '1');
+    }
 
     expect(result.length).toBe(2);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -591,7 +649,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     await wrapper(onChange, questionnaireWithRepeats);
 
     const integerInput = screen.getByTestId(/test-integer/i).querySelector('input');
-    integerInput && (await userEvent.type(integerInput, '1'));
+    if (integerInput) {
+      await userEvent.type(integerInput, '1');
+    }
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1');
