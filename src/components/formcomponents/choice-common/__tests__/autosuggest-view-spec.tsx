@@ -12,6 +12,10 @@ import valueSet from '../../../../constants/valuesets';
 
 import { ReferoProps } from '@/types/referoProps';
 
+/* eslint-enable @typescript-eslint/no-unused-vars */
+/* eslint-enable @typescript-eslint/explicit-function-return-type */
+/* eslint-enable @typescript-eslint/no-unsafe-function-type */
+
 vi.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
 }));
