@@ -20,13 +20,13 @@ const resources = {
   dateError_time_invalid: 'Ugyldig klokkeslett',
 };
 
-const getHoursTestId = (questionnaire: Questionnaire) => {
+const getHoursTestId = (questionnaire: Questionnaire): string => {
   const timeItem = questionnaire.item?.find(item => item.type === 'time');
   const timeInputTestId = `test-hours-item_${timeItem?.linkId}`;
   return timeInputTestId;
 };
 
-const getHoursInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+const getHoursInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
   const timeInputTestId = getHoursTestId(questionnaire);
   const timeInput = getByLabelTextInsideElement(timeInputTestId, labelText);
   return timeInput;

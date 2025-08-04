@@ -235,7 +235,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
             {
               ...rest,
               id: getId(id),
-              'data-testid': `test-autosuggest-${getId(id)}` as any,
+              'data-testid': `test-autosuggest-${getId(id)}`,
               width,
               onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
                 onChangeInput(e, AutosuggestChangeEvent);
