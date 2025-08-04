@@ -28,7 +28,7 @@ const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps>
   });
 };
 
-const getTestId = (questionnaire: Questionnaire, groupIndex: number) => {
+const getTestId = (questionnaire: Questionnaire, groupIndex: number): string => {
   const groupItems = questionnaire.item?.filter(item => item.type === 'group');
   const groupToSearchIn = groupItems && groupItems[groupIndex];
   const stringItem = groupToSearchIn?.item?.find(item => item.type === 'string');
@@ -36,7 +36,7 @@ const getTestId = (questionnaire: Questionnaire, groupIndex: number) => {
   return stringInputTestId;
 };
 
-const getStringInput = (questionnaire: Questionnaire, labelText: Matcher, groupIndex: number) => {
+const getStringInput = (questionnaire: Questionnaire, labelText: Matcher, groupIndex: number): HTMLElement => {
   const stringInputTestId = getTestId(questionnaire, groupIndex);
   const stringInput = getByLabelTextInsideElement(stringInputTestId, labelText);
   return stringInput;

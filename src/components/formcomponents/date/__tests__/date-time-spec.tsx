@@ -24,13 +24,13 @@ const resources = {
   dateError_time_invalid: 'Ugyldig klokkeslett',
 };
 
-const getTestId = (questionnaire: Questionnaire) => {
+const getTestId = (questionnaire: Questionnaire): string => {
   const dateItem = questionnaire.item?.find(item => item.type === 'dateTime');
   const dateInputTestId = `test-datetime-item_${dateItem?.linkId}`;
   return dateInputTestId;
 };
 
-const getDateInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+const getDateInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
   const dateInputTestId = getTestId(questionnaire);
   const dateInput = getByLabelTextInsideElement(dateInputTestId, labelText);
   return dateInput;

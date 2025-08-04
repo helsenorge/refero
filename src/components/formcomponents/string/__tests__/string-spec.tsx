@@ -14,13 +14,13 @@ vi.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
 }));
 
-const getTestId = (questionnaire: Questionnaire) => {
+const getTestId = (questionnaire: Questionnaire): string => {
   const stringItem = questionnaire.item?.find(item => item.type === 'string');
   const stringInputTestId = `test-string-item_${stringItem?.linkId}`;
   return stringInputTestId;
 };
 
-const getStringInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+const getStringInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
   const stringInputTestId = getTestId(questionnaire);
   const stringInput = getByLabelTextInsideElement(stringInputTestId, labelText);
   return stringInput;

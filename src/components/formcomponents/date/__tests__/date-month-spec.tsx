@@ -22,13 +22,13 @@ const resources = {
   errorAfterMaxDate: 'Dato kan ikke være etter maksimum dato',
 };
 
-const getTestId = (questionnaire: Questionnaire) => {
+const getTestId = (questionnaire: Questionnaire): string => {
   const dateItem = questionnaire.item?.find(item => item.type === 'date');
   const dateInputTestId = `test-yearmonth-item_${dateItem?.linkId}`;
   return dateInputTestId;
 };
 
-const getDateInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+const getDateInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
   const dateInputTestId = getTestId(questionnaire);
   const dateInput = getByLabelTextInsideElement(dateInputTestId, labelText);
   return dateInput;

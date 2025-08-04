@@ -11,13 +11,13 @@ import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
-const getTestId = (questionnaire: Questionnaire) => {
+const getTestId = (questionnaire: Questionnaire): string => {
   const decimalItem = questionnaire.item?.find(item => item.type === 'decimal');
   const decimalInputTestId = `test-decimal-item_${decimalItem?.linkId}`;
   return decimalInputTestId;
 };
 
-const getDecimalInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+const getDecimalInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
   const decimalInputTestId = getTestId(questionnaire);
   const decimalInput = getByLabelTextInsideElement(decimalInputTestId, labelText);
   return decimalInput;

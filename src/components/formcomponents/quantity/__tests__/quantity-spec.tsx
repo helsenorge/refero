@@ -11,13 +11,13 @@ import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
-const getTestId = (questionnaire: Questionnaire) => {
+const getTestId = (questionnaire: Questionnaire): string => {
   const quantityItem = questionnaire.item?.find(item => item.type === 'quantity');
   const quantityTestId = `test-quantity-item_${quantityItem?.linkId}`;
   return quantityTestId;
 };
 
-const getQuantityInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+const getQuantityInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
   const quantityInputTestId = getTestId(questionnaire);
   const quantityInput = getByLabelTextInsideElement(quantityInputTestId, labelText);
   return quantityInput;

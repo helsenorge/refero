@@ -10,13 +10,13 @@ import { clickButtonTimes, getByLabelTextInsideElement, repeatBooleanNTimes, sub
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
-const getTestId = (questionnaire: Questionnaire) => {
+const getTestId = (questionnaire: Questionnaire): string => {
   const booleanItem = questionnaire.item?.find(item => item.type === 'boolean');
   const booleanInputTestId = `test-boolean-item_${booleanItem?.linkId}`;
   return booleanInputTestId;
 };
 
-const getBooleanInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+const getBooleanInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
   const booleanInputTestId = getTestId(questionnaire);
   const booleanInput = getByLabelTextInsideElement(booleanInputTestId, labelText, 0);
   return booleanInput;

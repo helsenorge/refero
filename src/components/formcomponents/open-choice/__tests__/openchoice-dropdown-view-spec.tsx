@@ -26,13 +26,13 @@ const expectedAnswer = {
   },
 };
 
-const getTestId = (questionnaire: Questionnaire) => {
+const getTestId = (questionnaire: Questionnaire): string => {
   const dropdownItem = questionnaire.item?.find(item => item.type === 'open-choice');
   const dropdownInputTestId = `test-openchoice-dropdown-item_${dropdownItem?.linkId}`;
   return dropdownInputTestId;
 };
 
-const getDopdownInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+const getDopdownInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
   const dropdownInputTestId = getTestId(questionnaire);
   const dropdownInput = getByLabelTextInsideElement(dropdownInputTestId, labelText);
   return dropdownInput;

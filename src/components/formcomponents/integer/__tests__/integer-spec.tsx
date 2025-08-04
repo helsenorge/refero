@@ -12,13 +12,13 @@ import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
-const getTestId = (questionnaire: Questionnaire) => {
+const getTestId = (questionnaire: Questionnaire): string => {
   const integerItem = questionnaire.item?.find(item => item.type === 'integer');
   const integerInputTestId = `test-integer-item_${integerItem?.linkId}`;
   return integerInputTestId;
 };
 
-const getIntegerInput = (questionnaire: Questionnaire, labelText: Matcher) => {
+const getIntegerInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
   const integerInputTestId = getTestId(questionnaire);
   const integerInput = getByLabelTextInsideElement(integerInputTestId, labelText);
   return integerInput;
