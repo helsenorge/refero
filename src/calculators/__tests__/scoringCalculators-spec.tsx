@@ -1,5 +1,5 @@
-vi.unmock('@/workers/fhir-path.worker.ts?worker&inline');
-import '@vitest/web-worker';
+// vi.unmock('@/workers/fhir-path.worker.ts?worker&inline');
+// import '@vitest/web-worker';
 import { renderRefero, screen, waitFor, within } from '@test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { Questionnaire } from 'fhir/r4';

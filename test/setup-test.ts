@@ -21,6 +21,11 @@ window.IS_REACT_ACT_ENVIRONMENT = true;
 // @ts-expect-error global is not defined
 this.IS_REACT_ACT_ENVIRONMENT = true;
 
+Object.defineProperty(window.URL, 'createObjectURL', {
+  writable: true,
+  value: vi.fn(),
+});
+
 Object.defineProperty(window, 'scrollTo', {
   value: vi.fn(),
   writable: true,
@@ -43,8 +48,8 @@ Object.defineProperty(window, 'matchMedia', {
     matches: false,
     media: query,
     onchange: null,
-    addListener: vi.fn(), // deprecated but still used in some libraries
-    removeListener: vi.fn(), // deprecated but still used in some libraries
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
