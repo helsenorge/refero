@@ -212,7 +212,7 @@
           },
           "text": "String markdown",
           "maxLength": 20,
-          "repeats": true,
+          "repeats": false,
           "item": [
             {
               "linkId": "886ba9d4-e7cd-4c23-b581-46ea81a1deca",

@@ -1,4 +1,4 @@
-import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
+import { Matcher, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -6,7 +6,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { q, qMinMax, qMinMaxCustomError } from './__data__/date-year';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = {
@@ -15,6 +15,18 @@ const resources = {
   year_field_invalid: 'Ugyldig verdi',
   year_field_maxdate: 'Årstall er etter det eldste tillatte år',
   year_field_mindate: 'Årstall er før det minste tillatte år',
+};
+
+const getTestId = (questionnaire: Questionnaire): string => {
+  const dateItem = questionnaire.item?.find(item => item.type === 'date');
+  const dateInputTestId = `test-year-item_${dateItem?.linkId}`;
+  return dateInputTestId;
+};
+
+const getDateInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
+  const dateInputTestId = getTestId(questionnaire);
+  const dateInput = getByLabelTextInsideElement(dateInputTestId, labelText);
+  return dateInput;
 };
 
 describe('Date year', () => {
@@ -38,16 +50,11 @@ describe('Date year', () => {
   });
   describe('initialvalue', () => {
     it('Initial value should not be set', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-        })),
-      };
-      await createWrapper(questionnaire);
+      await createWrapper(q);
 
-      expect(screen.getByLabelText(/Dato/i)).toHaveValue(null);
+      const dateInput = getDateInput(q, /Dato/i);
+
+      expect(dateInput).toHaveValue(null);
     });
 
     it('Initial value should be set', async () => {
@@ -55,7 +62,6 @@ describe('Date year', () => {
         ...q,
         item: q.item?.map(x => ({
           ...x,
-          repeats: false,
           initial: [
             {
               valueDate: '2004',
@@ -63,10 +69,11 @@ describe('Date year', () => {
           ],
         })),
       };
-      await waitFor(async () => {
-        await createWrapper(questionnaire);
-      });
-      expect(screen.getByLabelText(/Dato/i)).toHaveValue(2004);
+      await createWrapper(questionnaire);
+
+      const dateInput = getDateInput(questionnaire, /Dato/i);
+
+      expect(dateInput).toHaveValue(2004);
     });
   });
   describe('help button', () => {
@@ -123,10 +130,12 @@ describe('Date year', () => {
         }),
       };
       await createWrapper(questionnaire);
-      const input = '2004';
-      await repeatNTimes(input, 3, /Dato/i);
 
-      expect(screen.queryAllByLabelText(/Dato/i)).toHaveLength(4);
+      const testId = getTestId(questionnaire);
+      const input = '2004';
+      await repeatNTimes(input, 3, testId, /Dato/i);
+
+      expect(screen.queryAllByTestId(/test-year/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -138,8 +147,9 @@ describe('Date year', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '2004';
-      await repeatNTimes(input, 2, /Dato/i);
+      await repeatNTimes(input, 2, testId, /Dato/i);
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -158,8 +168,10 @@ describe('Date year', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
+
+      const testId = getTestId(questionnaire);
       const input = '2004';
-      await repeatNTimes(input, 1, /Dato/i);
+      await repeatNTimes(input, 1, testId, /Dato/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -173,13 +185,12 @@ describe('Date year', () => {
       };
       await createWrapper(questionnaire);
 
+      const testId = getTestId(questionnaire);
       const input = '2004';
-      await repeatNTimes(input, 1, /Dato/i);
+      await repeatNTimes(input, 1, testId, /Dato/i);
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
-
-      // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
       await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
@@ -189,22 +200,29 @@ describe('Date year', () => {
     it('Should update component with value from answer', async () => {
       await createWrapper(q);
 
-      const inputElement = screen.getByLabelText(/Dato/i);
-      expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-input`);
+      const dateInput = getDateInput(q, /Dato/i);
 
-      await userEvent.type(inputElement, '2004');
-      expect(screen.getByLabelText(/Dato/i)).toHaveValue(2004);
+      expect(dateInput).toBeInTheDocument();
+      expect(dateInput).toHaveAttribute('type', 'number');
+      expect(dateInput).toHaveAttribute('id', `item_${q?.item?.[0].linkId}-input`);
+
+      await userEvent.type(dateInput, '2004');
+
+      expect(dateInput).toHaveValue(2004);
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
       await createWrapper(q, { onChange });
-      expect(screen.getByLabelText(/Dato/i)).toBeInTheDocument();
-      await userEvent.type(screen.getByLabelText(/Dato/i), '2004');
+
+      const dateInput = getDateInput(q, /Dato/i);
+
+      expect(dateInput).toBeInTheDocument();
+
+      await userEvent.type(dateInput, '2004');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueDate: '2004',
       };
+
       expect(onChange).toHaveBeenCalledTimes(4);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
@@ -227,7 +245,10 @@ describe('Date year', () => {
           item: q.item?.map(x => ({ ...x, required: true })),
         };
         await createWrapper(questionnaire);
-        await userEvent.type(screen.getByLabelText(/Dato/i), '31.05.1994');
+
+        const dateInput = getDateInput(questionnaire, /Dato/i);
+
+        await userEvent.type(dateInput, '31.05.1994');
         await submitForm();
 
         expect(screen.queryByText(resources.year_field_required)).not.toBeInTheDocument();
@@ -239,58 +260,69 @@ describe('Date year', () => {
         };
         await createWrapper(questionnaire);
         await submitForm();
+
         expect(screen.getByText(resources.year_field_required)).toBeInTheDocument();
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1994');
+        const dateInput = getDateInput(questionnaire, /Dato/i);
+        await userEvent.type(dateInput, '1994');
         await userEvent.tab();
+
         expect(screen.queryByText(resources.year_field_required)).not.toBeInTheDocument();
       });
       it('Should show error if date is invalid', async () => {
         await createWrapper(q);
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '33333');
+        const dateInput = getDateInput(q, /Dato/i);
 
+        await userEvent.type(dateInput, '33333');
         await submitForm();
+
         expect(screen.getByText(resources.year_field_invalid)).toBeInTheDocument();
       });
       it('Should show error message for min value', async () => {
         await createWrapper(qMinMax);
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1904');
+        const dateInput = getDateInput(qMinMax, /Dato/i);
 
+        await userEvent.type(dateInput, '1904');
         await submitForm();
+
         expect(screen.getByText(resources.year_field_mindate + ': 1994')).toBeInTheDocument();
       });
       it('Should show error message for max value', async () => {
         await createWrapper(qMinMax);
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '2095');
-
+        const dateInput = getDateInput(qMinMax, /Dato/i);
+        await userEvent.type(dateInput, '2095');
         await submitForm();
+
         expect(screen.getByText(resources.year_field_maxdate + ': 2094')).toBeInTheDocument();
       });
       it('Should show custom error message for min value', async () => {
         await createWrapper(qMinMaxCustomError);
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '1904');
-
+        const dateInput = getDateInput(qMinMaxCustomError, /Dato/i);
+        await userEvent.type(dateInput, '1904');
         await submitForm();
+
         expect(screen.getByText('Custom errormessage')).toBeInTheDocument();
       });
       it('Should show custom error message for max value', async () => {
         await createWrapper(qMinMaxCustomError);
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '2095');
-
+        const dateInput = getDateInput(qMinMaxCustomError, /Dato/i);
+        await userEvent.type(dateInput, '2095');
         await submitForm();
+
         expect(screen.getByText('Custom errormessage')).toBeInTheDocument();
       });
       it('Should not show error if date value is between min value and max value', async () => {
         await createWrapper(qMinMax);
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '2024');
-
+        const dateInput = getDateInput(qMinMax, /Dato/i);
+        await userEvent.type(dateInput, '2024');
         await submitForm();
+
         expect(screen.queryByText(resources.year_field_mindate + ': 1994')).not.toBeInTheDocument();
         expect(screen.queryByText(resources.year_field_maxdate + ': 2094')).not.toBeInTheDocument();
       });
@@ -304,7 +336,8 @@ describe('Date year', () => {
 
         expect(screen.getByText(resources.year_field_required)).toBeInTheDocument();
 
-        await userEvent.type(screen.getByLabelText(/Dato/i), '2024');
+        const dateInput = getDateInput(questionnaire, /Dato/i);
+        await userEvent.type(dateInput, '2024');
 
         expect(screen.queryByText(resources.year_field_required)).not.toBeInTheDocument();
       });

@@ -41,7 +41,7 @@
       "linkId": "71d92d62-cad3-445b-848d-4efd281078d3",
       "type": "dateTime",
       "required": true,
-      "repeats": true,
+      "repeats": false,
       "extension": [
         { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til" },
         { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 },

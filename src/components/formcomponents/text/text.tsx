@@ -139,7 +139,7 @@ export const Text = (props: Props): JSX.Element | null => {
           textareaId={getId(id)}
           maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
           placeholder={getPlaceholder(item)}
-          testId={`${getId(id)}-text`}
+          testId={`test-text-${getId(id)}`}
           grow={true}
           maxCharacters={getMaxLength(item)}
           maxText={resources?.maxCharactersText || ''}

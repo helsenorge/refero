@@ -12,7 +12,7 @@ describe('scoring calculations', () => {
   describe('Input scoring and calculation and copying of scoringvalue', () => {
     it('should render', async () => {
       await createWrapper(q);
-      expect(screen.getByTestId('item_Gjennomsnitt')).toBeInTheDocument();
+      expect(screen.getByTestId('test-integer-item_Gjennomsnitt')).toBeInTheDocument();
     });
     it('should calculate the based on the input values', async () => {
       await createWrapper(q);

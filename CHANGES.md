@@ -1,34 +1,15 @@
-## 19.0.0-beta12
+## 19.0.0
 
-- new import url for local development of webworker, try #2
-
-## 19.0.0-beta11
-
-- new import url for local development of webworker
-
-## 19.0.0-beta10
-
-- fix bug in runFhirPathUpdater where the worker was not used correctly
-- new worker factory to handle updates in queue
-
-## 19.0.0-beta09
-
-- new worker setup to be able to call workers from cross origin
-
-## 19.0.0-beta08
-
-- Inline worker
-
-## 19.0.0-beta06
-
-- updated worker build
 - webworker for fhirPathCalculator, which will improve performance for large questionnaires.
-- Inline webworker
-- Made the webworker into a singleton, so that it is only created once and reused for all calculations
-- Change to modular worker
-- not use inline webworker, but use a separate worker file
 
-## 18.1.0-beta01
+## 18.1.1
+
+- Connect helpButton to label via arialabeledby
+- Rewrite tests to use testId
+
+## 18.1.0
+
+> > > > > > > origin/master
 
 - Added tests for valueSets for slider
 - Added support for valueSets in slider-view

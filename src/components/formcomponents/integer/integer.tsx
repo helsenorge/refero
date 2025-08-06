@@ -124,7 +124,7 @@ const Integer = (props: Props): JSX.Element | null => {
           type="number"
           value={Array.isArray(value) ? value.join(', ') : value}
           inputId={getId(id)}
-          testId={getId(id)}
+          testId={`test-integer-${getId(id)}`}
           onChange={(e): void => {
             onChange(e);
             handleChange(e);

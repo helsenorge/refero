@@ -8,7 +8,7 @@ import { radioView as q } from './__data__/index';
 import { typeExtraField } from './utils';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { addManyPropertiesToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
-import { clickButtonTimes, repeatCheckboxTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatCheckboxNTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
@@ -85,7 +85,7 @@ describe('Radio-view - choice', () => {
         }),
       };
       await createWrapper(questionnaire);
-      await repeatCheckboxTimes(/Ja/i, 3);
+      await repeatCheckboxNTimes(/Ja/i, 3);
 
       expect(screen.queryAllByText(/Radio view label/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -96,7 +96,7 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       await createWrapper(questionnaire);
 
-      await repeatCheckboxTimes(/Ja/i, 2);
+      await repeatCheckboxNTimes(/Ja/i, 2);
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -110,7 +110,7 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       await createWrapper(questionnaire);
 
-      await repeatCheckboxTimes(/Ja/i, 1);
+      await repeatCheckboxNTimes(/Ja/i, 1);
 
       const elm2 = screen.getAllByLabelText(/Ja/i);
       await userEvent.click(elm2[1]);
@@ -124,7 +124,7 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       await createWrapper(questionnaire);
 
-      await repeatCheckboxTimes(/Ja/i, 1);
+      await repeatCheckboxNTimes(/Ja/i, 1);
 
       const elm2 = screen.getAllByLabelText(/Ja/i);
       await userEvent.click(elm2[1]);

@@ -6,8 +6,8 @@ import { ReferoProps } from '../../types/referoProps';
 
 import StepViewQuestionnaire from './__data__/stepview';
 import { getResources } from '../../../preview/resources/referoResources';
-import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from '../../../test/selectors';
-import { renderRefero, screen } from '../../../test/test-utils';
+import { clickButtonTimes, getByLabelTextInsideElement, selectCheckboxOption, submitForm, typeByLabelText } from '../../../test/selectors';
+import { Matcher, renderRefero, screen, userEvent } from '../../../test/test-utils';
 
 const resources = {
   ...getResources(''),
@@ -21,12 +21,25 @@ const resources = {
 const onSubmitMock = vi.fn();
 const onStepChangeMock = vi.fn();
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
   return renderRefero({
     questionnaire,
     props: { ...props, resources, saveButtonDisabled: false, onSubmit: onSubmitMock, onStepChange: onStepChangeMock },
   });
+};
+
+const getTestId = (questionnaire: Questionnaire, groupIndex: number): string => {
+  const groupItems = questionnaire.item?.filter(item => item.type === 'group');
+  const groupToSearchIn = groupItems && groupItems[groupIndex];
+  const stringItem = groupToSearchIn?.item?.find(item => item.type === 'string');
+  const stringInputTestId = `test-string-item_${stringItem?.linkId}`;
+  return stringInputTestId;
+};
+
+const getStringInput = (questionnaire: Questionnaire, labelText: Matcher, groupIndex: number): HTMLElement => {
+  const stringInputTestId = getTestId(questionnaire, groupIndex);
+  const stringInput = getByLabelTextInsideElement(stringInputTestId, labelText);
+  return stringInput;
 };
 
 describe('Step-view', () => {
@@ -50,6 +63,7 @@ describe('Step-view', () => {
     // Step 1
     expect(screen.getByText(resources.nextStep)).toBeInTheDocument();
     await submitForm();
+
     // Step 2
     expect(screen.getByText(resources.previousStep)).toBeInTheDocument();
     await clickButtonTimes(/refero-pause-button/i, 1);
@@ -63,8 +77,10 @@ describe('Step-view', () => {
     expect(screen.queryAllByText(/Du må fylle ut dette feltet/i)).toHaveLength(2);
     await selectCheckboxOption(/Mann/i);
 
-    await typeByLabelText(/String/i, 'epost@test.com');
+    const stringInput = getStringInput(StepViewQuestionnaire, /String/i, 1);
+    await userEvent.type(stringInput, 'epost@test.com');
     await submitForm();
+
     // Step 3
     await typeByLabelText(/Hvor mange liter blod/i, '2.23');
     await submitForm();

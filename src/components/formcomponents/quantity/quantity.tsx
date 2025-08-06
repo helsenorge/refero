@@ -179,7 +179,7 @@ const Quantity = (props: Props): JSX.Element | null => {
             value={value}
             type="number"
             inputId={getId(id)}
-            testId={getId(id)}
+            testId={`test-quantity-${getId(id)}`}
             placeholder={getPlaceholder(item)}
             className="page_refero__quantity"
             onChange={(e): void => {

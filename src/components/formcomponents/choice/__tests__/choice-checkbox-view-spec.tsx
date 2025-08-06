@@ -6,7 +6,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { checkboxView as q } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatCheckboxNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
@@ -17,6 +17,7 @@ const expectedAnswer = {
     system: 'urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c',
   },
 };
+
 describe('checkbox-view - choice', () => {
   describe('Render', () => {
     it('Should render as text if props.pdf', async () => {
@@ -89,8 +90,8 @@ describe('checkbox-view - choice', () => {
         }),
       };
       await createWrapper(questionnaire);
+      await repeatCheckboxNTimes(/Ja/i, 3);
 
-      await repeatCheckboxTimes(/Ja/i, 3);
       expect(screen.queryAllByText(/Checkbox view label/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -102,8 +103,7 @@ describe('checkbox-view - choice', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
-
-      await repeatCheckboxTimes(/Ja/i, 2);
+      await repeatCheckboxNTimes(/Ja/i, 2);
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -122,8 +122,7 @@ describe('checkbox-view - choice', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
-
-      await repeatCheckboxTimes(/Ja/i, 1);
+      await repeatCheckboxNTimes(/Ja/i, 1);
 
       const elm2 = screen.getAllByLabelText(/Ja/i);
       await userEvent.click(elm2[1]);
@@ -139,16 +138,14 @@ describe('checkbox-view - choice', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
-
-      await repeatCheckboxTimes(/Ja/i, 1);
+      await repeatCheckboxNTimes(/Ja/i, 1);
 
       const elm2 = screen.getAllByLabelText(/Ja/i);
       await userEvent.click(elm2[1]);
+
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);
-
-      // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
       await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
@@ -189,7 +186,6 @@ describe('checkbox-view - choice', () => {
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
       await createWrapper(questionnaire);
-
       await userEvent.click(screen.getByLabelText(/Ja/i));
 
       expect(screen.getByLabelText(/Ja/i)).toBeChecked();
@@ -201,7 +197,9 @@ describe('checkbox-view - choice', () => {
       };
       const onChange = vi.fn();
       await createWrapper(questionnaire, { onChange });
+
       expect(screen.getByLabelText(/Ja/i)).toBeInTheDocument();
+
       await userEvent.click(screen.getByLabelText(/Ja/i));
 
       expect(onChange).toHaveBeenCalledTimes(1);
@@ -216,8 +214,11 @@ describe('checkbox-view - choice', () => {
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
+
         expect(screen.getByLabelText(/Ja/i)).toBeInTheDocument();
+
         await submitForm();
+
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
@@ -228,6 +229,7 @@ describe('checkbox-view - choice', () => {
         await createWrapper(questionnaire);
         await userEvent.click(screen.getByLabelText(/Ja/i));
         await submitForm();
+
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
@@ -237,10 +239,12 @@ describe('checkbox-view - choice', () => {
         };
         await createWrapper(questionnaire);
         await submitForm();
+
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await userEvent.click(screen.getByLabelText(/Ja/i));
         await userEvent.tab();
+
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should get required error on readOnly if noe value', async () => {

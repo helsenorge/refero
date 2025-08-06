@@ -275,7 +275,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             <DatePicker
               {...restDate}
               inputId={`${getId(id)}-datepicker`}
-              testId={`${getId(id)}-datetime`}
+              testId={`test-datetime-${getId(id)}`}
               autoComplete=""
               dateButtonAriaLabel="Open datepicker"
               dateFormat={'dd.MM.yyyy'}

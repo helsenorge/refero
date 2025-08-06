@@ -1,4 +1,4 @@
-import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
+import { Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -6,7 +6,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 
 import { dropdownView as q } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, repeatDropDownTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, getByLabelTextInsideElement, repeatDropDownTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
@@ -17,6 +17,19 @@ const expectedAnswer = {
     system: 'urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228',
   },
 };
+
+const getTestId = (questionnaire: Questionnaire): string => {
+  const dropdownItem = questionnaire.item?.find(item => item.type === 'choice');
+  const dropdownInputTestId = `test-choice-dropdown-item_${dropdownItem?.linkId}`;
+  return dropdownInputTestId;
+};
+
+const getDopdownInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLElement => {
+  const dropdownInputTestId = getTestId(questionnaire);
+  const dropdownInput = getByLabelTextInsideElement(dropdownInputTestId, labelText);
+  return dropdownInput;
+};
+
 describe('Dropdown-view - choice', () => {
   describe('Render', () => {
     it('Should render as text if props.pdf', async () => {
@@ -90,7 +103,8 @@ describe('Dropdown-view - choice', () => {
       };
       await createWrapper(questionnaire);
 
-      await repeatDropDownTimes(/Dropdown view label/i, 3, 'Ja');
+      const testId = getTestId(questionnaire);
+      await repeatDropDownTimes(3, testId, /Dropdown view label/i, 'Ja');
 
       expect(screen.queryAllByText(/Dropdown view label/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -104,7 +118,8 @@ describe('Dropdown-view - choice', () => {
       };
       await createWrapper(questionnaire);
 
-      await repeatDropDownTimes(/Dropdown view label/i, 2, 'Ja');
+      const testId = getTestId(questionnaire);
+      await repeatDropDownTimes(2, testId, /Dropdown view label/i, 'Ja');
 
       expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -124,7 +139,8 @@ describe('Dropdown-view - choice', () => {
       };
       await createWrapper(questionnaire);
 
-      await repeatDropDownTimes(/Dropdown view label/i, 1, 'Ja');
+      const testId = getTestId(questionnaire);
+      await repeatDropDownTimes(1, testId, /Dropdown view label/i, 'Ja');
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
@@ -138,13 +154,15 @@ describe('Dropdown-view - choice', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       await createWrapper(questionnaire);
-      await repeatDropDownTimes(/Dropdown view label/i, 1, 'Ja');
+
+      const testId = getTestId(questionnaire);
+      await repeatDropDownTimes(1, testId, /Dropdown view label/i, 'Ja');
 
       expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
-      await clickButtonTimes(/-delete-button/i, 1);
 
-      // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
+      await clickButtonTimes(/-delete-button/i, 1);
       await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
+
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
@@ -185,10 +203,8 @@ describe('Dropdown-view - choice', () => {
       };
       await createWrapper(questionnaire);
 
-      await userEvent.selectOptions(
-        screen.getByLabelText(/Dropdown view label/i),
-        screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement
-      );
+      const dropdownInput = getDopdownInput(questionnaire, /Dropdown view label/i);
+      await userEvent.selectOptions(dropdownInput, screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
 
       expect((screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement as HTMLOptionElement).selected).toBe(true);
     });
@@ -199,11 +215,11 @@ describe('Dropdown-view - choice', () => {
       };
       const onChange = vi.fn();
       await createWrapper(questionnaire, { onChange });
+
       expect(screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
-      await userEvent.selectOptions(
-        screen.getByLabelText(/Dropdown view label/i),
-        screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement
-      );
+
+      const dropdownInput = getDopdownInput(questionnaire, /Dropdown view label/i);
+      await userEvent.selectOptions(dropdownInput, screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
 
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
@@ -217,8 +233,11 @@ describe('Dropdown-view - choice', () => {
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
+
         expect(screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
+
         await submitForm();
+
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
@@ -227,11 +246,11 @@ describe('Dropdown-view - choice', () => {
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         await createWrapper(questionnaire);
-        await userEvent.selectOptions(
-          screen.getByLabelText(/Dropdown view label/i),
-          screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement
-        );
+
+        const dropdownInput = getDopdownInput(questionnaire, /Dropdown view label/i);
+        await userEvent.selectOptions(dropdownInput, screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
         await submitForm();
+
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
@@ -241,12 +260,12 @@ describe('Dropdown-view - choice', () => {
         };
         await createWrapper(questionnaire);
         await submitForm();
+
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await userEvent.selectOptions(
-          screen.getByLabelText(/Dropdown view label/i),
-          screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement
-        );
+        const dropdownInput = getDopdownInput(questionnaire, /Dropdown view label/i);
+        await userEvent.selectOptions(dropdownInput, screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
+
         expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should get required error on readOnly if noe value', async () => {

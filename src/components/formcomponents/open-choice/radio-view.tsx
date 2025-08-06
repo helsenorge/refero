@@ -77,7 +77,7 @@ const RadioView = (props: Props): JSX.Element | null => {
             {...rest}
             key={option.id}
             inputId={`${getId(id)}-hn-${index}`}
-            testId={`${getId(id)}-${index}-radio-open-choice`}
+            testId={`test-openchoice-radio-${getId(id)}-${index}`}
             value={option.type}
             onChange={(e): void => {
               handleChange(option.type);

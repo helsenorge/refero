@@ -6,6 +6,7 @@ import { SanitizeText } from '@/util/sanitize/domPurifyHelper';
 
 type SafeTextOwnProps<E extends React.ElementType = React.ElementType> = {
   text: string;
+  safeTextId?: string;
   as?: E;
 };
 
@@ -13,12 +14,18 @@ type SafeTextProps<E extends React.ElementType> = SafeTextOwnProps<E> & Omit<Rea
 
 const __DEFAULT_ELEMENT__ = 'h2';
 
-function SafeText<E extends React.ElementType = typeof __DEFAULT_ELEMENT__>({ text, as, ...props }: SafeTextProps<E>): JSX.Element {
+function SafeText<E extends React.ElementType = typeof __DEFAULT_ELEMENT__>({
+  text,
+  safeTextId,
+  as,
+  ...props
+}: SafeTextProps<E>): JSX.Element {
   const Component = as || __DEFAULT_ELEMENT__;
   const sanitizedText = useMemo(() => SanitizeText(text), [text]);
   return (
     <Component
       {...props}
+      id={safeTextId}
       className={props.className ? props.className : styles.safetext}
       dangerouslySetInnerHTML={{
         __html: sanitizedText,

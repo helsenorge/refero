@@ -153,7 +153,7 @@ export const DateDayInput = ({
       <DatePicker
         {...rest}
         inputId={`${getId(id)}-datepicker`}
-        testId={`${getId(id)}-datepicker-test`}
+        testId={`test-dateDay-${getId(id)}`}
         autoComplete=""
         dateButtonAriaLabel="Open datepicker"
         dateFormat={'dd.MM.yyyy'}

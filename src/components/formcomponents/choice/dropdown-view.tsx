@@ -86,7 +86,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
           width={getWith(options)}
           value={value}
           selectId={getId(id)}
-          testId={getId(id)}
+          testId={`test-choice-dropdown-${getId(id)}`}
           onChange={(e): void => {
             onChange(e);
             handleChange(e.target.value);
@@ -96,7 +96,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
           <option value="" disabled hidden>
             {resources?.selectDefaultPlaceholder || ''}
           </option>
-          {options?.map((dropdownOption) => (
+          {options?.map(dropdownOption => (
             <option key={dropdownOption.id} value={dropdownOption.type}>
               {dropdownOption.label}
             </option>
