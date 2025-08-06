@@ -1,3 +1,7 @@
+## 19.0.0-beta11
+
+- new import url for local development of webworker
+
 ## 19.0.0-beta10
 
 - fix bug in runFhirPathUpdater where the worker was not used correctly
