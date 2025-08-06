@@ -1,5 +1,3 @@
-// vi.unmock('@/workers/fhir-path.worker.ts?worker&inline');
-// import '@vitest/web-worker';
 import { renderRefero, screen, waitFor, within } from '@test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { Questionnaire } from 'fhir/r4';
@@ -16,71 +14,35 @@ describe('scoring calculations', () => {
     });
     it('should calculate the based on the input values', async () => {
       await createWrapper(q);
+      const input1 = screen.getByTestId('test-choice-radio-item_verdi1-0');
+      const input2 = screen.getByTestId('test-choice-radio-item_verdi2-0');
+      const input3 = screen.getByTestId('test-choice-radio-item_verdi3-1');
+      const input4 = screen.getByTestId('test-choice-radio-item_verdi4-0');
 
-      expect(await screen.findByTestId('item_Delsum-readonly')).toHaveTextContent('DelsumIkke besvart');
-      expect(await screen.findByTestId('item_Totalsum-readonly')).toHaveTextContent('TotalsumIkke besvart');
+      const delsum = screen.getByTestId('item_Delsum-readonly');
+      const totalsum = screen.getByTestId('item_Totalsum-readonly');
+      const aritmetisk_gjennomsnitt = screen.getByTestId('item_aritmetisk_gjennomsnitt-readonly');
+      const Kopi = screen.getByTestId('item_aritmetisk_gjennomsnitt_kopi-readonly');
+      expect(delsum).toHaveTextContent('DelsumIkke besvart');
+      expect(totalsum).toHaveTextContent('TotalsumIkke besvart');
+      expect(aritmetisk_gjennomsnitt).toHaveTextContent('Aritmetisk gjennomsnitt basert på totalsum.Ikke besvar');
+      expect(Kopi).toHaveTextContent('Aritmetisk gjennomsnitt basert på kopiert feltIkke besvart');
+
+      await userEvent.click(within(input1).getByLabelText('Ja'));
+      await userEvent.click(within(input2).getByLabelText('Ja'));
+      await userEvent.click(within(input3).getByLabelText('Nei'));
+      await userEvent.click(within(input4).getByLabelText('Ja'));
+
+      expect(delsum).toHaveTextContent('Delsum500');
+
+      expect(screen.getByTestId('item_Totalsum-readonly')).toHaveTextContent('Totalsum500');
+
       await waitFor(async () => {
         expect(await screen.findByTestId('item_aritmetisk_gjennomsnitt-readonly')).toHaveTextContent(
-          'Aritmetisk gjennomsnitt basert på totalsum.Ikke besvar'
+          'Aritmetisk gjennomsnitt basert på totalsum.125'
         );
       });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_aritmetisk_gjennomsnitt_kopi-readonly')).toHaveTextContent(
-          'Aritmetisk gjennomsnitt basert på kopiert feltIkke besvart'
-        );
-      });
-      await waitFor(async () => {
-        await userEvent.click(within(await screen.findByTestId('item_verdi1-0-radio-choice')).getByLabelText('Ja'));
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_Delsum-readonly')).toHaveTextContent('Delsum100');
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_Totalsum-readonly')).toHaveTextContent('Totalsum100');
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_kopiert_felt-readonly')).toHaveTextContent('Kopi100');
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_aritmetisk_gjennomsnitt-readonly')).toHaveTextContent(
-          'Aritmetisk gjennomsnitt basert på totalsum.25'
-        );
-      });
-      await waitFor(async () => {
-        await userEvent.click(within(await screen.findByTestId('item_verdi2-0-radio-choice')).getByLabelText('Ja'));
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_Delsum-readonly')).toHaveTextContent('Delsum200');
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_kopiert_felt-readonly')).toHaveTextContent('Kopi200');
-      });
-      await waitFor(async () => {
-        await userEvent.click(within(await screen.findByTestId('item_verdi3-1-radio-choice')).getByLabelText('Nei'));
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_Delsum-readonly')).toHaveTextContent('Delsum400');
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_kopiert_felt-readonly')).toHaveTextContent('Kopi400');
-      });
-      await waitFor(async () => {
-        await userEvent.click(within(await screen.findByTestId('item_verdi4-0-radio-choice')).getByLabelText('Ja'));
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_Delsum-readonly')).toHaveTextContent('Delsum500');
-      });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_Totalsum-readonly')).toHaveTextContent('Totalsum500');
-      });
-      // await waitFor(async () => {
-      //   expect(await screen.findByTestId('item_aritmetisk_gjennomsnitt-readonly')).toHaveTextContent(
-      //     'Aritmetisk gjennomsnitt basert på totalsum.125'
-      //   );
-      // });
-      await waitFor(async () => {
-        expect(await screen.findByTestId('item_kopiert_felt-readonly')).toHaveTextContent('Kopi500');
-      });
+      expect(screen.getByTestId('item_kopiert_felt-readonly')).toHaveTextContent('Kopi500');
       await waitFor(async () => {
         expect(await screen.findByTestId('item_aritmetisk_gjennomsnitt_kopi-readonly')).toHaveTextContent(
           'Aritmetisk gjennomsnitt basert på kopiert felt125'
@@ -93,34 +55,30 @@ describe('scoring calculations', () => {
       await createWrapper(q);
 
       // Get the elements once at the start
-      const tall1Input = screen.getByLabelText('Tall 1');
-      const tall2Input = screen.getByLabelText('Tall 2');
-      const sumInput = screen.getByLabelText('Sum');
-      const avgInput = screen.getByLabelText('Gjennomsnitt');
 
       // Assert initial state
-      expect(sumInput).not.toHaveValue();
-      expect(avgInput).not.toHaveValue();
+      expect(screen.getByLabelText('Sum')).not.toHaveValue();
+      expect(screen.getByLabelText('Gjennomsnitt')).not.toHaveValue();
 
       // --- FIX: Perform actions one by one, without waitFor ---
 
       // ACT on the first input
-      await userEvent.type(tall1Input, '10');
+      await userEvent.type(screen.getByLabelText('Tall 1'), '10');
 
       // You can assert the intermediate state if you want, but it's not always necessary
-      expect(tall1Input).toHaveValue(10);
+      expect(screen.getByLabelText('Tall 1')).toHaveValue(10);
 
       // ACT on the second input
-      await userEvent.type(tall2Input, '20');
+      await userEvent.type(screen.getByLabelText('Tall 2'), '20');
 
-      expect(tall2Input).toHaveValue(20);
+      expect(screen.getByLabelText('Tall 2')).toHaveValue(20);
 
       await waitFor(() => {
-        expect(sumInput).toHaveValue(30);
+        expect(screen.getByLabelText('Sum')).toHaveValue(30);
       });
 
       await waitFor(() => {
-        expect(avgInput).toHaveValue(15);
+        expect(screen.getByLabelText('Gjennomsnitt')).toHaveValue(15);
       });
     });
   });

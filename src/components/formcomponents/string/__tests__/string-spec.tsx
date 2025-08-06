@@ -94,8 +94,6 @@ describe('string', () => {
       await waitFor(async () => {
         expect(stringInput).toHaveValue('test');
       });
-
-      expect(screen.getByLabelText(/String/i)).toHaveValue('test');
     });
   });
   describe('help button', () => {
