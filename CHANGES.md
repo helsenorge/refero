@@ -1,3 +1,7 @@
+## 19.0.0-beta09
+
+- new worker setup to be able to call workers from cross origin
+
 ## 19.0.0-beta08
 
 - Inline worker
