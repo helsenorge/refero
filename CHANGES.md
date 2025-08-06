@@ -1,3 +1,7 @@
+## 19.0.0-beta12
+
+- new import url for local development of webworker, try #2
+
 ## 19.0.0-beta11
 
 - new import url for local development of webworker

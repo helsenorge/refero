@@ -2,7 +2,7 @@ import workerUrl from './fhir-path.worker.ts?worker&url';
 
 // const baseUrl = import.meta.env.DEV ? import.meta.url.replace('.vite/deps', '@helsenorge/refero') + '' : import.meta.url;
 
-const js = `import ${JSON.stringify(new URL(workerUrl, import.meta.url.replace('.vite/deps', '@helsenorge/refero')))}`;
+const js = `import ${JSON.stringify(new URL(workerUrl.replace('.vite/deps', '@helsenorge/refero'), import.meta.url))}`;
 const blob = new Blob([js], { type: 'application/javascript' });
 
 export function WorkaroundWorker(options: { name: string }): Worker {
