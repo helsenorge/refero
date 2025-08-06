@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import { Questionnaire } from 'fhir/r4';
 
 import { runFhirPathQrUpdater } from '@/calculators/runFhirPathUpdater';
 import { runScoringCalculator } from '@/calculators/runScoringCalculator';
@@ -19,12 +19,14 @@ function getScoringCalculator(questionnaire: Questionnaire): ScoringCalculator {
   return calc;
 }
 
-const debouncedFhirPathRunner = debounce(
-  (params: { questionnaire: Questionnaire; questionnaireResponse: QuestionnaireResponse; dispatch: AppDispatch }) => {
-    runFhirPathQrUpdater(params);
-  },
-  50
-);
+const debouncedFhirPathRunner = debounce((dispatch: AppDispatch, getState: () => RootState) => {
+  const state = getState();
+  const questionnaire = state.refero.form.FormDefinition.Content;
+  const questionnaireResponse = state.refero.form.FormData.Content;
+  if (questionnaire && questionnaireResponse) {
+    runFhirPathQrUpdater({ questionnaire, questionnaireResponse, dispatch });
+  }
+}, 200);
 
 export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootState; dispatch: AppDispatch }>(
   'questionnaireResponse/update',
@@ -48,11 +50,7 @@ export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootSt
       if (!updatedQuestionnaireResponse) {
         return rejectWithValue('Missing updated questionnaire response');
       }
-      debouncedFhirPathRunner({
-        questionnaire,
-        questionnaireResponse: updatedQuestionnaireResponse,
-        dispatch,
-      });
+      debouncedFhirPathRunner(dispatch, getState);
     } catch (error) {
       return rejectWithValue(error);
     }

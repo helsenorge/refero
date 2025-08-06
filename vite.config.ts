@@ -111,7 +111,6 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
               import: './refero.es.js',
               types: './types/index.d.ts',
             },
-            // We can now safely hardcode the worker's path.
             './worker': {
               import: './fhir-path.worker.js',
             },

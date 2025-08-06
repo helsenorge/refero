@@ -25,19 +25,14 @@ export const runFhirPathQrUpdater = async ({
   try {
     let fhirScores: AnswerPad;
     if (typeof window !== 'undefined' && window.Worker) {
-      // Use the factory to run the calculation
       try {
         const { fhirScores: scores } = await postTaskToFhirPathWorker(questionnaireResponse, questionnaire);
         fhirScores = scores;
-      } catch (error) {
-        if (error instanceof Error && error.message.includes('FhirPathWorker is busy')) {
-          return; // Exit early and wait for the next trigger.
-        } else {
-          // If the error is not related to the worker being busy, rethrow it.
-          console.error('Error in FHIR Path worker:', error);
-        }
-
-        throw error;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (_e) {
+        const fhirPathUpdater = new FhirPathExtensions(questionnaire);
+        const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
+        fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
       }
     } else {
       const fhirPathUpdater = new FhirPathExtensions(questionnaire);

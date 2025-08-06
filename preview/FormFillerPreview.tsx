@@ -22,7 +22,7 @@ import HelpButton from './external-components/HelpButton';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/q.json';
-import ReferoContainer from '../lib/refero.es';
+import ReferoContainer from '../src/components/index';
 import qr from './skjema/responses/qr.json';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
