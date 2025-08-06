@@ -54,21 +54,13 @@ describe('scoring calculations', () => {
     it('should calculate the based on the input values', async () => {
       await createWrapper(q);
 
-      // Get the elements once at the start
-
-      // Assert initial state
       expect(screen.getByLabelText('Sum')).not.toHaveValue();
       expect(screen.getByLabelText('Gjennomsnitt')).not.toHaveValue();
 
-      // --- FIX: Perform actions one by one, without waitFor ---
-
-      // ACT on the first input
       await userEvent.type(screen.getByLabelText('Tall 1'), '10');
 
-      // You can assert the intermediate state if you want, but it's not always necessary
       expect(screen.getByLabelText('Tall 1')).toHaveValue(10);
 
-      // ACT on the second input
       await userEvent.type(screen.getByLabelText('Tall 2'), '20');
 
       expect(screen.getByLabelText('Tall 2')).toHaveValue(20);

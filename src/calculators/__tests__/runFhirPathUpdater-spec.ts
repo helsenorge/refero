@@ -1,4 +1,3 @@
-// We no longer need to import @vitest/web-worker here.
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
@@ -9,12 +8,8 @@ import ItemType from '@/constants/itemType';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
 
-// --- 1. UN-MOCK THE FACTORY ---
-// This tells Vitest to use the real implementation of our worker factory for this file.
 vi.unmock('@/workers/worker-factory');
 
-// --- 2. MOCK THE FINAL ACTION ---
-// We still mock the action creator to easily inspect its payload.
 vi.mock('@/actions/newValue', () => ({
   newAnswerValuesAction: vi.fn(payload => ({ type: 'NEW_ANSWER_VALUES', payload })),
 }));
@@ -23,9 +18,6 @@ describe('runFhirPathQrUpdater with real inline worker via factory', () => {
   let mockDispatch: AppDispatch;
   let mockActionRequester: ActionRequester;
 
-  // --- 3. REMOVED ALL WORKER CLEANUP HOOKS (beforeAll, afterEach, afterAll) ---
-  // They are no longer necessary for inline workers.
-
   beforeEach(() => {
     mockActionRequester = {
       setNewAnswer: vi.fn(),
@@ -33,7 +25,6 @@ describe('runFhirPathQrUpdater with real inline worker via factory', () => {
     } as unknown as ActionRequester;
     mockDispatch = vi.fn();
 
-    // Clear history of all mocks before each test.
     vi.clearAllMocks();
   });
 
@@ -76,12 +67,10 @@ describe('runFhirPathQrUpdater with real inline worker via factory', () => {
       dispatch: mockDispatch,
     });
 
-    // Wait for the async worker and dispatch to finish
     await vi.waitFor(() => {
       expect(mockDispatch).toHaveBeenCalled();
     });
 
-    // Inspect the payload of the dispatched action
     expect(newAnswerValuesAction).toHaveBeenCalledWith([
       expect.objectContaining({
         item: expect.objectContaining({ linkId: 'calculated' }),
@@ -165,7 +154,6 @@ describe('runFhirPathQrUpdater with real inline worker via factory', () => {
       dispatch: mockDispatch,
     });
 
-    // Use a short timeout to ensure no dispatch happens
     await new Promise(resolve => setTimeout(resolve, 200));
 
     expect(mockDispatch).not.toHaveBeenCalled();

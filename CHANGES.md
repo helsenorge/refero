@@ -1,6 +1,6 @@
 ## 19.0.0
 
-- webworker for fhirPathCalculator, which will improve performance for large questionnaires.
+- webworker for fhirPathCalculator, which will improve performance for large questionnaires with many calculated fields.
 
 ## 18.1.1
 
@@ -8,8 +8,6 @@
 - Rewrite tests to use testId
 
 ## 18.1.0
-
-> > > > > > > origin/master
 
 - Added tests for valueSets for slider
 - Added support for valueSets in slider-view

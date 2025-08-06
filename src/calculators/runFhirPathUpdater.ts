@@ -31,13 +31,11 @@ export const runFhirPathQrUpdater = async ({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_e) {
         const fhirPathUpdater = new FhirPathExtensions(questionnaire);
-        const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
-        fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
+        fhirScores = fhirPathUpdater.calculateFhirScore(fhirPathUpdater.evaluateAllExpressions(questionnaireResponse));
       }
     } else {
       const fhirPathUpdater = new FhirPathExtensions(questionnaire);
-      const updatedResponse = fhirPathUpdater.evaluateAllExpressions(questionnaireResponse);
-      fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
+      fhirScores = fhirPathUpdater.calculateFhirScore(fhirPathUpdater.evaluateAllExpressions(questionnaireResponse));
     }
     const answerValues = [];
     for (const linkId in fhirScores) {
