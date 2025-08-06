@@ -1,3 +1,8 @@
+## 19.0.0-beta10
+
+- fix bug in runFhirPathUpdater where the worker was not used correctly
+- new worker factory to handle updates in queue
+
 ## 19.0.0-beta09
 
 - new worker setup to be able to call workers from cross origin
