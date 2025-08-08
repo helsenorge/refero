@@ -28,9 +28,8 @@ describe('Boolean', () => {
   });
   describe('Render', () => {
     it('Should render as text if props.pdf', async () => {
-      await act(async () => {
-        await createWrapper(q, { pdf: true });
-      });
+      await createWrapper(q, { pdf: true });
+
       expect(screen.getByTestId(/-pdf/i)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', async () => {
@@ -39,15 +38,12 @@ describe('Boolean', () => {
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
 
-      await act(async () => {
-        await createWrapper(questionnaire);
-      });
+      await createWrapper(questionnaire);
       expect(screen.getByTestId(/-label-readonly/i)).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', async () => {
-      await act(async () => {
-        await createWrapper(q);
-      });
+      await createWrapper(q);
+
       expect(screen.queryByText(/-label-readonly/i)).not.toBeInTheDocument();
       expect(screen.queryByText(/-pdf/i)).not.toBeInTheDocument();
     });
@@ -61,9 +57,7 @@ describe('Boolean', () => {
           repeats: false,
         })),
       };
-      await act(async () => {
-        await createWrapper(questionnaire);
-      });
+      await createWrapper(questionnaire);
 
       const booleanInput = getBooleanInput(questionnaire, /Boolean/i);
 
@@ -115,9 +109,7 @@ describe('Boolean', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
 
-      await act(async () => {
-        await createWrapper(questionnaire);
-      });
+      await createWrapper(questionnaire);
       const repeatButton = screen.getByTestId(/-repeat-button/i);
       expect(repeatButton).toBeInTheDocument();
     });
@@ -127,9 +119,7 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      await act(async () => {
-        await createWrapper(questionnaire);
-      });
+      await createWrapper(questionnaire);
       const repeatButton = screen.queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
     });
@@ -171,9 +161,7 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      await act(async () => {
-        await createWrapper(questionnaire);
-      });
+      await createWrapper(questionnaire);
 
       expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -182,9 +170,7 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      await act(async () => {
-        await createWrapper(questionnaire);
-      });
+      await createWrapper(questionnaire);
 
       const testId = getTestId(questionnaire);
       await repeatBooleanNTimes(1, testId, /Boolean/i, 0);
@@ -201,9 +187,7 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      await act(async () => {
-        await createWrapper(questionnaire);
-      });
+      await createWrapper(questionnaire);
 
       const testId = getTestId(questionnaire);
       await repeatBooleanNTimes(1, testId, /Boolean/i, 0);
@@ -264,9 +248,7 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, required: true })),
       };
-      await act(async () => {
-        await createWrapper(questionnaire);
-      });
+      await createWrapper(questionnaire);
       await submitForm();
 
       expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -290,9 +272,7 @@ describe('Boolean', () => {
         item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
       };
 
-      await act(async () => {
-        await createWrapper(questionnaire);
-      });
+      await createWrapper(questionnaire);
 
       await submitForm();
 
@@ -308,5 +288,7 @@ describe('Boolean', () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await renderRefero({ questionnaire, props: { ...props, resources } });
+  return await act(async () => {
+    return await renderRefero({ questionnaire, props: { ...props, resources } });
+  });
 };

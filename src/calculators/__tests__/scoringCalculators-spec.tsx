@@ -1,4 +1,4 @@
-import { renderRefero, screen, waitFor, within } from '@test/test-utils';
+import { act, renderRefero, screen, waitFor, within } from '@test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { Questionnaire } from 'fhir/r4';
 
@@ -78,5 +78,7 @@ describe('scoring calculations', () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(q: Questionnaire, props?: Partial<ReferoProps>) {
-  return renderRefero({ questionnaire: q, props });
+  return await act(async () => {
+    return await renderRefero({ questionnaire: q, props });
+  });
 }

@@ -4,7 +4,7 @@ import '../../util/__tests__/defineFetch';
 import { clickByLabelText } from '@test/selectors';
 import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
-import { renderRefero, screen, userEvent, waitFor } from '../../../test/test-utils';
+import { act, renderRefero, screen, userEvent, waitFor } from '../../../test/test-utils';
 import ItemType from '../../constants/itemType';
 import { createDataReceiverExpressionExtension, createItemControlExtension } from '../__tests__/utils';
 
@@ -410,5 +410,7 @@ function _createItem(
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(q: Questionnaire) {
-  return await renderRefero({ questionnaire: q });
+  return await act(async () => {
+    return await renderRefero({ questionnaire: q });
+  });
 }

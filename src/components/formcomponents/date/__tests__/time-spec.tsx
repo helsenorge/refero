@@ -77,7 +77,9 @@ describe('Time', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
 
       const minutesElement = await screen.findByTestId(/test-minutes/i);
       const hoursInput = getHoursInput(questionnaire, /Klokkeslett/i);

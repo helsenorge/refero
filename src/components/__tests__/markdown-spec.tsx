@@ -2,7 +2,7 @@ import '../../util/__tests__/defineFetch';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import questionnaireWithMarkdown from './__data__/markdown';
-import { renderRefero, waitFor } from '../../../test/test-utils';
+import { act, renderRefero } from '../../../test/test-utils';
 import ItemType from '../../constants/itemType';
 
 describe('support for external markdown', () => {
@@ -37,7 +37,7 @@ describe('support for external markdown', () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(questionnaire: Questionnaire, markdownCb: (q: QuestionnaireItem, markdown: string) => string) {
-  return await waitFor(async () => {
-    return renderRefero({ questionnaire, props: { onRenderMarkdown: markdownCb } });
+  return await act(async () => {
+    return await renderRefero({ questionnaire, props: { onRenderMarkdown: markdownCb } });
   });
 }

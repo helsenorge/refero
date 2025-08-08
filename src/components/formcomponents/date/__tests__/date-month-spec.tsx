@@ -74,8 +74,9 @@ describe('Date month', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
-
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       const dateInput = getDateInput(questionnaire, /Dato/i);
 
       const monthElement = await screen.findByTestId('month-select');

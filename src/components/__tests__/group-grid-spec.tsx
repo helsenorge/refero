@@ -2,7 +2,7 @@ import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
 
 import GroupGridModel from './__data__/group-grid';
-import { renderRefero, screen, waitFor } from '../../../test/test-utils';
+import { act, renderRefero, screen } from '../../../test/test-utils';
 import { encodeString } from '../createQuestionnaire/utils';
 
 describe('group-grid-spec', () => {
@@ -39,5 +39,5 @@ function validateRow(wrapper: Element, expectedNumCells: number, expectedItemLin
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(questionnaire: Questionnaire) {
-  return await waitFor(async () => await renderRefero({ questionnaire }));
+  return await act(async () => await renderRefero({ questionnaire }));
 }

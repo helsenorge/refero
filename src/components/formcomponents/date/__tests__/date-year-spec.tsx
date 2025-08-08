@@ -1,4 +1,4 @@
-import { Matcher, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
+import { Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -69,7 +69,9 @@ describe('Date year', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
 
       const dateInput = getDateInput(questionnaire, /Dato/i);
 
