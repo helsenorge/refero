@@ -2,7 +2,7 @@ import '../../util/__tests__/defineFetch';
 import { QuestionnaireItem, Extension, Questionnaire } from 'fhir/r4';
 
 import { getResources } from '../../../preview/resources/referoResources';
-import { renderRefero, waitFor } from '../../../test/test-utils';
+import { act, renderRefero } from '../../../test/test-utils';
 import { IItemType } from '../../constants/itemType';
 import questionnaire from '../__tests__/__data__/group';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
@@ -75,5 +75,5 @@ function createItemWithExtensions(itemType: IItemType, id = '1', ...extensions: 
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await waitFor(async () => await renderRefero({ questionnaire, props: { ...props, resources, pdf: false } }));
+  return await act(async () => await renderRefero({ questionnaire, props: { ...props, resources, pdf: false } }));
 };

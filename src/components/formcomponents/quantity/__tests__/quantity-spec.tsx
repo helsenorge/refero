@@ -87,7 +87,9 @@ describe('Quantity', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
 
       const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
 

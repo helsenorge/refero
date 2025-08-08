@@ -3,7 +3,7 @@ import { Questionnaire } from 'fhir/r4';
 
 import standard from './__data__/customActionButtons/standard';
 import stepView from './__data__/customActionButtons/stepview';
-import { renderRefero, screen, waitFor } from '../../../test/test-utils';
+import { act, renderRefero, screen, waitFor } from '../../../test/test-utils';
 
 import { ReferoProps } from '@/types/referoProps';
 
@@ -83,8 +83,8 @@ async function createWrapper(
   renderCustomActionButtons?: Partial<ReferoProps>['renderCustomActionButtons'],
   onSubmit: ReferoProps['onSubmit'] = vi.fn()
 ) {
-  return await waitFor(async () => {
-    return renderRefero({
+  return await act(async () => {
+    return await renderRefero({
       questionnaire,
       props: {
         renderCustomActionButtons,

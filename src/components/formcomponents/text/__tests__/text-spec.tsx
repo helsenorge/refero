@@ -92,8 +92,9 @@ describe('Text', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
-
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       const textInput = getTextInput(questionnaire, /String/i, 0);
       expect(textInput).toHaveTextContent('test');
     });
@@ -580,5 +581,5 @@ describe('Text', () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await renderRefero({ questionnaire, props: { ...props, resources } });
+  return renderRefero({ questionnaire, props: { ...props, resources } });
 };

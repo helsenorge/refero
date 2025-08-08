@@ -87,7 +87,9 @@ describe('string', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
 
       const stringInput = getStringInput(questionnaire, /String/i);
 

@@ -3,7 +3,7 @@ import { Questionnaire } from 'fhir/r4';
 
 import questionnaireWithEnableWhen from './__data__/enableWhen';
 import { selectCheckboxOption } from '../../../test/selectors';
-import { renderRefero, screen, waitFor } from '../../../test/test-utils';
+import { act, renderRefero, screen } from '../../../test/test-utils';
 
 describe('enableWhen with checkboxes and multiple answers', () => {
   it('enableWhen should trigger when correct answer is selected', async () => {
@@ -26,5 +26,5 @@ describe('enableWhen with checkboxes and multiple answers', () => {
 });
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(questionnaire: Questionnaire) {
-  return await waitFor(async () => await renderRefero({ questionnaire, props: { authorized: true } }));
+  return await act(async () => await renderRefero({ questionnaire, props: { authorized: true } }));
 }

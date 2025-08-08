@@ -81,7 +81,9 @@ describe('Date time', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
 
       const dateInput = getDateInput(questionnaire, /Dato/i);
       const hoursElement = screen.getByTestId(/hours-test/i);

@@ -12,10 +12,6 @@ import valueSet from '../../../../constants/valuesets';
 
 import { ReferoProps } from '@/types/referoProps';
 
-/* eslint-enable @typescript-eslint/no-unused-vars */
-/* eslint-enable @typescript-eslint/explicit-function-return-type */
-/* eslint-enable @typescript-eslint/no-unsafe-function-type */
-
 vi.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
 }));
@@ -469,11 +465,13 @@ describe('autosuggest-view', () => {
     ) => {
       successCallback(successReturnValueSet);
     };
-    await createWrapper(questionnaire, {
-      fetchValueSet: fetchValueSetFn,
-      questionnaireResponse,
+    await waitFor(async () => {
+      await createWrapper(questionnaire, {
+        fetchValueSet: fetchValueSetFn,
+        questionnaireResponse,
+      });
+      await screen.findByDisplayValue('Fyrstekake');
     });
-    await screen.findByDisplayValue('Fyrstekake');
   });
 
   it('skal vise valgt verdi som allerede er satt i autosuggest når open-choice-komponenten lastes', async () => {
@@ -514,11 +512,13 @@ describe('autosuggest-view', () => {
     ) => {
       successCallback(successReturnValueSet);
     };
-    await createWrapper(questionnaire, {
-      fetchValueSet: fetchValueSetFn,
-      questionnaireResponse,
+    await waitFor(async () => {
+      await createWrapper(questionnaire, {
+        fetchValueSet: fetchValueSetFn,
+        questionnaireResponse,
+      });
+      await screen.findByDisplayValue('Fyrstekake');
     });
-    await screen.findByDisplayValue('Fyrstekake');
   });
 });
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
