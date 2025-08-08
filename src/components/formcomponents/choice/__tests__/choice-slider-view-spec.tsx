@@ -31,7 +31,7 @@ const expectedAnswer = {
 };
 
 describe('Slider-view', () => {
-  const runSliderTests = (q: Questionnaire) => {
+  const runSliderTests = (q: Questionnaire): void => {
     describe('initialvalue', () => {
       it('Initial value should not be set', async () => {
         const questionnaire: Questionnaire = {
@@ -437,7 +437,5 @@ describe('Slider-view', () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await waitFor(async () => {
-    return await renderRefero({ questionnaire, props: { ...props, resources } });
-  });
+  return await renderRefero({ questionnaire, props: { ...props, resources } });
 };

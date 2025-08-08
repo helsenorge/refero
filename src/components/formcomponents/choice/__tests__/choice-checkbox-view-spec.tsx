@@ -173,8 +173,9 @@ describe('checkbox-view - choice', () => {
           initial: [expectedAnswer],
         })),
       };
-      await createWrapper(questionnaire);
-
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       expect(screen.getByLabelText(/Ja/i)).toBeChecked();
     });
   });
@@ -273,5 +274,5 @@ describe('checkbox-view - choice', () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await waitFor(async () => await renderRefero({ questionnaire, props: { ...props, resources } }));
+  return await renderRefero({ questionnaire, props: { ...props, resources } });
 };

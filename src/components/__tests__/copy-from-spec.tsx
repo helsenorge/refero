@@ -1,5 +1,6 @@
 import '../../util/__tests__/defineFetch';
-
+// vi.unmock('@/workers/fhir-path.worker.ts');
+// import '@vitest/web-worker';
 import { clickByLabelText } from '@test/selectors';
 import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
@@ -21,33 +22,41 @@ describe('Copy value from item', () => {
     expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
     await userEvent.type(screen.getByLabelText(labelRegex), '123');
-    const elm = await screen.findByTestId(/item_2/i);
-    expect(elm).toBeInTheDocument();
-    await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('123'));
+    await waitFor(async () => {
+      const receiverElement = screen.getByTestId(/item_2/i);
+      expect(receiverElement).toHaveTextContent('123');
+    });
   });
   it('should copy INTEGER value', async () => {
     const sender = createSenderItem(ItemType.INTEGER);
     const reciever = createRecieverItem(ItemType.INTEGER);
     const q = createQuestionnaire(sender, reciever);
     await createWrapper(q);
+
     expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
+
     const labelRegex = new RegExp(`${sender.text}`, 'i');
     await userEvent.type(screen.getByLabelText(labelRegex), '123');
-    const elm = await screen.findByTestId(/item_2/i);
-    expect(elm).toBeInTheDocument();
-    await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('123'));
+
+    await waitFor(async () => {
+      const receiverElement = screen.getByTestId(/item_2/i);
+      expect(receiverElement).toHaveTextContent('123');
+    });
   });
   it('should copy TEXT value', async () => {
     const sender = createSenderItem(ItemType.TEXT);
     const reciever = createRecieverItem(ItemType.TEXT);
     const q = createQuestionnaire(sender, reciever);
     await createWrapper(q);
+
     expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
     await userEvent.type(screen.getByLabelText(labelRegex), '123');
-    const elm = await screen.findByTestId(/item_2/i);
-    expect(elm).toBeInTheDocument();
-    await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('123'));
+
+    await waitFor(() => {
+      const receiverElement = screen.getByTestId(/item_2/i);
+      expect(receiverElement).toHaveTextContent('123');
+    });
   });
   it('should copy DECIMAL value', async () => {
     const sender = createSenderItem(ItemType.DECIMAL);
@@ -57,9 +66,11 @@ describe('Copy value from item', () => {
     expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
     await userEvent.type(screen.getByLabelText(labelRegex), '123.12');
-    const elm = await screen.findByTestId(/item_2/i);
-    expect(elm).toBeInTheDocument();
-    await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('123.12'));
+
+    await waitFor(() => {
+      const receiverElement = screen.getByTestId(/item_2/i);
+      expect(receiverElement).toHaveTextContent('123.12');
+    });
   });
   it('should copy BOOLEAN value', async () => {
     const sender = createSenderItem(ItemType.BOOLEAN);
@@ -261,9 +272,10 @@ describe('Copy value from item', () => {
       expect(screen.queryByTestId(/item_2/i)).not.toBeInTheDocument();
       expect(screen.getByLabelText(/Mann/i)).toBeInTheDocument();
       await userEvent.click(screen.getByLabelText(/Mann/i));
-      const elm = await screen.findByTestId(/item_2/i);
-      expect(elm).toBeInTheDocument();
-      await waitFor(async () => expect(screen.getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+      await waitFor(async () => {
+        const receiverElement = screen.getByTestId(/item_2/i);
+        expect(receiverElement).toHaveTextContent('Mann');
+      });
     });
     it('should copy DROPDOWN value', async () => {
       const sender = createSenderChoiceItem(ItemType.OPENCHOICE, createItemControlExtension(ItemControlConstants.DROPDOWN));
@@ -398,5 +410,5 @@ function _createItem(
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(q: Questionnaire) {
-  return await waitFor(async () => await renderRefero({ questionnaire: q }));
+  return await renderRefero({ questionnaire: q });
 }

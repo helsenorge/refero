@@ -11,15 +11,25 @@ import dts from 'vite-plugin-dts';
 import { externalizeDeps } from 'vite-plugin-externalize-deps';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
 const OUTPUT_DIRECTORY = 'lib';
+
 export default defineConfig(({ command, isPreview }): UserConfig => {
   const dev = command === 'serve' && !isPreview;
 
   return {
     root: dev ? path.resolve(__dirname, './preview') : path.resolve(__dirname, ''),
+    base: './',
     server: {
       port: 3000,
-      origin: 'bs-local.com',
+    },
+    worker: {
+      plugins: () => [
+        tsconfigPaths({
+          projects: [path.resolve(__dirname, 'tsconfig.build.json')],
+        }),
+      ],
+      format: 'es',
     },
     css: {
       preprocessorOptions: {
@@ -41,26 +51,27 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
         { find: '@formcomponents', replacement: path.resolve(__dirname, 'src/components/formcomponents') },
         { find: '@constants', replacement: path.resolve(__dirname, 'src/constants') },
         { find: '@test', replacement: path.resolve(__dirname, 'test') },
+        { find: '@workers', replacement: path.resolve(__dirname, 'src/workers') },
         { find: /^~(.*)$/, replacement: '$1' },
       ],
     },
+
     build: {
       outDir: path.resolve(__dirname, OUTPUT_DIRECTORY),
-      manifest: true,
+      // Set manifest to false, as we no longer need to read it.
+      manifest: false,
       cssMinify: 'esbuild',
       sourcemap: false,
       commonjsOptions: {
         transformMixedEsModules: true,
       },
-
       lib: {
         entry: path.resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
         name: 'Refero',
-        fileName: (format): string => `refero.${format}.js`,
+        fileName: 'refero.es',
       },
     },
-
     plugins: [
       visualizer({ filename: './bundle-stats.html' }),
       externalizeDeps({
@@ -99,6 +110,9 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
             '.': {
               import: './refero.es.js',
               types: './types/index.d.ts',
+            },
+            './worker': {
+              import: './fhir-path.worker.js',
             },
           },
         }),

@@ -189,7 +189,9 @@ describe('Dropdown-view - choice', () => {
           initial: [expectedAnswer],
         })),
       };
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
       expect((screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement).selected).toBe(true);
     });
   });
@@ -293,5 +295,5 @@ describe('Dropdown-view - choice', () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await waitFor(async () => await renderRefero({ questionnaire, props: { ...props, resources } }));
+  return await renderRefero({ questionnaire, props: { ...props, resources } });
 };

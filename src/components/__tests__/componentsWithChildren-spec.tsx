@@ -11,7 +11,9 @@ import { createItemControlExtension } from '../__tests__/utils';
 describe('Components render children', () => {
   it('attachments with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.ATTATCHMENT));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -22,7 +24,9 @@ describe('Components render children', () => {
 
   it('booleans with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.BOOLEAN));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -33,7 +37,9 @@ describe('Components render children', () => {
 
   it('date with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DATE));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -44,7 +50,9 @@ describe('Components render children', () => {
 
   it('time with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.TIME));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -55,7 +63,9 @@ describe('Components render children', () => {
 
   it('dateTime with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DATETIME));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -66,7 +76,9 @@ describe('Components render children', () => {
 
   it('decimal with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DECIMAL));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -77,7 +89,9 @@ describe('Components render children', () => {
 
   it('integer with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.INTEGER));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -88,7 +102,9 @@ describe('Components render children', () => {
 
   it('quantity with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.QUANTITY));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -99,7 +115,9 @@ describe('Components render children', () => {
 
   it('string with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.STRING));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -110,7 +128,9 @@ describe('Components render children', () => {
 
   it('text with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.TEXT));
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -122,7 +142,9 @@ describe('Components render children', () => {
   it('radio-button choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.RADIOBUTTON));
     const q = createQuestionnaire(item);
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
     const secondChild = screen.queryByText('3');
@@ -132,7 +154,9 @@ describe('Components render children', () => {
   it('check-box choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.CHECKBOX));
     const q = createQuestionnaire(item);
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
     const secondChild = screen.queryByText('3');
@@ -142,7 +166,9 @@ describe('Components render children', () => {
   it('drop-down choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.DROPDOWN));
     const q = createQuestionnaire(item);
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -153,7 +179,9 @@ describe('Components render children', () => {
   it('sliderchoice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.SLIDER));
     const q = createQuestionnaire(item);
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
     const secondChild = screen.queryByText('3');
@@ -162,7 +190,9 @@ describe('Components render children', () => {
   it('radio-button open-choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.RADIOBUTTON));
     const q = createQuestionnaire(item);
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
     const secondChild = screen.queryByText('3');
@@ -172,7 +202,9 @@ describe('Components render children', () => {
   it('check-box open-choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.CHECKBOX));
     const q = createQuestionnaire(item);
-    await createWrapper(q);
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
     const firstChild = screen.queryByText('2');
     expect(firstChild).toBeInTheDocument();
     const secondChild = screen.queryByText('3');
@@ -182,7 +214,11 @@ describe('Components render children', () => {
   it('drop-down open-choice with children renders', async () => {
     const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.DROPDOWN));
     const q = createQuestionnaire(item);
-    await createWrapper(q);
+
+    await waitFor(async () => {
+      await createWrapper(q);
+    });
+
     const firstChildLabel = new RegExp('2', 'i');
     const firstChild = screen.queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
@@ -241,7 +277,5 @@ function createItem(
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(q: Questionnaire) {
-  return await waitFor(async () => {
-    return renderRefero({ questionnaire: q });
-  });
+  return await renderRefero({ questionnaire: q });
 }

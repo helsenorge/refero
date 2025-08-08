@@ -6,22 +6,20 @@ import { q } from './__data__/';
 
 import { ReferoProps } from '@/types/referoProps';
 
-describe.skip('StandardTable', () => {
+describe('StandardTable', () => {
   it('should render', async () => {
     await waitFor(async () => {
-      createWrapper(q);
+      await createWrapper(q);
     });
     expect(screen.queryByTestId('standardTable')).not.toBeInTheDocument();
-    await userEvent.click(screen.getByTestId(/item_4208c597-87cd-4f36-825b-1a3050981c7b/));
+    await userEvent.click(screen.getByTestId(/item_3a818ca4-4cf5-45b4-8f07-5224d855239c-0-radio-choice-label/));
     expect(screen.getByTestId('standardTable')).toBeInTheDocument();
   });
 });
 //eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) {
-  return await waitFor(async () => {
-    return renderRefero({
-      questionnaire,
-      props,
-    });
+  return renderRefero({
+    questionnaire,
+    props,
   });
 }

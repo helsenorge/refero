@@ -1,3 +1,7 @@
+## 19.0.0
+
+- webworker for fhirPathCalculator, which will improve performance for large questionnaires with many calculated fields.
+
 ## 18.1.1
 
 - Connect helpButton to label via arialabeledby

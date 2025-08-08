@@ -28,40 +28,50 @@ describe('scoring calculations', () => {
       expect(aritmetisk_gjennomsnitt).toHaveTextContent('Aritmetisk gjennomsnitt basert på totalsum.Ikke besvar');
       expect(Kopi).toHaveTextContent('Aritmetisk gjennomsnitt basert på kopiert feltIkke besvart');
 
-      await waitFor(async () => await userEvent.click(within(input1).getByLabelText('Ja')));
-      await waitFor(async () => await userEvent.click(within(input2).getByLabelText('Ja')));
-      await waitFor(async () => await userEvent.click(within(input3).getByLabelText('Nei')));
-      await waitFor(async () => await userEvent.click(within(input4).getByLabelText('Ja')));
-      const kopiertFelt = screen.getByTestId('item_kopiert_felt-readonly');
+      await userEvent.click(within(input1).getByLabelText('Ja'));
+      await userEvent.click(within(input2).getByLabelText('Ja'));
+      await userEvent.click(within(input3).getByLabelText('Nei'));
+      await userEvent.click(within(input4).getByLabelText('Ja'));
 
       expect(delsum).toHaveTextContent('Delsum500');
 
-      expect(totalsum).toHaveTextContent('Totalsum500');
-      expect(aritmetisk_gjennomsnitt).toHaveTextContent('Aritmetisk gjennomsnitt basert på totalsum.125');
-      expect(kopiertFelt).toHaveTextContent('Kopi500');
-      expect(Kopi).toHaveTextContent('Aritmetisk gjennomsnitt basert på kopiert felt125');
+      expect(screen.getByTestId('item_Totalsum-readonly')).toHaveTextContent('Totalsum500');
+
+      await waitFor(async () => {
+        expect(await screen.findByTestId('item_aritmetisk_gjennomsnitt-readonly')).toHaveTextContent(
+          'Aritmetisk gjennomsnitt basert på totalsum.125'
+        );
+      });
+      expect(screen.getByTestId('item_kopiert_felt-readonly')).toHaveTextContent('Kopi500');
+      await waitFor(async () => {
+        expect(await screen.findByTestId('item_aritmetisk_gjennomsnitt_kopi-readonly')).toHaveTextContent(
+          'Aritmetisk gjennomsnitt basert på kopiert felt125'
+        );
+      });
     });
   });
   describe('only scoring', () => {
     it('should calculate the based on the input values', async () => {
       await createWrapper(q);
-      const tall1 = screen.getByLabelText('Tall 1');
-      const tall2 = screen.getByLabelText('Tall 2');
 
-      const delsum = screen.getByLabelText('Sum');
-      const average = screen.getByLabelText('Gjennomsnitt');
+      expect(screen.getByLabelText('Sum')).not.toHaveValue();
+      expect(screen.getByLabelText('Gjennomsnitt')).not.toHaveValue();
 
-      expect(delsum).not.toHaveValue();
-      expect(average).not.toHaveValue();
+      await userEvent.type(screen.getByLabelText('Tall 1'), '10');
 
-      await waitFor(async () => await userEvent.type(tall1, '10'));
-      await waitFor(async () => await userEvent.type(tall2, '20'));
+      expect(screen.getByLabelText('Tall 1')).toHaveValue(10);
 
-      expect(tall1).toHaveValue(10);
-      expect(tall2).toHaveValue(20);
+      await userEvent.type(screen.getByLabelText('Tall 2'), '20');
 
-      expect(delsum).toHaveValue(30);
-      expect(average).toHaveValue(15);
+      expect(screen.getByLabelText('Tall 2')).toHaveValue(20);
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Sum')).toHaveValue(30);
+      });
+
+      await waitFor(() => {
+        expect(screen.getByLabelText('Gjennomsnitt')).toHaveValue(15);
+      });
     });
   });
 });

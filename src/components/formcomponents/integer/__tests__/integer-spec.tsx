@@ -45,7 +45,7 @@ describe('Integer', () => {
     });
   });
   describe('initialvalue', () => {
-    it('Initial value should be set', async () => {
+    it('Initial value should not be set', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({
@@ -72,7 +72,9 @@ describe('Integer', () => {
           ],
         })),
       };
-      await createWrapper(questionnaire);
+      await waitFor(async () => {
+        await createWrapper(questionnaire);
+      });
 
       const integerInput = getIntegerInput(questionnaire, /Integer/i);
 

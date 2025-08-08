@@ -1,4 +1,4 @@
-import { Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
+import { Matcher, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -448,8 +448,9 @@ describe('Decimal', () => {
 });
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await waitFor(async () => {
-    return await waitFor(async () => await renderRefero({ questionnaire, props: { ...props, resources } }));
+function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) {
+  return renderRefero({
+    questionnaire,
+    props: { ...props, resources }, // Assuming 'resources' is defined in scope
   });
-};
+}
