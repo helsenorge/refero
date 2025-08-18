@@ -24,7 +24,6 @@ import { getId, isReadOnly } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
 import { getExtensionFromExtensions } from '@/util/extension';
 import { isString } from '@/util/typeguards';
-import { useSelector } from 'react-redux';
 import { useState } from 'react';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
