@@ -1,33 +1,55 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "3981d77d-f69f-4c9c-85cd-8b07b05d93d2",
-  "name": "NHN_Test_Scoore_Calculation",
-  "title": "Test kopi og regning på score",
-  "version": "0.1",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
-    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
   },
-  "contact": [{ "name": "http://www.nhn.no" }],
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
   "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
       "valueCodeableConcept": {
         "coding": [
-          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
           {
             "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
             "code": "hide-sublabel",
@@ -37,235 +59,198 @@
       }
     }
   ],
-  "date": "2025-03-05T00:00:00+01:00",
+  "id": "da4dc111-e611-4923-e8f0-4820f42ad086",
+  "url": "Questionnaire/da4dc111-e611-4923-e8f0-4820f42ad086",
   "item": [
     {
-      "linkId": "0701f3cf-73f5-48f7-8317-24c1223264a8",
-      "type": "group",
-      "text": "Input scoring and calculation and copying of scoringvalue",
-      "required": false,
-      "item": [
+      "linkId": "0584067a-71a3-498e-f920-73079386ef6d",
+      "type": "choice",
+      "text": "Hvor fornøyd er du?",
+      "code": [
         {
-          "linkId": "verdi1",
-          "type": "choice",
-          "text": "Verdi 1",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
+          "code": "label",
+          "display": "Display value",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
         },
         {
-          "linkId": "verdi2",
-          "type": "choice",
-          "text": "Verdi 2",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
+          "code": "LabelLeft",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
         },
         {
-          "linkId": "verdi3",
-          "type": "choice",
-          "text": "Verdi 3",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
+          "code": "LabelRight",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        }
+      ],
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "25065d88-d1e9-4fdc-8983-7eb869ab61be",
+            "code": "valg-1",
+            "system": "urn:uuid:e8a74301-87f2-42a1-f5a0-cdff48fa0a31",
+            "display": "Valg 1"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "176c6341-a816-482d-f164-f2665e4ee3c8",
+            "code": "valg-2",
+            "system": "urn:uuid:e8a74301-87f2-42a1-f5a0-cdff48fa0a31",
+            "display": "Valg 2"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "c2e495d0-502b-435c-8ba0-2f41438d3b8b",
+            "code": "valg-3",
+            "system": "urn:uuid:e8a74301-87f2-42a1-f5a0-cdff48fa0a31",
+            "display": "Valg 3"
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "slider"
               }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
+            ]
+          }
         },
         {
-          "linkId": "verdi4",
-          "type": "choice",
-          "text": "Verdi 4",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "Question score" }
-          ],
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "96651f43-5ac1-4b87-83b8-49879c32daa6",
-                "code": "100",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Ja",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 100 }]
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "049bb493-4ec3-4df8-855b-12be2307360b",
-                "code": "200",
-                "system": "urn:uuid:5ca4194b-32df-409e-81e5-8d4d0c600ee3",
-                "display": "Nei",
-                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 200 }]
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "Delsum",
-          "type": "integer",
-          "text": "Delsum",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "SS", "display": "Section score" }
-          ],
-          "required": false,
-          "readOnly": true
-        },
-        {
-          "linkId": "Totalsum",
-          "type": "integer",
-          "text": "Totalsum",
-          "code": [
-            { "system": "http://ehelse.no/Score", "code": "score", "display": "score" },
-            { "system": "http://ehelse.no/scoringFormulas", "code": "TS", "display": "Total score" }
-          ],
-          "required": false,
-          "readOnly": true
-        },
-        {
-          "linkId": "aritmetisk_gjennomsnitt",
-          "type": "integer",
-          "text": "Aritmetisk gjennomsnitt basert på totalsum.",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Totalsum').answer.value / 4"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "kopiert_felt",
-          "type": "integer",
-          "text": "Kopi",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Totalsum').answer.value"
-            }
-          ],
-          "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "Totalsum", "operator": "exists" }]
-        },
-        {
-          "linkId": "aritmetisk_gjennomsnitt_kopi",
-          "type": "integer",
-          "text": "Aritmetisk gjennomsnitt basert på kopiert felt",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='kopiert_felt').answer.value / 4"
-            }
-          ],
-          "readOnly": true
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "Forklar hvor fornøyd du er"
         }
       ]
     },
     {
-      "linkId": "498140b3-7c26-4492-dea5-24c829552347",
-      "type": "group",
-      "text": "Regning - Fhir path",
-      "required": false,
-      "item": [
-        { "linkId": "Tall1", "type": "integer", "text": "Tall 1", "required": false },
-        { "linkId": "Tall2", "type": "integer", "text": "Tall 2", "required": false },
+      "linkId": "f0bee7cc-d74b-4be3-9b25-dcef0baafc18",
+      "type": "choice",
+      "text": "Hvor fornøyd er du?",
+      "code": [
         {
-          "linkId": "Sum",
-          "type": "integer",
-          "text": "Sum",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Tall1').answer.value + QuestionnaireResponse.descendants().where(linkId='Tall2').answer.value"
-            }
-          ]
+          "code": "label",
+          "display": "Display value",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
         },
         {
-          "linkId": "Gjennomsnitt",
-          "type": "integer",
-          "text": "Gjennomsnitt",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='Sum').answer.value / 2"
-            }
-          ]
+          "code": "LabelLeft",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        },
+        {
+          "code": "LabelRight",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        }
+      ],
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "25065d88-d1e9-4fdc-8983-7eb869ab61be",
+            "code": "valg-1",
+            "system": "urn:uuid:e8a74301-87f2-42a1-f5a0-cdff48fa0a31",
+            "display": "Valg 1"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "176c6341-a816-482d-f164-f2665e4ee3c8",
+            "code": "valg-2",
+            "system": "urn:uuid:e8a74301-87f2-42a1-f5a0-cdff48fa0a31",
+            "display": "Valg 2"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "c2e495d0-502b-435c-8ba0-2f41438d3b8b",
+            "code": "valg-3",
+            "system": "urn:uuid:e8a74301-87f2-42a1-f5a0-cdff48fa0a31",
+            "display": "Valg 3"
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "slider"
+              }
+            ]
+          }
+        },
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "Forklar hvor fornøyd du er"
+        }
+      ]
+    },
+    {
+      "linkId": "721bc472-ca26-49a3-8af4-9af145c4d1e2",
+      "type": "choice",
+      "text": "Hvor fornøyd er du?",
+      "code": [
+        {
+          "code": "label",
+          "display": "Display value",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+        },
+        {
+          "code": "LabelLeft",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        },
+        {
+          "code": "LabelRight",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        }
+      ],
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "25065d88-d1e9-4fdc-8983-7eb869ab61be",
+            "code": "valg-1",
+            "system": "urn:uuid:e8a74301-87f2-42a1-f5a0-cdff48fa0a31",
+            "display": "Valg 1"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "176c6341-a816-482d-f164-f2665e4ee3c8",
+            "code": "valg-2",
+            "system": "urn:uuid:e8a74301-87f2-42a1-f5a0-cdff48fa0a31",
+            "display": "Valg 2"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "c2e495d0-502b-435c-8ba0-2f41438d3b8b",
+            "code": "valg-3",
+            "system": "urn:uuid:e8a74301-87f2-42a1-f5a0-cdff48fa0a31",
+            "display": "Valg 3"
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "slider"
+              }
+            ]
+          }
+        },
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "Forklar hvor fornøyd du er"
         }
       ]
     }

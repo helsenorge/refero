@@ -1,3 +1,7 @@
+## 19.0.1
+
+- Bugfix in slider: Inconsistent behavior when selecting values while slider was marked with error
+
 ## 19.0.0
 
 - webworker for fhirPathCalculator, which will improve performance for large questionnaires with many calculated fields.

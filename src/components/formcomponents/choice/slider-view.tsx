@@ -24,6 +24,7 @@ import { getId, isReadOnly } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
 import { getExtensionFromExtensions } from '@/util/extension';
 import { isString } from '@/util/typeguards';
+import { useState } from 'react';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
@@ -48,7 +49,10 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
+  const [isSelected, setIsSelected] = useState(selected && selected[0] ? true : false);
+
   const onValueChange = (index: number): void => {
+    setIsSelected(true);
     const code = options?.[index].type;
     if (code) {
       handleChange(code);
@@ -74,7 +78,6 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
     mapToSliderStep(option, (displayType?.[0]?.code as SliderDisplayTypes) || SliderDisplayTypes.OrdinalValue)
   );
   const leftRightLabels = getLeftRightLabels(item);
-  const isSelected = selected && selected[0] ? true : false;
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
