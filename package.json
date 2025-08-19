@@ -134,6 +134,6 @@
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.43.0",
     "@ast-grep/napi-linux-x64-gnu": "^0.38.5",
-    "@ast-grep/napi-linux-x64-musl": "^0.38.5"
+    "@ast-grep/napi-linux-x64-musl": "^0.39.4"
   }
 }
