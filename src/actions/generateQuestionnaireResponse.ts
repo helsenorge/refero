@@ -1,6 +1,6 @@
 import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire, Bundle } from 'fhir/r4';
 
-import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
+import { createQuestionnaireResponseAnswers } from '../util/createQuestionnaireResponseAnswer';
 import { getCalculatedExpressionExtension, getCopyExtension, getMinOccursExtensionValue } from '../util/extension';
 
 import Constants from '@/constants/';
@@ -106,9 +106,9 @@ export function createQuestionnaireResponseItem(item: QuestionnaireItem): Questi
     ...(item.text && { text: item.text }),
   };
 
-  const answer = createQuestionnaireResponseAnswer(item);
+  const answer = createQuestionnaireResponseAnswers(item);
   if (answer) {
-    responseItem.answer = [answer];
+    responseItem.answer = answer;
   }
 
   return responseItem;

@@ -73,3 +73,23 @@ export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): Ques
 
   return hasInitialAnswer ? answer : undefined;
 }
+export function createQuestionnaireResponseAnswers(item: QuestionnaireItem): QuestionnaireResponseItemAnswer[] | undefined {
+  const answers: QuestionnaireResponseItemAnswer[] = [];
+  let hasInitialAnswer = false;
+  const initialSelectedOption = item?.answerOption?.filter(x => x.initialSelected);
+
+  if (item.initial && item.initial.length > 0) {
+    answers.push(...item.initial);
+    hasInitialAnswer = true;
+  } else if (item.type === 'boolean') {
+    hasInitialAnswer = true;
+    answers.push({ valueBoolean: false });
+  }
+
+  if (initialSelectedOption && initialSelectedOption.length > 0) {
+    hasInitialAnswer = true;
+    answers.push(...initialSelectedOption);
+  }
+
+  return hasInitialAnswer ? answers : undefined;
+}

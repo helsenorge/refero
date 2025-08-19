@@ -110,15 +110,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     }
   }, [answer, item, resetInitialAnswer]);
 
-  // const getInitialValue = useCallback((): string[] | undefined => {
-  //   const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
-
-  //   if (initialSelectedCode) {
-  //     return [initialSelectedCode];
-  //   }
-  //   const code = item?.initial?.[0]?.valueCoding?.code;
-  //   return code ? [code] : undefined;
-  // }, [item]);
   const getPDFValue = (): string => {
     if (isDataReceiver(item)) {
       return Array.isArray(answer)
