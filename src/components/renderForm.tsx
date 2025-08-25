@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useFormContext, UseFormReturn } from 'react-hook-form';
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
+import ValidationSummary from '@helsenorge/designsystem-react/components/Validation';
 
 import FormButtons from './formButtons/formButtons';
-import { ValidationSummary } from './validation/validation-summary';
 
 import { ReferoProps } from '@/types/referoProps';
 import { Resources } from '@/util/resources';
@@ -57,6 +57,9 @@ const RenderForm = ({
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
+  const { formState } = useFormContext();
+  const { errors } = formState;
+
   const onErrorReactHookForm = (errors: FieldValues): void => {
     if (onFieldsNotCorrectlyFilledOut && errors) {
       onFieldsNotCorrectlyFilledOut();
@@ -78,9 +81,13 @@ const RenderForm = ({
   return (
     <React.Fragment>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
-        {displayValidationSummaryOnTop && !referoProps.hideValidationSummary && <ValidationSummary resources={resources} />}
+        {displayValidationSummaryOnTop && !referoProps.hideValidationSummary && (
+          <ValidationSummary errorTitle={resources.validationSummaryHeader} errors={errors} />
+        )}
         {children}
-        {!displayValidationSummaryOnTop && !referoProps.hideValidationSummary && <ValidationSummary resources={resources} />}
+        {!displayValidationSummaryOnTop && !referoProps.hideValidationSummary && (
+          <ValidationSummary errorTitle={resources.validationSummaryHeader} errors={errors} />
+        )}
       </form>
 
       {referoProps.renderCustomActionButtons ? (
