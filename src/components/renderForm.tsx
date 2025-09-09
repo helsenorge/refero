@@ -6,15 +6,16 @@ import { ValidationSummaryPlacement } from '../types/formTypes/validationSummary
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import ValidationSummary from '@helsenorge/designsystem-react/components/Validation';
+import { ValidationErrors } from '@helsenorge/designsystem-react/components/Validation/types';
 
 import FormButtons from './formButtons/formButtons';
 
-import { ReferoProps } from '@/types/referoProps';
-import { Resources } from '@/util/resources';
-import { DefaultValues } from '@/validation/defaultFormValues';
-import { getPresentationButtonsExtension } from '@/util/extension';
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
+import { ReferoProps } from '@/types/referoProps';
+import { getPresentationButtonsExtension } from '@/util/extension';
+import { Resources } from '@/util/resources';
+import { DefaultValues } from '@/validation/defaultFormValues';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -54,7 +55,7 @@ const RenderForm = ({
   }
   const formDefinition = useAppSelector(state => getFormDefinition(state));
 
-  const presentationButtonsType = getPresentationButtonsExtension(formDefinition?.Content!);
+  const presentationButtonsType = getPresentationButtonsExtension(formDefinition?.Content);
   const displayValidationSummaryOnTop: boolean =
     !validationSummaryPlacement || validationSummaryPlacement === ValidationSummaryPlacement.Top;
   const pauseButtonText = displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave;
@@ -87,11 +88,11 @@ const RenderForm = ({
     <React.Fragment>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
         {displayValidationSummaryOnTop && !referoProps.hideValidationSummary && (
-          <ValidationSummary errorTitle={resources.validationSummaryHeader} errors={errors} />
+          <ValidationSummary errorTitle={resources.validationSummaryHeader} errors={errors as ValidationErrors} />
         )}
         {children}
         {!displayValidationSummaryOnTop && !referoProps.hideValidationSummary && (
-          <ValidationSummary errorTitle={resources.validationSummaryHeader} errors={errors} />
+          <ValidationSummary errorTitle={resources.validationSummaryHeader} errors={errors as ValidationErrors} />
         )}
       </form>
 
