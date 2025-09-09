@@ -1,3 +1,7 @@
+## 19.1.0
+
+- Replaced custom validation-summary with validation-summary component from HN-Designsystem
+
 ## 19.0.1
 
 - Bugfix in slider: Inconsistent behavior when selecting values while slider was marked with error
