@@ -1,6 +1,7 @@
 ## 19.1.0
 
 - Replaced custom validation-summary with validation-summary component from HN-Designsystem
+- Use presentationButtonsType on custom buttons
 
 ## 19.0.1
 

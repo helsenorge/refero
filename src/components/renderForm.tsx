@@ -12,6 +12,9 @@ import FormButtons from './formButtons/formButtons';
 import { ReferoProps } from '@/types/referoProps';
 import { Resources } from '@/util/resources';
 import { DefaultValues } from '@/validation/defaultFormValues';
+import { getPresentationButtonsExtension } from '@/util/extension';
+import { useAppSelector } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -49,7 +52,9 @@ const RenderForm = ({
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} color="black" />;
   }
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
 
+  const presentationButtonsType = getPresentationButtonsExtension(formDefinition?.Content!);
   const displayValidationSummaryOnTop: boolean =
     !validationSummaryPlacement || validationSummaryPlacement === ValidationSummaryPlacement.Top;
   const pauseButtonText = displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave;
@@ -99,6 +104,7 @@ const RenderForm = ({
           nextStep,
           previousStep,
           reactHookFormMethods: methods,
+          presentationButtonsType,
         })
       ) : (
         <FormButtons
