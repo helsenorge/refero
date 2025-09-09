@@ -304,7 +304,7 @@ describe('string', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
@@ -334,7 +334,7 @@ describe('string', () => {
         };
         await createWrapper(questionnaire);
         await submitForm();
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
         const stringInput = getStringInput(questionnaire, /String/i);
         await userEvent.type(stringInput, 'abc');
@@ -361,7 +361,7 @@ describe('string', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
     describe('minLength validation', () => {
@@ -410,7 +410,7 @@ describe('string', () => {
         await userEvent.type(stringInput, 'e@st.co');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
 
         await userEvent.clear(stringInput);
         await userEvent.type(stringInput, 'epost@test.com');
@@ -465,7 +465,7 @@ describe('string', () => {
         await userEvent.type(stringInput, 'eposteneraølt@asdasdst.com');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
 
         await userEvent.clear(stringInput);
         await userEvent.type(stringInput, 'epost@test.com');
@@ -519,7 +519,7 @@ describe('string', () => {
         await userEvent.type(stringInput, 'epostsdsdcom');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
 
         await userEvent.clear(stringInput);
         await userEvent.type(stringInput, 'epost@test.com');
@@ -535,7 +535,7 @@ describe('string', () => {
         await userEvent.type(await screen.findByLabelText(/String1/i), value);
         await userEvent.type(await screen.findByLabelText(/String2 - Obligatorisk/i), 'test');
         await submitForm();
-        expect(screen.getByText(/er ikke tillatt/i)).toBeInTheDocument();
+        expect(screen.getAllByText(/er ikke tillatt/i)).toHaveLength(2);
       });
       it('Should render with validation when input has html and validateScriptInjection = false', async () => {
         const validateScriptInjection = false;

@@ -213,7 +213,7 @@ describe('Dropdown-view - choice', () => {
         await createWrapper(questionnaire);
         expect(screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
         await submitForm();
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
@@ -236,7 +236,7 @@ describe('Dropdown-view - choice', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
         const dropdownInput = getDopdownInput(questionnaire, /Dropdown view label/i);
         await userEvent.selectOptions(dropdownInput, screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
@@ -300,7 +300,7 @@ describe('Dropdown-view - choice', () => {
 
           await submitForm();
 
-          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
         });
         it('Should not show error if required and has value', async () => {
           const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
@@ -327,7 +327,7 @@ describe('Dropdown-view - choice', () => {
           await userEvent.selectOptions(dropdownInput, screen.getByRole('option', { name: 'Annet' }) as HTMLOptionElement);
           await submitForm();
 
-          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
           await typeExtraField('epost@test.com');
           await userEvent.tab();
@@ -353,7 +353,7 @@ describe('Dropdown-view - choice', () => {
           await createWrapper(questionnaire);
           await submitForm();
 
-          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
         });
       });
     });

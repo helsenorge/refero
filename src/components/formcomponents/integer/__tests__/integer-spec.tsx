@@ -233,7 +233,7 @@ describe('Integer', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
@@ -260,7 +260,7 @@ describe('Integer', () => {
 
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
         await userEvent.type(integerInput, '123');
         await userEvent.tab();
@@ -286,7 +286,7 @@ describe('Integer', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
     describe('maxValue', () => {
@@ -326,7 +326,7 @@ describe('Integer', () => {
         await userEvent.type(integerInput, '12');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
 
         await userEvent.clear(integerInput);
         await userEvent.type(integerInput, '8');
@@ -369,7 +369,7 @@ describe('Integer', () => {
         await userEvent.type(integerInput, '3');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
 
         await userEvent.clear(integerInput);
         await userEvent.type(integerInput, '8');

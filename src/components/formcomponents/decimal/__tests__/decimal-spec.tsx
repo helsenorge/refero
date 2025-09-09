@@ -251,7 +251,7 @@ describe('Decimal', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
@@ -277,7 +277,7 @@ describe('Decimal', () => {
         const decimalInput = getDecimalInput(questionnaire, /Decimal/i);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
         await userEvent.type(decimalInput, '123');
         await userEvent.tab();
@@ -303,7 +303,7 @@ describe('Decimal', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
     describe('maxValue', () => {
@@ -341,7 +341,7 @@ describe('Decimal', () => {
         await userEvent.type(decimalInput, '12');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
 
         await userEvent.clear(decimalInput);
         await userEvent.type(decimalInput, '8');
@@ -384,7 +384,7 @@ describe('Decimal', () => {
         await userEvent.type(decimalInput, '3');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
 
         await userEvent.clear(decimalInput);
         await userEvent.type(decimalInput, '8');
@@ -438,7 +438,7 @@ describe('Decimal', () => {
         await userEvent.type(decimalInput, '6.121212');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
 
         await userEvent.clear(decimalInput);
         await userEvent.type(decimalInput, '6.12');

@@ -63,7 +63,7 @@ export const required = ({ item, resources, message }: ValidationRuleInput): Val
   const customErrorMessage = getValidationTextExtension(item);
   return {
     value: isRequired(item),
-    message: message ?? customErrorMessage ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+    message: customErrorMessage ?? message ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
   };
 };
 /**

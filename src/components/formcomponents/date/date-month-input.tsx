@@ -14,7 +14,7 @@ import { ReadOnly } from '../read-only/readOnly';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { getErrorMessage } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -121,31 +121,25 @@ export const DateYearMonthInput = ({
   };
 
   const validationRulesYear: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.yearmonth_field_required || '',
-    },
+    required: required({ item, resources, message: resources?.yearmonth_field_required }),
     validate: {
       validYear: value => {
-        return doesAnyFieldsHaveValue() ? validateYearDigits(getYearFromString(value), resources) : true;
+        return doesAnyFieldsHaveValue() ? validateYearDigits(getYearFromString(value), resources, item) : true;
       },
       validMinDate: value => {
         const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-month`);
-        return doesAnyFieldsHaveValue() ? validateYearMonthMin(minDateTime, getYearFromString(value), monthValue, resources) : true;
+        return doesAnyFieldsHaveValue() ? validateYearMonthMin(minDateTime, getYearFromString(value), monthValue, resources, item) : true;
       },
       validMaxDate: value => {
         const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-month`);
-        return doesAnyFieldsHaveValue() ? validateYearMonthMax(maxDateTime, getYearFromString(value), monthValue, resources) : true;
+        return doesAnyFieldsHaveValue() ? validateYearMonthMax(maxDateTime, getYearFromString(value), monthValue, resources, item) : true;
       },
     },
     shouldUnregister: true,
   };
 
   const validationRulesMonth: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.yearmonth_field_required || '',
-    },
+    required: required({ item, resources, message: resources?.yearmonth_field_required }),
     shouldUnregister: true,
   };
 

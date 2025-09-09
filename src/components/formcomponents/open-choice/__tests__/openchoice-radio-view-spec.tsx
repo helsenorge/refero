@@ -197,7 +197,7 @@ describe('Radio-view - choice', () => {
         await createWrapper(questionnaire);
         expect(screen.getByLabelText(/Ja/i)).toBeInTheDocument();
         await submitForm();
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
@@ -216,7 +216,7 @@ describe('Radio-view - choice', () => {
         ]);
         await createWrapper(questionnaire);
         await submitForm();
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
         await userEvent.click(screen.getByLabelText(/Ja/i));
         await userEvent.tab();
@@ -241,7 +241,7 @@ describe('Radio-view - choice', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
   });
@@ -301,7 +301,7 @@ describe('Radio-view - choice', () => {
           await selectCheckboxOption(/Annet/i);
           expect(screen.getByTestId(/-extra-field/i)).toBeInTheDocument();
           await submitForm();
-          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
         });
         it('Should not show error if required and has value', async () => {
           const questionnaire: Questionnaire = {
@@ -322,7 +322,7 @@ describe('Radio-view - choice', () => {
           await createWrapper(questionnaire);
           await selectCheckboxOption(/Annet/i);
           await submitForm();
-          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
           await typeExtraField('epost@test.com');
           await userEvent.tab();
