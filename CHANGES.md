@@ -1,3 +1,7 @@
+## 20.0.0
+
+- Updated peerDependencies @helsenorge packages to v.36.x.x and 12.x.x
+
 ## 19.0.2
 
 - Fix: Initial values now support more than one initialValue
