@@ -251,7 +251,7 @@ describe('Boolean', () => {
       await createWrapper(questionnaire);
       await submitForm();
 
-      expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
     });
     it('Should not show error if required and has value', async () => {
       const questionnaire: Questionnaire = {
@@ -276,7 +276,7 @@ describe('Boolean', () => {
 
       await submitForm();
 
-      expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
       const booleanInput = getBooleanInput(questionnaire, /Boolean/i);
       await userEvent.click(booleanInput);
