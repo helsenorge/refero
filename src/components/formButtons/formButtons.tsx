@@ -18,8 +18,7 @@ interface FormButtonsInterface {
   pauseButtonDisabled?: boolean;
   onSubmitButtonClicked?:
     | (() => void)
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    | ((e: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined) => void);
+    | ((e?: KeyboardEvent<HTMLUListElement> | MouseEvent<HTMLElement, MouseEvent> | FormEvent<unknown> | null | undefined) => void);
   onCancelButtonClicked?: () => void;
   onPauseButtonClicked?: (questionnaireResponse?: QuestionnaireResponse) => void;
   isStepView?: boolean;
@@ -41,7 +40,7 @@ const FormButtons = ({
   loginButton,
 }: FormButtonsInterface): JSX.Element => {
   const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
-  
+
   return (
     <div className={`${styles.formButtonsWrapper} page_refero__buttons`}>
       {!isAuthorized && loginButton ? (
@@ -62,11 +61,7 @@ const FormButtons = ({
                 );
               case ButtonType.cancelButton:
                 return (
-                  <CancelFormButton
-                    key={buttonType}
-                    cancelButtonText={cancelButtonText}
-                    onCancelButtonClicked={onCancelButtonClicked}
-                  />
+                  <CancelFormButton key={buttonType} cancelButtonText={cancelButtonText} onCancelButtonClicked={onCancelButtonClicked} />
                 );
               case ButtonType.submitButton:
                 return (
