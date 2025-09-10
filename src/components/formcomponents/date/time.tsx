@@ -18,7 +18,7 @@ import dateStyles from './date.module.css';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import SafeText from '@/components/referoLabel/SafeText';
-import { getErrorMessage } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -131,17 +131,14 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
   }
 
   const validationRulesHours: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage || '',
-    },
+    required: required({ item, resources }),
     validate: {
       validDigits: value => {
-        return value ? validateTimeDigits(value, TimeUnit.Hours, resources) : true;
+        return value ? validateTimeDigits(value, TimeUnit.Hours, resources, item) : true;
       },
       validHours: value => {
         const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
-        return value && minutesValue ? validateHours(Number(value), resources) : true;
+        return value && minutesValue ? validateHours(Number(value), resources, item) : true;
       },
       validMinTime: value => {
         const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
@@ -156,17 +153,14 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
   };
 
   const validationRulesMinutes: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage || '',
-    },
+    required: required({ item, resources }),
     validate: {
       validDigits: value => {
-        return value ? validateTimeDigits(value, TimeUnit.Minutes, resources) : true;
+        return value ? validateTimeDigits(value, TimeUnit.Minutes, resources, item) : true;
       },
       validMinutes: value => {
         const hoursValue = getValues(idWithLinkIdAndItemIndex + '-hours');
-        return value && hoursValue ? validateMinutes(Number(value), resources) : true;
+        return value && hoursValue ? validateMinutes(Number(value), resources, item) : true;
       },
     },
     shouldUnregister: true,

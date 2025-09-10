@@ -239,7 +239,7 @@ describe('Date year', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.year_field_required)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.year_field_required)).toHaveLength(2);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
@@ -263,7 +263,7 @@ describe('Date year', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.year_field_required)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.year_field_required)).toHaveLength(2);
 
         const dateInput = getDateInput(questionnaire, /Dato/i);
         await userEvent.type(dateInput, '1994');
@@ -279,7 +279,7 @@ describe('Date year', () => {
         await userEvent.type(dateInput, '33333');
         await submitForm();
 
-        expect(screen.getByText(resources.year_field_invalid)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.year_field_invalid)).toHaveLength(2);
       });
       it('Should show error message for min value', async () => {
         await createWrapper(qMinMax);
@@ -289,7 +289,7 @@ describe('Date year', () => {
         await userEvent.type(dateInput, '1904');
         await submitForm();
 
-        expect(screen.getByText(resources.year_field_mindate + ': 1994')).toBeInTheDocument();
+        expect(screen.getAllByText(resources.year_field_mindate + ': 1994')).toHaveLength(2);
       });
       it('Should show error message for max value', async () => {
         await createWrapper(qMinMax);
@@ -298,7 +298,7 @@ describe('Date year', () => {
         await userEvent.type(dateInput, '2095');
         await submitForm();
 
-        expect(screen.getByText(resources.year_field_maxdate + ': 2094')).toBeInTheDocument();
+        expect(screen.getAllByText(resources.year_field_maxdate + ': 2094')).toHaveLength(2);
       });
       it('Should show custom error message for min value', async () => {
         await createWrapper(qMinMaxCustomError);
@@ -307,7 +307,7 @@ describe('Date year', () => {
         await userEvent.type(dateInput, '1904');
         await submitForm();
 
-        expect(screen.getByText('Custom errormessage')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom errormessage')).toHaveLength(2);
       });
       it('Should show custom error message for max value', async () => {
         await createWrapper(qMinMaxCustomError);
@@ -316,7 +316,7 @@ describe('Date year', () => {
         await userEvent.type(dateInput, '2095');
         await submitForm();
 
-        expect(screen.getByText('Custom errormessage')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom errormessage')).toHaveLength(2);
       });
       it('Should not show error if date value is between min value and max value', async () => {
         await createWrapper(qMinMax);
@@ -336,7 +336,7 @@ describe('Date year', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.year_field_required)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.year_field_required)).toHaveLength(2);
 
         const dateInput = getDateInput(questionnaire, /Dato/i);
         await userEvent.type(dateInput, '2024');
@@ -362,7 +362,7 @@ describe('Date year', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.year_field_required)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.year_field_required)).toHaveLength(2);
       });
     });
   });

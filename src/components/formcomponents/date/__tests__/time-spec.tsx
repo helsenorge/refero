@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 
 import { ReferoProps } from '../../../../types/referoProps';
 
-import { q, qMinMaxCustomError } from './__data__/time';
+import { q, qMinMax, qMinMaxCustomError } from './__data__/time';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
@@ -267,7 +267,7 @@ describe('Time', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(3);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
@@ -300,7 +300,7 @@ describe('Time', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(3);
 
         const hoursInput = getHoursInput(questionnaire, /Klokkeslett/i);
         const minutesElement = screen.getByTestId(/test-minutes/i);
@@ -326,7 +326,7 @@ describe('Time', () => {
           await userEvent.type(minutesInput, '12');
         }
         await submitForm();
-        await screen.findByText(resources.dateError_time_invalid);
+        expect(screen.getAllByText(resources.dateError_time_invalid)).toHaveLength(2);
       });
       it('Should show error if minute value is invalid', async () => {
         await createWrapper(q);
@@ -341,10 +341,10 @@ describe('Time', () => {
         }
         await submitForm();
 
-        expect(screen.getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.dateError_time_invalid)).toHaveLength(2);
       });
       it('Should show error message if time value is lesser than min-time', async () => {
-        await createWrapper(q);
+        await createWrapper(qMinMax);
 
         const hoursInput = getHoursInput(q, /Klokkeslett/i);
         const minutesElement = screen.getByTestId(/test-minutes/i);
@@ -356,10 +356,10 @@ describe('Time', () => {
         }
         await submitForm();
 
-        expect(screen.getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.dateError_time_invalid)).toHaveLength(2);
       });
       it('Should show error message if time value is greater than max-time', async () => {
-        await createWrapper(q);
+        await createWrapper(qMinMax);
 
         const hoursInput = getHoursInput(q, /Klokkeslett/i);
         const minutesElement = screen.getByTestId(/test-minutes/i);
@@ -371,7 +371,7 @@ describe('Time', () => {
         }
         await submitForm();
 
-        expect(screen.getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.dateError_time_invalid)).toHaveLength(2);
       });
       it('Should show custom error message for min-time', async () => {
         await createWrapper(qMinMaxCustomError);
@@ -386,7 +386,7 @@ describe('Time', () => {
         }
         await submitForm();
 
-        expect(screen.getByText('Custom errormessage')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom errormessage')).toHaveLength(2);
       });
       it('Should show custom error message for max-time', async () => {
         await createWrapper(qMinMaxCustomError);
@@ -401,7 +401,7 @@ describe('Time', () => {
         }
         await submitForm();
 
-        expect(screen.getByText('Custom errormessage')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom errormessage')).toHaveLength(2);
       });
       it('Should not show error if date value is between min-time and max-time', async () => {
         await createWrapper(q);
@@ -437,7 +437,7 @@ describe('Time', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(3);
       });
     });
   });
