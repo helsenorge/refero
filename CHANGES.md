@@ -1,3 +1,7 @@
+## 20.0.0
+
+- Updated peerDependencies @helsenorge packages to v.36.x.x and 12.x.x
+
 ## 19.0.1
 
 - Bugfix in slider: Inconsistent behavior when selecting values while slider was marked with error
