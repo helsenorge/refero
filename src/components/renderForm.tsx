@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FieldErrors, FieldValues, SubmitHandler, useFormContext, UseFormReturn } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useFormContext, UseFormReturn } from 'react-hook-form';
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
 
