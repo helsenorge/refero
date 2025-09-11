@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FieldValues, SubmitHandler, useFormContext, UseFormReturn } from 'react-hook-form';
+import { FieldErrors, FieldValues, SubmitHandler, useFormContext, UseFormReturn } from 'react-hook-form';
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
 
@@ -65,6 +65,7 @@ const RenderForm = ({
 
   const { formState } = useFormContext();
   const { errors } = formState;
+  const errorsExist = Object.keys(errors).length > 0;
 
   const onErrorReactHookForm = (errors: FieldValues): void => {
     if (onFieldsNotCorrectlyFilledOut && errors) {
@@ -87,12 +88,20 @@ const RenderForm = ({
   return (
     <React.Fragment>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
-        {displayValidationSummaryOnTop && !referoProps.hideValidationSummary && (
-          <ValidationSummary errorTitle={resources.validationSummaryHeader} errors={errors as ValidationErrors} />
+        {displayValidationSummaryOnTop && !referoProps.hideValidationSummary && errorsExist && (
+          <ValidationSummary
+            testId={'validation-summary'}
+            errorTitle={resources.validationSummaryHeader}
+            errors={errors as ValidationErrors}
+          />
         )}
         {children}
-        {!displayValidationSummaryOnTop && !referoProps.hideValidationSummary && (
-          <ValidationSummary errorTitle={resources.validationSummaryHeader} errors={errors as ValidationErrors} />
+        {!displayValidationSummaryOnTop && !referoProps.hideValidationSummary && errorsExist && (
+          <ValidationSummary
+            testId={'validation-summary'}
+            errorTitle={resources.validationSummaryHeader}
+            errors={errors as ValidationErrors}
+          />
         )}
       </form>
 
