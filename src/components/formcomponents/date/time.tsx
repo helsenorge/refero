@@ -7,7 +7,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
 import { newTimeValueAsync } from '../../../actions/newValue';
-import { getId, isReadOnly, isRequired } from '../../../util/index';
+import { getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';

@@ -27,7 +27,7 @@ import {
   getPDFValueForDate,
   validateTimeDigits,
 } from '../../../util/date-utils';
-import { isRequired, getId, isReadOnly } from '../../../util/index';
+import { getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';

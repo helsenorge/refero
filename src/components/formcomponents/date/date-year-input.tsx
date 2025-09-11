@@ -5,7 +5,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { useMinMaxDate } from './useMinMaxDate';
-import { getId, isReadOnly, isRequired } from '../../../util';
+import { getId, isReadOnly } from '../../../util';
 import { getPDFValueForDate, validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';

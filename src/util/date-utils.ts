@@ -251,7 +251,7 @@ const getMaxTime = (item?: QuestionnaireItem): string | undefined => {
 export const validateDate = (
   dateToValidate: Date | undefined,
   resources: Resources | undefined,
-  item: QuestionnaireItem | undefined
+  item?: QuestionnaireItem | undefined
 ): true | string => {
   const customErrorMessage = getValidationTextExtension(item);
   if (!dateToValidate || !isValid(dateToValidate)) {

@@ -1,7 +1,15 @@
-## 19.1.0
+## 20.1.0
 
 - Replaced custom validation-summary with validation-summary component from HN-Designsystem
 - Use presentationButtonsType on custom buttons
+
+## 20.0.0
+
+- Updated peerDependencies @helsenorge packages to v.36.x.x and 12.x.x
+
+## 19.0.2
+
+- Fix: Initial values now support more than one initialValue
 
 ## 19.0.1
 

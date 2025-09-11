@@ -8,7 +8,7 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { useMinMaxDate } from './useMinMaxDate';
 import styles from '../../../styles/date-year-month.module.css';
-import { getId, isReadOnly, isRequired } from '../../../util';
+import { getId, isReadOnly } from '../../../util';
 import styles2 from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 
