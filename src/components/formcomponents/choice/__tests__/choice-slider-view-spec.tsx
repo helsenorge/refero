@@ -256,7 +256,7 @@ describe('Slider-view', () => {
           await submitForm();
 
           await waitFor(async () => {
-            expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+            expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
           });
         });
         it('Should not show error if required and has value', async () => {
@@ -278,7 +278,7 @@ describe('Slider-view', () => {
           await createWrapper(questionnaire);
           await submitForm();
           await waitFor(async () => {
-            expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+            expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
           });
           await clickSliderValue(`3dec9e0d-7b78-424e-8a59-f0909510985d`, 0);
           await userEvent.tab();

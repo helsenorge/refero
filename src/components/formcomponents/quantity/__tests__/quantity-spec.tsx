@@ -316,7 +316,7 @@ describe('Quantity', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
@@ -340,7 +340,7 @@ describe('Quantity', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
         const quantityInput = getQuantityInput(questionnaire, /Quantity/i);
 
@@ -368,7 +368,7 @@ describe('Quantity', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
     describe('maxValue', () => {
@@ -406,7 +406,7 @@ describe('Quantity', () => {
         await userEvent.type(quantityInput, '12');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
         await userEvent.clear(quantityInput);
         await userEvent.type(quantityInput, '8');
 
@@ -448,7 +448,7 @@ describe('Quantity', () => {
         await userEvent.type(quantityInput, '3');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
         await userEvent.clear(quantityInput);
         await userEvent.type(quantityInput, '8');
 
@@ -502,7 +502,7 @@ describe('Quantity', () => {
         await userEvent.type(quantityInput, '6.121212');
         await submitForm();
 
-        expect(screen.getByText('Custom error')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom error')).toHaveLength(2);
         await userEvent.clear(quantityInput);
         await userEvent.type(quantityInput, '6.2');
 

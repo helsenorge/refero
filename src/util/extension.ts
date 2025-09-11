@@ -18,7 +18,10 @@ export function getValidationTextExtension(item?: QuestionnaireItem): string | u
   return validationTextExtension.valueString;
 }
 
-export function getPresentationButtonsExtension(questionniare: Questionnaire): PresentationButtonsType | null {
+export function getPresentationButtonsExtension(questionniare: Questionnaire | undefined | null): PresentationButtonsType | null {
+  if (!questionniare) {
+    return null;
+  }
   const extension = getExtension(Extensions.PRESENTATION_BUTTONS_URL, questionniare);
   if (!extension || !extension.valueCoding || !extension.valueCoding.code) {
     return null;

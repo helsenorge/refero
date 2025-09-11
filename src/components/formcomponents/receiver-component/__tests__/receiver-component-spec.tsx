@@ -159,6 +159,6 @@ describe('ReceiverComponent', () => {
 
     await submitForm();
 
-    expect(screen.getByText(resources.adresseKomponent_feilmelding)).toBeInTheDocument();
+    expect(screen.getAllByText(resources.adresseKomponent_feilmelding)).toHaveLength(2);
   });
 });

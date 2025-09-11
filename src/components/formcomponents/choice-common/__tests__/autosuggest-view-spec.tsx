@@ -211,7 +211,7 @@ describe('autosuggest-view', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire = addPropertyToQuestionnaireItem(q, 'required', true);
@@ -252,7 +252,7 @@ describe('autosuggest-view', () => {
         await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
         const autosuggestInput = screen.getAllByTestId(/test-autosuggest/i)[0];
         await userEvent.type(autosuggestInput, 'fyr');
@@ -290,7 +290,7 @@ describe('autosuggest-view', () => {
         await createWrapper(questionnaire, { fetchValueSet: fetchValueSetFn });
         await submitForm();
 
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
   });

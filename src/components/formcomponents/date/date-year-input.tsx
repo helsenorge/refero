@@ -5,14 +5,14 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { useMinMaxDate } from './useMinMaxDate';
-import { getId, isReadOnly, isRequired } from '../../../util';
+import { getId, isReadOnly } from '../../../util';
 import { getPDFValueForDate, validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { getErrorMessage } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -56,19 +56,16 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
   const yearValue: string | undefined = getYearValue(answer);
   useResetFormField(`${idWithLinkIdAndItemIndex}`, yearValue);
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.year_field_required || '',
-    },
+    required: required({ item, resources, message: resources?.year_field_required }),
     validate: {
       validYear: value => {
-        return value ? validateYearDigits(value, resources) : true;
+        return value ? validateYearDigits(value, resources, item) : true;
       },
       validMinDate: value => {
-        return value ? validateYearMin(minDateTime, value, resources) : true;
+        return value ? validateYearMin(minDateTime, value, resources, item) : true;
       },
       validMaxDate: value => {
-        return value ? validateYearMax(maxDateTime, value, resources) : true;
+        return value ? validateYearMax(maxDateTime, value, resources, item) : true;
       },
     },
     shouldUnregister: true,

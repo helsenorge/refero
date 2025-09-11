@@ -12,6 +12,7 @@ import { Resources } from '../util/resources';
 import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
 import { TextMessage } from './text-message';
 
+import { PresentationButtonsType } from '@/constants/presentationButtonsType';
 import { DefaultValues } from '@/validation/defaultFormValues';
 
 export interface RenderCustomButtonsArgs {
@@ -70,6 +71,7 @@ export interface RenderCustomButtonsArgs {
    * that interact directly with the underlying form state.
    */
   reactHookFormMethods: UseFormReturn<DefaultValues, unknown, DefaultValues>;
+  presentationButtonsType: PresentationButtonsType | null;
 }
 
 export interface ReferoProps {

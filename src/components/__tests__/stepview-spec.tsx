@@ -74,7 +74,7 @@ describe('Step-view', () => {
 
     // Step 2 - should get validation error
     await submitForm();
-    expect(screen.queryAllByText(/Du må fylle ut dette feltet/i)).toHaveLength(2);
+    expect(screen.queryAllByText(/Du må fylle ut dette feltet/i)).toHaveLength(4);
     await selectCheckboxOption(/Mann/i);
 
     const stringInput = getStringInput(StepViewQuestionnaire, /String/i, 1);

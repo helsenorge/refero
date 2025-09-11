@@ -182,7 +182,7 @@ describe('checkbox-view - openchoice', () => {
           await selectCheckboxOption(/Annet/i);
           expect(screen.getByTestId(/-extra-field/i)).toBeInTheDocument();
           await submitForm();
-          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
         });
         it('Should not show error if required and has value', async () => {
           const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
@@ -203,7 +203,7 @@ describe('checkbox-view - openchoice', () => {
           await createWrapper(questionnaire);
           await selectCheckboxOption(/Annet/i);
           await submitForm();
-          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
           await typeExtraField('epost@test.com');
           await userEvent.tab();
@@ -228,7 +228,7 @@ describe('checkbox-view - openchoice', () => {
           await createWrapper(questionnaire);
           await submitForm();
 
-          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
         });
       });
     });
@@ -265,7 +265,7 @@ describe('checkbox-view - openchoice', () => {
         await createWrapper(questionnaire);
         expect(screen.getByLabelText(/Ja/i)).toBeInTheDocument();
         await submitForm();
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
@@ -284,7 +284,7 @@ describe('checkbox-view - openchoice', () => {
         ]);
         await createWrapper(questionnaire);
         await submitForm();
-        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
 
         await selectCheckboxOption(/Ja/i);
 

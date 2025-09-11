@@ -9,13 +9,13 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
 import { useMinMaxDate } from './useMinMaxDate';
-import { getId, isReadOnly, isRequired } from '../../../util/index';
+import { getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { getErrorMessage } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -97,10 +97,7 @@ export const DateDayInput = ({
   };
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage || '',
-    },
+    required: required({ item, resources }),
     validate: {
       validDate: value => {
         if (Array.isArray(value)) {
@@ -113,10 +110,10 @@ export const DateDayInput = ({
         }
       },
       validMinDate: value => {
-        return validateMinDate(minDateTime, parseStringToDate(value), resources);
+        return validateMinDate(minDateTime, parseStringToDate(value), resources, item);
       },
       validMaxDate: value => {
-        return validateMaxDate(maxDateTime, parseStringToDate(value), resources);
+        return validateMaxDate(maxDateTime, parseStringToDate(value), resources, item);
       },
     },
     shouldUnregister: true,

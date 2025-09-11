@@ -60,9 +60,10 @@ export const getErrorMessage = (item: QuestionnaireItem | undefined, error: Fiel
  * @returns A Validation Rule that the questionnaireItem for a required field and returns a validation rule with the message.
  */
 export const required = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<boolean> => {
+  const customErrorMessage = getValidationTextExtension(item);
   return {
     value: isRequired(item),
-    message: message ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+    message: customErrorMessage ?? message ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
   };
 };
 /**

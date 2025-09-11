@@ -1,15 +1,19 @@
 import React from 'react';
 
-import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useFormContext, UseFormReturn } from 'react-hook-form';
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
+import ValidationSummary from '@helsenorge/designsystem-react/components/Validation';
+import { ValidationErrors } from '@helsenorge/designsystem-react/components/Validation/types';
 
 import FormButtons from './formButtons/formButtons';
-import { ValidationSummary } from './validation/validation-summary';
 
+import { useAppSelector } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
 import { ReferoProps } from '@/types/referoProps';
+import { getPresentationButtonsExtension } from '@/util/extension';
 import { Resources } from '@/util/resources';
 import { DefaultValues } from '@/validation/defaultFormValues';
 
@@ -49,13 +53,19 @@ const RenderForm = ({
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} color="black" />;
   }
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
 
+  const presentationButtonsType = getPresentationButtonsExtension(formDefinition?.Content);
   const displayValidationSummaryOnTop: boolean =
     !validationSummaryPlacement || validationSummaryPlacement === ValidationSummaryPlacement.Top;
   const pauseButtonText = displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave;
   const submitButtonText = displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend;
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
+
+  const { formState } = useFormContext();
+  const { errors } = formState;
+  const errorsExist = Object.keys(errors).length > 0;
 
   const onErrorReactHookForm = (errors: FieldValues): void => {
     if (onFieldsNotCorrectlyFilledOut && errors) {
@@ -78,9 +88,21 @@ const RenderForm = ({
   return (
     <React.Fragment>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
-        {displayValidationSummaryOnTop && !referoProps.hideValidationSummary && <ValidationSummary resources={resources} />}
+        {displayValidationSummaryOnTop && !referoProps.hideValidationSummary && errorsExist && (
+          <ValidationSummary
+            testId={'validation-summary'}
+            errorTitle={resources.validationSummaryHeader}
+            errors={errors as ValidationErrors}
+          />
+        )}
         {children}
-        {!displayValidationSummaryOnTop && !referoProps.hideValidationSummary && <ValidationSummary resources={resources} />}
+        {!displayValidationSummaryOnTop && !referoProps.hideValidationSummary && errorsExist && (
+          <ValidationSummary
+            testId={'validation-summary'}
+            errorTitle={resources.validationSummaryHeader}
+            errors={errors as ValidationErrors}
+          />
+        )}
       </form>
 
       {referoProps.renderCustomActionButtons ? (
@@ -92,6 +114,7 @@ const RenderForm = ({
           nextStep,
           previousStep,
           reactHookFormMethods: methods,
+          presentationButtonsType,
         })
       ) : (
         <FormButtons

@@ -27,7 +27,7 @@ import {
   getPDFValueForDate,
   validateTimeDigits,
 } from '../../../util/date-utils';
-import { isRequired, getId, isReadOnly } from '../../../util/index';
+import { getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -38,7 +38,7 @@ import dateStyles from './date.module.css';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import SafeText from '@/components/referoLabel/SafeText';
-import { getErrorMessage } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -177,51 +177,42 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   };
 
   const validationRulesDate: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage || '',
-    },
+    required: required({ item, resources }),
     validate: {
       validDate: value => {
-        return doesAnyFieldsHaveValue() ? validateDate(parseStringToDate(value) ?? value, resources) : true;
+        return doesAnyFieldsHaveValue() ? validateDate(parseStringToDate(value) ?? value, resources, item) : true;
       },
       validMinDate: value => {
-        return doesAnyFieldsHaveValue() ? validateMinDate(minDateTime, parseStringToDate(value), resources) : true;
+        return doesAnyFieldsHaveValue() ? validateMinDate(minDateTime, parseStringToDate(value), resources, item) : true;
       },
       validMaxDate: value => {
-        return doesAnyFieldsHaveValue() ? validateMaxDate(maxDateTime, parseStringToDate(value), resources) : true;
+        return doesAnyFieldsHaveValue() ? validateMaxDate(maxDateTime, parseStringToDate(value), resources, item) : true;
       },
     },
     shouldUnregister: true,
   };
 
   const validationRulesHours: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage || '',
-    },
+    required: required({ item, resources }),
     validate: {
       validDigits: value => {
-        return value ? validateTimeDigits(value, TimeUnit.Hours, resources) : true;
+        return value ? validateTimeDigits(value, TimeUnit.Hours, resources, item) : true;
       },
       validHours: value => {
-        return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources) : true;
+        return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources, item) : true;
       },
     },
     shouldUnregister: true,
   };
 
   const validationRulesMinutes: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage || '',
-    },
+    required: required({ item, resources }),
     validate: {
       validDigits: value => {
-        return value ? validateTimeDigits(value, TimeUnit.Minutes, resources) : true;
+        return value ? validateTimeDigits(value, TimeUnit.Minutes, resources, item) : true;
       },
       validMinutes: value => {
-        return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources) : true;
+        return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources, item) : true;
       },
     },
     shouldUnregister: true,

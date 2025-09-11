@@ -253,7 +253,7 @@ describe('Date month', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.yearmonth_field_required)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.yearmonth_field_required)).toHaveLength(3);
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
@@ -263,8 +263,14 @@ describe('Date month', () => {
         await createWrapper(questionnaire);
 
         const dateInput = getDateInput(questionnaire, /Dato/i);
+        const monthElement = await screen.findByTestId('month-select');
+        const monthSelect = monthElement.querySelector('select');
 
-        await userEvent.type(dateInput, '31.05.1994');
+        await userEvent.type(dateInput, '1994');
+        await userEvent.tab();
+        if (monthSelect) {
+          await userEvent.selectOptions(monthSelect, '05');
+        }
         await submitForm();
 
         expect(screen.queryByText(resources.yearmonth_field_required)).not.toBeInTheDocument();
@@ -277,7 +283,7 @@ describe('Date month', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.yearmonth_field_required)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.yearmonth_field_required)).toHaveLength(3);
 
         const dateInput = getDateInput(questionnaire, /Dato/i);
         const monthElement = await screen.findByTestId('month-select');
@@ -298,7 +304,8 @@ describe('Date month', () => {
         await userEvent.type(dateInput, '333');
         await submitForm();
 
-        expect(screen.getByText(resources.yearmonth_field_invalid)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.year_field_invalid)).toHaveLength(2);
+        expect(screen.getByText(resources.yearmonth_field_required)).toBeInTheDocument();
       });
       it('Should show error message for min value, if month is correct but year is too low', async () => {
         await createWrapper(qMinMax);
@@ -314,7 +321,7 @@ describe('Date month', () => {
         }
         await submitForm();
 
-        expect(screen.getByText(resources.errorBeforeMinDate + ': mai 1994')).toBeInTheDocument();
+        expect(screen.getAllByText(resources.errorBeforeMinDate + ': mai 1994')).toHaveLength(2);
       });
       it('Should show error message for max value, if month is correct but year is too high', async () => {
         await createWrapper(qMinMax);
@@ -330,7 +337,7 @@ describe('Date month', () => {
         }
         await submitForm();
 
-        expect(screen.getByText(resources.errorAfterMaxDate + ': mai 1996')).toBeInTheDocument();
+        expect(screen.getAllByText(resources.errorAfterMaxDate + ': mai 1996')).toHaveLength(2);
       });
       it('Should show error message for min value, if year is correct but month is too low', async () => {
         await createWrapper(qMinMax);
@@ -346,7 +353,7 @@ describe('Date month', () => {
         }
         await submitForm();
 
-        expect(screen.getByText(resources.errorBeforeMinDate + ': mai 1994')).toBeInTheDocument();
+        expect(screen.getAllByText(resources.errorBeforeMinDate + ': mai 1994')).toHaveLength(2);
       });
       it('Should show error message for max value, if year is correct but month is too high', async () => {
         await createWrapper(qMinMax);
@@ -362,7 +369,7 @@ describe('Date month', () => {
         }
 
         await submitForm();
-        expect(screen.getByText(resources.errorAfterMaxDate + ': mai 1996')).toBeInTheDocument();
+        expect(screen.getAllByText(resources.errorAfterMaxDate + ': mai 1996')).toHaveLength(2);
       });
       it('Should show custom error message if error', async () => {
         await createWrapper(qMinMaxCustomError);
@@ -371,7 +378,7 @@ describe('Date month', () => {
         await userEvent.type(dateInput, '1997');
         await submitForm();
 
-        expect(screen.getByText('Custom errormessage')).toBeInTheDocument();
+        expect(screen.getAllByText('Custom errormessage')).toHaveLength(2);
       });
       it('Should not show error if date value is between min value and max value', async () => {
         await createWrapper(qMinMax);
@@ -398,7 +405,7 @@ describe('Date month', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.yearmonth_field_required)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.yearmonth_field_required)).toHaveLength(3);
 
         const dateInput = getDateInput(questionnaire, /Dato/i);
         const monthElement = await screen.findByTestId('month-select');
@@ -430,7 +437,7 @@ describe('Date month', () => {
         await createWrapper(questionnaire);
         await submitForm();
 
-        expect(screen.getByText(resources.yearmonth_field_required)).toBeInTheDocument();
+        expect(screen.getAllByText(resources.yearmonth_field_required)).toHaveLength(3);
       });
     });
   });

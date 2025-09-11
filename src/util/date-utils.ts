@@ -17,7 +17,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { DateFormat, DatePickerFormat, DateTimeUnit, TimeUnit, TimeValues } from '../types/dateTypes';
 
 import { safeParseJSON } from './date-fns-utils';
-import { getExtension } from './extension';
+import { getExtension, getValidationTextExtension } from './extension';
 import { Resources } from './resources';
 
 import '@helsenorge/datepicker/components/DatePicker/';
@@ -248,9 +248,14 @@ const getMaxTime = (item?: QuestionnaireItem): string | undefined => {
   return maxTime.valueTime;
 };
 
-export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
+export const validateDate = (
+  dateToValidate: Date | undefined,
+  resources: Resources | undefined,
+  item?: QuestionnaireItem | undefined
+): true | string => {
+  const customErrorMessage = getValidationTextExtension(item);
   if (!dateToValidate || !isValid(dateToValidate)) {
-    return resources?.dateError_invalid || '';
+    return customErrorMessage ? customErrorMessage : resources?.dateError_invalid || '';
   }
   return true;
 };
@@ -258,10 +263,12 @@ export const validateDate = (dateToValidate: Date | undefined, resources: Resour
 export const validateMinDate = (
   minDateTime: Date | undefined,
   dateToValidate: Date | undefined,
-  resources: Resources | undefined
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
 ): true | string => {
+  const customErrorMessage = getValidationTextExtension(item);
   if (minDateTime && dateToValidate && isBefore(dateToValidate, startOfDay(minDateTime))) {
-    return `${resources?.errorBeforeMinDate}: ${format(minDateTime, DateFormat.ddMMyyyy)}`;
+    return customErrorMessage ? customErrorMessage : `${resources?.errorBeforeMinDate}: ${format(minDateTime, DateFormat.ddMMyyyy)}`;
   }
   return true;
 };
@@ -269,10 +276,12 @@ export const validateMinDate = (
 export const validateMaxDate = (
   maxDateTime: Date | undefined,
   dateToValidate: Date | undefined,
-  resources: Resources | undefined
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
 ): true | string => {
+  const customErrorMessage = getValidationTextExtension(item);
   if (maxDateTime && dateToValidate && isAfter(dateToValidate, endOfDay(maxDateTime))) {
-    return `${resources?.errorAfterMaxDate}: ${format(maxDateTime, DateFormat.ddMMyyyy)}`;
+    return customErrorMessage ? customErrorMessage : `${resources?.errorAfterMaxDate}: ${format(maxDateTime, DateFormat.ddMMyyyy)}`;
   }
   return true;
 };
@@ -280,29 +289,41 @@ export const validateMaxDate = (
 export const validateTimeDigits = (
   timeToValidate: string | undefined,
   timeUnit: TimeUnit,
-  resources: Resources | undefined
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
 ): true | string => {
   if (timeToValidate && timeToValidate.length > 2) {
+    const customErrorMessage = getValidationTextExtension(item);
     if (timeUnit === TimeUnit.Hours) {
-      return resources?.timeError_hours_digits || '';
+      return customErrorMessage ? customErrorMessage : resources?.timeError_hours_digits || '';
     }
     if (timeUnit === TimeUnit.Minutes) {
-      return resources?.timeError_minutes_digits || '';
+      return customErrorMessage ? customErrorMessage : resources?.timeError_minutes_digits || '';
     }
   }
   return true;
 };
 
-export const validateHours = (hours: number | undefined, resources: Resources | undefined): true | string => {
+export const validateHours = (
+  hours: number | undefined,
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
+): true | string => {
   if (hours === undefined || hours === null || (hours && (hours < 0 || hours >= 24))) {
-    return resources?.dateError_time_invalid || '';
+    const customErrorMessage = getValidationTextExtension(item);
+    return customErrorMessage ? customErrorMessage : resources?.dateError_time_invalid || '';
   }
   return true;
 };
 
-export const validateMinutes = (minutes: number | undefined, resources: Resources | undefined): true | string => {
+export const validateMinutes = (
+  minutes: number | undefined,
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
+): true | string => {
   if (minutes === undefined || minutes === null || (minutes && (minutes < 0 || minutes >= 60))) {
-    return resources?.dateError_time_invalid || '';
+    const customErrorMessage = getValidationTextExtension(item);
+    return customErrorMessage ? customErrorMessage : resources?.dateError_time_invalid || '';
   }
   return true;
 };
@@ -317,7 +338,8 @@ export const validateMinTime = (
   const timeToValidate = parseHoursAndMinutesToDate(hours, minutes);
 
   if (minTime && timeToValidate && timeToValidate < minTime) {
-    return resources?.dateError_time_invalid || '';
+    const customErrorMessage = getValidationTextExtension(item);
+    return customErrorMessage ? customErrorMessage : resources?.dateError_time_invalid || '';
   }
   return true;
 };
@@ -331,34 +353,52 @@ export const validateMaxTime = (
   const maxTime = parseTimestringToDate(getMaxTime(item));
   const timeToValidate = parseHoursAndMinutesToDate(hours, minutes);
   if (timeToValidate && maxTime && timeToValidate > maxTime) {
-    return resources?.dateError_time_invalid || '';
+    const customErrorMessage = getValidationTextExtension(item);
+    return customErrorMessage ? customErrorMessage : resources?.dateError_time_invalid || '';
   }
   return true;
 };
 
-export const validateYearDigits = (year: number | string, resources: Resources | undefined): true | string => {
+export const validateYearDigits = (
+  year: number | string,
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
+): true | string => {
   if (year && year.toString().length !== 4) {
-    return resources?.year_field_invalid || '';
+    const customErrorMessage = getValidationTextExtension(item);
+    return customErrorMessage ? customErrorMessage : resources?.year_field_invalid || '';
   }
 
   return true;
 };
 
-export const validateYearMin = (minDate: Date | undefined, yearToValidate: number, resources: Resources | undefined): true | string => {
+export const validateYearMin = (
+  minDate: Date | undefined,
+  yearToValidate: number,
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
+): true | string => {
   if (minDate) {
     const minYear = getYear(minDate);
     if (minYear > yearToValidate) {
-      return `${resources?.year_field_mindate}: ${minYear}`;
+      const customErrorMessage = getValidationTextExtension(item);
+      return customErrorMessage ? customErrorMessage : `${resources?.year_field_mindate}: ${minYear}`;
     }
   }
   return true;
 };
 
-export const validateYearMax = (maxDate: Date | undefined, yearToValidate: number, resources: Resources | undefined): true | string => {
+export const validateYearMax = (
+  maxDate: Date | undefined,
+  yearToValidate: number,
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
+): true | string => {
   if (maxDate) {
     const maxYear = getYear(maxDate);
     if (maxYear < yearToValidate) {
-      return `${resources?.year_field_maxdate}: ${maxYear}`;
+      const customErrorMessage = getValidationTextExtension(item);
+      return customErrorMessage ? customErrorMessage : `${resources?.year_field_maxdate}: ${maxYear}`;
     }
   }
   return true;
@@ -368,9 +408,11 @@ export const validateYearMonthMin = (
   minDate: Date | undefined,
   yearToValidate: string,
   monthToValidate: string,
-  resources: Resources | undefined
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
 ): true | string => {
   if (minDate) {
+    const customErrorMessage = getValidationTextExtension(item);
     const minYear = minDate.getFullYear();
     const minMonth = minDate.getMonth() + 1; // January is 0 in JavaScript
 
@@ -378,7 +420,7 @@ export const validateYearMonthMin = (
     const month = parseInt(monthToValidate, 10);
 
     if (year < minYear || (year === minYear && month < minMonth)) {
-      return `${resources?.errorBeforeMinDate}: ${format(minDate, DateFormat.MMMMyyyy)}`;
+      return customErrorMessage ? customErrorMessage : `${resources?.errorBeforeMinDate}: ${format(minDate, DateFormat.MMMMyyyy)}`;
     }
   }
   return true;
@@ -388,9 +430,11 @@ export const validateYearMonthMax = (
   maxDate: Date | undefined,
   yearToValidate: string,
   monthToValidate: string,
-  resources: Resources | undefined
+  resources: Resources | undefined,
+  item: QuestionnaireItem | undefined
 ): true | string => {
   if (maxDate) {
+    const customErrorMessage = getValidationTextExtension(item);
     const maxYear = maxDate.getFullYear();
     const maxMonth = maxDate.getMonth() + 1; // January is 0 in JavaScript
 
@@ -398,7 +442,7 @@ export const validateYearMonthMax = (
     const month = parseInt(monthToValidate, 10);
 
     if (year > maxYear || (year === maxYear && month > maxMonth)) {
-      return `${resources?.errorAfterMaxDate}: ${format(maxDate, DateFormat.MMMMyyyy)}`;
+      return customErrorMessage ? customErrorMessage : `${resources?.errorAfterMaxDate}: ${format(maxDate, DateFormat.MMMMyyyy)}`;
     }
   }
   return true;

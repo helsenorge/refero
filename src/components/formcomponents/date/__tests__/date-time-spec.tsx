@@ -316,10 +316,9 @@ describe('Date time', () => {
         item: q.item?.map(x => ({ ...x, required: true })),
       };
       await createWrapper(questionnaire);
-
       await submitForm();
 
-      await screen.findByText(resources.formRequiredErrorMessage);
+      expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(4);
     });
     it('Should not show error if required and has value', async () => {
       const questionnaire: Questionnaire = {
@@ -351,7 +350,7 @@ describe('Date time', () => {
       await userEvent.type(dateInput, '313131');
       await submitForm();
 
-      await screen.findByText(resources.dateError_invalid);
+      expect(screen.getAllByText(resources.dateError_invalid)).toHaveLength(2);
     });
     it('Should show error message for min value', async () => {
       await createWrapper(qMinMax);
@@ -360,7 +359,7 @@ describe('Date time', () => {
       await userEvent.type(dateInput, '31.05.1904');
       await submitForm();
 
-      await screen.findByText(resources.errorBeforeMinDate + ': 31.05.1994');
+      expect(screen.getAllByText(resources.errorBeforeMinDate + ': 31.05.1994')).toHaveLength(2);
     });
     it('Should show error message for max value', async () => {
       await createWrapper(qMinMax);
@@ -369,25 +368,13 @@ describe('Date time', () => {
       await userEvent.type(dateInput, '31.05.2095');
       await submitForm();
 
-      await screen.findByText(resources.errorAfterMaxDate + ': 31.05.2094');
+      expect(screen.getAllByText(resources.errorAfterMaxDate + ': 31.05.2094')).toHaveLength(2);
     });
-    it('Should show custom error message for min value', async () => {
+    it('Should show custom error message if exists', async () => {
       await createWrapper(qMinMaxCustomError);
-
-      const dateInput = getDateInput(qMinMaxCustomError, /Dato/i);
-      await userEvent.type(dateInput, '31.05.1904');
       await submitForm();
 
-      await screen.findByText('Custom errormessage');
-    });
-    it('Should show custom error message for max value', async () => {
-      await createWrapper(qMinMaxCustomError);
-
-      const dateInput = getDateInput(qMinMaxCustomError, /Dato/i);
-      await userEvent.type(dateInput, '31.05.2095');
-      await submitForm();
-
-      await screen.findByText('Custom errormessage');
+      expect(screen.getAllByText('Custom errormessage')).toHaveLength(4);
     });
     it('Should not show error if date value is between min value and max value', async () => {
       await createWrapper(qMinMax);
@@ -420,7 +407,7 @@ describe('Date time', () => {
         await submitForm();
       }
 
-      await screen.findByText(resources.dateError_time_invalid);
+      expect(screen.getAllByText(resources.dateError_time_invalid)).toHaveLength(2);
     });
     it('Should show error if minutes value is invalid', async () => {
       await createWrapper(qMinMax);
@@ -443,7 +430,7 @@ describe('Date time', () => {
       }
       await submitForm();
 
-      await screen.findByText(resources.dateError_time_invalid);
+      expect(screen.getAllByText(resources.dateError_time_invalid)).toHaveLength(2);
     });
     it('readOnly value should get validation error if error exist', async () => {
       const questionnaire: Questionnaire = {
@@ -464,7 +451,7 @@ describe('Date time', () => {
       await createWrapper(questionnaire);
       await submitForm();
 
-      expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(4);
     });
   });
 });
