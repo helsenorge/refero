@@ -56,7 +56,9 @@ describe('Radio-view - choice', () => {
       if (helpButton) {
         await userEvent.click(helpButton);
       }
-      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(await screen.findByText('Help text')).toBeInTheDocument();
+      });
     });
   });
   describe('repeat button', () => {

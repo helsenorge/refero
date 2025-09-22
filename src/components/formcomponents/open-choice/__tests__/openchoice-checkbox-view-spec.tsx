@@ -53,7 +53,9 @@ describe('checkbox-view - openchoice', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
       await clickButtonTimes(/-help-button/i, 1);
 
-      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(await screen.findByText('Help text')).toBeInTheDocument();
+      });
     });
   });
   describe('repeat button', () => {

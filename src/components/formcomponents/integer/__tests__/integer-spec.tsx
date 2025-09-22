@@ -89,16 +89,15 @@ describe('Integer', () => {
     });
     it('Should render helpElement when helpbutton is clicked', async () => {
       const { container } = await createWrapper(q);
-
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
-
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
-
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
         await userEvent.click(helpButton);
       }
-      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(await screen.findByText('Help text')).toBeInTheDocument();
+      });
     });
   });
   describe('repeat button', () => {
