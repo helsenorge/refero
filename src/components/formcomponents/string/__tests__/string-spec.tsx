@@ -117,7 +117,7 @@ describe('string', () => {
         await userEvent.click(helpButton);
       }
       await waitFor(async () => {
-        expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+        expect(await screen.findByText('Help text')).toBeInTheDocument();
       });
     });
   });

@@ -1,4 +1,4 @@
-import { act, Matcher, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
+import { Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -99,7 +99,9 @@ describe('Boolean', () => {
         await userEvent.click(elm);
       }
 
-      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(await screen.findByText('Help text')).toBeInTheDocument();
+      });
     });
   });
   describe('repeat button', () => {
@@ -288,7 +290,7 @@ describe('Boolean', () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
-  return await act(async () => {
+  return await waitFor(async () => {
     return await renderRefero({ questionnaire, props: { ...props, resources } });
   });
 };

@@ -55,7 +55,13 @@ describe('autosuggest-view', () => {
       if (helpButton) {
         await userEvent.click(helpButton);
       }
-      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(
+          await screen.findByText(
+            'Mange legemidler finnes i ulike legemiddelformer, for eksempel tabletter og stikkpiller. Finner du ikke riktig legemiddelform eller styrken, velger du øverste alternativ og krysser av for at du er usikker.'
+          )
+        ).toBeInTheDocument();
+      });
     });
   });
   describe('repeat button', () => {

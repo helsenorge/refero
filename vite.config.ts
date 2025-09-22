@@ -8,9 +8,10 @@ import generatePackageJson from 'rollup-plugin-generate-package-json';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig, UserConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import { externalizeDeps } from 'vite-plugin-externalize-deps';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
+import { externalizeDeps } from './vite-plugins/ext-deps';
 
 const OUTPUT_DIRECTORY = 'lib';
 
@@ -34,8 +35,7 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
     css: {
       preprocessorOptions: {
         scss: {
-          includePaths: ['node_modules'],
-          api: 'legacy',
+          loadPaths: [path.resolve(__dirname, 'node_modules')],
         },
       },
       postcss: {

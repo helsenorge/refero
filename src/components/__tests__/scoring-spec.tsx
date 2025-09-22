@@ -1,8 +1,8 @@
 // vi.unmock('@/workers/fhir-path.worker.ts?worker&inline');
-// import '@vitest/web-worker';
 import '../../util/__tests__/defineFetch';
 import { performance } from 'perf_hooks';
 
+import userEvent from '@testing-library/user-event';
 import { Questionnaire } from 'fhir/r4';
 
 import { encodeString } from '../createQuestionnaire/utils';
@@ -20,16 +20,19 @@ import { getCalculatedExpressionExtension } from '../../util/extension';
 describe('Component renders and calculates score', () => {
   it('fhirpath score should be updated when decimal questions are answered', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='1').answer.value", FhirpathScoreDataModel);
-    const { container } = await createWrapper(questionnaire);
 
-    await inputAnswer('1', 42, container);
+    await createWrapper(questionnaire);
 
-    const item = findItem('1', container);
+    const decimalInput = await screen.findByRole('spinbutton', { name: /decimal/i });
 
-    expect(item).toHaveValue(42);
-    await waitFor(async () => {
-      const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
-      expect(fhirpathItem).toHaveValue(42);
+    await userEvent.clear(decimalInput);
+    await userEvent.type(decimalInput, '4');
+    await userEvent.tab();
+
+    const scoreInput = await screen.findByRole('spinbutton', { name: /fhir sum element/i });
+
+    await waitFor(() => {
+      expect(scoreInput).toHaveValue(4);
     });
   });
 
@@ -38,18 +41,18 @@ describe('Component renders and calculates score', () => {
     const { container } = await createWrapper(questionnaire);
 
     await inputAnswer('2', 42, container);
-    await waitFor(async () => {
-      const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
-      expect(fhirpathItem).toHaveValue(42);
+    const scoreInput = await screen.findByRole('spinbutton', { name: /fhir sum element/i });
+    await waitFor(() => {
+      expect(scoreInput).toHaveValue(42);
     });
   });
   it('fhirpath score should be updated when integer questions are answered - should work with zeros', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", FhirpathScoreDataModel);
     const { container } = await createWrapper(questionnaire);
     await inputAnswer('2', 0, container);
-    await waitFor(async () => {
-      const fhirpathItem = await screen.findByLabelText(/Fhir sum element/i);
-      expect(fhirpathItem).toHaveValue(0);
+    const scoreInput = await screen.findByRole('spinbutton', { name: /fhir sum element/i });
+    await waitFor(() => {
+      expect(scoreInput).toHaveValue(0);
     });
   });
   it('fhirpath score should be updated when quantity questions are answered', async () => {
@@ -219,48 +222,32 @@ describe('Code Scoring', () => {
     await createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Decimal 1/i, '42.451', false);
-    await waitFor(async () => {
-      const sum1 = await screen.findByDisplayValue(42.451);
-      expect(sum1).toBeInTheDocument();
-    });
+    const sum1 = await screen.findByDisplayValue(42.451);
+    expect(sum1).toBeInTheDocument();
 
     await typeByLabelText(/Decimal 2/i, '1.041', false);
-    await waitFor(async () => {
-      const sum2 = await screen.findByDisplayValue(1.041);
-      expect(sum2).toBeInTheDocument();
-    });
+    const sum2 = await screen.findByDisplayValue(1.041);
+    expect(sum2).toBeInTheDocument();
 
-    await waitFor(async () => {
-      const sum3 = await screen.findByText(43);
-      expect(sum3).toBeInTheDocument();
-    });
-    await waitFor(async () => {
-      const sum4 = await screen.findByText(43.49);
-      expect(sum4).toBeInTheDocument();
-    });
+    const sum3 = await screen.findByText(43);
+    expect(sum3).toBeInTheDocument();
+    const sum4 = await screen.findByText(43.49);
+    expect(sum4).toBeInTheDocument();
   });
 
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer more than 5', async () => {
     await createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Decimal 1/i, '42.551', false);
-    await waitFor(async () => {
-      const sum = await screen.findByDisplayValue(42.551);
-      expect(sum).toBeInTheDocument();
-    });
+    const sum = await screen.findByDisplayValue(42.551);
+    expect(sum).toBeInTheDocument();
     await typeByLabelText(/Decimal 2/i, '1.041', false);
-    await waitFor(async () => {
-      const sum2 = await screen.findByDisplayValue(1.041);
-      expect(sum2).toBeInTheDocument();
-    });
-    await waitFor(async () => {
-      const sum3 = await screen.findByText(44);
-      expect(sum3).toBeInTheDocument();
-    });
-    await waitFor(async () => {
-      const sum4 = await screen.findByText(43.59);
-      expect(sum4).toBeInTheDocument();
-    });
+    const sum2 = await screen.findByDisplayValue(1.041);
+    expect(sum2).toBeInTheDocument();
+    const sum3 = await screen.findByText(44);
+    expect(sum3).toBeInTheDocument();
+    const sum4 = await screen.findByText(43.59);
+    expect(sum4).toBeInTheDocument();
   });
 
   it('Section scoring on integer grouping', async () => {
@@ -345,5 +332,5 @@ export function setFhirpath(linkId: string, expression: string, q: Questionnaire
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(questionnaire: Questionnaire) {
-  return await renderRefero({ questionnaire, props: { authorized: true } });
+  return await waitFor(async () => await renderRefero({ questionnaire, props: { authorized: true } }));
 }

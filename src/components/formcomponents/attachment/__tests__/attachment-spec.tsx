@@ -1,4 +1,4 @@
-import { userEvent, Matcher, renderRefero, screen } from '@test/test-utils.tsx';
+import { userEvent, Matcher, renderRefero, screen, waitFor } from '@test/test-utils.tsx';
 import { Questionnaire } from 'fhir/r4';
 import { vi } from 'vitest';
 
@@ -71,7 +71,9 @@ describe('Attachment', () => {
       if (helpButton) {
         await userEvent.click(helpButton);
       }
-      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(await screen.findByText('Help text')).toBeInTheDocument();
+      });
     });
   });
 

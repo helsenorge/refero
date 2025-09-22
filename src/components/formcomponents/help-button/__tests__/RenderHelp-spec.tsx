@@ -34,7 +34,9 @@ describe('string', () => {
       if (helpButton) {
         await userEvent.click(helpButton);
       }
-      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+      await waitFor(async () => {
+        expect(await screen.findByText('Hjelp')).toBeInTheDocument();
+      });
     });
   });
   describe('onRenderHelpButton', () => {
