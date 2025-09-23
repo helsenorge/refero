@@ -46,7 +46,7 @@
     "build:lib": "vite build",
     "tsc:b": "tsc -b",
     "prebuild": "npm run generate:cssdefinitions",
-    "prepare": "npm run build:lib",
+    "prepare": "husky",
     "analyze": "vite build --mode analyze",
     "generate:cssdefinitions": "typed-scss-modules src/**/*.module.scss --implementation sass --nameFormat none --exportType default --includePaths node_modules"
   },
@@ -80,7 +80,6 @@
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
-    "@types/dompurify": "^3.0.5",
     "@types/fhir": "^0.0.41",
     "@types/node": "^22.0.0",
     "@types/react-collapse": "^5.0.4",
@@ -94,7 +93,7 @@
     "browserslist": "^4.23.1",
     "core-js": "^3.37.1",
     "cssnano": "^7.0.3",
-    "dompurify": "3.1.7",
+    "dompurify": "3.2.6",
     "eslint": "^9.0.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "file-loader": "^6.2.0",
@@ -128,5 +127,9 @@
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",
     "uuid": "^13.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --fix",
+    "*.{js,jsx,ts,tsx,css,scss,md,json}": "prettier --write"
   }
 }
