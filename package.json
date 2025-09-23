@@ -120,7 +120,6 @@
   "dependencies": {
     "@helsenorge/core-utils": "^36.0.0",
     "@helsenorge/eslint-config": "^36.0.0",
-    "@vitest/web-worker": "^3.2.4",
     "classnames": "^2.3.2",
     "date-fns": "^4.1.0",
     "fhirpath": "^4.0.0",
