@@ -1,3 +1,11 @@
+## 20.1.0-beta01
+
+- Updated major packages
+  - Vite
+  - fhirpath
+  - uuid
+  - dompurify
+
 ## 20.1.0
 
 - Replaced custom validation-summary with validation-summary component from HN-Designsystem
