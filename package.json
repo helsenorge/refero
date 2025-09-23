@@ -46,7 +46,7 @@
     "build:lib": "vite build",
     "tsc:b": "tsc -b",
     "prebuild": "npm run generate:cssdefinitions",
-    "prepare": "husky",
+    "prepare": "npm run build:lib",
     "analyze": "vite build --mode analyze",
     "generate:cssdefinitions": "typed-scss-modules src/**/*.module.scss --implementation sass --nameFormat none --exportType default --includePaths node_modules"
   },
