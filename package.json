@@ -54,11 +54,6 @@
     "*.css",
     "*.scss"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
   "peerDependencies": {
     "@helsenorge/autosuggest": "^36.0.0",
     "@helsenorge/datepicker": "^12.0.0",

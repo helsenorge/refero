@@ -1,157 +1,185 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { existsSync, readFileSync } from 'node:fs';
 import { builtinModules } from 'node:module';
 import { join } from 'node:path';
 
 import type { Plugin } from 'vite';
 
-type StringOrRegExp = string | RegExp;
-
 interface UserOptions {
   deps: boolean;
   devDeps: boolean;
+  except: Array<string | RegExp>;
+  /**
+   * Additional dependencies to externalize.
+   *
+   * @example
+   *
+   * ```ts
+   * externalizeDeps({
+   *   include: [
+   *     /^unlisted-dep(?:\/.*)?$/,
+   *   ],
+   * })
+   * ```
+   *
+   * @default []
+   */
+  include: Array<string | RegExp>;
+  nodeBuiltins: boolean;
   optionalDeps: boolean;
   peerDeps: boolean;
-  nodeBuiltins: boolean;
-  include: StringOrRegExp[];
-  except: StringOrRegExp[];
   useFile: string;
-  applyToWorkers: boolean;
 }
 
-const DEFAULTS: UserOptions = {
-  deps: true,
-  devDeps: false,
-  optionalDeps: true,
-  peerDeps: true,
-  nodeBuiltins: true,
-  include: [],
-  except: [],
-  useFile: join(process.cwd(), 'package.json'),
-  applyToWorkers: true,
+const parseFile = (file: string) => {
+  return JSON.parse(readFileSync(file).toString());
 };
 
-function escapeRegex(lit: string): string {
-  return lit.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-/** Turn a package name into `^name(?:/.*)?$` to match deep imports. */
-function pkgToRegex(name: string): RegExp {
-  return new RegExp(`^${escapeRegex(name)}(?:/.*)?$`);
-}
-
-/** Normalize user string/regex arrays to regex array (strings become package-deep regex). */
-function toRegexes(list: StringOrRegExp[]): RegExp[] {
-  return list.map(x => (typeof x === 'string' ? pkgToRegex(x) : x));
-}
-
-/** Try to extract the npm package name from an absolute path inside node_modules. */
-function pkgNameFromNodeModulesPath(id: string): string | null {
-  // Normalize path separators
-  const norm = id.split(/[\\/]+/);
-  const nmIndex = norm.lastIndexOf('node_modules');
-  if (nmIndex === -1) return null;
-  const first = norm[nmIndex + 1];
-  if (!first) return null;
-  // Scoped packages: @scope/name
-  if (first.startsWith('@')) {
-    const second = norm[nmIndex + 2];
-    if (!second) return null;
-    return `${first}/${second}`;
-  }
-  return first;
-}
-
-function buildExternalMatcher(opts: UserOptions): (id: string) => boolean {
-  if (!existsSync(opts.useFile)) {
-    throw new Error(`[externalize-deps] useFile not found: ${opts.useFile}`);
-  }
-  const pkgJson = JSON.parse(readFileSync(opts.useFile, 'utf8'));
-
-  const detected = new Set<RegExp>();
-  const addFrom = (obj?: Record<string, string>): void => {
-    Object.keys(obj ?? {}).forEach(dep => detected.add(pkgToRegex(dep)));
+/**
+ * Returns a Vite plugin to exclude dependencies from the bundle.
+ *
+ * @example
+ *
+ * ```ts
+ * // vite.config.ts
+ * import { defineConfig } from 'vite'
+ * import { externalizeDeps } from 'vite-plugin-externalize-deps'
+ *
+ * export default defineConfig({
+ *   plugins: [
+ *     externalizeDeps({
+ *       deps: true,
+ *       devDeps: false,
+ *       except: [
+ *         // Match exact values with strings.
+ *         '@some/obscure/dependency',
+ *         // Or match patterns with regular expressions.
+ *         /^@some\/obscure(?:\/.+)?$/,
+ *       ],
+ *       include: [
+ *         // Match exact values with strings.
+ *         '@some/obscure/dependency',
+ *         // Or match patterns with regular expressions.
+ *         /^@some\/obscure(?:\/.+)?$/,
+ *       ],
+ *       nodeBuiltins: true,
+ *       optionalDeps: true,
+ *       peerDeps: true,
+ *       useFile: join(process.cwd(), 'package.json'),
+ *     }),
+ *   ],
+ * })
+ * ```
+ */
+export const externalizeDeps = (options: Partial<UserOptions> = {}): Plugin => {
+  const optionsResolved: UserOptions = {
+    deps: true,
+    devDeps: false,
+    except: [],
+    include: [],
+    nodeBuiltins: true,
+    optionalDeps: true,
+    peerDeps: true,
+    useFile: join(process.cwd(), 'package.json'),
+    // User options take priority.
+    ...options,
   };
-
-  if (opts.deps) addFrom(pkgJson.dependencies);
-  if (opts.devDeps) addFrom(pkgJson.devDependencies);
-  if (opts.optionalDeps) addFrom(pkgJson.optionalDependencies);
-  if (opts.peerDeps) addFrom(pkgJson.peerDependencies);
-
-  if (opts.nodeBuiltins) {
-    for (const m of builtinModules) {
-      detected.add(new RegExp(`^(?:node:)?${escapeRegex(m)}$`));
-    }
-  }
-
-  const include = toRegexes(opts.include);
-  const except = toRegexes(opts.except);
-
-  // Merge lists; turn into one big alternation regex for speed
-  const all = [...detected, ...include];
-
-  const bigAlternation = all.length ? new RegExp(`(?:${all.map(r => r.source).join('|')})`) : null;
-
-  const isExcept = (id: string): boolean => except.some(re => re.test(id));
-  const isExternalBare = (id: string): boolean => (bigAlternation ? bigAlternation.test(id) : false);
-
-  const cache = new Map<string, boolean>();
-
-  const predicate = (rawId: string): boolean => {
-    const cached = cache.get(rawId);
-    if (cached !== undefined) return cached;
-
-    // never externalize styles
-    if (/\.(css|scss|sass|less|styl)$/i.test(rawId)) {
-      cache.set(rawId, false);
-      return false;
-    }
-    // never externalize virtual/url/query imports
-    if (rawId.startsWith('\0') || rawId.startsWith('virtual:') || rawId.startsWith('data:') || rawId.startsWith('http')) {
-      cache.set(rawId, false);
-      return false;
-    }
-    // If the specifier has query/hash, keep it internal
-    if (rawId.includes('?') || rawId.includes('#')) {
-      cache.set(rawId, false);
-      return false;
-    }
-
-    // bare id check (react, @scope/pkg, lodash/fp)
-    if (!isExcept(rawId) && isExternalBare(rawId)) {
-      cache.set(rawId, true);
-      return true;
-    }
-
-    // absolute/relative resolved into node_modules
-    const pkgFromPath = pkgNameFromNodeModulesPath(rawId);
-    if (pkgFromPath) {
-      const matched = !isExcept(pkgFromPath) && isExternalBare(pkgFromPath);
-      cache.set(rawId, matched);
-      return matched;
-    }
-
-    cache.set(rawId, false);
-    return false;
-  };
-
-  return predicate;
-}
-
-export function externalizeDeps(userOptions: Partial<UserOptions> = {}): Plugin {
-  const opts: UserOptions = { ...DEFAULTS, ...userOptions };
-  let external!: (id: string) => boolean;
 
   return {
-    name: 'externalize-deps-internal',
-    apply: 'build',
-    enforce: 'pre',
-    config() {
-      external = buildExternalMatcher(opts);
-      const rollup = { external };
+    name: 'vite-plugin-externalize-deps',
+    config: (_config, _env) => {
+      if (!existsSync(optionsResolved.useFile)) {
+        throw new Error(`[vite-plugin-externalize-deps] The file specified for useFile (${optionsResolved.useFile}) does not exist.`);
+      }
+
+      const externalDeps = new Set<RegExp>();
+      const {
+        dependencies = {},
+        devDependencies = {},
+        optionalDependencies = {},
+        peerDependencies = {},
+      } = parseFile(optionsResolved.useFile);
+
+      if (optionsResolved.deps) {
+        Object.keys(dependencies).forEach(dep => {
+          const depMatcher = new RegExp(`^${dep}(?:/.+)?$`);
+
+          externalDeps.add(depMatcher);
+        });
+      }
+
+      if (optionsResolved.devDeps) {
+        Object.keys(devDependencies).forEach(dep => {
+          const depMatcher = new RegExp(`^${dep}(?:/.+)?$`);
+
+          externalDeps.add(depMatcher);
+        });
+      }
+
+      if (optionsResolved.nodeBuiltins) {
+        builtinModules.forEach(builtinModule => {
+          const builtinMatcher = new RegExp(`^(?:node:)?${builtinModule}$`);
+
+          externalDeps.add(builtinMatcher);
+        });
+      }
+
+      if (optionsResolved.optionalDeps) {
+        Object.keys(optionalDependencies).forEach(dep => {
+          const depMatcher = new RegExp(`^${dep}(?:/.+)?$`);
+
+          externalDeps.add(depMatcher);
+        });
+      }
+
+      if (optionsResolved.peerDeps) {
+        Object.keys(peerDependencies).forEach(dep => {
+          const depMatcher = new RegExp(`^${dep}(?:/.+)?$`);
+
+          externalDeps.add(depMatcher);
+        });
+      }
+
+      const depMatchers = Array.from(externalDeps);
+
+      const isException = (id: string) => {
+        return optionsResolved.except.some(exception => {
+          if (typeof exception === 'string') {
+            return exception === id;
+          }
+
+          return exception.test(id);
+        });
+      };
+
+      const isIncluded = (id: string) => {
+        return optionsResolved.include.some(included => {
+          if (typeof included === 'string') {
+            return included === id;
+          }
+
+          return included.test(id);
+        });
+      };
+
       return {
-        build: { rollupOptions: rollup },
-        ...(opts.applyToWorkers ? { worker: { rollupOptions: rollup } } : {}),
+        build: {
+          rollupOptions: {
+            external: id => {
+              if (isException(id)) {
+                return false;
+              }
+
+              if (isIncluded(id)) {
+                return true;
+              }
+
+              return depMatchers.some(depMatcher => depMatcher.test(id));
+            },
+          },
+        },
       };
     },
   };
-}
+};
