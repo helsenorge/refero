@@ -3,7 +3,7 @@ import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { WorkerResponse } from './fhir-path-worker';
 import { WorkaroundWorker } from './WorkaroundWorker';
 
-import { AnswerPad } from '@/util/FhirPathExtensions';
+import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
 
 interface QueuedTask {
   questionnaire: Questionnaire;
@@ -17,6 +17,14 @@ let fhirPathWorker: Worker | null = null;
 let isWorkerBusy = false;
 const taskQueue: QueuedTask[] = [];
 let currentTask: QueuedTask | null = null;
+let workerDisabled = false;
+
+function computeOnMainThread(qr: QuestionnaireResponse, q: Questionnaire): { fhirScores: AnswerPad } {
+  const fhirPathUpdater = new FhirPathExtensions(q);
+  const updatedResponse = fhirPathUpdater.evaluateAllExpressions(qr);
+  const fhirScores = fhirPathUpdater.calculateFhirScore(updatedResponse);
+  return { fhirScores };
+}
 
 function processQueue(): void {
   if (isWorkerBusy || taskQueue.length === 0) {
@@ -26,7 +34,31 @@ function processQueue(): void {
   isWorkerBusy = true;
   currentTask = taskQueue.shift()!;
 
-  getWorker().postMessage({
+  if (workerDisabled) {
+    try {
+      const result = computeOnMainThread(currentTask.questionnaireResponse, currentTask.questionnaire);
+      currentTask.resolve(result);
+    } catch (e) {
+      currentTask.reject(e);
+    } finally {
+      finishCurrentTaskAndContinue();
+    }
+    return;
+  }
+  const w = getWorkerOrNull();
+  if (!w) {
+    workerDisabled = true;
+    try {
+      const result = computeOnMainThread(currentTask.questionnaireResponse, currentTask.questionnaire);
+      currentTask.resolve(result);
+    } catch (e) {
+      currentTask.reject(e);
+    } finally {
+      finishCurrentTaskAndContinue();
+    }
+    return;
+  }
+  w.postMessage({
     questionnaire: currentTask.questionnaire,
     questionnaireResponse: currentTask.questionnaireResponse,
   });
@@ -38,41 +70,64 @@ function finishCurrentTaskAndContinue(): void {
   processQueue();
 }
 
-function createWorker(): Worker {
-  const worker = WorkaroundWorker({ name: 'fhir-path.worker' });
+function createWorkerOrDisable(): Worker | null {
+  try {
+    const worker = WorkaroundWorker({ name: 'fhir-path.worker' });
 
-  worker.onmessage = (event: MessageEvent<WorkerResponse>): void => {
-    if (!currentTask) return;
+    worker.onmessage = (event: MessageEvent<WorkerResponse>): void => {
+      if (!currentTask) return;
 
-    try {
-      const { type, payload } = event.data;
-      if (type === 'success') {
-        currentTask.resolve(payload);
-      } else {
-        const error = new Error(payload.message ?? 'An unknown worker error occurred');
-        error.stack = payload.stack;
-        currentTask.reject(error);
+      try {
+        const { type, payload } = event.data;
+        if (type === 'success') {
+          currentTask.resolve(payload);
+        } else {
+          const error = new Error(payload.message ?? 'An unknown worker error occurred');
+          error.stack = payload.stack;
+          workerDisabled = true;
+          currentTask.reject(error);
+        }
+      } catch (e) {
+        workerDisabled = true;
+        currentTask.reject(e);
+      } finally {
+        finishCurrentTaskAndContinue();
       }
-    } catch (e) {
-      currentTask.reject(e);
-    } finally {
-      finishCurrentTaskAndContinue();
-    }
-  };
+    };
 
-  worker.onerror = (event: ErrorEvent): void => {
-    if (!currentTask) return;
+    worker.onerror = (event: ErrorEvent): void => {
+      workerDisabled = true;
 
-    currentTask.reject(event.error || event);
-    finishCurrentTaskAndContinue();
-  };
+      if (currentTask) {
+        try {
+          const result = computeOnMainThread(currentTask.questionnaireResponse, currentTask.questionnaire);
+          currentTask.resolve(result);
+        } catch (e) {
+          currentTask.reject(event.error || e || event);
+        } finally {
+          finishCurrentTaskAndContinue();
+        }
+      }
 
-  return worker;
+      try {
+        worker.terminate();
+      } catch {
+        /* ignore */
+      }
+      fhirPathWorker = null;
+    };
+
+    return worker;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_e) {
+    workerDisabled = true;
+    return null;
+  }
 }
-
-function getWorker(): Worker {
+function getWorkerOrNull(): Worker | null {
+  if (workerDisabled) return null;
   if (!fhirPathWorker) {
-    fhirPathWorker = createWorker();
+    fhirPathWorker = createWorkerOrDisable();
   }
   return fhirPathWorker;
 }

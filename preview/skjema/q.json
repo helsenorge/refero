@@ -1,54 +1,3616 @@
 {
+  "title": "Fhirpath test",
   "resourceType": "Questionnaire",
-  "id": "21",
-  "version": "0.1",
-  "name": "PHQ-9",
-  "title": "Testskjema for kalkulering av fhirpath",
+  "language": "nb-NO",
+  "name": "Fhirpath_Test",
   "status": "draft",
-  "date": "2018-02-02",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+  },
+  "contact": [{ "name": "http://www.nhn.no" }],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "7d2ba6bf-ab40-4fe7-810d-a7e67fd177b5",
+  "url": "Questionnaire/7d2ba6bf-ab40-4fe7-810d-a7e67fd177b5",
   "item": [
     {
-      "linkId": "1",
-      "text": "Decimal",
-      "type": "decimal"
-    },
-    {
-      "linkId": "2",
-      "text": "Integer",
-      "type": "integer"
-    },
-    {
-      "linkId": "3",
-      "text": "Quantity",
-      "type": "quantity",
-      "extension": [
+      "linkId": "7c1ae349-ff6b-4624-84d9-bc5e727cfe96",
+      "type": "group",
+      "text": "group\n",
+      "item": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-          "valueCoding": {
-            "code": "kg",
-            "display": "kg"
-          }
-        }
-      ]
-    },
-    {
-      "extension": [
-        {
-          "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
-          "valueString": "QuestionnaireResponse.item.where(linkId='1').answer.value"
+          "linkId": "81b55262-777e-4c1c-8062-1673af3acdc9",
+          "type": "group",
+          "text": "strings",
+          "item": [
+            { "linkId": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "type": "string", "text": "Input", "required": false },
+            {
+              "linkId": "be3024aa-f01f-4a70-953f-df69ebd868ae",
+              "type": "group",
+              "text": "Output\n",
+              "item": [
+                {
+                  "linkId": "a4c36eb6-55b9-4350-ff35-cc26cbac380d",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "2e1f6559-ad81-436c-9246-0a5cb8174168",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "4cbcdf29-4af0-46b4-818f-b9b67ba8435f",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "335ae032-8234-411b-e5f7-852129c806ec",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "afbb2869-cb80-4e3a-b116-f490309efee3",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "cfa65bb4-08c5-438c-960f-f12bd66ece8c",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "1f9430f8-fcfd-4956-8a9f-7313b384954e",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "be22917a-fd4d-431a-a308-d0511fe78a24",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "55c609a8-5765-4833-dcfd-da022ee7159d",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "d76869d5-f9d1-4c4a-ecf3-ff1e2c35cd54",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "d01ef78d-fea3-4a82-e12a-5966827b2f2d",
+              "type": "group",
+              "text": "Output\n",
+              "item": [
+                {
+                  "linkId": "b2b85758-af12-4c86-eea4-5139f751bcfb",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "84396aef-0979-4fd4-85b7-eacbe4f06c22",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "4e085756-1bfa-4b17-88a6-f6df1e012682",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e3a460e2-7fef-4578-817c-8a5582e0c9ae",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "373a4b63-59dd-47b4-97a8-3429d1db0de3",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "59bb9900-0316-4fab-8c0e-75734f5c2257",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "25b91f78-b3d1-4cc2-a21c-c7e191100d93",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "4d268886-7d9b-49ec-b36f-8792ac0a8976",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "cfa4cd46-e9b7-4bb1-b587-f237c1c03176",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e9ce855c-66d7-4113-881b-587420939556",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "dd3ab11b-3f73-454c-81c7-8af81235272f",
+              "type": "group",
+              "text": "Output\n",
+              "item": [
+                {
+                  "linkId": "7c930878-01f6-4d3d-d7d4-adb01c33a66f",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "8d6e1ae5-b3cc-416b-8400-445e6b6cd234",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "99621cc2-8a5d-4f9b-c206-f290a7a069e3",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "78afe65c-fc2e-403b-990d-c65e3c078cfe",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "89165d0b-6782-49d4-8a62-5a5dc09492af",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "51e7bca9-12ee-4019-988e-46ee01aba370",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "fec74a4e-5119-46bc-858d-7369c80af3a0",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "9d24c8d5-4944-44e9-89ef-2727667fa0ee",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "20872dfc-dfe4-4226-cbde-a27ce1f09bcc",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "6ecd5416-6060-4955-80e1-72d31c1a9602",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "e9ea55cd-d1e2-4d20-8184-32e24b853378",
+              "type": "group",
+              "text": "Output\n",
+              "item": [
+                {
+                  "linkId": "f9539b3d-43cd-4c60-aa40-b720a5f28548",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "41236f56-659d-4519-bd46-8d662b5f251a",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c53e766a-80a7-4715-b8fa-33f0bb3f370c",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "b31f9f6f-f726-4140-88e8-75045a52fffb",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "2e5e6294-027a-401d-8676-274e050014a7",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "9005dec6-b7df-45b5-b762-d18f073c84a0",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e5d2c0d4-132b-496f-8fd4-6f3eea58962c",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "3b61c561-acfe-4589-973c-ddf1479e3371",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "9c65680a-43d3-4ae0-861d-f225dbe4533b",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "4c66c525-5b36-47ea-e62e-df4daff39126",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "8f445e20-56e8-4175-803f-829c05b07bdd",
+              "type": "group",
+              "text": "Output\n",
+              "item": [
+                {
+                  "linkId": "95719bcd-3908-49e4-80c4-c25168b4094d",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "484e2354-a3eb-4db2-871d-62cb88fc5924",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "915a1d60-b998-4661-8713-99cc925dcb57",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "5be8936a-ac89-4cb9-97c4-f7469943d27d",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e2c07deb-2952-4b6c-993a-6a318c374dab",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "0fc6bc5d-9aaf-4be6-8ae2-3d53a86bbb00",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "2977aa59-78ca-44f1-84de-21752485edc7",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "a4ea1a4d-49a7-4a43-8f3e-d02669e7ab77",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c02ac849-2ca2-45f7-8d1f-395283937284",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                },
+                {
+                  "linkId": "1fd1e41e-fd68-4848-9eca-e8f8438603aa",
+                  "type": "string",
+                  "text": "Copy text",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='5fc2b9b5-857f-407a-8766-c064ddd8bc13').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "5fc2b9b5-857f-407a-8766-c064ddd8bc13", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            }
+          ],
+          "required": false
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-          "valueCoding": {
-            "system": "http://ehelse.no/Score",
-            "code": "score",
-            "display": "score"
-          }
+          "linkId": "dfbcb423-07d4-4a03-e6da-a8f3478eabf1",
+          "type": "group",
+          "text": "Numbers",
+          "item": [
+            { "linkId": "9fb58632-4785-4227-be35-39a2e2f0c957", "type": "integer", "text": "Input number", "required": false },
+            {
+              "linkId": "79c34c80-7272-4402-b3c8-01d0c344469a",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "c2830a1b-434b-492d-8804-0c68362dc889",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "79831510-d051-4040-82dc-9ce77611b64a",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "31631bc6-42df-48dc-9ef3-1296dbb2f09c",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "77ceba0e-5bed-47fd-86d1-fad39876bf0e",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "afec8fe8-5779-4f30-e265-b60857b726e2",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "360019a2-7516-46d2-8ae5-eeb0b2d840d7",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "f728a851-ba0a-44eb-864c-8d7dfc767d2d",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c27eea12-d27c-4c66-8c91-e7f95df94ad9",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e7581737-8dda-49d2-8894-8eb591ff3c05",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "1795bde5-3621-43c9-fa26-2418572c50ec",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "f4dd02e1-a1f4-4209-9763-60bc682850ac",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "c28d4dd3-1d31-4f2d-91ce-fd26cfaa9095",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "cddc7828-95a2-4f57-c9f8-c5ec892bacf0",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "6bc50fe6-1bd8-456a-8732-612d19df99ee",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "eba273fe-e6fb-419b-82a3-b159fbcc089f",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "edbf4683-db6b-404d-cdab-8b362bb04aa6",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c7bb5140-72b8-4f98-ce2a-4ea4479f0751",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "6c203e58-60ab-4284-8465-b31ccbeced6e",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "66177abe-0683-4662-8524-86ee21a14fef",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "4f32d60e-2009-4953-e075-953f9ebf5ee9",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "16189d99-5849-4ca3-8724-8148917490f0",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "dd4d14b0-9861-4e7d-9114-2325ab929e91",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "08231716-5daf-443e-ecbe-610b5ef4ed21",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "e6d3197e-a0df-4fb6-e984-4645e0db0105",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "8da6ad78-8587-4d97-806f-fd1cea100c7a",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "14a6fea4-c5bd-482b-a4dd-8cbaafd713c3",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e9cf2b65-9d17-4535-e5a5-44ff474ad71c",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "74b1fb0f-cbbc-4a6c-d1ca-ba4ff501809a",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "89fde132-2dc7-4941-d326-1ce024a9cb74",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c804c295-e7c4-4b9a-af7e-701d7e8fea78",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "f10b9af7-a456-4e79-852d-eef114f27fc3",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "229c2708-4127-4d99-bf66-f43d6e4f6309",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e3b28558-4602-4575-8d94-d3ceebfe7791",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "6f10b477-9202-4112-8765-8c17f3a7c0d4",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "3c468753-e78e-4ae9-a9a3-5e0742ac9259",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "c709b675-73fd-4d15-8f8a-7199682a0a14",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "cce555cd-51ae-48b3-a72f-bcae8f38cc0b",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "dc1f86d5-88b9-4e8f-8f3d-2a0aa9d8fbc2",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c6b165e4-b9fb-41e0-f37c-d12ab2f6d9bc",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "172f6add-e139-4158-f287-b3eeebc60760",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "d5103111-7c2c-4e71-83bd-38c6121216c2",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "6913d097-5bce-4ba6-8650-4f935385d75e",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c36214f3-2d6c-4793-b960-f3f46165b214",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "87d6d1ea-6d08-45f2-e370-9a0bea3f90ae",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "3403c809-a318-439c-892a-6f8c869bda55",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "260c58b9-77a8-47ad-c32d-3cefa9617281",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e06abcbe-be5a-4edc-879b-eb26fe68eb11",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "6e5e61d5-fb44-42ae-e3ae-39a3f86c3b14",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "fdf944e6-d300-49d8-8c5c-3230d94bdcc3",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "b72a74ec-2973-4485-8b52-eee52b8e896b",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "8ff94012-c3e3-44b5-83e9-be5e1fcf839b",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "64a4809a-6a8b-45e1-89b4-7b35808e2dbc",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "d65f4c0c-efe1-469c-9f61-f6479e76b2d4",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "bc0a8bef-d8e3-4cfa-ab72-b3f4a03077be",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "9c2d7b57-b0dc-4a94-821c-8f0df3da27e4",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c2c086f4-3af5-46c1-8e47-9a854a5a68b6",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "5738297f-fe89-4010-8b1d-3d3ecc59b627",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "3296f56e-5d1b-42ae-ec0c-abc2e92cc105",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "71b06ad1-34d6-4167-fbf0-11494e572527",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "6ee2ec2d-3994-4dd5-8696-1c12f4c5250b",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "cb79e02e-cc17-43d3-8247-cf68ab8b53db",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e1e6668a-8cc7-430b-83bb-aa90b32c0382",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "3158147d-4a40-4730-f615-a7c57dbf823b",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "f95eba7d-994a-49cf-fb82-851a7f5ca1f7",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c34a035d-8a68-4158-fa14-8f50220e6574",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "72da1d9c-2d41-4fcc-8765-9bf116265085",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "ff53b16f-4866-4429-800d-94248371e493",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "69c921c7-75f1-4351-8363-a882f7225938",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "17330143-b95c-420a-8e3f-b4083eecb3a9",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "29471424-85a8-4fbc-8faa-4ac8195a5290",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "a0611395-3595-43ab-8512-6fa8762ff025",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "9281aa07-deef-4bae-8b52-1917d2b67585",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "01a5b44b-b87e-4f88-9eb5-e581a559ddb2",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "d656e166-0064-431e-e2ae-1176a73d23f7",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "d9b9da1c-360c-44c8-81c1-442a27eeee3b",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "76049888-5dff-40e0-8731-08832cff2b1d",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "b9dd5671-c7bc-484a-bab9-cb8a7b56d5a3",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "3acac8dd-dbec-42eb-86ea-4bb3b8e2779b",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "961bb1d9-3b1c-45f5-8002-25900b62499d",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "3922647a-bd36-475a-c428-7d31288a6a87",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "838a43bd-749c-4d2a-ec12-0476bed299d3",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "c814e2b2-f522-4128-8437-d1f228f58eb9",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "a8233acf-9e77-4201-8d94-febbf83cb9fc",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "20d51773-4631-4bea-80b3-27f2eb04f3a1",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "526f0f39-00b2-44e2-8179-6a95835baa7e",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "ce9595d7-e890-4144-99e2-bc3c64841391",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "006255a7-9ffa-4a86-934e-cf4172a5d613",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "8addf2a6-0a15-43a8-bf4d-89260b6eee76",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "962d4bfd-d611-4596-85f3-6d29e4412e90",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "2b0c2c51-5e47-4749-8fa0-a83899558485",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "d56ec9bd-e998-4d7e-88a6-cf4bd1aad229",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "03b3c635-95af-445e-8a2a-69dacd325a96",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e7a43561-85ac-4672-e8e2-379b51ef72d5",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "71d0c3d9-ace3-474a-caaf-e032bc45fbe3",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "970dea88-b311-41ee-8407-e9025223c7f4",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "6c32669d-0fec-4f1f-8391-df0950058745",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "bfb96f69-36b5-4624-81e2-1a051495d833",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "0c86660e-e70b-44f5-ad84-5b93e39d8590",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "04e040f2-9a32-4fd5-83ff-bac9d4793dd9",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "12e7629f-c091-4a3e-e64e-97300d946f74",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "19519754-f573-470e-863c-ab3c796fa63c",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "aabafed4-e736-4d90-b0cf-20a004501127",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "b3171088-99d3-49cc-8e5d-dfd2aed1199b",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "61c11fce-eafe-48b6-8dcc-d2a21690e08c",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "b0082d9d-3d5d-4d96-8a1b-c11532a9c417",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e097b522-12ed-4a55-af22-d7d00a29e5f3",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "8d315d81-63fe-4910-8a1b-e97e0d8634a6",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "654daa30-9535-4e54-a5f5-c8b4196f4412",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "530de433-ebd7-4b31-8c3b-e05d84cea860",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "48704dca-648f-4c5b-add2-80fd22b92217",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "2ba40874-5794-473c-80c6-77a6f4dff247",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e449dc18-3500-416d-8724-b906a25be226",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "94de29b5-d2c2-402c-b173-e50c67122e8f",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "7c458092-21cf-49df-9698-af26542a9155",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "66136feb-c284-44f8-8ec7-590ec2be9a12",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "4cbeae1d-9e7b-4b6a-a235-5c08b95f37dd",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "10f6045c-b293-4b25-fe83-2658e9524456",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "da7385d2-7428-4759-d377-4f15d0b6b403",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "f47ffda0-e32c-4e4b-e6e8-7bf40968ba13",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            },
+            {
+              "linkId": "81b52d50-454f-4537-d2b7-a4d09398090b",
+              "type": "group",
+              "text": "Output number",
+              "item": [
+                {
+                  "linkId": "7e2b83d7-9acb-43e6-892a-5beec0588931",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "a3c069ff-5eaa-421d-af9c-7c9054bef153",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "4ff83e46-06f7-45cf-8b9a-b66e31a31a25",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "cbfe1547-17e6-4ad8-8f69-29e55a5c6e24",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "9c83a143-3b28-455c-8f99-590e0dde6e06",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "2a831d62-cc1d-4310-e16b-84b34b719e7b",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "a6878e16-281f-4cc8-9e97-1a6478d6e2ae",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "d54d2ce9-aff0-4039-812a-6cbf84de8ce1",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "1d95f496-f1af-4e40-8a47-ee1ff03a09e0",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "15b0dbfe-36b8-49b7-8141-0260fe5ebd5b",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                },
+                {
+                  "linkId": "e30688a5-1320-4b08-8ae8-3b286a92e6b7",
+                  "type": "integer",
+                  "text": "Input number",
+                  "required": false,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='9fb58632-4785-4227-be35-39a2e2f0c957').answer.value"
+                    }
+                  ],
+                  "readOnly": true,
+                  "enableWhen": [{ "answerBoolean": true, "question": "9fb58632-4785-4227-be35-39a2e2f0c957", "operator": "exists" }]
+                }
+              ],
+              "required": false
+            }
+          ],
+          "required": false
         }
       ],
-      "linkId": "4",
-      "text": "Fhir sum element",
-      "type": "quantity"
+      "required": false
     }
   ]
 }
