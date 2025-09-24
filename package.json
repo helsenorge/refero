@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "20.1.0",
+  "version": "20.1.1-beta01",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
@@ -37,7 +37,7 @@
   },
   "scripts": {
     "lint": "eslint src/**/* --fix",
-    "test": "vitest",
+    "test": "vitest --silent",
     "test:watch": "vitest dev",
     "test:ui": "vitest --ui",
     "test:preview": "vite preview --outDir html",
@@ -54,11 +54,6 @@
     "*.css",
     "*.scss"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
   "peerDependencies": {
     "@helsenorge/autosuggest": "^36.0.0",
     "@helsenorge/datepicker": "^12.0.0",
@@ -119,10 +114,17 @@
   "dependencies": {
     "@helsenorge/core-utils": "^36.0.0",
     "@helsenorge/eslint-config": "^36.0.0",
+    "@vitest/web-worker": "^3.2.4",
+    "classnames": "^2.3.2",
+    "date-fns": "^4.1.0",
     "fhirpath": "^4.0.0",
     "marked": "^14.0.0",
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",
     "uuid": "^13.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "eslint --fix",
+    "*.{js,jsx,ts,tsx,css,scss,md,json}": "prettier --write"
   }
 }
