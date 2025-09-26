@@ -34,12 +34,8 @@ function isStructuredCloneable(o: unknown): { ok: boolean; error?: unknown } {
   }
 }
 
-// ----------------------- Shared utility types -------------------------------
-
 type Awaitable<T> = T | Promise<T>;
 type AwaitedResult<M extends keyof Methods> = Awaited<Methods[M]['result']>;
-
-// ------------------------ Pending (typed) -----------------------------------
 
 type Pending<M extends keyof Methods = keyof Methods> = {
   id: number;
@@ -48,7 +44,6 @@ type Pending<M extends keyof Methods = keyof Methods> = {
   resolve: (v: AwaitedResult<M>) => void;
   reject: (e: unknown) => void;
   timeoutId?: ReturnType<typeof setTimeout>;
-  /** debug */
   enqueuedAt: number;
   startedAt?: number;
 };
