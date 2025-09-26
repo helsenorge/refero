@@ -680,32 +680,26 @@ function getResponseItemAndPathWithLinkIdTraverse(
 }
 
 export function getResponseItemWithPath(path: Path[], formData: FormData): QuestionnaireResponseItem | undefined {
-  if (!path || path.length === 0) {
-    return undefined;
-  }
-  if (!formData.Content || !formData.Content.item) {
-    return undefined;
-  }
+  if (!path || path.length === 0) return undefined;
+  if (!formData.Content || !formData.Content.item) return undefined;
+
   const rootItems: QuestionnaireResponseItem[] | undefined = getRootQuestionnaireResponseItemFromData(path[0].linkId, formData);
+  if (!rootItems || rootItems.length === 0) return undefined;
 
-  if (!rootItems || rootItems.length === 0) {
-    return undefined;
-  }
+  let item: QuestionnaireResponseItem = rootItems[path[0].index ?? 0];
 
-  let item: QuestionnaireResponseItem = rootItems[path[0].index || 0];
   for (let i = 1; i < path.length; i++) {
     let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item.item);
 
     if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
-      const itemsFromAnswer = item.answer && item.answer.map(a => a.item).reduce((a, b) => (a || []).concat(b || []));
-
+      const itemsFromAnswer = item.answer && item.answer.flatMap(a => a.item ?? []);
       itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, itemsFromAnswer);
-      if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
-        break;
-      }
+      if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) break;
     }
-    item = itemsWithLinkIdFromPath[path[i].index || 0];
+
+    item = itemsWithLinkIdFromPath[path[i].index ?? 0];
   }
+
   return item;
 }
 
@@ -751,8 +745,6 @@ export function getQuestionnaireDefinitionItemWithLinkid(
       return item;
     }
   }
-
-  // linkId not found in items, check the answers for items
 }
 
 function getQuestionnaireItemWithIdFromArray(linkId: string, items: QuestionnaireItem[] | undefined): QuestionnaireItem[] | undefined {

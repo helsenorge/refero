@@ -112,7 +112,7 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
               types: './types/index.d.ts',
             },
             './worker': {
-              import: './fhir-path.worker.js',
+              import: './fhirpath-rpc.worker.js',
             },
           },
         }),

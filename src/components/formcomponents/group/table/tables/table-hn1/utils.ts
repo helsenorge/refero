@@ -6,14 +6,14 @@ import { getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfString
 
 import ItemType from '@/constants/itemType';
 
-export const getTableHN1bodyObject = (
+export const getTableHN1bodyObject = async (
   items: QuestionnaireItemWithAnswers[],
   questionnaireResponse?: QuestionnaireResponse | null
-): ITableH1 => {
+): Promise<ITableH1> => {
   if (!questionnaireResponse || items.length === 0) {
     return [];
   }
-  const answerItems = getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
+  const answerItems = await getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
   const processItems = (items: QuestionnaireResponseItem[]): ITableH1Row[] => {
     return items.reduce((acc: ITableH1Row[], item) => {
       const row = transformItemToHN1Row(item);

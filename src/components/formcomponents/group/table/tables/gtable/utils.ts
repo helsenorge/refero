@@ -65,12 +65,12 @@ export const createTableHeader = (items: QuestionnaireItem[]): IGTableHeaderItem
     value: item.text || '',
   }));
 
-export const getGtablebodyObject = (
+export const getGtablebodyObject = async (
   items: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse | null,
   sortDir?: SortDirection,
   linkIdToSortBy?: string
-): IGTable => {
+): Promise<IGTable> => {
   if (!questionnaireResponse || items.length === 0) {
     return {
       id: uuid.v4(),
@@ -78,7 +78,7 @@ export const getGtablebodyObject = (
       rows: [],
     };
   }
-  const answerItems = getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
+  const answerItems = await getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
   const table: IGTable = {
     id: uuid.v4(),
     headerRow: createTableHeader(answerItems),

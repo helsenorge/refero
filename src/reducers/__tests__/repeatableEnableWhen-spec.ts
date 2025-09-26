@@ -7,7 +7,6 @@ import enableWhenDataModel from './__data__/repeatableEnableWhen';
 import { getResponseItem, clickRepeat, pathify, clickCheckbox, enterText } from './utils';
 import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
 
-
 describe('update enable when action', () => {
   let newState: Form;
   let definitionItems: QuestionnaireItem[];
@@ -21,24 +20,24 @@ describe('update enable when action', () => {
     definitionItems = dItems;
   });
 
-  it('should remove added repeats and clear answers when collapsing enableWhens', () => {
+  it('should remove added repeats and clear answers when collapsing enableWhens', async () => {
     // add repeat item
     const qItem = getQuestionnaireDefinitionItem('8.1', definitionItems);
     const qrItem = getResponseItem('8.1', newState, [{ linkId: '8' }, { linkId: '8.1', index: 0 }]);
     if (!qItem || !qrItem) return fail();
-    newState = clickRepeat(newState, pathify('8'), qItem, [qrItem]);
+    newState = await clickRepeat(newState, pathify('8'), qItem, [qrItem]);
 
     // check first checkbox
-    newState = clickCheckbox(newState, pathify('8', '8.1^0', '8.1.1'), true);
+    newState = await clickCheckbox(newState, pathify('8', '8.1^0', '8.1.1'), true);
 
     // enter "hello"
-    newState = enterText(newState, pathify('8', '8.1^0', '8.1.2'), 'hello');
+    newState = await enterText(newState, pathify('8', '8.1^0', '8.1.2'), 'hello');
 
     // check second checkbox
-    newState = clickCheckbox(newState, pathify('8', '8.1^1', '8.1.1'), true);
+    newState = await clickCheckbox(newState, pathify('8', '8.1^1', '8.1.1'), true);
 
     // enter "world"
-    newState = enterText(newState, pathify('8', '8.1^1', '8.1.2'), 'world');
+    newState = await enterText(newState, pathify('8', '8.1^1', '8.1.2'), 'world');
 
     let r1 = getResponseItem('8.1.2', newState, pathify('8', '8.1^0', '8.1.2'));
     if (!r1) return fail();
@@ -50,7 +49,7 @@ describe('update enable when action', () => {
     expect(r2.answer).toMatchObject([{ valueString: 'world' }]);
 
     // uncheck first checkbox
-    newState = clickCheckbox(newState, pathify('8', '8.1^0', '8.1.1^0'), false);
+    newState = await clickCheckbox(newState, pathify('8', '8.1^0', '8.1.1^0'), false);
 
     r1 = getResponseItem('8.1.2', newState, pathify('8', '8.1^0', '8.1.2'));
     r2 = getResponseItem('8.1.2', newState, pathify('8', '8.1^1', '8.1.2'));
