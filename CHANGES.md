@@ -1,5 +1,9 @@
-## 20.1.2
+## 21.0.0-beta01
 
+- EnableWhen is now in a webworker and is called from a middleware, you need to get the middleware and add it to your store to make it work.
+- Added new rcp worker when we added more methods to the worker.
+- All fhirpath calculations in tables are now run in a webworker.
+- Added more tests for enableWhen
 - Updated major packages
   - Vite
   - fhirpath

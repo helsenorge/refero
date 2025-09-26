@@ -7,7 +7,6 @@ import enableWhenDataModel from './__data__/repeatsUnderEnableWhen';
 import { pathify, selectChoice, getResponseItem, enterText, clickRepeat } from './utils';
 import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 
-
 describe('update enable when action', () => {
   let newState: Form;
   let definitionItems: QuestionnaireItem[];
@@ -21,7 +20,7 @@ describe('update enable when action', () => {
     definitionItems = dItems;
   });
 
-  it('should remove added repeats and clear answers when collapsing enableWhens', () => {
+  it('should remove added repeats and clear answers when collapsing enableWhens', async () => {
     // select "Fra en eller flere avdelinger" (3)
     let choice = { code: '3', system: 'http://ehelse.no/JournalDeler' } as Coding;
     if (!newState.FormDefinition.Content) {
@@ -31,13 +30,13 @@ describe('update enable when action', () => {
     if (!defItem) {
       return fail();
     }
-    newState = selectChoice(newState, pathify('7', '7.1'), choice, defItem);
+    newState = await selectChoice(newState, pathify('7', '7.1'), choice, defItem);
 
     // add repeat item
     const item = getQuestionnaireDefinitionItem('7.1.2', definitionItems);
     if (!item) return fail();
 
-    newState = clickRepeat(newState, pathify('7', '7.1'), item, [{ linkId: '7.1.2' }]);
+    newState = await clickRepeat(newState, pathify('7', '7.1'), item, [{ linkId: '7.1.2' }]);
 
     let responseItem = getResponseItemWithPath(pathify('7', '7.1', '7.1.2^0'), newState.FormData);
     if (!responseItem) {
@@ -51,7 +50,7 @@ describe('update enable when action', () => {
     expect(responseItem).not.toBe(responseItem2);
 
     // enter "hello"
-    newState = enterText(newState, pathify('7', '7.1', '7.1.2^0'), 'hello');
+    newState = await enterText(newState, pathify('7', '7.1', '7.1.2^0'), 'hello');
 
     responseItem = getResponseItemWithPath(pathify('7', '7.1', '7.1.2^0'), newState.FormData);
     if (!responseItem) {
@@ -61,7 +60,7 @@ describe('update enable when action', () => {
     expect(responseItem.answer).toMatchObject([{ valueString: 'hello' }]);
 
     // enter "world"
-    newState = enterText(newState, pathify('7', '7.1', '7.1.2^1'), 'world');
+    newState = await enterText(newState, pathify('7', '7.1', '7.1.2^1'), 'world');
 
     responseItem = getResponseItemWithPath(pathify('7', '7.1', '7.1.2^0'), newState.FormData);
     if (!responseItem) {
@@ -83,7 +82,7 @@ describe('update enable when action', () => {
 
     // select "Fra alle innleggelser/konsultasjoner" (4)
     choice = { code: '4', system: 'http://ehelse.no/JournalDeler' } as Coding;
-    newState = selectChoice(newState, pathify('7', '7.1'), choice, { linkId: '7.1', type: 'choice' });
+    newState = await selectChoice(newState, pathify('7', '7.1'), choice, { linkId: '7.1', type: 'choice' });
 
     r1 = getResponseItem('7.1.2', newState, pathify('7', '7.1', '7.1.2^0'));
     r2 = getResponseItem('7.1.2', newState, pathify('7', '7.1', '7.1.2^1'));

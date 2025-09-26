@@ -74,16 +74,16 @@ export const getValueFromItemsToShow = (item: QuestionnaireItem | undefined, ite
   return columnText;
 };
 
-export const getTableHN2bodyObject = (
+export const getTableHN2bodyObject = async (
   items: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse | null,
   sortColumnIndex?: number,
   sortOrder?: SortDirection
-): ITableH2Row[] => {
+): Promise<ITableH2Row[]> => {
   if (!questionnaireResponse || items.length === 0) {
     return [];
   }
-  const itemsToShow = getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
+  const itemsToShow = await getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
   const structure = createTableStructure(items, itemsToShow);
   const tableWithRemovedEmptyRows = structure.filter(row => row.columns.some(column => column.text !== ''));
 

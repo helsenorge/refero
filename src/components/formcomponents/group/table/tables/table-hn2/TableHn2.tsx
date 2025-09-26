@@ -6,7 +6,7 @@ import { Table as HnTable, SortDirection, TableBody, TableCell, TableRow } from 
 
 import { ITableH2Row } from './interface';
 import TableHeadHn2 from './TableHeadHn2';
-import { getHeaderColumns, getTableHN2bodyObject , getIndexToSortBy } from './utils';
+import { getHeaderColumns, getTableHN2bodyObject, getIndexToSortBy } from './utils';
 import { transformCodingToSortDirection } from '../utils';
 
 interface Props {
@@ -19,10 +19,14 @@ const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): Re
   const tableHeader = getHeaderColumns(tableCodesCoding);
 
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
-  const [rows, setRows] = useState<ITableH2Row[]>(getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir));
+  const [rows, setRows] = useState<ITableH2Row[]>([]);
 
   useEffect(() => {
-    setRows(getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir));
+    const fetchRows = async (): Promise<void> => {
+      const rows = await getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir);
+      setRows(rows);
+    };
+    fetchRows();
   }, [sortDir, items, questionnaireResponse, sortIndex]);
 
   return rows.length ? (
