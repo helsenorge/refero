@@ -88,15 +88,15 @@ const processItem = (
   return [row, ...childRows];
 };
 
-export const createBodyRows = (
+export const createBodyRows = async (
   items: QuestionnaireItem[],
   responseItems: QuestionnaireResponse,
   needsExtraColumn: boolean,
   choiceValues?: Options[],
   system?: string,
   resource?: Resource[]
-): IStandardTableRow[] => {
-  const answers = getEnabledQuestionnaireItemsWithAnswers(items, responseItems);
+): Promise<IStandardTableRow[]> => {
+  const answers = await getEnabledQuestionnaireItemsWithAnswers(items, responseItems);
 
   return answers.flatMap((item, index) => processItem(item, index, needsExtraColumn, choiceValues, system, resource));
 };
@@ -142,13 +142,13 @@ export const createColumnsFromAnswers = (
   return columns;
 };
 
-export const getStandardTableObject = (
+export const getStandardTableObject = async (
   items: QuestionnaireItem[],
   responseItems?: QuestionnaireResponse | null,
   resource?: Resource[],
   SortDirection?: SortDirection,
   displayToSortBy?: string
-): IStandardTable => {
+): Promise<IStandardTable> => {
   if (!responseItems || items.length === 0) {
     return emptyTable();
   }
@@ -159,9 +159,9 @@ export const getStandardTableObject = (
   }
   const system = getSystemForItem(firstChoiceItem, resource);
   const choiceValues = getContainedOptions(firstChoiceItem, resource) || [];
-  const extraColumnNeeded = needsExtraColumn(items, responseItems);
+  const extraColumnNeeded = await needsExtraColumn(items, responseItems);
 
-  const rows = createBodyRows(items, responseItems, extraColumnNeeded, choiceValues, system, resource);
+  const rows = await createBodyRows(items, responseItems, extraColumnNeeded, choiceValues, system, resource);
   const header = createHeaderRow(choiceValues, extraColumnNeeded);
 
   if (displayToSortBy !== undefined && SortDirection) {
@@ -193,9 +193,9 @@ export const findFirstChoiceItem = (items: QuestionnaireItem[]): QuestionnaireIt
   return undefined;
 };
 
-export const needsExtraColumn = (items: QuestionnaireItem[], responseItems: QuestionnaireResponse): boolean => {
-  const answers = getEnabledQuestionnaireItemsWithAnswers(items, responseItems) || [];
-  return answers.some(item => {
+export const needsExtraColumn = async (items: QuestionnaireItem[], responseItems: QuestionnaireResponse): Promise<boolean> => {
+  const answers = await getEnabledQuestionnaireItemsWithAnswers(items, responseItems);
+  return (answers || []).some(item => {
     return (
       (item?.item?.length && item.item.length > 0) ||
       (item?.type === ItemType.OPENCHOICE && item?.answer?.some(answer => answer.valueCoding?.code === 'other'))

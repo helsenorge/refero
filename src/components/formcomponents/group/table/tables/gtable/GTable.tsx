@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
@@ -7,6 +7,7 @@ import { TableBody, Table as HnTable, TableRow, TableCell, SortDirection } from 
 import { GTableHeader } from './GTableHeader';
 import { getGtablebodyObject, getLinkIdToSortBy } from './utils';
 import { transformCodingToSortDirection } from '../utils';
+import { IGTable } from './interface';
 
 interface Props {
   items: QuestionnaireItem[];
@@ -18,8 +19,15 @@ const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): Reac
   const linkIdToSortBy = getLinkIdToSortBy(tableCodesCoding);
   const SORT_DIRECTION = transformCodingToSortDirection(tableCodesCoding) || SortDirection.asc;
   const [sortDir, setSortDir] = useState<SortDirection>(SORT_DIRECTION);
+  const [gTable, setTableData] = useState<IGTable>({ headerRow: [], id: '', rows: [] });
+  useEffect(() => {
+    const fetchTableData = async (): Promise<void> => {
+      const gTable = await getGtablebodyObject(items, questionnaireResponse, sortDir, linkIdToSortBy);
+      setTableData(gTable);
+    };
+    fetchTableData();
+  }, [items, linkIdToSortBy, questionnaireResponse, sortDir]);
 
-  const gTable = getGtablebodyObject(items, questionnaireResponse, sortDir, linkIdToSortBy);
   return gTable && gTable.rows.length > 0 ? (
     <HnTable className="page_refero__table__gtable" testId="gtable">
       <GTableHeader headerRow={gTable.headerRow} sortDir={sortDir} setSortDir={setSortDir} linkIdToSortBy={linkIdToSortBy} />

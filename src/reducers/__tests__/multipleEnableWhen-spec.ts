@@ -7,7 +7,6 @@ import enableWhenDataModel from './__data__/multipleEnableWhen';
 import { getResponseItem, pathify, clickCheckbox } from './utils';
 import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
 
-
 describe('questionnaire with multiple dependent enable when items', () => {
   let newState: Form;
   let definitionItems: QuestionnaireItem[];
@@ -21,17 +20,17 @@ describe('questionnaire with multiple dependent enable when items', () => {
     definitionItems = dItems;
   });
 
-  it('should clear all answers when enable when parent enableWhen is false', () => {
+  it('should clear all answers when enable when parent enableWhen is false', async () => {
     // check first checkbox
-    newState = clickCheckbox(newState, pathify('1', '1.1'), true, getQuestionnaireDefinitionItem('1.1', definitionItems));
-    newState = clickCheckbox(newState, pathify('2', '2.1'), true, getQuestionnaireDefinitionItem('2.1', definitionItems));
-    newState = clickCheckbox(newState, pathify('3', '3.1'), true, getQuestionnaireDefinitionItem('3.1', definitionItems));
+    newState = await clickCheckbox(newState, pathify('1', '1.1'), true, getQuestionnaireDefinitionItem('1.1', definitionItems));
+    newState = await clickCheckbox(newState, pathify('2', '2.1'), true, getQuestionnaireDefinitionItem('2.1', definitionItems));
+    newState = await clickCheckbox(newState, pathify('3', '3.1'), true, getQuestionnaireDefinitionItem('3.1', definitionItems));
     let responseItem31 = getResponseItem('3.1', newState, pathify('3', '3.1'));
 
     if (!responseItem31) return fail();
     expect(responseItem31.answer).toMatchObject([{ valueBoolean: true }]);
 
-    newState = clickCheckbox(newState, pathify('1', '1.1'), false, getQuestionnaireDefinitionItem('1.1', definitionItems));
+    newState = await clickCheckbox(newState, pathify('1', '1.1'), false, getQuestionnaireDefinitionItem('1.1', definitionItems));
 
     const responseItem21 = getResponseItem('2.1', newState, pathify('2', '2.1'));
     if (!responseItem21) return fail();

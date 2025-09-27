@@ -7,7 +7,6 @@ import repeatableBooleanDataModel from './__data__/repeatableBoolean';
 import { pathify, getResponseItem, clickRepeat } from './utils';
 import { getDefinitionItems } from '../../util/refero-core';
 
-
 describe('Given a questionnaire with multiple repeatable booleans', () => {
   let newState: Form;
 
@@ -20,10 +19,10 @@ describe('Given a questionnaire with multiple repeatable booleans', () => {
   });
 
   describe('When boolean is repeated', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       const itemToRepeat = getResponseItem('1', newState, pathify('1^0')) as QuestionnaireItem;
       const responseItemToRepeate = getResponseItem('1.0', newState, pathify('1^0', '1.0')) as QuestionnaireResponseItem;
-      newState = clickRepeat(newState, pathify('1'), itemToRepeat, [responseItemToRepeate]);
+      newState = await clickRepeat(newState, pathify('1'), itemToRepeat, [responseItemToRepeate]);
     });
 
     it('Then repeated item should have an answer with 3 items', () => {

@@ -7,6 +7,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { QuestionnaireResponseItem } from 'fhir/r4';
 
 import dataModel from './__data__/dummy-data-model';
+import { reduce } from './utils';
 import {
   newStringValueAction,
   newBooleanValueAction,
@@ -28,16 +29,16 @@ import {
   getQuestionnaireResponseItemWithLinkid,
   getItemWithIdFromResponseItemArray,
 } from '../../util/refero-core';
-import reducer, { Form } from '../form';
+import { Form } from '../form';
 
 describe('new value action', () => {
-  it('should update string value', () => {
+  it('should update string value', async () => {
     let action: PayloadAction<NewValuePayload> = newStringValueAction({
       itemPath: [{ linkId: '1' }],
       valueString: 'ny string',
       item: undefined,
     });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -48,7 +49,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueString).toEqual('ny string');
 
     action = newStringValueAction({ itemPath: [{ linkId: '1' }], valueString: '', item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -56,13 +57,13 @@ describe('new value action', () => {
     expect(item.answer).toBeUndefined();
   });
 
-  it('should update boolean value', () => {
+  it('should update boolean value', async () => {
     let action: PayloadAction<NewValuePayload> = newBooleanValueAction({
       itemPath: [{ linkId: 'b' }],
       valueBoolean: true,
       item: undefined,
     });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -73,7 +74,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueBoolean).toEqual(true);
 
     action = newBooleanValueAction({ itemPath: [{ linkId: 'b' }], valueBoolean: false, item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -84,9 +85,9 @@ describe('new value action', () => {
     expect(item.answer[0].valueBoolean).toEqual(false);
   });
 
-  it('should update decimal value', () => {
+  it('should update decimal value', async () => {
     let action: PayloadAction<NewValuePayload> = newDecimalValueAction({ itemPath: [{ linkId: 'd' }], valueDecimal: 1.5, item: undefined });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -97,7 +98,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueDecimal).toEqual(1.5);
 
     action = newDecimalValueAction({ itemPath: [{ linkId: 'd' }], valueDecimal: 2.5, item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -108,9 +109,9 @@ describe('new value action', () => {
     expect(item.answer[0].valueDecimal).toEqual(2.5);
   });
 
-  it('should update integer value', () => {
+  it('should update integer value', async () => {
     let action: PayloadAction<NewValuePayload> = newIntegerValueAction({ itemPath: [{ linkId: 'i' }], valueInteger: 3, item: undefined });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -121,7 +122,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueInteger).toEqual(3);
 
     action = newIntegerValueAction({ itemPath: [{ linkId: 'i' }], valueInteger: 4, item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -132,13 +133,13 @@ describe('new value action', () => {
     expect(item.answer[0].valueInteger).toEqual(4);
   });
 
-  it('should update date value', () => {
+  it('should update date value', async () => {
     let action: PayloadAction<NewValuePayload> = newDateValueAction({
       itemPath: [{ linkId: 'date' }],
       valueDate: '2018-05-18T10:28:45Z',
       item: undefined,
     });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -149,7 +150,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueDate).toEqual('2018-05-18T10:28:45Z');
 
     action = newDateValueAction({ itemPath: [{ linkId: 'date' }], valueDate: '2017-05-18T10:28:45Z', item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -160,13 +161,13 @@ describe('new value action', () => {
     expect(item.answer[0].valueDate).toEqual('2017-05-18T10:28:45Z');
   });
 
-  it('should update datetime value', () => {
+  it('should update datetime value', async () => {
     const action: PayloadAction<NewValuePayload> = newDateTimeValueAction({
       itemPath: [{ linkId: 'dt' }],
       valueDateTime: '2018-05-11T10:28:45Z',
       item: undefined,
     });
-    const newState: Form | undefined = reducer(dataModel.refero.form, action);
+    const newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -176,13 +177,13 @@ describe('new value action', () => {
     }
     expect(item.answer[0].valueDateTime).toEqual('2018-05-11T10:28:45Z');
   });
-  it('should update datetime value', () => {
+  it('should update datetime value', async () => {
     let action: PayloadAction<NewValuePayload> = newDateTimeValueAction({
       itemPath: [{ linkId: 'dt' }],
       valueDateTime: '2018-05-11T10:28:45Z',
       item: undefined,
     });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -193,7 +194,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueDateTime).toEqual('2018-05-11T10:28:45Z');
 
     action = newDateTimeValueAction({ itemPath: [{ linkId: 'dt' }], valueDateTime: '2017-05-18T10:28:45Z', item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -204,9 +205,9 @@ describe('new value action', () => {
     expect(item.answer[0].valueDateTime).toEqual('2017-05-18T10:28:45Z');
   });
 
-  it('should update time value', () => {
+  it('should update time value', async () => {
     let action: PayloadAction<NewValuePayload> = newTimeValueAction({ itemPath: [{ linkId: 't' }], valueTime: '09:00', item: undefined });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -217,7 +218,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueTime).toEqual('09:00');
 
     action = newTimeValueAction({ itemPath: [{ linkId: 't' }], valueTime: '17:00', item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -228,13 +229,13 @@ describe('new value action', () => {
     expect(item.answer[0].valueTime).toEqual('17:00');
   });
 
-  it('should update string value', () => {
+  it('should update string value', async () => {
     let action: PayloadAction<NewValuePayload> = newStringValueAction({
       itemPath: [{ linkId: 't0' }],
       valueString: 'test',
       item: undefined,
     });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -245,7 +246,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueString).toEqual('test');
 
     action = newStringValueAction({ itemPath: [{ linkId: 't0' }], valueString: 'test2', item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -256,13 +257,13 @@ describe('new value action', () => {
     expect(item.answer[0].valueString).toEqual('test2');
   });
 
-  it('should update coding value', () => {
+  it('should update coding value', async () => {
     let action: PayloadAction<NewValuePayload> = newCodingValueAction({
       itemPath: [{ linkId: 'c' }],
       valueCoding: { code: 'y', display: 'displayy' },
       item: undefined,
     });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -278,7 +279,7 @@ describe('new value action', () => {
     expect(answer.valueCoding.display).toEqual('displayy');
 
     action = newCodingValueAction({ itemPath: [{ linkId: 'c' }], valueCoding: { code: 'n', display: 'new display' }, item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -294,13 +295,13 @@ describe('new value action', () => {
     expect(answer.valueCoding.display).toEqual('new display');
   });
 
-  it('should update attachment fields', () => {
+  it('should update attachment fields', async () => {
     const action: PayloadAction<NewValuePayload> = newAttachmentAction({
       itemPath: [{ linkId: 'attachment' }],
       valueAttachment: { url: 'y', title: 'display', data: '123', contentType: 'image/jpg' },
       item: undefined,
     });
-    const newState: Form | undefined = reducer(dataModel.refero.form, action);
+    const newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -319,13 +320,13 @@ describe('new value action', () => {
     expect(answer.valueAttachment.hash).toBeUndefined();
   });
 
-  it('should update attachment value', () => {
+  it('should update attachment value', async () => {
     let action: PayloadAction<NewValuePayload> = newAttachmentAction({
       itemPath: [{ linkId: 'attachment' }],
       valueAttachment: { url: 'y', title: 'displayy' },
       item: undefined,
     });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -345,7 +346,7 @@ describe('new value action', () => {
       valueAttachment: { url: 'n', title: 'new display' },
       item: undefined,
     });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -361,13 +362,13 @@ describe('new value action', () => {
     expect(answer.valueAttachment.title).toEqual('new display');
   });
 
-  it('should be able to remove attachment value', () => {
+  it('should be able to remove attachment value', async () => {
     let action: PayloadAction<NewValuePayload> = newAttachmentAction({
       itemPath: [{ linkId: 'attachment' }],
       valueAttachment: { url: 'y', title: 'display' },
       item: undefined,
     });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -383,7 +384,7 @@ describe('new value action', () => {
     expect(answer.valueAttachment.title).toEqual('display');
 
     action = newAttachmentAction({ itemPath: [{ linkId: 'attachment' }], valueAttachment: undefined, item: undefined });
-    newState = reducer(dataModel.refero.form, action);
+    newState = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -397,20 +398,20 @@ describe('new value action', () => {
 });
 
 describe('new value action', () => {
-  it('should not copy non existing item', () => {
+  it('should not copy non existing item', async () => {
     const action: PayloadAction<NewValuePayload> = addRepeatItemAction({
       parentPath: [{ linkId: 'foobar' }],
       item: { linkId: 'foobar', type: 'group' },
       responseItems: undefined,
     });
-    const newState: Form | undefined = reducer(dataModel.refero.form, action);
+    const newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
     expect(newState.FormData.Content.item.length).toEqual(12);
   });
 
-  it('should add group', () => {
+  it('should add group', async () => {
     const action: PayloadAction<NewValuePayload> = addRepeatItemAction({
       parentPath: [],
       item: { linkId: 'addGroupTest1', type: 'group' },
@@ -438,7 +439,7 @@ describe('new value action', () => {
       return fail();
     }
     expect(dataModel.refero.form.FormData.Content.item.length).toEqual(12);
-    const newState: Form | undefined = reducer(dataModel.refero.form, action);
+    const newState: Form | undefined = await reduce(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
@@ -470,7 +471,7 @@ describe('new value action', () => {
     expect(items[0].answer).toBeUndefined();
     expect(addedGroup.item[1].linkId).toEqual('addGroupTest12');
   });
-  it('should add nested group', () => {
+  it('should add nested group', async () => {
     let action: PayloadAction<NewValuePayload> = addRepeatItemAction({
       parentPath: [{ linkId: 'group110' }],
       item: { linkId: 'group110.1', type: 'group' },
@@ -490,7 +491,7 @@ describe('new value action', () => {
     }
 
     expect(dataModel.refero.form.FormData.Content.item.length).toEqual(12);
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
+    let newState: Form | undefined = await reduce(dataModel.refero.form, action);
 
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
@@ -530,7 +531,7 @@ describe('new value action', () => {
         },
       ],
     });
-    newState = reducer(newState, action);
+    newState = await reduce(newState, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
@@ -545,7 +546,7 @@ describe('new value action', () => {
       item: { linkId: 'group110.1', type: 'group' },
     });
 
-    newState = reducer(newState, action);
+    newState = await reduce(newState, action);
 
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
@@ -570,38 +571,31 @@ describe('new value action', () => {
 });
 
 describe('update enable when action', () => {
-  it('should update deactivated and tømme answers', () => {
+  it('should update deactivated and tømme answers', async () => {
+    // slå PÅ b
     let action: PayloadAction<NewValuePayload> = newBooleanValueAction({
       itemPath: [{ linkId: 'b' }],
       valueBoolean: true,
-      item: {
-        linkId: 'b',
-        type: 'boolean',
-      },
+      item: { linkId: 'b', type: 'boolean' },
     });
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
-    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
-      return fail();
-    }
+    let newState: Form = await reduce(dataModel.refero.form, action);
 
+    // slå AV b (trigger enableWhen → skal tømme felt som avhenger)
     action = newBooleanValueAction({
       itemPath: [{ linkId: 'b' }],
       valueBoolean: false,
-      item: {
-        linkId: 'b',
-        type: 'boolean',
-      },
+      item: { linkId: 'b', type: 'boolean' },
     });
-    newState = reducer(dataModel.refero.form, action);
-    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
-      return fail();
-    }
-    const definitionItems = getDefinitionItems(newState.FormDefinition);
-    if (!definitionItems || definitionItems.length === 0) {
-      return fail();
-    }
-    const responseItems = getResponseItems(newState.FormData);
+    newState = await reduce(newState, action);
 
+    // --- diagnostikk: vis hele toppnivået og spesifikt 'd'/'i'
+    const definitionItems = getDefinitionItems(newState.FormDefinition);
+    if (!definitionItems || definitionItems.length === 0) return fail();
+
+    const responseItems = getResponseItems(newState.FormData);
+    if (!responseItems) return fail();
+
+    // eksisterende søkeloop – med logging per treff
     let answerItem: QuestionnaireResponseItem | undefined;
     for (let i = 0; responseItems && i < responseItems.length; i++) {
       let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
@@ -614,14 +608,14 @@ describe('update enable when action', () => {
         answerItem = responseItem;
       }
     }
-    if (!answerItem || !answerItem.answer) {
-      return fail();
-    }
+
+    if (!answerItem) return fail('answerItem not found');
+    if (!answerItem.answer) return fail('answerItem has no answer array');
+
     const integerAnswer = answerItem.answer;
     const integer = getQuestionnaireDefinitionItem('i', definitionItems);
-    if (!integer) {
-      return fail();
-    }
+    if (!integer) return fail();
+
     expect(integerAnswer).toHaveLength(0);
   });
 });

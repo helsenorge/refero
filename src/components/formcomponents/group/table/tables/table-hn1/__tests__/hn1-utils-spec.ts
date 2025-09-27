@@ -66,13 +66,13 @@ describe('HN1 - Utils ', () => {
     });
   });
   describe('getTableHN1bodyObject', () => {
-    it('should return an empty array if no questionnaireResponse', () => {
+    it('should return an empty array if no questionnaireResponse', async () => {
       const items: QuestionnaireItem[] = [];
       const questionnaireResponse = null;
-      const result = hn1Utils.getTableHN1bodyObject(items, questionnaireResponse);
+      const result = await hn1Utils.getTableHN1bodyObject(items, questionnaireResponse);
       expect(result).toEqual([]);
     });
-    it('should return an empty array if no items', () => {
+    it('should return an empty array if no items', async () => {
       const items: QuestionnaireItem[] = [];
       const questionnaireResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
@@ -89,10 +89,10 @@ describe('HN1 - Utils ', () => {
           },
         ],
       };
-      const result = hn1Utils.getTableHN1bodyObject(items, questionnaireResponse);
+      const result = await hn1Utils.getTableHN1bodyObject(items, questionnaireResponse);
       expect(result).toEqual([]);
     });
-    it('should return an array of rows', () => {
+    it('should return an array of rows', async () => {
       const items: QuestionnaireItem[] = [
         {
           linkId: '1',
@@ -161,7 +161,7 @@ describe('HN1 - Utils ', () => {
           ],
         },
       ];
-      const result = hn1Utils.getTableHN1bodyObject(items, questionnaireResponse);
+      const result = await hn1Utils.getTableHN1bodyObject(items, questionnaireResponse);
       expect(result).toEqual(expected);
     });
   });

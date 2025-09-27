@@ -36,7 +36,7 @@ import {
   AnswerValuesItemPayload,
 } from '@/actions/newValue';
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
-import { runEnableWhen } from '@/calculators/runEnableWhen';
+// import { runEnableWhen } from '@/calculators/runEnableWhen';
 import itemType from '@/constants/itemType';
 import { GlobalState } from '@/reducers/index';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
@@ -59,7 +59,7 @@ export interface Form {
   Language: string;
 }
 
-const initialState: Form = {
+export const initialState: Form = {
   FormData: {
     Content: null,
   },
@@ -134,15 +134,12 @@ function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined
 
 function processAddRepeatItemAction(action: NewValuePayload, state: Form): Form {
   const { parentPath, responseItems, item } = action;
-  if (!parentPath) {
-    return state;
-  }
+  if (!parentPath) return state;
 
-  let arrayToAddItemTo: Array<QuestionnaireResponseItem> | undefined = [];
+  let arrayToAddItemTo: QuestionnaireResponseItem[] | undefined = [];
   if (parentPath.length === 0 && state.FormData.Content) {
     arrayToAddItemTo = state.FormData.Content.item;
   } else if (parentPath.length > 0) {
-    // length >1 means group wrapped in group
     const itemToAddTo = getResponseItemWithPath(parentPath, state.FormData);
     arrayToAddItemTo = getArrayToAddGroupTo(itemToAddTo);
   }
@@ -174,6 +171,7 @@ function processAddRepeatItemAction(action: NewValuePayload, state: Form): Form 
   }
   const indexToInsert = arrayToAddItemTo.map(o => o.linkId).lastIndexOf(newItem.linkId);
   arrayToAddItemTo.splice(indexToInsert + 1, 0, newItem);
+
   return state;
 }
 
@@ -342,7 +340,7 @@ function processRemoveCodingValueAction(action: NewValuePayload, state: Form): F
   }
 
   // run enableWhen to clear fields
-  runEnableWhen(action, state);
+  // runEnableWhen(action, state);
   return state;
 }
 
@@ -361,7 +359,7 @@ function processRemoveCodingStringValueAction(action: NewValuePayload, state: Fo
   }
 
   // run enableWhen to clear fields
-  runEnableWhen(action, state);
+  // runEnableWhen(action, state);
   return state;
 }
 
@@ -392,7 +390,7 @@ function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: For
   const answer = payload.newAnswer;
   responseItem.answer = answer;
 
-  runEnableWhen(payload, state);
+  // runEnableWhen(payload, state);
 
   return state;
 }
@@ -512,7 +510,7 @@ function processNewValueAction(payload: NewValuePayload, state: Form): Form {
       }
     }
   }
-  runEnableWhen(payload, state);
+  // runEnableWhen(payload, state);
   return state;
 }
 

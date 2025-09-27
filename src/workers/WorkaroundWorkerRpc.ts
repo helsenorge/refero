@@ -1,9 +1,9 @@
-import workerUrl from './fhir-path.worker.ts?worker&url';
+import workerUrl from './fhirpath-rpc.worker.ts?worker&url';
 
 const js = `import ${JSON.stringify(new URL(workerUrl.replace('.vite/deps', '@helsenorge/refero'), import.meta.url))}`;
 const blob = new Blob([js], { type: 'application/javascript' });
 
-export function WorkaroundWorker(options: { name: string }): Worker {
+export function WorkaroundWorkerRpc(options: { name: string }): Worker {
   const objURL = URL.createObjectURL(blob);
   const worker = new Worker(objURL, { type: 'module', name: options?.name });
   worker.addEventListener('error', e => {

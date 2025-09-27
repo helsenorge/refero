@@ -212,7 +212,7 @@ describe('gtable-utils-spec', () => {
   });
 
   describe('getGtablebodyObject', () => {
-    it('should create a GTable object with rows and headers', () => {
+    it('should create a GTable object with rows and headers', async () => {
       const items: QuestionnaireItem[] = [
         generateMockQuestionnaireItem({
           linkId: '1',
@@ -245,26 +245,26 @@ describe('gtable-utils-spec', () => {
           generateMockResponseItem({ linkId: '2', answer: [generateMockResponseAnswer({ valueString: 'Answer 2' })] }),
         ],
       });
-      const gTable = getGtablebodyObject(items, questionnaireResponse);
+      const gTable = await getGtablebodyObject(items, questionnaireResponse);
       expect(gTable.rows.length).toBe(1);
       expect(gTable.headerRow.length).toBe(2);
       expect(gTable.rows[0].columns.length).toBe(2);
     });
 
-    it('should handle empty questionnaire items correctly', () => {
+    it('should handle empty questionnaire items correctly', async () => {
       const items: QuestionnaireItem[] = [];
       const questionnaireResponse = generateMockQuestionnaireResponse({
         status: 'completed',
         item: [generateMockResponseItem({ linkId: '1', answer: [generateMockResponseAnswer({ valueString: 'Answer 1' })] })],
       });
-      const gTable = getGtablebodyObject(items, questionnaireResponse);
+      const gTable = await getGtablebodyObject(items, questionnaireResponse);
       expect(gTable.rows.length).toBe(0);
       expect(gTable.headerRow.length).toBe(0);
     });
 
-    it('should handle null questionnaire response correctly', () => {
+    it('should handle null questionnaire response correctly', async () => {
       const items: QuestionnaireItem[] = [generateMockQuestionnaireItem({ linkId: '1', text: 'First Question', type: 'string' })];
-      const gTable = getGtablebodyObject(items, null);
+      const gTable = await getGtablebodyObject(items, null);
       expect(gTable.rows.length).toBe(0);
       expect(gTable.headerRow.length).toBe(0);
     });

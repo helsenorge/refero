@@ -7,7 +7,8 @@ import { ActionRequester } from '@/util/actionRequester';
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
-import { postTaskToFhirPathWorker } from '@/workers/worker-factory';
+import { postTaskToFhirPathWorker } from '@/workers/fhirpath-rpc';
+
 type InputParams = {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
@@ -26,8 +27,8 @@ export const runFhirPathQrUpdater = async ({
     let fhirScores: AnswerPad;
     if (typeof window !== 'undefined' && window.Worker) {
       try {
-        const { fhirScores: scores } = await postTaskToFhirPathWorker(questionnaireResponse, questionnaire);
-        fhirScores = scores;
+        fhirScores = await postTaskToFhirPathWorker({ questionnaireResponse, questionnaire });
+
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_e) {
         const fhirPathUpdater = new FhirPathExtensions(questionnaire);
