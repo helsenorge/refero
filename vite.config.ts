@@ -1,5 +1,6 @@
 import path from 'path';
 
+import replace from '@rollup/plugin-replace';
 import react from '@vitejs/plugin-react';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
@@ -28,6 +29,13 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
       plugins: () => [
         tsconfigPaths({
           projects: [path.resolve(__dirname, 'tsconfig.build.json')],
+        }),
+        replace({
+          preventAssignment: true,
+          values: {
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV ?? 'production'),
+            'process.env': '{}',
+          },
         }),
       ],
       format: 'es',
@@ -65,6 +73,7 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
       commonjsOptions: {
         transformMixedEsModules: true,
       },
+
       lib: {
         entry: path.resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
