@@ -65,7 +65,7 @@ function safeCreateWorker(): Worker | null {
     return null;
   }
   try {
-    const w = WorkaroundWorkerRpc({ name: 'fhirpath-rpc' });
+    const w = WorkaroundWorkerRpc({ name: 'fhirpath-rpc.worker' });
 
     w.onmessage = (ev: MessageEvent<AnyRpcResponse>) => {
       const data = ev.data || {};
