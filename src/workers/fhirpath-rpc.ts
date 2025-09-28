@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
@@ -30,6 +31,7 @@ function isStructuredCloneable(o: unknown): { ok: boolean; error?: unknown } {
     }
     return { ok: true };
   } catch (e) {
+    console.log(e);
     return { ok: false, error: e };
   }
 }
@@ -65,7 +67,7 @@ function safeCreateWorker(): Worker | null {
     return null;
   }
   try {
-    const w = WorkaroundWorkerRpc({ name: 'fhirpath-rpc.worker' });
+    const w = WorkaroundWorkerRpc({ name: 'fhirpath-rpc' });
 
     w.onmessage = (ev: MessageEvent<AnyRpcResponse>) => {
       const data = ev.data || {};
@@ -86,8 +88,8 @@ function safeCreateWorker(): Worker | null {
         disabled = true;
         try {
           worker?.terminate();
-        } catch {
-          /* ignore */
+        } catch (e) {
+          console.log(e);
         }
         worker = null;
         callOnMain(p.method as never, p.params as never).then(p.resolve, p.reject);
@@ -106,6 +108,7 @@ function safeCreateWorker(): Worker | null {
 
     return w;
   } catch (e) {
+    console.log(e);
     return null;
   }
 }
@@ -147,8 +150,8 @@ function disableWorkerAndFallbackAll(_reason: unknown) {
 
   try {
     worker?.terminate();
-  } catch {
-    /* ignore */
+  } catch (e) {
+    console.log(e);
   }
   worker = null;
 }
@@ -200,8 +203,8 @@ function armOverallTimeout(p: Pending) {
       disabled = true;
       try {
         worker?.terminate();
-      } catch {
-        /* ignore */
+      } catch (e) {
+        console.log(e);
       }
       worker = null;
 
@@ -251,8 +254,8 @@ function processQueue(): void {
     disabled = true;
     try {
       worker?.terminate();
-    } catch {
-      /* ignore */
+    } catch (e) {
+      console.log(e);
     }
     worker = null;
 
@@ -271,8 +274,8 @@ function processQueue(): void {
     disabled = true;
     try {
       worker?.terminate();
-    } catch {
-      /* ignore */
+    } catch (e) {
+      console.log(e);
     }
     worker = null;
 
@@ -290,6 +293,7 @@ function processQueue(): void {
   try {
     w.postMessage({ id: currentTask.id, method: currentTask.method, params: currentTask.params });
   } catch (_e) {
+    console.log(_e);
     const failed = currentTask;
     if (!failed) return;
 
@@ -300,8 +304,8 @@ function processQueue(): void {
     disabled = true;
     try {
       worker?.terminate();
-    } catch {
-      /* ignore */
+    } catch (e) {
+      console.log(e);
     }
     worker = null;
 
@@ -365,7 +369,7 @@ export function __resetFhirpathWorkerForTests() {
   try {
     worker?.terminate();
   } catch (e) {
-    /* ignore */
+    console.log(e);
   }
   worker = null;
   disabled = false;

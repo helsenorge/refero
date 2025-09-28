@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /// <reference lib="webworker" />
 export {};
@@ -77,6 +77,7 @@ const onMessage = async (ev: MessageEvent<RpcRequest>): Promise<void> => {
     const result = await fn(params);
     post<RpcResponse>({ id, ok: true, result } as RpcResponse);
   } catch (err: any) {
+    console.log(err);
     post<RpcResponse>({
       id,
       ok: false,
@@ -106,6 +107,7 @@ ctx.addEventListener('error', (e: ErrorEvent) => {
 });
 
 ctx.addEventListener('error', _e => {
+  console.log(_e);
   // Uncaught error inside worker — surface something meaningful
 });
 ctx.addEventListener('message', onMessage);
@@ -114,7 +116,8 @@ ctx.addEventListener('message', onMessage);
 function safeInspect(x: unknown): string {
   try {
     return typeof x === 'string' ? x : JSON.stringify(x);
-  } catch {
+  } catch (e) {
+    console.log(e);
     return Object.prototype.toString.call(x);
   }
 }

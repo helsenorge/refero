@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-console */
 import { createListenerMiddleware, isAnyOf, PayloadAction } from '@reduxjs/toolkit';
 
 import type { AppDispatch, GlobalState } from '@/reducers';
@@ -99,6 +99,7 @@ startTyped({
       const { answerValues, repeatRemovals } = await postRunEnableWhenToWorker(req);
       result = { answerValues: answerValues ?? [], repeatRemovals: repeatRemovals ?? [] };
     } catch (_e) {
+      console.log('error', _e);
       // ignore feil fra worker
     }
 
@@ -134,6 +135,7 @@ startTyped({
       api.dispatch(newAnswerValuesAction(plainBatch));
       batchOk = true;
     } catch (err) {
+      console.log(err);
       // ignore feil
     }
 
@@ -142,6 +144,7 @@ startTyped({
         try {
           api.dispatch(newAnswerValueAction(one));
         } catch (singleErr) {
+          console.log(singleErr);
           // ignore feil
         }
       }
