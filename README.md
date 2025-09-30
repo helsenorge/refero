@@ -58,6 +58,7 @@ const App = () => {
           onRequestHelpButton={...}
           onRequestHelpElement={...}
           attachmentMaxFileSize={...}
+          attachmentMaxFileSizePerFile={...}
           attachmentValidTypes={...}
           attachmentErrorMessage={...}
           validationSummaryPlacement={...}
@@ -95,6 +96,7 @@ const App = () => {
 | onOpenAttachment              |          | callback                   | null    | Callback when user opens attachment                                                                           |
 | onRequestAttachmentLink       |          | callback                   | null    | Callback when the form needs to render a link to an attachment                                                |
 | attachmentMaxFileSize         |          | number                     | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
+| attachmentMaxFileSizePerFile  |          | number                     | 20M     | Max allowed file size per file for attachments in bytes. Default is 20M                                       |
 | attachmentValidTypes          |          | string[]                   | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
 | attachmentErrorMessage        |          | string                     | null    | Text shown when file-upload fails to validate                                                                 |
 | promptLoginMessage            |          | callback                   | null    | Callback when the form needs to notify the user about authentication                                          |
