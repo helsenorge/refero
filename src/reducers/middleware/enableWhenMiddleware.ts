@@ -135,8 +135,7 @@ startTyped({
       api.dispatch(newAnswerValuesAction(plainBatch));
       batchOk = true;
     } catch (err) {
-      console.log(err);
-      // ignore feil
+      console.error(err);
     }
 
     if (!batchOk) {
@@ -144,8 +143,7 @@ startTyped({
         try {
           api.dispatch(newAnswerValueAction(one));
         } catch (singleErr) {
-          console.log(singleErr);
-          // ignore feil
+          console.error(singleErr);
         }
       }
     }
