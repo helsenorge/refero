@@ -49,6 +49,7 @@ type Props = QuestionnaireComponentItemProps & {
   minFiles?: number;
   item?: QuestionnaireItem;
   attachmentMaxFileSize?: number;
+  attachmentMaxFileSizePerFile?: number;
   attachmentValidTypes?: MimeTypes[];
   idWithLinkIdAndItemIndex: string;
   customErrorMessage: TextMessage | undefined;
@@ -75,6 +76,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     idWithLinkIdAndItemIndex,
     customErrorMessage,
     path,
+    attachmentMaxFileSizePerFile,
     pdf,
     children,
     multiple,
@@ -87,7 +89,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const numberOfFilesValidationText = getNumberOfFilesValidationText(item, minFiles, maxFiles, resources);
   const fileTypesValidationText = getValidationTextForAttachment(item, resources?.attachmentError_fileType);
   const maxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize);
-  const maxValueBytesPerFile = getAttachmentMaxSizePerFileBytesToUse(item);
+  const maxValueBytesPerFile = getAttachmentMaxSizePerFileBytesToUse(attachmentMaxFileSizePerFile, item);
   const validFileTypes: MimeTypes[] = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const filSizeValidationText = resources?.attachmentError_fileSize?.replace(
     '{0}',
@@ -95,7 +97,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   );
   const filSizeValidationTextPerFile = resources?.attachmentError_fileSize?.replace(
     '{0}',
-    convertBytesToMBString(getAttachmentMaxSizePerFileBytesToUse(item))
+    convertBytesToMBString(getAttachmentMaxSizePerFileBytesToUse(attachmentMaxFileSizePerFile, item))
   );
   const {
     setAcceptedFiles,

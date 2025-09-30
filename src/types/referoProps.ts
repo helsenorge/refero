@@ -140,7 +140,10 @@ export interface ReferoProps {
    * Maximum allowed file size (in bytes) for uploads. Defaults to 25MB if not specified.
    */
   attachmentMaxFileSize?: number;
-
+  /**
+   * Maximum allowed file size per file (in bytes) for uploads. Defaults to 20MB if not specified.
+   */
+  attachmentMaxFileSizePerFile?: number;
   /**
    * A list of allowed mime types for file uploads. Defaults to image/jpeg, image/png, application/pdf.
    */
