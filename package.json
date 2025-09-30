@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "21.0.0-beta03",
+  "version": "21.0.0",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
@@ -60,7 +60,7 @@
     "@helsenorge/datepicker": "^12.0.0",
     "@helsenorge/designsystem-react": "^12.0.0",
     "@helsenorge/file-upload": "^36.0.0",
-    "dompurify": "3.1.7",
+    "dompurify": "3.2.6",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-redux": "^9.0.0",
@@ -77,7 +77,6 @@
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
-    "@types/dompurify": "^3.0.5",
     "@types/fhir": "^0.0.41",
     "@types/node": "^22.0.0",
     "@types/react-collapse": "^5.0.4",
@@ -91,7 +90,7 @@
     "browserslist": "^4.23.1",
     "core-js": "^3.37.1",
     "cssnano": "^7.0.3",
-    "dompurify": "3.1.7",
+    "dompurify": "3.2.6",
     "eslint": "^9.0.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "file-loader": "^6.2.0",

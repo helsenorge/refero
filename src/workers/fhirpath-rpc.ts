@@ -31,7 +31,6 @@ function isStructuredCloneable(o: unknown): { ok: boolean; error?: unknown } {
     }
     return { ok: true };
   } catch (e) {
-    console.log(e);
     return { ok: false, error: e };
   }
 }
@@ -89,7 +88,7 @@ function safeCreateWorker(): Worker | null {
         try {
           worker?.terminate();
         } catch (e) {
-          console.log(e);
+          // ignores;
         }
         worker = null;
         callOnMain(p.method as never, p.params as never).then(p.resolve, p.reject);
@@ -108,7 +107,6 @@ function safeCreateWorker(): Worker | null {
 
     return w;
   } catch (e) {
-    console.log(e);
     return null;
   }
 }
@@ -151,7 +149,7 @@ function disableWorkerAndFallbackAll(_reason: unknown) {
   try {
     worker?.terminate();
   } catch (e) {
-    console.log(e);
+    // ignores;
   }
   worker = null;
 }
@@ -204,7 +202,7 @@ function armOverallTimeout(p: Pending) {
       try {
         worker?.terminate();
       } catch (e) {
-        console.log(e);
+        // ignores;
       }
       worker = null;
 
@@ -255,7 +253,7 @@ function processQueue(): void {
     try {
       worker?.terminate();
     } catch (e) {
-      console.log(e);
+      // ignores;
     }
     worker = null;
 
@@ -275,7 +273,7 @@ function processQueue(): void {
     try {
       worker?.terminate();
     } catch (e) {
-      console.log(e);
+      // ignores;
     }
     worker = null;
 
@@ -305,7 +303,7 @@ function processQueue(): void {
     try {
       worker?.terminate();
     } catch (e) {
-      console.log(e);
+      // ignores;
     }
     worker = null;
 
@@ -369,7 +367,7 @@ export function __resetFhirpathWorkerForTests() {
   try {
     worker?.terminate();
   } catch (e) {
-    console.log(e);
+    // ignores;
   }
   worker = null;
   disabled = false;

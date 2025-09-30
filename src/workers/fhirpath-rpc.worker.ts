@@ -77,7 +77,6 @@ const onMessage = async (ev: MessageEvent<RpcRequest>): Promise<void> => {
     const result = await fn(params);
     post<RpcResponse>({ id, ok: true, result } as RpcResponse);
   } catch (err: any) {
-    console.log(err);
     post<RpcResponse>({
       id,
       ok: false,
@@ -116,8 +115,7 @@ ctx.addEventListener('message', onMessage);
 function safeInspect(x: unknown): string {
   try {
     return typeof x === 'string' ? x : JSON.stringify(x);
-  } catch (e) {
-    console.log(e);
+  } catch {
     return Object.prototype.toString.call(x);
   }
 }
