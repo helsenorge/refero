@@ -30,6 +30,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     onOpenAttachment,
     onRequestAttachmentLink,
     attachmentMaxFileSize,
+    attachmentMaxFileSizePerFile,
     attachmentValidTypes,
     attachmentErrorMessage,
     onDeleteAttachment,
@@ -105,6 +106,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
         maxFiles={getMaxOccursExtensionValue(item)}
         minFiles={getMinOccursExtensionValue(item)}
         attachmentMaxFileSize={attachmentMaxFileSize}
+        attachmentMaxFileSizePerFile={attachmentMaxFileSizePerFile}
         attachmentValidTypes={attachmentValidTypes}
         item={item}
         attachmentErrorMessage={attachmentErrorMessage}

@@ -43,6 +43,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     onOpenAttachment,
     uploadAttachment,
     useFormProps,
+    attachmentMaxFileSizePerFile,
   } = props;
 
   IE11HackToWorkAroundBug187484();
@@ -98,6 +99,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const attachmentProviderProps = {
     attachmentErrorMessage,
     attachmentMaxFileSize,
+    attachmentMaxFileSizePerFile,
     attachmentValidTypes,
     onDeleteAttachment,
     onRequestAttachmentLink,

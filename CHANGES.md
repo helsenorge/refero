@@ -1,10 +1,12 @@
-## 20.1.1-beta01
+## 20.1.2
 
 - Updated major packages
   - Vite
   - fhirpath
   - uuid
   - dompurify
+- Added new prop for attachment component: attachmentMaxFileSizePerFile. Will override the default max file size per file if set.
+  Questionnaire extensions will still override this prop if set.
 
 ## 20.1.0
 

@@ -46,7 +46,7 @@ export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefin
   }
   return constants.MAX_FILE_SIZE;
 }
-export function getAttachmentMaxSizePerFileBytesToUse(item?: QuestionnaireItem): number {
+export function getAttachmentMaxSizePerFileBytesToUse(defaultMaxProps: number | undefined, item?: QuestionnaireItem): number {
   if (item) {
     const questionnaireMaxRuleSizeMB = getMaxSizeExtensionValue(item);
     if (questionnaireMaxRuleSizeMB !== undefined) {
@@ -54,7 +54,7 @@ export function getAttachmentMaxSizePerFileBytesToUse(item?: QuestionnaireItem):
     }
   }
 
-  return constants.MAX_FILE_SIZE_PER_FILE;
+  return defaultMaxProps ?? constants.MAX_FILE_SIZE_PER_FILE;
 }
 
 export const validateRequired = (item?: QuestionnaireItem, resources?: Resources, files?: UploadFile[]): string | true => {
