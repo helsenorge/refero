@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /// <reference lib="webworker" />
 export {};
@@ -105,10 +104,6 @@ ctx.addEventListener('error', (e: ErrorEvent) => {
   });
 });
 
-ctx.addEventListener('error', _e => {
-  console.log(_e);
-  // Uncaught error inside worker — surface something meaningful
-});
 ctx.addEventListener('message', onMessage);
 // ---- Helpers ---------------------------------------------------------------
 
