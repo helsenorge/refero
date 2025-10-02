@@ -1,0 +1,143 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "152a9a40-6987-4112-8979-4670aa77a509",
+  "url": "Questionnaire/152a9a40-6987-4112-8979-4670aa77a509",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "1",
+      "type": "group",
+      "text": "Repeterende gruppe",
+      "item": [
+        {
+          "linkId": "1.1",
+          "type": "choice",
+          "text": "Choice enables",
+          "required": false,
+          "answerValueSet": "#1101"
+        },
+        {
+          "linkId": "1.2",
+          "type": "string",
+          "text": "Enabled hvis ja",
+          "required": false,
+          "enableWhen": [
+            {
+              "question": "1.1",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.1101",
+                "code": "1"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "1.3",
+          "type": "string",
+          "text": "Enabled hvis nei",
+          "required": false,
+          "enableWhen": [
+            {
+              "question": "1.1",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.1101",
+                "code": "2"
+              }
+            }
+          ]
+        }
+      ],
+      "required": false,
+      "repeats": true
+    }
+  ]
+}

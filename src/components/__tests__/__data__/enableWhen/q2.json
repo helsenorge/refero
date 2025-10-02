@@ -1,0 +1,67 @@
+{
+  "title": "Attachement test",
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "name": "Attachement_Test",
+  "status": "draft",
+  "publisher": "NHN",
+  "id": "f93941cb-0142-49f4-8558-f77823662dec",
+  "url": "Questionnaire/f93941cb-0142-49f4-8558-f77823662dec",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "1",
+      "type": "choice",
+      "text": "Repeatable choice",
+      "item": [
+        {
+          "linkId": "2",
+          "type": "string",
+          "text": "Textsvar",
+          "required": false,
+          "enableWhen": [
+            {
+              "question": "1",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.1101",
+                "code": "1"
+              }
+            }
+          ]
+        }
+      ],
+      "required": false,
+      "answerValueSet": "#1101",
+      "repeats": true
+    }
+  ]
+}

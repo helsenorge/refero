@@ -19,6 +19,7 @@ import { FormData, FormDefinition } from '../reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
 
 import { isRepeat } from '.';
+
 export interface Path {
   linkId: string;
   index?: number;
@@ -55,7 +56,10 @@ export function isInGroupContext(path: Path[], item: QuestionnaireResponseItem, 
   }
 
   const repeatingItems = getItemWithIdFromResponseItemArray(item.linkId, items) || [];
-  return repeatingItems.indexOf(item) === pathItem.index;
+  const idx = repeatingItems.indexOf(item);
+  const ok = idx === pathItem.index;
+
+  return ok;
 }
 
 export function getQuestionnaireResponseItemWithLinkid(
@@ -63,9 +67,8 @@ export function getQuestionnaireResponseItemWithLinkid(
   responseItem: QuestionnaireResponseItem,
   referencePath: Path[]
 ): QuestionnaireResponseItem | undefined {
-  if (!responseItem) {
-    return undefined;
-  }
+  if (!responseItem) return undefined;
+
   if (responseItem.linkId === linkId) {
     return responseItem;
   }
@@ -74,11 +77,8 @@ export function getQuestionnaireResponseItemWithLinkid(
     if (!isInGroupContext(referencePath, responseItem.item[i], responseItem.item)) {
       continue;
     }
-
     const item = getQuestionnaireResponseItemWithLinkid(linkId, responseItem.item[i], referencePath);
-    if (item) {
-      return item;
-    }
+    if (item) return item;
   }
 
   for (let i = 0; responseItem.answer && i < responseItem.answer.length; i++) {
@@ -87,11 +87,8 @@ export function getQuestionnaireResponseItemWithLinkid(
       if (!isInGroupContext(referencePath, answer.item[j], answer.item)) {
         continue;
       }
-
       const item = getQuestionnaireResponseItemWithLinkid(linkId, answer.item[j], referencePath);
-      if (item) {
-        return item;
-      }
+      if (item) return item;
     }
   }
 
@@ -651,6 +648,7 @@ export function getResponseItemAndPathWithLinkId(
       }
     }
   }
+
   return response;
 }
 

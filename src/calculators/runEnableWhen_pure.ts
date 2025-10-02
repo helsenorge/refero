@@ -30,10 +30,28 @@ export type RunEnableWhenResult = {
   repeatRemovals: RepeatRemoval[];
 };
 
+// NB: legger til instancePath så vi kan scope clearing til riktig instans
 type QrItemsToClear = {
   qItemWithEnableWhen: QuestionnaireItem;
   linkId: string;
+  instancePath: Path[];
 };
+
+// ---- Små utils (lokale) --------------------------------------------
+
+// Sjekker at alle indekserte segmenter i contextPath matcher kandidatens path.
+// Fungerer for nestede repeats: alle felles linkId med index må matche.
+function isSameInstance(contextPath: Path[] | undefined, candidatePath: Path[] | undefined): boolean {
+  if (!contextPath || !candidatePath) return true; // konservativt: ikke blokker
+  const indexed = contextPath.filter(s => s.index !== undefined);
+  for (const seg of indexed) {
+    const hit = candidatePath.find(s => s.linkId === seg.linkId);
+    if (!hit || (hit.index !== undefined && hit.index !== seg.index)) {
+      return false;
+    }
+  }
+  return true;
+}
 
 export function runEnableWhenPure({ action, formData, formDefinition }: RunEnableWhenParams): RunEnableWhenResult {
   if (!action?.item || !formData?.Content) return { answerValues: [], repeatRemovals: [] };
@@ -54,15 +72,19 @@ export function runEnableWhenPure({ action, formData, formDefinition }: RunEnabl
   const repeatRemovals: RepeatRemoval[] = [];
 
   for (const entry of qrItemsToClear) {
-    const { qItemWithEnableWhen, linkId } = entry;
+    const { qItemWithEnableWhen, linkId, instancePath } = entry;
 
-    // Finn ALLE definisjons-descendants (inkl. seg selv) under item’et som ble disabled
     const defDescendants = collectDefinitionDescendants(qItemWithEnableWhen);
 
-    // For hver definisjons-node, finn alle QR-instanser og skyt payload som setter initialAnswer
     for (const defChild of defDescendants) {
       const childLinkId = defChild.linkId;
-      const childInstances = getResponseItemAndPathWithLinkId(childLinkId, formData.Content);
+      const allChildInstances = getResponseItemAndPathWithLinkId(childLinkId, formData.Content);
+      if (!allChildInstances.length) {
+        continue;
+      }
+
+      // scope til samme repeterende instans som trigget disable
+      const childInstances = allChildInstances.filter(ip => isSameInstance(instancePath, ip.path));
 
       if (childInstances.length === 0) continue;
 
@@ -81,7 +103,8 @@ export function runEnableWhenPure({ action, formData, formDefinition }: RunEnabl
     // Strukturelle slettinger utover minOccurs – match legacy removeAddedRepeatingItems
     const minOccurs = getMinOccursExtensionValue(qItemWithEnableWhen);
     const keepThreshold = minOccurs ?? 1;
-    const instances = getResponseItemAndPathWithLinkId(linkId, formData.Content);
+    const allInstances = getResponseItemAndPathWithLinkId(linkId, formData.Content);
+    const instances = allInstances.filter(ip => isSameInstance(instancePath, ip.path));
 
     for (const ip of instances) {
       const last = ip.path[ip.path.length - 1];
@@ -112,42 +135,55 @@ function calculateEnableWhenItemsToClearPure(
   for (const i of items) {
     if (definitionItems) qitemsWithEnableWhen.push(...getItemsWithEnableWhenPure(i.linkId, definitionItems));
   }
+
   if (qitemsWithEnableWhen.length === 0) return;
 
   for (const qItemWithEnableWhen of qitemsWithEnableWhen) {
     const enableWhenClauses = qItemWithEnableWhen.enableWhen;
     if (!enableWhenClauses) continue;
 
-    const qrItemsWithEnableWhen = getResponseItemAndPathWithLinkId(qItemWithEnableWhen.linkId, formData.Content);
+    const qrInstances = getResponseItemAndPathWithLinkId(qItemWithEnableWhen.linkId, formData.Content);
 
-    for (const qrItemWithEnableWhen of qrItemsWithEnableWhen) {
+    for (const qrInstance of qrInstances) {
       const enableMatches: boolean[] = [];
       const enableBehavior = qItemWithEnableWhen.enableBehavior;
 
+      // VIKTIG: bruk instansens path som kontekst for å slå opp enableWhen.question
+      const contextPath = qrInstance.path;
+
       enableWhenClauses.forEach(enableWhen => {
-        const responseItem = getResponseItemWithLinkIdPossiblyContainingRepeat(enableWhen.question, simulatedResponseItems, path);
-        if (responseItem) enableMatches.push(enableWhenMatchesAnswer(enableWhen, responseItem.answer));
+        const responseItem = getResponseItemWithLinkIdPossiblyContainingRepeat(enableWhen.question, simulatedResponseItems, contextPath);
+        if (responseItem) {
+          enableMatches.push(enableWhenMatchesAnswer(enableWhen, responseItem.answer));
+        }
       });
 
       const enable =
         enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL ? enableMatches.every(Boolean) : enableMatches.some(Boolean);
+
       if (!enable) {
-        // Simuler legacy-wipe i lokal kopi for transitive beregninger
-        const itemSim = getResponseItemWithLinkIdPossiblyContainingRepeat(qrItemWithEnableWhen.item.linkId, simulatedResponseItems, path);
+        // Simuler legacy-wipe i lokal kopi for transitive beregninger (også scoped til instans)
+        const itemSim = getResponseItemWithLinkIdPossiblyContainingRepeat(qrInstance.item.linkId, simulatedResponseItems, contextPath);
         if (itemSim) {
           removeAddedRepeatingItemsSim(qItemWithEnableWhen, itemSim, simulatedResponseItems);
           wipeAnswerItemsSim(itemSim, qItemWithEnableWhen);
         }
-        qrItemsToClear.push({ qItemWithEnableWhen, linkId: qrItemWithEnableWhen.item.linkId });
+        qrItemsToClear.push({
+          qItemWithEnableWhen,
+          linkId: qrInstance.item.linkId,
+          instancePath: qrInstance.path,
+        });
       }
     }
   }
 
   // transitiv nedover som i legacy
   calculateEnableWhenItemsToClearPure(qitemsWithEnableWhen, formData, formDefinition, path, qrItemsToClear, simulatedResponseItems);
-  qitemsWithEnableWhen.forEach(
-    i => i.item && calculateEnableWhenItemsToClearPure(i.item, formData, formDefinition, path, qrItemsToClear, simulatedResponseItems)
-  );
+  qitemsWithEnableWhen.forEach(i => {
+    if (i.item) {
+      calculateEnableWhenItemsToClearPure(i.item, formData, formDefinition, path, qrItemsToClear, simulatedResponseItems);
+    }
+  });
 }
 
 function getResponseItemWithLinkIdPossiblyContainingRepeat(
