@@ -2,7 +2,7 @@ import { QuestionnaireItem } from 'fhir/r4';
 
 import SafeText from '../../referoLabel/SafeText';
 
-import styles from './RenderHelpElement.module.scss';
+import styles from './renderHelpElement.module.scss';
 
 import ItemControlConstants from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
