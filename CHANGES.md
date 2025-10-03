@@ -1,4 +1,4 @@
-## 21.0.1-beta01
+## 21.0.1
 
 - Added tests for enableWhen
 - Fix bug where enableWhen did not work when the first item in a questionnaire had repeat and enableWhen or the child items had enableWhen
