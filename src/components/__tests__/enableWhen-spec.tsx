@@ -1,7 +1,7 @@
 import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
 
-import { q as questionnaireWithEnableWhen, pasRappRepeat, q2, q3 } from './__data__/enableWhen';
+import { q as questionnaireWithEnableWhen, prr, q2, q3 } from './__data__/enableWhen';
 import { selectCheckboxOption } from '../../../test/selectors';
 import { renderRefero, screen, userEvent, waitFor, within } from '../../../test/test-utils';
 
@@ -27,7 +27,7 @@ describe('enableWhen with checkboxes and multiple answers', () => {
 
 describe('enableWhen med repeterende gruppe på root', () => {
   it('skal ikke slette valg i repeterende grupper selv om de er på første nivå av items', async () => {
-    await createWrapper(pasRappRepeat);
+    await createWrapper(prr);
     // Velg alternativ 3 i item nr 1 (Andre legemidler)
     await userEvent.click(screen.getByText('Andre legemidler'));
     // Fyll ut tekstfelt som kommer opp
@@ -43,7 +43,7 @@ describe('enableWhen med repeterende gruppe på root', () => {
   });
 
   it('skal slette valg i repeterende grupper når de blir disabled', async () => {
-    await createWrapper(pasRappRepeat);
+    await createWrapper(prr);
     // velg alternativ 3  i item nr 1
     await userEvent.click(screen.getByText('Andre legemidler'));
     //legg til text
@@ -79,7 +79,7 @@ describe('enableWhen med repeterende gruppe på root', () => {
     expect(within(await screen.findByTestId('test-string-item_1%2E2')).getByRole('textbox')).toHaveValue('Dette er en test');
   });
   it('Når man endrer svar i gruppe med index 0 skal ikke svar i gruppe med index 1 bli påvirket', async () => {
-    await createWrapper(pasRappRepeat);
+    await createWrapper(prr);
     //Velg valg nr 3 (Andre legemidler) i item nr 1
     expect(await screen.findByTestId('item_100%2E3-2-radio-choice-label')).toBeInTheDocument();
     await userEvent.click(screen.getByTestId('item_100%2E3-2-radio-choice-label'));
@@ -100,7 +100,7 @@ describe('enableWhen med repeterende gruppe på root', () => {
     await waitFor(() => expect(within(inputWrapper).getByDisplayValue('Dette er en test')).toBeInTheDocument());
   });
   it('skal ikke slette valg i første item når man fjerner valg i andre item', async () => {
-    await createWrapper(pasRappRepeat);
+    await createWrapper(prr);
     //Velg Andre legemidler i choice
     await userEvent.click(screen.getByText('Andre legemidler'));
 
