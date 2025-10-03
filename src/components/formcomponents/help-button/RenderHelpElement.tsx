@@ -1,8 +1,8 @@
-import classNames from 'classnames';
 import { QuestionnaireItem } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
 
 import SafeText from '../../referoLabel/SafeText';
+
+import styles from './RenderHelpElement.module.scss';
 
 import ItemControlConstants from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
@@ -17,14 +17,10 @@ type Props = {
 const RenderHelpElement = ({ isHelpVisible, item }: Props): JSX.Element | null => {
   const { onRequestHelpElement } = useExternalRenderContext();
 
-  if (!item) {
-    return null;
-  }
+  if (!item) return null;
 
   const helpItem = findHelpItem(item);
-  if (!helpItem) {
-    return null;
-  }
+  if (!helpItem) return null;
 
   const helpItemType = getHelpItemType(helpItem) || ItemControlConstants.HELP;
 
@@ -32,14 +28,12 @@ const RenderHelpElement = ({ isHelpVisible, item }: Props): JSX.Element | null =
     return onRequestHelpElement(item, helpItem, helpItemType, getText(helpItem), isHelpVisible);
   }
 
-  const collapseClasses: string = classNames({
-    page_refero__helpComponent: true,
-    'page_refero__helpComponent--open': isHelpVisible,
-  });
+  const className = `${styles.page_refero__helpComponent} ${isHelpVisible ? styles['page_refero__helpComponent--open'] : ''}`;
+
   return (
-    <Collapse isOpened={isHelpVisible}>
-      <SafeText as="div" text={getText(helpItem)} data-testid={`${helpItem.linkId}-help-element`} className={collapseClasses} />
-    </Collapse>
+    <div aria-hidden={!isHelpVisible} aria-live="polite" className={className} data-testid={`${helpItem.linkId}-help-element`}>
+      <SafeText as="div" text={getText(helpItem)} />
+    </div>
   );
 };
 

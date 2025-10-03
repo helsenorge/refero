@@ -2,7 +2,7 @@ $featureColor1: #5b22a6;
 
 .page_refero__helpComponent {
   background-color: #efe4fd;
-  //Denne paddingen overstyres av en fieldset stylingklasse fra Designsystemet. 
+  //Denne paddingen overstyres av en fieldset stylingklasse fra Designsystemet.
   //Setter derfor !important, frem til komponentet byttes ut.
   padding: 25px !important;
   margin-bottom: 20px;
@@ -14,9 +14,8 @@ $featureColor1: #5b22a6;
 }
 
 .page_refero__helpButton {
-
   &.padding {
-    padding-left: .75rem;
+    padding-left: 0.75rem;
   }
 
   .atom_inline-functionbutton {
