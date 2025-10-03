@@ -6,6 +6,6 @@ const q: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/q.json').toStr
 const q2: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/q2.json').toString());
 const q3: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/q3.json').toString());
 
-const prr: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/pasRappRepeat.json').toString());
+const prr: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/prr.json').toString());
 
 export { q, prr, q2, q2 as simpleRepeatQuestionnaire, q3 };
