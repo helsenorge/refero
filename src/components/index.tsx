@@ -55,7 +55,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item]);
   const methods = useForm<DefaultValues>({
     defaultValues: defualtVals,
-    shouldFocusError: false,
+    shouldFocusError: true,
     mode: 'onTouched',
     reValidateMode: 'onChange',
     criteriaMode: 'all',

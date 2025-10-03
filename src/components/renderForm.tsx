@@ -50,10 +50,11 @@ const RenderForm = ({
   isAuthorized,
   onFieldsNotCorrectlyFilledOut,
 }: RenderFormProps): JSX.Element | null => {
+  const formDefinition = useAppSelector(state => getFormDefinition(state));
+  const { formState } = useFormContext();
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} color="black" />;
   }
-  const formDefinition = useAppSelector(state => getFormDefinition(state));
 
   const presentationButtonsType = getPresentationButtonsExtension(formDefinition?.Content);
   const displayValidationSummaryOnTop: boolean =
@@ -63,7 +64,6 @@ const RenderForm = ({
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
-  const { formState } = useFormContext();
   const { errors } = formState;
   const errorsExist = Object.keys(errors).length > 0;
 
