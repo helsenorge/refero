@@ -7,7 +7,6 @@ import dataModel from './__data__/nestedRepeats';
 import { pathify, clickRepeat, uploadAttachment, createAttachment } from './utils';
 import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 
-
 describe('update enable when action', () => {
   let newState: Form;
   let definitionItems: QuestionnaireItem[];
@@ -21,7 +20,7 @@ describe('update enable when action', () => {
     definitionItems = dItems;
   });
 
-  it('should add right number of items for nested repeats', () => {
+  it('should add right number of items for nested repeats', async () => {
     if (!newState.FormDefinition.Content) {
       return fail();
     }
@@ -35,7 +34,7 @@ describe('update enable when action', () => {
 
     const defItem = getQuestionnaireDefinitionItem('1.2', definitionItems);
     if (!defItem) return fail();
-    newState = clickRepeat(newState, pathify('1^0'), defItem, [{ linkId: '1.2' }]);
+    newState = await clickRepeat(newState, pathify('1^0'), defItem, [{ linkId: '1.2' }]);
 
     firstRootItem = getResponseItemWithPath(pathify('1^0'), newState.FormData);
     if (!firstRootItem || !firstRootItem.item) {
@@ -45,7 +44,7 @@ describe('update enable when action', () => {
 
     const rootDefItem = getQuestionnaireDefinitionItem('1', definitionItems);
     if (!rootDefItem) return fail();
-    newState = clickRepeat(newState, [], rootDefItem, [firstRootItem]);
+    newState = await clickRepeat(newState, [], rootDefItem, [firstRootItem]);
 
     const secondRootItem = getResponseItemWithPath(pathify('1^1'), newState.FormData);
     if (!secondRootItem || !secondRootItem.item) {
@@ -55,7 +54,7 @@ describe('update enable when action', () => {
     expect(secondRootItem.item.filter(i => i.linkId === '1.2').length).toBe(2);
   });
 
-  it('should not copy answers from repeating items inside repeating group', () => {
+  it('should not copy answers from repeating items inside repeating group', async () => {
     if (!newState.FormDefinition.Content) {
       return fail();
     }
@@ -65,7 +64,7 @@ describe('update enable when action', () => {
       return fail();
     }
 
-    newState = uploadAttachment(
+    newState = await uploadAttachment(
       newState,
       pathify('1^0', '1.3^0'),
       createAttachment('1', 'fil1'),
@@ -73,7 +72,7 @@ describe('update enable when action', () => {
       true
     );
 
-    newState = uploadAttachment(
+    newState = await uploadAttachment(
       newState,
       pathify('1^0', '1.3^0'),
       createAttachment('2', 'fil2'),
@@ -89,7 +88,7 @@ describe('update enable when action', () => {
 
     const rootDefItem = getQuestionnaireDefinitionItem('1', definitionItems);
     if (!rootDefItem) return fail();
-    newState = clickRepeat(newState, [], rootDefItem, [firstRootItem as QuestionnaireResponseItem]);
+    newState = await clickRepeat(newState, [], rootDefItem, [firstRootItem as QuestionnaireResponseItem]);
 
     const secondRootItem = getResponseItemWithPath(pathify('1^1'), newState.FormData);
     if (!secondRootItem || !secondRootItem.item) {

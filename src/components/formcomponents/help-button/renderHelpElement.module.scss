@@ -1,0 +1,48 @@
+$duration: 250ms;
+$easing: ease;
+$padding-full: 25px;
+$padding-none: 0;
+.page_refero__helpComponent {
+  background-color: #efe4fd;
+  margin: 0;
+  padding-top: $padding-none;
+  padding-bottom: $padding-none;
+  padding-left: $padding-full;
+  padding-right: $padding-full;
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+
+  transition:
+    max-height $duration $easing,
+    margin $duration $easing,
+    padding-top $duration $easing,
+    padding-bottom $duration $easing,
+    padding-left $duration $easing $duration,
+    padding-right $duration $easing $duration,
+    visibility 0s linear $duration;
+
+  &--open {
+    visibility: visible;
+    max-height: 1000px;
+    margin-bottom: 20px;
+
+    padding-top: $padding-full;
+    padding-bottom: $padding-full;
+    padding-left: $padding-full;
+    padding-right: $padding-full;
+
+    transition:
+      max-height $duration $easing,
+      margin $duration $easing,
+      padding-top $duration $easing,
+      padding-bottom $duration $easing,
+      padding-left $duration $easing,
+      padding-right $duration $easing,
+      visibility 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}

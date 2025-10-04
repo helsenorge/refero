@@ -20,7 +20,7 @@ self.IS_REACT_ACT_ENVIRONMENT = true;
 window.IS_REACT_ACT_ENVIRONMENT = true;
 // @ts-expect-error global is not defined
 this.IS_REACT_ACT_ENVIRONMENT = true;
-
+(globalThis as any).__REFERO_DEBUG = { enableWhen: true };
 Object.defineProperty(window.URL, 'createObjectURL', {
   writable: true,
   value: vi.fn(),
