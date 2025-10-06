@@ -1,0 +1,214 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "501",
+  "name": "SLV_PasRapp_TESTER",
+  "title": "Melde om bivirkninger på legemidler og vaksiner",
+  "description": "Varsel om bivirkninger på legemidler",
+  "version": "1",
+  "status": "active",
+  "publisher": "Norsk helsenett",
+  "meta": {
+    "versionId": "17",
+    "lastUpdated": "2025-08-11T13:41:22.614+00:00",
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "security": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.7618", "code": "3", "display": "Helsehjelp (Full)" }],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Norsk bokmål" }]
+  },
+  "useContext": [
+    {
+      "code": { "system": "http://hl7.org/fhir/ValueSet/usage-context-type", "code": "focus", "display": "Clinical Focus" },
+      "valueCodeableConcept": {
+        "coding": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.8655", "code": "A", "display": "Andre  helsehjelpsområder" }]
+      }
+    }
+  ],
+  "contact": [{ "name": "http://www.nhn.no" }],
+  "subjectType": ["Patient"],
+  "copyright": "Er utviklet av Norsk helsenett",
+  "date": "2025-08-21T00:00:00+02:00",
+  "url": "Questionnaire/501",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "b6546827-cea5-41a4-8986-1ea0f75e25d8",
+      "version": "1.0",
+      "name": "KoronavaksineMerker",
+      "title": "KoronavaksineMerker",
+      "status": "draft",
+      "date": "2023-01-06T11:59:49.814Z",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "http://ehelse.no/KoronavaksineMerker",
+            "concept": [
+              { "id": "19a29ecc-08ba-45b8-80fb-ed3b24e5c512", "code": "J07BN01 Comirnaty", "display": "Comirnaty (Pfizer)" },
+              { "id": "90b7c7ec-96bb-49f6-8872-cfc961f6990d", "code": "J07BN01 Spikevax", "display": "Spikevax (Moderna)" },
+              { "id": "8677d309-66c4-441e-dc1e-1a3467b0ce8b", "code": "J07BN02 Vaxzevria", "display": "Vaxzevria (AstraZeneca)" },
+              { "id": "09d31d1f-3894-4335-f7fb-3016faa2ed3a", "code": "J07BN02 Jcovden", "display": "Jcovden (Johnson & Johnson/Janssen)" },
+              { "id": "9fe35b36-3e08-4cf5-ddaa-e566f0062fcb", "code": "J07BN04 Nuvaxovid", "display": "Nuvaxovid (Novavax)" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "8790bda0-f473-451a-ad6f-762826d7c1a5",
+      "version": "1.0",
+      "name": "TypeLegemiddel",
+      "title": "TypeLegemiddel",
+      "status": "draft",
+      "date": "2023-01-06T12:06:21.794Z",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "http://ehelse.no/TypeLegemiddel",
+            "concept": [
+              { "id": "896cffd5-be69-4c73-8be3-6a69b4939ba6", "code": "koronavaksine", "display": "Koronavaksine" },
+              { "id": "6c4f0a0f-a615-424d-f209-cb4d5cd44e3e", "code": "annen-vaksine", "display": "Annen vaksine" },
+              { "id": "56dc955c-376c-4966-bfcf-e3d15b57a55b", "code": "andre-legemidler", "display": "Andre legemidler" }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "extension": [
+        { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 50 },
+        { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til nytt mistenkt legemiddel" }
+      ],
+      "linkId": "100",
+      "text": "Mistenkte legemidler",
+      "type": "group",
+      "repeats": true,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+              }
+            },
+            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$" }
+          ],
+          "linkId": "100.1",
+          "text": "Du kan melde bivirkninger av godkjente legemidler, inkludert vaksiner og legemidler på godkjenningsfritak.",
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "maxLength": 250
+        },
+        {
+          "linkId": "100.3",
+          "text": "Hva ønsker du å melde bivirkninger av?",
+          "type": "choice",
+          "required": true,
+          "answerValueSet": "#8790bda0-f473-451a-ad6f-762826d7c1a5",
+          "item": [
+            {
+              "linkId": "100.5",
+              "text": "Koronavaksine",
+              "type": "group",
+              "enableWhen": [
+                {
+                  "question": "100.3",
+                  "operator": "=",
+                  "answerCoding": { "system": "http://ehelse.no/TypeLegemiddel", "code": "koronavaksine" }
+                }
+              ],
+              "required": false,
+              "item": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+                      }
+                    },
+                    {
+                      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+                      "valueMarkdown": "Usikker? Se hvilken vaksine du har fått i tjenesten [Vaksiner](/vaksiner/), eller ta kontakt med vaksinasjonsstedet og be om at helsepersonell melder."
+                    }
+                  ],
+                  "linkId": "100.5.1",
+                  "text": "Hvilken koronavaksine mistenker du er årsaken til bivirkningen(e)?",
+                  "type": "choice",
+                  "required": true,
+                  "answerValueSet": "#b6546827-cea5-41a4-8986-1ea0f75e25d8"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "100.20.2",
+          "text": "Informasjon om mistenkt legemiddel",
+          "type": "group",
+          "enableWhen": [
+            {
+              "question": "100.3",
+              "operator": "=",
+              "answerCoding": { "system": "http://ehelse.no/TypeLegemiddel", "code": "andre-legemidler" }
+            }
+          ],
+          "enableBehavior": "any",
+          "repeats": false,
+          "item": [
+            {
+              "extension": [
+                { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$" },
+                {
+                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                  "valueString": "Fyll ut feltet med maksimum 150 tegn. Spesialtegn slik som punktlister og emoji er ikke mulig."
+                }
+              ],
+              "linkId": "100.20.2.70",
+              "text": "Batch- eller LOT-nummer",
+              "type": "string",
+              "required": false,
+              "repeats": false,
+              "readOnly": false,
+              "maxLength": 150,
+              "item": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                      }
+                    },
+                    { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$" }
+                  ],
+                  "linkId": "100.20.2.70.1",
+                  "text": "Batch- / LOT-nummer er en identifikasjonsmerking som gir viktig informasjon om når og hvor legemiddelet er produsert.\r\n\r\nDette nummeret finner du ved utløpsdatoen på pakken. Batchnummer kan inneholde både tall og bokstaver.",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                        "valueMarkdown": "Batch- / LOT-nummer er en identifikasjonsmerking som gir viktig informasjon om når og hvor legemiddelet er produsert.\n\nDette nummeret finner du ved utløpsdatoen på pakken. Batchnummer kan inneholde både tall og bokstaver."
+                      }
+                    ]
+                  },
+                  "type": "text",
+                  "required": false,
+                  "repeats": false,
+                  "readOnly": false,
+                  "maxLength": 250
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

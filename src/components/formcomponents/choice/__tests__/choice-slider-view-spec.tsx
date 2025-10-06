@@ -64,7 +64,6 @@ describe('Slider-view', () => {
         });
       });
     });
-    //TODO: Fix when component is updated and can be given refs
     describe('onChange', () => {
       it('Should update component with value from answer', async () => {
         const onChange = vi.fn();

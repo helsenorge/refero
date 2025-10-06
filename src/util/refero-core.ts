@@ -19,6 +19,7 @@ import { FormData, FormDefinition } from '../reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
 
 import { isRepeat } from '.';
+
 export interface Path {
   linkId: string;
   index?: number;
@@ -55,7 +56,10 @@ export function isInGroupContext(path: Path[], item: QuestionnaireResponseItem, 
   }
 
   const repeatingItems = getItemWithIdFromResponseItemArray(item.linkId, items) || [];
-  return repeatingItems.indexOf(item) === pathItem.index;
+  const idx = repeatingItems.indexOf(item);
+  const ok = idx === pathItem.index;
+
+  return ok;
 }
 
 export function getQuestionnaireResponseItemWithLinkid(
@@ -63,9 +67,8 @@ export function getQuestionnaireResponseItemWithLinkid(
   responseItem: QuestionnaireResponseItem,
   referencePath: Path[]
 ): QuestionnaireResponseItem | undefined {
-  if (!responseItem) {
-    return undefined;
-  }
+  if (!responseItem) return undefined;
+
   if (responseItem.linkId === linkId) {
     return responseItem;
   }
@@ -74,11 +77,8 @@ export function getQuestionnaireResponseItemWithLinkid(
     if (!isInGroupContext(referencePath, responseItem.item[i], responseItem.item)) {
       continue;
     }
-
     const item = getQuestionnaireResponseItemWithLinkid(linkId, responseItem.item[i], referencePath);
-    if (item) {
-      return item;
-    }
+    if (item) return item;
   }
 
   for (let i = 0; responseItem.answer && i < responseItem.answer.length; i++) {
@@ -87,11 +87,8 @@ export function getQuestionnaireResponseItemWithLinkid(
       if (!isInGroupContext(referencePath, answer.item[j], answer.item)) {
         continue;
       }
-
       const item = getQuestionnaireResponseItemWithLinkid(linkId, answer.item[j], referencePath);
-      if (item) {
-        return item;
-      }
+      if (item) return item;
     }
   }
 
@@ -651,6 +648,7 @@ export function getResponseItemAndPathWithLinkId(
       }
     }
   }
+
   return response;
 }
 
@@ -680,32 +678,26 @@ function getResponseItemAndPathWithLinkIdTraverse(
 }
 
 export function getResponseItemWithPath(path: Path[], formData: FormData): QuestionnaireResponseItem | undefined {
-  if (!path || path.length === 0) {
-    return undefined;
-  }
-  if (!formData.Content || !formData.Content.item) {
-    return undefined;
-  }
+  if (!path || path.length === 0) return undefined;
+  if (!formData.Content || !formData.Content.item) return undefined;
+
   const rootItems: QuestionnaireResponseItem[] | undefined = getRootQuestionnaireResponseItemFromData(path[0].linkId, formData);
+  if (!rootItems || rootItems.length === 0) return undefined;
 
-  if (!rootItems || rootItems.length === 0) {
-    return undefined;
-  }
+  let item: QuestionnaireResponseItem = rootItems[path[0].index ?? 0];
 
-  let item: QuestionnaireResponseItem = rootItems[path[0].index || 0];
   for (let i = 1; i < path.length; i++) {
     let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item.item);
 
     if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
-      const itemsFromAnswer = item.answer && item.answer.map(a => a.item).reduce((a, b) => (a || []).concat(b || []));
-
+      const itemsFromAnswer = item.answer && item.answer.flatMap(a => a.item ?? []);
       itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, itemsFromAnswer);
-      if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
-        break;
-      }
+      if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) break;
     }
-    item = itemsWithLinkIdFromPath[path[i].index || 0];
+
+    item = itemsWithLinkIdFromPath[path[i].index ?? 0];
   }
+
   return item;
 }
 
@@ -751,8 +743,6 @@ export function getQuestionnaireDefinitionItemWithLinkid(
       return item;
     }
   }
-
-  // linkId not found in items, check the answers for items
 }
 
 function getQuestionnaireItemWithIdFromArray(linkId: string, items: QuestionnaireItem[] | undefined): QuestionnaireItem[] | undefined {

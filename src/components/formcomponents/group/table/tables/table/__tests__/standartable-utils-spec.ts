@@ -193,8 +193,8 @@ describe('createBodyRows', () => {
     ]);
   });
 
-  it('should create body rows without an extra column if the flag is false', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as Mock).mockImplementation((): QuestionnaireResponseItem[] => {
+  it('should create body rows without an extra column if the flag is false', async () => {
+    ((await tableUtils.getEnabledQuestionnaireItemsWithAnswers) as Mock).mockImplementation((): QuestionnaireResponseItem[] => {
       return [
         { linkId: '1', answer: [{ valueCoding: { code: '1' } }] },
         { linkId: '2', answer: [{ valueCoding: { code: '2' } }] },
@@ -218,7 +218,7 @@ describe('createBodyRows', () => {
       { type: '1', label: 'Option A' },
       { type: '2', label: 'Option B' },
     ];
-    const bodyRows = createBodyRows(items, responseItems, needsExtraColumn, choiceValues);
+    const bodyRows = await createBodyRows(items, responseItems, needsExtraColumn, choiceValues);
     expect(bodyRows).toEqual([
       {
         id: '1',
@@ -391,8 +391,8 @@ describe('getStandardTableObject', () => {
     vi.spyOn(tableUtils, 'transformAnswersToListOfStrings');
     vi.spyOn(choiceUtils, 'getContainedOptions');
   });
-  it('should return an empty table if no response items or items are provided', () => {
-    const table = getStandardTableObject([], null);
+  it('should return an empty table if no response items or items are provided', async () => {
+    const table = await getStandardTableObject([], null);
     expect(table).toEqual({
       headerRow: [],
       rows: [],
@@ -400,7 +400,7 @@ describe('getStandardTableObject', () => {
     });
   });
 
-  it('should return an empty table with the response items id if no first choice item is found', () => {
+  it('should return an empty table with the response items id if no first choice item is found', async () => {
     const items: QuestionnaireItem[] = [
       { linkId: '1', text: 'Question 1', type: ItemType.TEXT },
       { linkId: '2', text: 'Question 2', type: ItemType.TEXT },
@@ -414,7 +414,7 @@ describe('getStandardTableObject', () => {
         { linkId: '2', answer: [{ valueCoding: { code: '2' } }] },
       ],
     };
-    const table = getStandardTableObject(items, responseItems);
+    const table = await getStandardTableObject(items, responseItems);
     expect(table).toEqual({
       id: 'responseId',
       headerRow: [],
@@ -422,7 +422,7 @@ describe('getStandardTableObject', () => {
     });
   });
 
-  it('should return a table with the response items id, header row, and body rows', () => {
+  it('should return a table with the response items id, header row, and body rows', async () => {
     (tableUtils.getEnabledQuestionnaireItemsWithAnswers as Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: '1' } }] },
@@ -455,7 +455,7 @@ describe('getStandardTableObject', () => {
       ],
     };
     const resource: Resource[] = [];
-    const table = getStandardTableObject(items, responseItems, resource);
+    const table = await getStandardTableObject(items, responseItems, resource);
 
     expect(table).toEqual({
       id: 'responseId',

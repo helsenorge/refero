@@ -20,6 +20,7 @@ import { createIntitialFormValues, DefaultValues } from '../src/validation/defau
 
 import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
+import { enableWhenListener } from '@/index';
 
 export const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
   const methods = useForm({
@@ -70,6 +71,7 @@ const customRender = (
       </AllTheProviders>
     ),
     ...renderOptions,
+    store,
   });
 };
 
@@ -99,7 +101,7 @@ const renderWithReduxAndHookFormMock = (
     store = configureStore({
       reducer: rootReducer,
       preloadedState: initialState as GlobalState,
-      middleware: getDefaultMiddleware => getDefaultMiddleware(),
+      middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(enableWhenListener.middleware),
     }),
     ...renderOptions
   }: CustomRenderOptions = {}
@@ -138,7 +140,11 @@ async function renderRefero({ questionnaire, props, initialState, resources, def
       },
     },
   };
-  const store = configureStore({ reducer: rootReducer, preloadedState: state, middleware: getDefaultMiddleware => getDefaultMiddleware() });
+  const store = configureStore({
+    reducer: rootReducer,
+    preloadedState: state,
+    middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(enableWhenListener.middleware),
+  });
   const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire.item);
 
   return customRender(

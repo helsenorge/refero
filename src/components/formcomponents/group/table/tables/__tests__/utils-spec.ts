@@ -180,7 +180,7 @@ describe('addAnswerToItems', () => {
     vi.clearAllMocks();
   });
 
-  it('should process single item correctly', () => {
+  it('should process single item correctly', async () => {
     const mockItem: QuestionnaireItem = {
       linkId: '1',
       text: 'How are you feeling today?',
@@ -218,12 +218,12 @@ describe('addAnswerToItems', () => {
       ],
     };
 
-    const result = questionnaireFunctions.addAnswerToItems([mockItem], mockResponse);
+    const result = await questionnaireFunctions.addAnswerToItems([mockItem], mockResponse);
 
     expect(result[0].answer).toEqual([{ valueString: 'I feel good.' }]);
   });
 
-  it('should handle an array of answers correctly', () => {
+  it('should handle an array of answers correctly', async () => {
     const mockItem: QuestionnaireItem = {
       linkId: '1',
       text: 'How are you feeling today?',
@@ -257,12 +257,12 @@ describe('addAnswerToItems', () => {
       ],
     };
 
-    const result = questionnaireFunctions.addAnswerToItems([mockItem], mockResponse);
+    const result = await questionnaireFunctions.addAnswerToItems([mockItem], mockResponse);
 
     expect(result[0].answer).toEqual([{ valueString: 'First Answer' }, { valueString: 'Second Answer' }]);
   });
 
-  it('should return empty answer array when getValueIfDataReceiver returns undefined', () => {
+  it('should return empty answer array when getValueIfDataReceiver returns undefined', async () => {
     const mockItem: QuestionnaireItem = {
       linkId: '1',
       text: 'How are you feeling today?',
@@ -296,7 +296,7 @@ describe('addAnswerToItems', () => {
       ],
     };
 
-    const result = questionnaireFunctions.addAnswerToItems([mockItem], mockResponse);
+    const result = await questionnaireFunctions.addAnswerToItems([mockItem], mockResponse);
 
     expect(result[0].answer).toEqual([]);
   });

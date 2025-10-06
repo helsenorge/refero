@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { configureStore } from '@reduxjs/toolkit';
 import {
   Attachment,
   Bundle,
@@ -18,6 +17,7 @@ import Button from '@helsenorge/designsystem-react/components/Button';
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
+import { store as reduxStore } from '../src/reducers';
 import HelpButton from './external-components/HelpButton';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
@@ -25,7 +25,6 @@ import skjema from './skjema/q.json';
 import ReferoContainer from '../src/components/index';
 import qr from './skjema/responses/qr.json';
 import valueSet from '../src/constants/valuesets';
-import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 
@@ -169,9 +168,8 @@ function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | nu
 }
 
 const FormFillerPreview = (): JSX.Element => {
-  const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
   const [lang, setLang] = useState<number>(0);
-
+  const store = reduxStore();
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
   const mainQuestionnaire = getQuestionnaireFromBubndle(parsedQuestionnaire, 0);
 

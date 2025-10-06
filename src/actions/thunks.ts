@@ -26,7 +26,7 @@ const debouncedFhirPathRunner = debounce((dispatch: AppDispatch, getState: () =>
   if (questionnaire && questionnaireResponse) {
     runFhirPathQrUpdater({ questionnaire, questionnaireResponse, dispatch });
   }
-}, 200);
+}, 120);
 
 export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootState; dispatch: AppDispatch }>(
   'questionnaireResponse/update',

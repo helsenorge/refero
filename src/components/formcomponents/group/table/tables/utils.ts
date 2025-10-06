@@ -23,7 +23,6 @@ import ItemType, { IItemType } from '@/constants/itemType';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { getQuestionnaireItemCodeValue } from '@/util/codingsystem';
 import { getCalculatedExpressionExtension, getCopyExtension } from '@/util/extension';
-import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
 import {
   Path,
   enableWhenMatchesAnswer,
@@ -31,6 +30,7 @@ import {
   getResponseItemAndPathWithLinkId,
   isInGroupContext,
 } from '@/util/refero-core';
+import { evaluateFhirpathExpressionToGetString } from '@/workers/fhirpath-rpc';
 
 type QuantityKeys = keyof Pick<Quantity, 'value' | 'code' | 'system' | 'unit'> | 'display';
 type Codingkeys = keyof Pick<Coding, 'code' | 'display' | 'system'>;
@@ -219,10 +219,10 @@ export const getAnswerFromDisplayType = (
   return { valueString: item.text };
 };
 
-export const getValueIfDataReceiver = (
+export const getValueIfDataReceiver = async (
   item: QuestionnaireItem,
   questionnaireResponse?: QuestionnaireResponse | null
-): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
+): Promise<QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined> => {
   const copyExtension = getCopyExtension(item);
   const calculatedExpressionExtension = getCalculatedExpressionExtension(item);
   if (calculatedExpressionExtension) {
@@ -233,7 +233,7 @@ export const getValueIfDataReceiver = (
     return undefined;
   }
   if (copyExtension) {
-    let result = evaluateFhirpathExpressionToGetString(copyExtension, questionnaireResponse);
+    let result = await evaluateFhirpathExpressionToGetString(copyExtension, questionnaireResponse);
 
     if (getCalculatedExpressionExtension(item)) {
       result = result.map((m: { value: number }) => {
@@ -241,7 +241,7 @@ export const getValueIfDataReceiver = (
       });
     }
 
-    return getQuestionnaireResponseItemAnswer(item.type as Exclude<(typeof ItemType)[keyof typeof ItemType], 'url'>, result);
+    return getQuestionnaireResponseItemAnswer(item.type as Exclude<(typeof ItemType)[keyof typeof ItemType], 'url'>, result as never[]);
   }
   return undefined;
 };
@@ -329,15 +329,15 @@ export function findFirstDefinedProperty<T>(obj: T): T[Extract<keyof T, string>]
   return undefined;
 }
 
-export const addAnswerToItems = (
+export const addAnswerToItems = async (
   items: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse | null
-): QuestionnaireItemWithAnswers[] => {
+): Promise<QuestionnaireItemWithAnswers[]> => {
   if (!questionnaireResponse || items.length === 0) {
     return [];
   }
-  const processItem = (item: QuestionnaireItem): QuestionnaireItemWithAnswers => {
-    const res = getValueIfDataReceiver(item, questionnaireResponse);
+  const processItem = async (item: QuestionnaireItem): Promise<QuestionnaireItemWithAnswers> => {
+    const res = await getValueIfDataReceiver(item, questionnaireResponse);
 
     const clonedItems = structuredClone(item);
     const questionnaireResponseItem: QuestionnaireItemWithAnswers = {
@@ -349,22 +349,22 @@ export const addAnswerToItems = (
       questionnaireResponseItem.answer = res;
     }
     if (item.item && item.item.length > 0) {
-      questionnaireResponseItem.item = addAnswerToItems(item.item, questionnaireResponse);
+      questionnaireResponseItem.item = await addAnswerToItems(item.item, questionnaireResponse);
     }
 
     return questionnaireResponseItem;
   };
-  const response = items.map(processItem);
+  const response = await Promise.all(items.map(processItem));
   return response;
 };
 
-export const getEnabledQuestionnaireItemsWithAnswers = (
+export const getEnabledQuestionnaireItemsWithAnswers = async (
   items?: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse
-): QuestionnaireItemWithAnswers[] => {
+): Promise<QuestionnaireItemWithAnswers[]> => {
   if (!items || !questionnaireResponse) return [];
   const filteredItems = filterEnabledQuestionnaireItems(items, questionnaireResponse);
-  return addAnswerToItems(filteredItems, questionnaireResponse);
+  return await addAnswerToItems(filteredItems, questionnaireResponse);
 };
 
 /* TABLE HEADER */

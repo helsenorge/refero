@@ -128,3 +128,11 @@ export const isGroupAndDescendantsHasAnswer = async (responseItem?: Questionnair
     return false;
   }
 };
+export async function getResponseItem(linkId: string, response: QuestionnaireResponse): Promise<any[] | undefined> {
+  if (!linkId || !response) return undefined;
+  const compiled = fhirpath.compile(
+    `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`,
+    fhirpath_r4_model
+  );
+  return compiled(response);
+}

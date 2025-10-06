@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import { Table as HnTable, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
 
-import { TABLE_HN1_TABLE_TYPES } from './interface';
+import { ITableH1, TABLE_HN1_TABLE_TYPES } from './interface';
 import { getTableHN1bodyObject } from './utils';
 
 interface Props {
@@ -12,7 +12,14 @@ interface Props {
   questionnaireResponse?: QuestionnaireResponse | null;
 }
 const TableHn1 = ({ items, questionnaireResponse }: Props): React.JSX.Element | null => {
-  const answerValues = getTableHN1bodyObject(items, questionnaireResponse);
+  const [answerValues, setAnswerValues] = React.useState<ITableH1>([]);
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      const table = await getTableHN1bodyObject(items, questionnaireResponse);
+      setAnswerValues(table);
+    };
+    fetchData();
+  }, [items, questionnaireResponse]);
   if (!answerValues || answerValues.length === 0) {
     return null;
   }
