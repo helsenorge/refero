@@ -32,9 +32,9 @@ React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/que
 import React from 'react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import { Refero, rootReducer, enableWhenListener } from '@helsenorge/refero';
+import { Refero, rootReducer } from '@helsenorge/refero';
 
-const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(enableWhenListener.middleware) });
+const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
 
 const App = () => {
     return (

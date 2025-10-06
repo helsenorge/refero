@@ -74,6 +74,25 @@ const customRender = (
     store,
   });
 };
+const customRender2 = (
+  ui: ReactElement,
+  options: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
+    store: Store;
+  } & { referoProps?: Partial<ReferoProps> }
+) => {
+  const { initialState, defaultValues, store, referoProps, ...renderOptions } = options || {};
+  return {
+    render: render(ui, {
+      wrapper: ({ children }) => (
+        <AllTheProviders initialState={initialState} defaultValues={defaultValues} store={store} referoProps={referoProps}>
+          {children}
+        </AllTheProviders>
+      ),
+      ...renderOptions,
+    }),
+    store,
+  };
+};
 
 interface CustomRenderOptions extends Omit<RenderOptions, 'queries'> {
   initialState?: Partial<GlobalState>;
@@ -101,7 +120,8 @@ const renderWithReduxAndHookFormMock = (
     store = configureStore({
       reducer: rootReducer,
       preloadedState: initialState as GlobalState,
-      middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(enableWhenListener.middleware),
+      middleware: getDefaultMiddleware => getDefaultMiddleware(),
+      //.prepend(enableWhenListener.middleware),
     }),
     ...renderOptions
   }: CustomRenderOptions = {}
@@ -143,7 +163,8 @@ async function renderRefero({ questionnaire, props, initialState, resources, def
   const store = configureStore({
     reducer: rootReducer,
     preloadedState: state,
-    middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(enableWhenListener.middleware),
+    middleware: getDefaultMiddleware => getDefaultMiddleware(),
+    //.prepend(enableWhenListener.middleware),
   });
   const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire.item);
 
@@ -162,6 +183,49 @@ async function renderRefero({ questionnaire, props, initialState, resources, def
     { store, defaultValues: defaultReactHookFormValues, referoProps: props }
   );
 }
+
+async function renderRefero2({ questionnaire, props, initialState, resources, defaultValues }: InputProps) {
+  const resourcesDefault = {
+    ...getResources(''),
+    ...resources,
+  };
+  const state = initialState || {
+    refero: {
+      form: {
+        FormDefinition: {
+          Content: questionnaire,
+        },
+        FormData: {
+          Content: generateQuestionnaireResponse(questionnaire),
+        },
+        Language: 'nb',
+      },
+    },
+  };
+  const store = configureStore({
+    reducer: rootReducer,
+    preloadedState: state,
+    middleware: getDefaultMiddleware => getDefaultMiddleware(),
+    //.prepend(enableWhenListener.middleware),
+  });
+  const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire.item);
+
+  return customRender2(
+    <ReferoContainer
+      loginButton={<React.Fragment />}
+      authorized={true}
+      onCancel={() => {}}
+      onSave={() => {}}
+      onSubmit={() => {}}
+      questionnaire={questionnaire}
+      resources={resourcesDefault}
+      onChange={() => {}}
+      {...props}
+    />,
+    { store, defaultValues: defaultReactHookFormValues, referoProps: props }
+  );
+}
+
 export * from '@testing-library/react';
 const user = userEvent.setup();
-export { customRender as render, renderWithRedux, renderWithReduxAndHookFormMock, renderRefero, user as userEvent };
+export { customRender as render, renderWithRedux, renderWithReduxAndHookFormMock, renderRefero, renderRefero2, user as userEvent };

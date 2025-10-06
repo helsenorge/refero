@@ -1,3 +1,8 @@
+## 21.0.3
+
+- Rollback enableWhen listners to fix bug where enableWhen did not work in some cases when the first item in a questionnaire had repeat and
+  enableWhen or the child items had enableWhen
+
 ## 21.0.2
 
 - Bugfix: When submitting and errors existed, no errors got focus
