@@ -1,3 +1,7 @@
+## 21.0.2
+
+- Bugfix: When submitting and errors existed, no errors got focus
+
 ## 21.0.1
 
 - Added tests for enableWhen
