@@ -1,3 +1,7 @@
+## 21.0.4
+
+- Release 21.0.4, changes did not come through in 21.0.3
+
 ## 21.0.3
 
 - Rollback enableWhen listners to fix bug where enableWhen did not work in some cases when the first item in a questionnaire had repeat and
