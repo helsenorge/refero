@@ -36,7 +36,7 @@ import {
   AnswerValuesItemPayload,
 } from '@/actions/newValue';
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
-// import { runEnableWhen } from '@/calculators/runEnableWhen';
+import { runEnableWhen } from '@/calculators/runEnableWhen';
 import itemType from '@/constants/itemType';
 import { GlobalState } from '@/reducers/index';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
@@ -340,7 +340,7 @@ function processRemoveCodingValueAction(action: NewValuePayload, state: Form): F
   }
 
   // run enableWhen to clear fields
-  // runEnableWhen(action, state);
+  runEnableWhen(action, state);
   return state;
 }
 
@@ -359,7 +359,7 @@ function processRemoveCodingStringValueAction(action: NewValuePayload, state: Fo
   }
 
   // run enableWhen to clear fields
-  // runEnableWhen(action, state);
+  runEnableWhen(action, state);
   return state;
 }
 
@@ -390,7 +390,7 @@ function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: For
   const answer = payload.newAnswer;
   responseItem.answer = answer;
 
-  // runEnableWhen(payload, state);
+  runEnableWhen(payload, state);
 
   return state;
 }
@@ -510,7 +510,7 @@ function processNewValueAction(payload: NewValuePayload, state: Form): Form {
       }
     }
   }
-  // runEnableWhen(payload, state);
+  runEnableWhen(payload, state);
   return state;
 }
 

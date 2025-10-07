@@ -11,9 +11,6 @@ import {
   newAnswerValuesAction,
   removeCodingStringValueAction,
   removeCodingValueAction,
-  removeAttachmentAction,
-  addRepeatItemAction,
-  deleteRepeatItemAction,
   type NewValuePayload,
   type AnswerValueItemPayload,
   type AnswerValuesItemPayload,
@@ -25,6 +22,10 @@ import {
 } from '@/actions/newValue';
 import { postRunEnableWhenToWorker } from '@/workers/fhirpath-rpc';
 
+/**
+ * Middleware for handling enableWhen logic in the questionnaire.
+ * THIS IS NOT ENABLED AT THE MOMENT, DO NOT USE AS IS
+ */
 export const enableWhenListener = createListenerMiddleware();
 
 type EnableWhenPayload =
@@ -53,16 +54,7 @@ const pickSingle = (p: EnableWhenPayload): { itemPath?: Path[]; item?: Questionn
 };
 const startTyped = enableWhenListener.startListening.withTypes<GlobalState, AppDispatch>();
 startTyped({
-  matcher: isAnyOf(
-    newValue,
-    newAnswerValueAction,
-    newAnswerValuesAction,
-    removeCodingStringValueAction,
-    removeCodingValueAction,
-    removeAttachmentAction,
-    addRepeatItemAction,
-    deleteRepeatItemAction
-  ),
+  matcher: isAnyOf(newValue, newAnswerValueAction, removeCodingStringValueAction, removeCodingValueAction),
   effect: async (action: PayloadAction<EnableWhenPayload>, api) => {
     api.cancelActiveListeners();
     await api.delay(80);
@@ -91,13 +83,12 @@ startTyped({
     let result:
       | {
           answerValues: AnswerValuesItemPayload;
-          repeatRemovals: Array<DeleteRepeatItemPayload>;
         }
       | undefined;
 
     try {
-      const { answerValues, repeatRemovals } = await postRunEnableWhenToWorker(req);
-      result = { answerValues: answerValues ?? [], repeatRemovals: repeatRemovals ?? [] };
+      const { answerValues } = await postRunEnableWhenToWorker(req);
+      result = { answerValues: answerValues ?? [] };
     } catch (_e) {
       console.log('error', _e);
       // ignore feil fra worker
@@ -107,18 +98,18 @@ startTyped({
       return;
     }
 
-    const { answerValues, repeatRemovals } = result;
+    const { answerValues } = result;
 
-    if (repeatRemovals?.length) {
-      for (const r of repeatRemovals) {
-        const payload: DeleteRepeatItemPayload = {
-          itemPath: r.itemPath,
-          item: r.item,
-        } as DeleteRepeatItemPayload;
+    // if (repeatRemovals?.length) {
+    //   for (const r of repeatRemovals) {
+    //     const payload: DeleteRepeatItemPayload = {
+    //       itemPath: r.itemPath,
+    //       item: r.item,
+    //     } as DeleteRepeatItemPayload;
 
-        api.dispatch(deleteRepeatItemAction(payload));
-      }
-    }
+    //     api.dispatch(deleteRepeatItemAction(payload));
+    //   }
+    // }
 
     if (!answerValues?.length) {
       return;

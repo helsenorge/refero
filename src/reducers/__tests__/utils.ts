@@ -1,5 +1,5 @@
 import '@/util/__tests__/defineFetch';
-import { PayloadAction } from '@reduxjs/toolkit';
+import { Action } from '@reduxjs/toolkit';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Quantity, Attachment } from 'fhir/r4';
 
 import { store as reduxStore, GlobalState } from '..';
@@ -20,7 +20,6 @@ import {
   removeCodingValueAction,
   newCodingStringValueAction,
   removeCodingStringValueAction,
-  NewValuePayload,
   newAttachmentAction,
 } from '@/actions/newValue';
 import { Path, getResponseItemWithPath } from '@/util/refero-core';
@@ -211,7 +210,7 @@ async function flushAllTimersAndMicrotasks(): Promise<void> {
     await Promise.resolve();
   }
 }
-export async function reduce(state: Form, action: PayloadAction<NewValuePayload>): Promise<Form> {
+export async function reduce(state: Form, action: Action): Promise<Form> {
   // Viktig: aktiver fake timers FØR store init, så middleware/lyttere bruker samme klokke
   vi.useFakeTimers();
 
@@ -223,7 +222,6 @@ export async function reduce(state: Form, action: PayloadAction<NewValuePayload>
 
   // Flush debounce + evt. påfølgende runder
   await flushAllTimersAndMicrotasks();
-
   const newState = store.getState().refero.form;
   if (!newState?.FormData?.Content?.item) {
     throw new Error('no state');
