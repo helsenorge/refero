@@ -687,10 +687,10 @@ export function getResponseItemWithPath(path: Path[], formData: FormData): Quest
   let item: QuestionnaireResponseItem = rootItems[path[0].index ?? 0];
 
   for (let i = 1; i < path.length; i++) {
-    let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item.item);
+    let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item?.item);
 
     if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
-      const itemsFromAnswer = item.answer && item.answer.flatMap(a => a.item ?? []);
+      const itemsFromAnswer = item?.answer && item?.answer.flatMap(a => a.item ?? []);
       itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, itemsFromAnswer);
       if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) break;
     }

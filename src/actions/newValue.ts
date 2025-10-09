@@ -23,6 +23,9 @@ export const DELETE_REPEAT_ITEM: DELETE_REPEAT_ITEM = 'refero/DELETE_REPEAT_ITEM
 export type REMOVE_ATTACHMENT_VALUE = 'refero/REMOVE_ATTACHMENT_VALUE';
 export const REMOVE_ATTACHMENT_VALUE: REMOVE_ATTACHMENT_VALUE = 'refero/REMOVE_ATTACHMENT_VALUE';
 
+export type RESET_ANSWER_VALUE = 'refero/RESET_ANSWER_VALUE';
+export const RESET_ANSWER_VALUE: RESET_ANSWER_VALUE = 'refero/RESET_ANSWER_VALUE';
+
 export type NewValuePayload = {
   itemPath?: Array<Path>;
   parentPath?: Array<Path>;
@@ -59,11 +62,16 @@ export type DateTimeItemPayload = Pick<NewValuePayload, 'itemPath' | 'valueDateT
 export type DeleteRepeatItemPayload = Pick<NewValuePayload, 'itemPath' | 'item'>;
 export type AnswerValueItemPayload = Pick<NewValuePayload, 'itemPath' | 'item' | 'newAnswer'>;
 export type AnswerValuesItemPayload = Pick<NewValuePayload, 'itemPath' | 'item' | 'newAnswer'>[];
-
+export type ResetAnswerValuePayload = {
+  itemPath: Array<Path>;
+  rItem: QuestionnaireResponseItem;
+  qItem: QuestionnaireItem;
+  index?: number;
+};
 export const newValue = createAction<NewValuePayload>(NEW_VALUE);
 
 export const newAttachmentAction = createAction<NewAttachmentPayload>(NEW_VALUE);
-
+export type ClearAction = PayloadAction<ResetAnswerValuePayload, string> | PayloadAction<DeleteRepeatItemPayload, string>;
 /*
  * @deprecated this will be removed in a future version, use newAttachmentAction instead
  */
@@ -333,6 +341,8 @@ export const addRepeatItem = (
   item: RepeatItemPayload['item'],
   responseItems: RepeatItemPayload['responseItems']
 ): PayloadAction<RepeatItemPayload> => addRepeatItemAction({ parentPath, item, responseItems });
+
+export const resetAnswerValueAction = createAction<ResetAnswerValuePayload>(RESET_ANSWER_VALUE);
 
 export const deleteRepeatItemAction = createAction<DeleteRepeatItemPayload>(DELETE_REPEAT_ITEM);
 /*

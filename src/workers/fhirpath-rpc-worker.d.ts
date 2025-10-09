@@ -155,10 +155,6 @@ export type Methods = {
     params: RunCalculatorsParams;
     result: RunCalculatorsResult;
   };
-  runEnableWhen: {
-    params: RunEnableWhenParams;
-    result: RunEnableWhenResult;
-  };
 };
 /**
  * RPC envelope
