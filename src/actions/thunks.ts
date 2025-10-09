@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Questionnaire } from 'fhir/r4';
 
+import { runEnableWhenNew } from '@/calculators/runEnableWhen_new';
 import { runFhirPathQrUpdater } from '@/calculators/runFhirPathUpdater';
 import { runScoringCalculator } from '@/calculators/runScoringCalculator';
 import { AppDispatch, RootState } from '@/reducers';
@@ -51,6 +52,27 @@ export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootSt
         return rejectWithValue('Missing updated questionnaire response');
       }
       debouncedFhirPathRunner(dispatch, getState);
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
+
+export const runEnableWhenAction = createAsyncThunk<void, void, { state: RootState; dispatch: AppDispatch }>(
+  'questionnaireResponse/runEnableWhen',
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    const state = getState();
+    const questionnaire = state.refero.form.FormDefinition.Content;
+    const questionnaireResponse = state.refero.form.FormData.Content;
+
+    if (!questionnaire || !questionnaireResponse) {
+      return rejectWithValue('Missing questionnaire or questionnaireResponse');
+    }
+    const requester = new ActionRequester(questionnaire, questionnaireResponse);
+    try {
+      const actions = runEnableWhenNew({ questionnaire, questionnaireResponse, requester });
+      // requester.dispatchAllActions(dispatch);
+      actions.forEach(action => dispatch(action));
     } catch (error) {
       return rejectWithValue(error);
     }

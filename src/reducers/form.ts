@@ -34,9 +34,12 @@ import {
   newAnswerValueAction,
   newAnswerValuesAction,
   AnswerValuesItemPayload,
+  ResetAnswerValuePayload,
+  resetAnswerValueAction,
 } from '@/actions/newValue';
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
-import { runEnableWhen } from '@/calculators/runEnableWhen';
+// import { runEnableWhen } from '@/calculators/runEnableWhen';
+import { resetAnswerValuePure } from '@/calculators/runEnableWhen_new';
 import itemType from '@/constants/itemType';
 import { GlobalState } from '@/reducers/index';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
@@ -108,6 +111,9 @@ const formSlice = createSlice({
       })
       .addCase(deleteRepeatItemAction, (state, action: PayloadAction<DeleteRepeatItemPayload>) => {
         processDeleteRepeatItemAction(action.payload, state);
+      })
+      .addCase(resetAnswerValueAction, (state, action: PayloadAction<ResetAnswerValuePayload>) => {
+        processResetAnswerValue(action.payload, state);
       });
   },
 });
@@ -121,13 +127,25 @@ export function getFormData(state: GlobalState): FormData | null {
   return state.refero.form.FormData;
 }
 
+function processResetAnswerValue(action: ResetAnswerValuePayload, state: Form): Form {
+  const { itemPath, qItem, rItem, index } = action;
+  const responseItem = getResponseItemWithPath(itemPath || [], state.FormData);
+  const newAnswer = rItem.answer?.map((a, i) => (i === index ? { ...resetAnswerValuePure({ answer: a, item: qItem }) } : a)) || [];
+  if (!responseItem) {
+    return state;
+  }
+
+  responseItem.answer = newAnswer;
+  return state;
+}
+
 function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined): Array<QuestionnaireResponseItem> | undefined {
   if (!itemToAddTo) {
     return undefined;
   }
-  if (itemToAddTo.answer) {
-    return itemToAddTo.answer[0].item;
-  } else if (itemToAddTo.item) {
+  if (itemToAddTo?.answer && itemToAddTo.answer.length > 0) {
+    return itemToAddTo.answer[0]?.item;
+  } else if (itemToAddTo?.item) {
     return itemToAddTo.item;
   }
 }
@@ -141,6 +159,7 @@ function processAddRepeatItemAction(action: NewValuePayload, state: Form): Form 
     arrayToAddItemTo = state.FormData.Content.item;
   } else if (parentPath.length > 0) {
     const itemToAddTo = getResponseItemWithPath(parentPath, state.FormData);
+
     arrayToAddItemTo = getArrayToAddGroupTo(itemToAddTo);
   }
 
@@ -340,7 +359,7 @@ function processRemoveCodingValueAction(action: NewValuePayload, state: Form): F
   }
 
   // run enableWhen to clear fields
-  runEnableWhen(action, state);
+  // runEnableWhen(action, state);
   return state;
 }
 
@@ -359,7 +378,7 @@ function processRemoveCodingStringValueAction(action: NewValuePayload, state: Fo
   }
 
   // run enableWhen to clear fields
-  runEnableWhen(action, state);
+  // runEnableWhen(action, state);
   return state;
 }
 
@@ -390,7 +409,7 @@ function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: For
   const answer = payload.newAnswer;
   responseItem.answer = answer;
 
-  runEnableWhen(payload, state);
+  // runEnableWhen(payload, state);
 
   return state;
 }
@@ -510,7 +529,7 @@ function processNewValueAction(payload: NewValuePayload, state: Form): Form {
       }
     }
   }
-  runEnableWhen(payload, state);
+  // runEnableWhen(payload, state);
   return state;
 }
 

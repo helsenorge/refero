@@ -25,7 +25,7 @@ describe('enableWhen with checkboxes and multiple answers', () => {
   });
 });
 
-describe.skip('enableWhen med repeterende gruppe på root', () => {
+describe('enableWhen med repeterende gruppe på root', () => {
   it('skal ikke slette valg i repeterende grupper selv om de er på første nivå av items', async () => {
     await createWrapper(prr);
     // Velg alternativ 3 i item nr 1 (Andre legemidler)
@@ -126,7 +126,7 @@ describe.skip('enableWhen med repeterende gruppe på root', () => {
   });
 });
 
-describe.skip('choice  med repeat som første item, inneholder text som child', () => {
+describe('choice  med repeat som første item, inneholder text som child', () => {
   it('enableWhen ikke slette svar i felter som ikke er barn', async () => {
     await createWrapper(q2);
 

@@ -1,175 +1,99 @@
 {
   "resourceType": "Questionnaire",
-  "id": "501",
+  "language": "nb-NO",
+  "id": "63979fa8-d2c1-4ef8-8c8e-419cbbf09cee",
+  "name": "Nested_Enable_When",
+  "title": "Nested Enable When",
+  "description": "Testskjema for nøstede enableWhen",
+  "version": "0.4",
+  "status": "draft",
+  "publisher": "NHN",
   "meta": {
-    "versionId": "32",
-    "lastUpdated": "2025-08-21T07:10:30.91+00:00",
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "security": [
-      {
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
-        "code": "3",
-        "display": "Helsehjelp (Full)"
-      }
-    ],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
-        "display": "Norsk bokmål"
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
       }
     ]
   },
-  "language": "nb-NO",
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-save-capabilities",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-save-capabilities",
+        "code": "3"
+      }
+    },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
+      "valueCoding": {
+        "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement",
+        "code": "1"
+      }
+    }
+  ],
+  "date": "2025-10-09T00:00:00+02:00",
+  "url": "Questionnaire/63979fa8-d2c1-4ef8-8c8e-419cbbf09cee",
   "contained": [
     {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
       "resourceType": "ValueSet",
-      "id": "AntallBivirkninger",
+      "id": "1101",
       "version": "1.0",
-      "name": "AntallBivirkninger",
-      "title": "AntallBivirkninger",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
       "status": "draft",
-      "publisher": "Direktoratet for e-helse",
+      "publisher": "NHN",
       "compose": {
         "include": [
           {
-            "system": "http://ehelse.no/AntallBivirkninger",
-            "concept": [
-              {
-                "code": "1",
-                "display": "én bivirkning"
-              },
-              {
-                "code": "2",
-                "display": "flere bivirkninger"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "DatoTidValg",
-      "version": "1.0",
-      "name": "DatoTidValg",
-      "title": "DatoTidValg",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "http://ehelse.no/DatoTidValg",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Ja, jeg vet dato og klokkeslett"
-              },
-              {
-                "code": "2",
-                "display": "Ja, jeg vet dato"
-              },
-              {
-                "code": "3",
-                "display": "Ja, jeg vet måned og år"
-              },
-              {
-                "code": "4",
-                "display": "Ja, jeg vet året"
-              },
-              {
-                "code": "5",
-                "display": "Vet ikke"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "DatoValg",
-      "version": "1.0",
-      "name": "DatoValg",
-      "title": "DatoValg",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "http://ehelse.no/DatoValg",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Ja, jeg vet dato"
-              },
-              {
-                "code": "2",
-                "display": "Ja, jeg vet måned og år"
-              },
-              {
-                "code": "3",
-                "display": "Ja, jeg vet året"
-              },
-              {
-                "code": "4",
-                "display": "Vet ikke"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "EndretLegemiddelBruk",
-      "version": "1.0",
-      "name": "EndretLegemiddelBruk",
-      "title": "EndretLegemiddelBruk",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "http://ehelse.no/EndretLegemiddelBruk",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Sluttet å ta legemiddelet"
-              },
-              {
-                "code": "2",
-                "display": "Dosen av legemiddelet ble redusert"
-              },
-              {
-                "code": "3",
-                "display": "Dosen av legemiddelet ble økt"
-              },
-              {
-                "code": "4",
-                "display": "Ingen endring"
-              },
-              {
-                "code": "5",
-                "display": "Vet ikke"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "1110",
-      "version": "1.0",
-      "name": "urn:oid:1110",
-      "title": "Ja, nei, ikke relevant",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.1110",
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
             "concept": [
               {
                 "code": "1",
@@ -178,10 +102,6 @@
               {
                 "code": "2",
                 "display": "Nei"
-              },
-              {
-                "code": "3",
-                "display": "Ikke relevant"
               }
             ]
           }
@@ -189,180 +109,12 @@
       }
     },
     {
-      "resourceType": "ValueSet",
-      "id": "7469",
-      "version": "1.0",
-      "name": "urn:oid:7469",
-      "title": "Utfall av bivirkning",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.7469",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Ja, helt"
-              },
-              {
-                "code": "2",
-                "display": "Nei, men plagene blir stadig mindre"
-              },
-              {
-                "code": "3",
-                "display": "Nei, ingen forskjell"
-              },
-              {
-                "code": "4",
-                "display": "Ja, men med enkelte varige mén"
-              },
-              {
-                "code": "6",
-                "display": "Vet ikke"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "7468",
-      "version": "1.0",
-      "name": "urn:oid:7468",
-      "title": "Alvorlighetskriterier for bivirkning",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.7468",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Død"
-              },
-              {
-                "code": "2",
-                "display": "Livstruende reaksjon"
-              },
-              {
-                "code": "3",
-                "display": "Sykehusinnleggelse eller forlenget sykehusopphold"
-              },
-              {
-                "code": "4",
-                "display": "Uførhet eller varig nedsatt funksjonsevne"
-              },
-              {
-                "code": "5",
-                "display": "Medfødt misdannelse eller fødselsskade"
-              },
-              {
-                "code": "6",
-                "display": "Sykemelding fra lege"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "Kjopssted",
-      "version": "1.0",
-      "name": "Kjopssted",
-      "title": "Kjopssted",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "http://ehelse.no/Kjopssted",
-            "concept": [
-              {
-                "id": "e90123af-9647-4505-c72e-5eeea533e7b1",
-                "code": "1",
-                "display": "Apotek, uten resept"
-              },
-              {
-                "id": "d845e393-6e3d-40fb-afa3-1545c65f471c",
-                "code": "2",
-                "display": "Apotek, med resept"
-              },
-              {
-                "id": "25e8c53a-44c9-4ed1-c91b-e2819d839413",
-                "code": "3",
-                "display": "Butikk, kiosk, bensinstasjon"
-              },
-              {
-                "id": "a1d3af88-ed59-463d-8b1f-d347921c92e3",
-                "code": "4",
-                "display": "Internett"
-              },
-              {
-                "id": "98c8a601-6968-42ec-8fd7-8641fec7f75f",
-                "code": "5",
-                "display": "Utlevert hos lege eller tannlege"
-              },
-              {
-                "code": "6",
-                "display": "Annet"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "Helsepersonell",
-      "version": "1.0",
-      "name": "Helsepersonell",
-      "title": "Helsepersonell",
-      "status": "draft",
-      "publisher": "Norsk Helsenett",
-      "compose": {
-        "include": [
-          {
-            "system": "http://ehelse.no/Helsepersonell",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Lege"
-              },
-              {
-                "code": "2",
-                "display": "Tannlege"
-              },
-              {
-                "code": "3",
-                "display": "Farmasøyt"
-              },
-              {
-                "code": "4",
-                "display": "Helsesykepleier"
-              },
-              {
-                "code": "5",
-                "display": "Sykepleier"
-              },
-              {
-                "code": "6",
-                "display": "Annet helsepersonell"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
       "resourceType": "ValueSet",
       "id": "1102",
       "version": "1.0",
       "name": "urn:oid:1102",
-      "title": "ja, nei, vet ikke",
+      "title": "Ja / Nei / Vet ikke (structor)",
       "status": "draft",
       "publisher": "Direktoratet for e-helse",
       "compose": {
@@ -386,272 +138,28 @@
           }
         ]
       }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "VaksineAdministrasjonssted",
-      "version": "1.0",
-      "name": "VaksineAdministrasjonssted",
-      "title": "Admininstrasjonssted for vaksiner",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "http://ehelse.no/VaksineAdministrasjonssted",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Høyre arm"
-              },
-              {
-                "code": "2",
-                "display": "Venstre arm"
-              },
-              {
-                "code": "3",
-                "display": "Høyre lår"
-              },
-              {
-                "code": "4",
-                "display": "Venstre lår"
-              },
-              {
-                "code": "5",
-                "display": "Oralt"
-              },
-              {
-                "code": "6",
-                "display": "Annet"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "DoseRekkefolge",
-      "version": "1.0",
-      "name": "DoseRekkefolge",
-      "title": "DoseRekkefolge",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "http://ehelse.no/DoseRekkefolge",
-            "concept": [
-              {
-                "code": "1",
-                "display": "1"
-              },
-              {
-                "code": "2",
-                "display": "2"
-              },
-              {
-                "code": "3",
-                "display": "3"
-              },
-              {
-                "code": "4",
-                "display": "4 eller høyere"
-              },
-              {
-                "code": "5",
-                "display": "Ikke i serie eller vet ikke"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "b6546827-cea5-41a4-8986-1ea0f75e25d8",
-      "version": "1.0",
-      "name": "KoronavaksineMerker",
-      "title": "KoronavaksineMerker",
-      "status": "draft",
-      "date": "2023-01-06T11:59:49.814Z",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "http://ehelse.no/KoronavaksineMerker",
-            "concept": [
-              {
-                "id": "19a29ecc-08ba-45b8-80fb-ed3b24e5c512",
-                "code": "J07BN01 Comirnaty",
-                "display": "Comirnaty (Pfizer)"
-              },
-              {
-                "id": "90b7c7ec-96bb-49f6-8872-cfc961f6990d",
-                "code": "J07BN01 Spikevax",
-                "display": "Spikevax (Moderna)"
-              },
-              {
-                "id": "8677d309-66c4-441e-dc1e-1a3467b0ce8b",
-                "code": "J07BN02 Vaxzevria",
-                "display": "Vaxzevria (AstraZeneca)"
-              },
-              {
-                "id": "09d31d1f-3894-4335-f7fb-3016faa2ed3a",
-                "code": "J07BN02 Jcovden",
-                "display": "Jcovden (Johnson & Johnson/Janssen)"
-              },
-              {
-                "id": "9fe35b36-3e08-4cf5-ddaa-e566f0062fcb",
-                "code": "J07BN04 Nuvaxovid",
-                "display": "Nuvaxovid (Novavax)"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resourceType": "ValueSet",
-      "id": "8790bda0-f473-451a-ad6f-762826d7c1a5",
-      "version": "1.0",
-      "name": "TypeLegemiddel",
-      "title": "TypeLegemiddel",
-      "status": "draft",
-      "date": "2023-01-06T12:06:21.794Z",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "http://ehelse.no/TypeLegemiddel",
-            "concept": [
-              {
-                "id": "896cffd5-be69-4c73-8be3-6a69b4939ba6",
-                "code": "koronavaksine",
-                "display": "Koronavaksine"
-              },
-              {
-                "id": "6c4f0a0f-a615-424d-f209-cb4d5cd44e3e",
-                "code": "annen-vaksine",
-                "display": "Annen vaksine"
-              },
-              {
-                "id": "56dc955c-376c-4966-bfcf-e3d15b57a55b",
-                "code": "andre-legemidler",
-                "display": "Andre legemidler"
-              }
-            ]
-          }
-        ]
-      }
     }
   ],
-  "extension": [
-    {
-      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
-      "valueReference": {
-        "reference": "Endpoint/35"
-      }
-    },
-    {
-      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
-      "valueCoding": {
-        "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement",
-        "code": "3"
-      }
-    },
-    {
-      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-accessibilitytoresponse",
-      "valueCoding": {
-        "system": "http://ehelse.no/fhir/ValueSet/AccessibilityToResponse",
-        "code": "1"
-      }
-    },
-    {
-      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-discretion",
-      "valueCoding": {
-        "system": "http://ehelse.no/fhir/ValueSet/Discretion",
-        "code": "0"
-      }
-    },
-    {
-      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf",
-      "valueBoolean": true
-    },
-    {
-      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatenarrative",
-      "valueBoolean": false
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons",
-        "code": "sticky"
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-navgiator-state",
-      "valueCodeableConcept": {
-        "coding": [
-          {
-            "system": "http://helsenorge.no/fhir/CodeSystem/sdf-questionnaire-navigator-state",
-            "code": "navigator"
-          }
-        ]
-      }
-    }
-  ],
-  "url": "Questionnaire/501",
-  "version": "4.9",
-  "name": "SLV-PasRapp-2020",
-  "title": "Melde om bivirkninger på legemidler og vaksiner",
-  "status": "active",
-  "subjectType": ["Patient"],
-  "date": "2025-08-21T00:00:00+02:00",
-  "publisher": "Norsk helsenett",
-  "contact": [
-    {
-      "name": "http://www.nhn.no"
-    }
-  ],
-  "description": "Varsel om bivirkninger på legemidler",
-  "useContext": [
-    {
-      "code": {
-        "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
-        "code": "focus",
-        "display": "Clinical Focus"
-      },
-      "valueCodeableConcept": {
-        "coding": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.1.8655",
-            "code": "A",
-            "display": "Andre  helsehjelpsområder"
-          }
-        ]
-      }
-    }
-  ],
-  "copyright": "Er utviklet av Norsk helsenett",
   "item": [
     {
+      "linkId": "1",
+      "type": "group",
+      "text": "Repeterende gruppe",
       "extension": [
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-          "valueInteger": 50
-        },
-        {
-          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-          "valueString": "Legg til nytt mistenkt legemiddel"
+          "valueInteger": 5
         }
       ],
-      "linkId": "100",
-      "text": "Mistenkte legemidler",
-      "type": "group",
+      "required": false,
       "repeats": true,
       "item": [
         {
+          "linkId": "1.1",
+          "type": "choice",
+          "required": false,
+          "text": "Choice ",
+          "answerValueSet": "#1101",
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -659,1126 +167,369 @@
                 "coding": [
                   {
                     "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "help"
+                    "code": "check-box"
                   }
                 ]
               }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/regex",
-              "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
             }
           ],
-          "linkId": "100.1",
-          "text": "Du kan melde bivirkninger av godkjente legemidler, inkludert vaksiner og legemidler på godkjenningsfritak.",
-          "type": "text",
-          "required": false,
-          "repeats": false,
-          "readOnly": false,
-          "maxLength": 250
+          "item": [
+            {
+              "linkId": "1.1.1",
+              "type": "boolean",
+              "text": "Vis meg ved ja TOP",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "1.1",
+                  "operator": "=",
+                  "answerCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1101",
+                    "code": "1"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "1.1.2",
+              "type": "boolean",
+              "text": "Vis meg ved Nei TOP",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "1.1",
+                  "operator": "=",
+                  "answerCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1101",
+                    "code": "2"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
-          "linkId": "100.3",
-          "text": "Hva ønsker du å melde bivirkninger av?",
+          "linkId": "1.2",
+          "type": "string",
+          "text": "Text",
+          "required": false
+        },
+        {
+          "linkId": "1.3",
           "type": "choice",
-          "required": true,
-          "answerValueSet": "#8790bda0-f473-451a-ad6f-762826d7c1a5",
+          "text": "Choice 2",
+          "required": false,
+          "answerValueSet": "#1102",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "check-box"
+                  }
+                ]
+              }
+            }
+          ],
           "item": [
             {
-              "linkId": "100.5",
-              "text": "Koronavaksine",
-              "type": "group",
+              "linkId": "1.3.1",
+              "type": "integer",
+              "text": "Vis meg ved ja og usikker",
+              "required": false,
               "enableWhen": [
                 {
-                  "question": "100.3",
+                  "question": "1.3",
                   "operator": "=",
                   "answerCoding": {
-                    "system": "http://ehelse.no/TypeLegemiddel",
-                    "code": "koronavaksine"
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "1"
+                  }
+                },
+                {
+                  "question": "1.3",
+                  "operator": "=",
+                  "answerCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "3"
                   }
                 }
               ],
-              "required": false,
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                            "code": "drop-down"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-                      "valueMarkdown": "Usikker? Se hvilken vaksine du har fått i tjenesten [Vaksiner](/vaksiner/), eller ta kontakt med vaksinasjonsstedet og be om at helsepersonell melder."
-                    }
-                  ],
-                  "linkId": "100.5.1",
-                  "text": "Hvilken koronavaksine mistenker du er årsaken til bivirkningen(e)?",
-                  "type": "choice",
-                  "required": true,
-                  "answerValueSet": "#b6546827-cea5-41a4-8986-1ea0f75e25d8"
-                }
-              ]
+              "enableBehavior": "all"
             },
             {
-              "linkId": "94d3b98a-3e34-42c4-9b55-607441fcfcc6",
-              "text": "Legemiddel og/eller andre vaksiner",
-              "type": "group",
+              "linkId": "1.3.2",
+              "type": "integer",
+              "text": "Vis meg ved nei og usikker",
+              "required": false,
               "enableWhen": [
                 {
-                  "question": "100.3",
+                  "question": "1.3",
                   "operator": "=",
                   "answerCoding": {
-                    "system": "http://ehelse.no/TypeLegemiddel",
-                    "code": "annen-vaksine"
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "2"
                   }
                 },
                 {
-                  "question": "100.3",
+                  "question": "1.3",
                   "operator": "=",
                   "answerCoding": {
-                    "system": "http://ehelse.no/TypeLegemiddel",
-                    "code": "andre-legemidler"
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "3"
                   }
                 }
               ],
+              "enableBehavior": "all"
+            },
+            {
+              "linkId": "1.3.3",
+              "type": "group",
+              "text": "Vis meg ved ja",
               "required": false,
+              "enableWhen": [
+                {
+                  "question": "1.3",
+                  "operator": "=",
+                  "answerCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "1"
+                  }
+                }
+              ],
               "item": [
                 {
-                  "extension": [
+                  "linkId": "1.3.3.1",
+                  "type": "string",
+                  "required": false,
+                  "initial": [
                     {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Søk opp et legemiddel og velg fra listen."
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                            "code": "autocomplete"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-                      "valueMarkdown": "For eksempel Ibux Tab 400 mg. Skriv inn minst 3 tegn for å søke."
+                      "valueString": "Initial value"
                     }
                   ],
-                  "linkId": "100.10",
-                  "text": "Mistenkt legemiddel",
-                  "type": "choice",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false,
-                  "answerValueSet": "http://helsedirektoratet.no/ValueSet/legemiddeloppslag",
-                  "item": [
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                          "valueCodeableConcept": {
-                            "coding": [
-                              {
-                                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                                "code": "help"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                          "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                        }
-                      ],
-                      "linkId": "100.10.1",
-                      "text": "Hvis du ikke finner legemiddelet (medisinen) eller vaksinen ved å søke på minimum 3 bokstaver, må du kontakte lege, tannlege eller farmasøyt for å få meldt bivirkningen.\r\n\r\nMange legemidler finnes i ulike legemiddelformer, for eksempel tabletter og stikkpiller. Finner du ikke riktig legemiddelform eller styrken, velger du øverste alternativ og krysser av for at du er usikker.",
-                      "_text": {
-                        "extension": [
-                          {
-                            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                            "valueMarkdown": "Hvis du ikke finner legemiddelet (medisinen) eller vaksinen ved å søke på minimum 3 bokstaver, må du kontakte lege, tannlege eller farmasøyt for å få meldt bivirkningen.\n\nMange legemidler finnes i ulike legemiddelformer, for eksempel tabletter og stikkpiller. Finner du ikke riktig legemiddelform eller styrken, velger du øverste alternativ og krysser av for at du er usikker."
-                          }
-                        ]
-                      },
-                      "type": "text",
-                      "required": false,
-                      "repeats": false,
-                      "readOnly": false,
-                      "maxLength": 250
-                    }
-                  ]
+                  "text": "Med initial"
                 },
                 {
-                  "linkId": "100.15",
-                  "text": "Jeg er usikker på valgt legemiddel, legemiddelform eller styrke",
-                  "type": "boolean",
+                  "linkId": "1.3.3.2",
+                  "type": "group",
+                  "text": "repeatable",
                   "required": false,
-                  "repeats": false,
-                  "readOnly": false,
+                  "repeats": true,
                   "item": [
                     {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                          "valueCodeableConcept": {
-                            "coding": [
-                              {
-                                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                                "code": "check-box"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-                          "valueMarkdown": "Du kan velge flere."
-                        }
-                      ],
-                      "linkId": "100.15.1",
-                      "text": "Hva er du usikker på?",
-                      "type": "choice",
-                      "enableWhen": [
-                        {
-                          "question": "100.15",
-                          "operator": "=",
-                          "answerBoolean": true
-                        }
-                      ],
-                      "required": true,
-                      "answerOption": [
-                        {
-                          "valueCoding": {
-                            "id": "68fa7c88-8b2d-405a-aaf8-38181284ac98",
-                            "system": "urn:uuid:2dfa42e6-6a07-4274-bf67-5a502917bb2f",
-                            "code": "navn-på-legemiddel",
-                            "display": "Navn på legemiddel"
-                          }
-                        },
-                        {
-                          "valueCoding": {
-                            "id": "a245283d-afae-480f-86f8-ae406e1e0360",
-                            "system": "urn:uuid:2dfa42e6-6a07-4274-bf67-5a502917bb2f",
-                            "code": "legemiddelform-(for-eksempel-om-det-er-tablett,-kapsel-eller-mikstur)",
-                            "display": "Legemiddelform (for eksempel om det er tablett, kapsel eller mikstur)"
-                          }
-                        },
-                        {
-                          "valueCoding": {
-                            "id": "5bfbe444-9a08-4472-f58e-f1352adcddae",
-                            "system": "urn:uuid:2dfa42e6-6a07-4274-bf67-5a502917bb2f",
-                            "code": "styrken-på-legemiddelet-(for-eksempel-om-det-er-10-mg-eller-20-mg)",
-                            "display": "Styrken på legemiddelet (for eksempel om det er 10 mg eller 20 mg)"
-                          }
-                        },
-                        {
-                          "valueCoding": {
-                            "id": "17645578-6ca9-47b5-81e7-c9300663f63f",
-                            "system": "urn:uuid:2dfa42e6-6a07-4274-bf67-5a502917bb2f",
-                            "code": "annet",
-                            "display": "Annet"
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                          "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                        }
-                      ],
-                      "linkId": "100.15.2",
-                      "text": "Beskriv kort det du er usikker på",
+                      "linkId": "1.3.3.2.1",
                       "type": "string",
-                      "enableWhen": [
-                        {
-                          "question": "100.15",
-                          "operator": "=",
-                          "answerBoolean": true
-                        }
-                      ],
-                      "required": true,
-                      "maxLength": 250
+                      "required": false,
+                      "text": "Inside repeat repeat"
                     }
                   ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "linkId": "100.20.2",
-          "text": "Informasjon om mistenkt legemiddel",
-          "type": "group",
-          "enableWhen": [
-            {
-              "question": "100.3",
-              "operator": "=",
-              "answerCoding": {
-                "system": "http://ehelse.no/TypeLegemiddel",
-                "code": "andre-legemidler"
-              }
-            }
-          ],
-          "enableBehavior": "any",
-          "repeats": false,
-          "item": [
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Fyll ut feltet."
-                },
-                {
-                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-                  "valueMarkdown": "_Eksempler: 1000 mg 3 ganger daglig eller påsmøres 2 ganger daglig._"
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                  "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                }
-              ],
-              "linkId": "100.20.2.10",
-              "text": "Hvor mye tar du av legemiddelet?",
-              "type": "string",
-              "required": false,
-              "repeats": false,
-              "readOnly": false,
-              "maxLength": 250
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg ett av alternativene."
-                }
-              ],
-              "linkId": "100.20.2.20",
-              "text": "Vet du når du startet med legemiddelet?",
-              "type": "choice",
-              "required": true,
-              "repeats": false,
-              "readOnly": false,
-              "answerValueSet": "#DatoValg",
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Velg en dato, eller skriv inn en dato på denne måten: dd.mm.åååå. Dato kan ikke være fram i tid."
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpathvalidation",
-                      "valueString": "this.value <= today()  and this.value >=today() - 120 years"
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                      "valueString": "today()"
-                    }
-                  ],
-                  "linkId": "100.20.2.20.1",
-                  "text": "Hvilken dato startet du å bruke legemiddelet?",
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.2.20",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/DatoValg",
-                        "code": "1"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false
-                },
-                {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                            "code": "yearMonth"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                      "valueString": "today()"
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Velg måned og år, eller skriv dette på denne måten: mm.åååå. Måned og år kan ikke være fram i tid."
-                    }
-                  ],
-                  "linkId": "100.20.2.20.2",
-                  "text": "Hvilken måned og år startet du å bruke legemiddelet?",
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.2.20",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/DatoValg",
-                        "code": "2"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false
-                },
-                {
-                  "extension": [
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                      "valueString": "today()"
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                            "code": "year"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Velg år, eller skriv året på denne måten: åååå. Året kan ikke være fram i tid."
-                    }
-                  ],
-                  "linkId": "100.20.2.20.3",
-                  "text": "Hvilket år startet du å bruke legemiddelet?",
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.2.20",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/DatoValg",
-                        "code": "3"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false,
-                  "maxLength": 4
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg ett av alternativene."
-                }
-              ],
-              "linkId": "100.20.2.30",
-              "text": "Bruker du legemiddelet i dag?",
-              "type": "choice",
-              "required": true,
-              "repeats": false,
-              "readOnly": false,
-              "answerValueSet": "#1102",
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Velg ett av alternativene."
-                    }
-                  ],
-                  "linkId": "100.20.2.30.1",
-                  "text": "Vet du når du sluttet med legemiddelet?",
-                  "type": "choice",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.2.30",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                        "code": "2"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false,
-                  "answerValueSet": "#DatoValg",
-                  "item": [
-                    {
-                      "extension": [
-                        {
-                          "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpathvalidation",
-                          "valueString": "this.value <= today()  and this.value >=today() - 120 years"
-                        },
-                        {
-                          "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                          "valueString": "today()"
-                        },
-                        {
-                          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                          "valueString": "Velg en dato, eller skriv inn en dato på denne måten: dd.mm.åååå. Dato kan ikke være fram i tid."
-                        }
-                      ],
-                      "linkId": "100.20.2.30.1.1",
-                      "text": "Hvilken dato sluttet du å bruke legemiddelet?",
-                      "type": "date",
-                      "enableWhen": [
-                        {
-                          "question": "100.20.2.30.1",
-                          "operator": "=",
-                          "answerCoding": {
-                            "system": "http://ehelse.no/DatoValg",
-                            "code": "1"
-                          }
-                        }
-                      ],
-                      "enableBehavior": "any",
-                      "required": true,
-                      "repeats": false,
-                      "readOnly": false
-                    },
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                          "valueCodeableConcept": {
-                            "coding": [
-                              {
-                                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                                "code": "yearMonth"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                          "valueString": "today()"
-                        },
-                        {
-                          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                          "valueString": "Velg måned og år, eller skriv dette på denne måten: mm.åååå. Måned og år kan ikke være fram i tid."
-                        }
-                      ],
-                      "linkId": "100.20.2.30.1.2",
-                      "text": "Hvilken måned og år sluttet du å bruke legemiddelet?",
-                      "type": "date",
-                      "enableWhen": [
-                        {
-                          "question": "100.20.2.30.1",
-                          "operator": "=",
-                          "answerCoding": {
-                            "system": "http://ehelse.no/DatoValg",
-                            "code": "2"
-                          }
-                        }
-                      ],
-                      "enableBehavior": "any",
-                      "required": true,
-                      "repeats": false,
-                      "readOnly": false
-                    },
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                          "valueCodeableConcept": {
-                            "coding": [
-                              {
-                                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                                "code": "year"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                          "valueString": "today()"
-                        },
-                        {
-                          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                          "valueString": "Velg år, eller skriv året på denne måten: åååå. Året kan ikke være fram i tid."
-                        }
-                      ],
-                      "linkId": "100.20.2.30.1.3",
-                      "text": "Hvilket år sluttet du å bruke legemiddelet?",
-                      "type": "date",
-                      "enableWhen": [
-                        {
-                          "question": "100.20.2.30.1",
-                          "operator": "=",
-                          "answerCoding": {
-                            "system": "http://ehelse.no/DatoValg",
-                            "code": "3"
-                          }
-                        }
-                      ],
-                      "enableBehavior": "any",
-                      "required": true,
-                      "repeats": false,
-                      "readOnly": false,
-                      "maxLength": 4
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                  "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                },
-                {
-                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-                  "valueMarkdown": "Oppgi kort hvorfor legemiddelet brukes. _Eksempler: diabetes, mot høyt kolesterol._"
-                },
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Fyll ut feltet med maksimum 150 tegn. Spesialtegn slik som punktlister og emoji er ikke mulig."
-                }
-              ],
-              "linkId": "100.20.2.40",
-              "text": "Hva skal legemiddelet behandle eller forebygge?",
-              "type": "string",
-              "required": false,
-              "repeats": false,
-              "readOnly": false,
-              "maxLength": 150
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg ett av alternativene."
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "drop-down"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "linkId": "100.20.2.50",
-              "text": "Endret bruken av legemiddelet seg som en følge av bivirkningen?",
-              "type": "choice",
-              "required": false,
-              "repeats": false,
-              "readOnly": false,
-              "answerValueSet": "#EndretLegemiddelBruk",
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Velg ett av alternativene."
-                    }
-                  ],
-                  "linkId": "100.20.2.50.1",
-                  "text": "Hvis behandling med legemiddelet ble avsluttet og så startet opp igjen: Oppstod bivirkningen på nytt?",
-                  "type": "choice",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.2.50",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/EndretLegemiddelBruk",
-                        "code": "1"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": false,
-                  "answerValueSet": "#1110"
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg ett av alternativene."
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "drop-down"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "linkId": "100.20.2.60",
-              "text": "Hvor ble legemiddelet kjøpt?",
-              "type": "choice",
-              "required": false,
-              "repeats": false,
-              "readOnly": false,
-              "answerValueSet": "#Kjopssted",
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                      "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Fyll ut feltet med maksimum 150 tegn. Spesialtegn slik som punktlister og emoji er ikke mulig."
-                    }
-                  ],
-                  "linkId": "100.20.2.60.1",
-                  "text": "Beskriv stedet der legemiddelet ble kjøpt",
-                  "type": "string",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.2.60",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/Kjopssted",
-                        "code": "6"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false,
-                  "maxLength": 150
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                  "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                },
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Fyll ut feltet med maksimum 150 tegn. Spesialtegn slik som punktlister og emoji er ikke mulig."
-                }
-              ],
-              "linkId": "100.20.2.70",
-              "text": "Batch- eller LOT-nummer",
-              "type": "string",
-              "required": false,
-              "repeats": false,
-              "readOnly": false,
-              "maxLength": 150,
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                            "code": "help"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                      "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                    }
-                  ],
-                  "linkId": "100.20.2.70.1",
-                  "text": "Batch- / LOT-nummer er en identifikasjonsmerking som gir viktig informasjon om når og hvor legemiddelet er produsert.\r\n\r\nDette nummeret finner du ved utløpsdatoen på pakken. Batchnummer kan inneholde både tall og bokstaver.",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                        "valueMarkdown": "Batch- / LOT-nummer er en identifikasjonsmerking som gir viktig informasjon om når og hvor legemiddelet er produsert.\n\nDette nummeret finner du ved utløpsdatoen på pakken. Batchnummer kan inneholde både tall og bokstaver."
-                      }
-                    ]
-                  },
-                  "type": "text",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": false,
-                  "maxLength": 250
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "linkId": "100.20.1",
-          "text": "Informasjon om mistenkt vaksine",
-          "type": "group",
-          "enableWhen": [
-            {
-              "question": "100.3",
-              "operator": "=",
-              "answerCoding": {
-                "system": "http://ehelse.no/TypeLegemiddel",
-                "code": "koronavaksine"
-              }
-            },
-            {
-              "question": "100.3",
-              "operator": "=",
-              "answerCoding": {
-                "system": "http://ehelse.no/TypeLegemiddel",
-                "code": "annen-vaksine"
-              }
-            }
-          ],
-          "enableBehavior": "any",
-          "repeats": false,
-          "item": [
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg ett av alternativene."
-                }
-              ],
-              "linkId": "100.20.1.10",
-              "text": "Vet du når vaksinen ble satt?",
-              "type": "choice",
-              "required": true,
-              "repeats": false,
-              "readOnly": false,
-              "answerValueSet": "#DatoTidValg",
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Velg dato og tid, eller skriv dato og tid på denne måten: dd.mm.åååå og tt:mm. Tidspunktet kan ikke være fram i tid."
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpathvalidation",
-                      "valueString": "this.value <= today()  and this.value >=today() - 120 years"
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                      "valueString": "today()"
-                    }
-                  ],
-                  "linkId": "100.20.1.10.1",
-                  "text": "Hvilken dato og klokkeslett tok du vaksinen? (dd.mm.åååå tt:mm)",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                        "valueMarkdown": "Hvilken dato og klokkeslett tok du vaksinen? _(dd.mm.åååå tt:mm)_"
-                      }
-                    ]
-                  },
-                  "type": "dateTime",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.1.10",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/DatoTidValg",
-                        "code": "1"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false
-                },
-                {
-                  "extension": [
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpathvalidation",
-                      "valueString": "this.value <= today()  and this.value >=today() - 120 years"
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                      "valueString": "today()"
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Velg dato og tid, eller skriv dato og tid på denne måten: dd.mm.åååå og tt:mm. Dato kan ikke være fram i tid."
-                    }
-                  ],
-                  "linkId": "100.20.1.10.2",
-                  "text": "Hvilken dato tok du vaksinen?",
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.1.10",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/DatoTidValg",
-                        "code": "2"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false
-                },
-                {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                            "code": "yearMonth"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                      "valueString": "today()"
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Velg måned og år, eller skriv dette på denne måten: mm.åååå. Måned og år kan ikke være fram i tid."
-                    }
-                  ],
-                  "linkId": "100.20.1.10.3",
-                  "text": "Hvilken måned og år tok du vaksinen?",
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.1.10",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/DatoTidValg",
-                        "code": "3"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false
-                },
-                {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                            "code": "year"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue",
-                      "valueString": "today()"
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Velg år, eller skriv året på denne måten: åååå. Året kan ikke være fram i tid."
-                    }
-                  ],
-                  "linkId": "100.20.1.10.4",
-                  "text": "Hvilket år tok du vaksinen?",
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.1.10",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/DatoTidValg",
-                        "code": "4"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": true,
-                  "repeats": false,
-                  "readOnly": false,
-                  "maxLength": 4
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg ett av alternativene."
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "drop-down"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "linkId": "100.20.1.20",
-              "text": "Hvilket dosenummer i serien er vaksinen?",
-              "type": "choice",
-              "required": false,
-              "repeats": false,
-              "readOnly": false,
-              "answerValueSet": "#DoseRekkefolge"
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg ett av alternativene."
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "drop-down"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "linkId": "100.20.1.30",
-              "text": "Hvor ble vaksinen satt?",
-              "type": "choice",
-              "required": false,
-              "repeats": false,
-              "readOnly": false,
-              "answerValueSet": "#VaksineAdministrasjonssted",
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                      "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                    },
-                    {
-                      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-                      "valueMarkdown": "_Eksempel: Rompa_"
-                    },
-                    {
-                      "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                      "valueString": "Fyll ut feltet med maksimum 150 tegn. Spesialtegn slik som punktlister og emoji er ikke mulig."
-                    }
-                  ],
-                  "linkId": "100.20.1.30.1",
-                  "text": "Oppgi stedet på kroppen vaksinen ble satt",
-                  "type": "string",
-                  "enableWhen": [
-                    {
-                      "question": "100.20.1.30",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "http://ehelse.no/VaksineAdministrasjonssted",
-                        "code": "6"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "any",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": false,
-                  "maxLength": 150
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                  "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                },
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Fyll ut feltet med maksimum 150 tegn. Spesialtegn slik som punktlister og emoji er ikke mulig."
-                }
-              ],
-              "linkId": "100.20.1.40",
-              "text": "Batch- eller LOT-nummer",
-              "type": "string",
-              "required": false,
-              "repeats": false,
-              "readOnly": false,
-              "maxLength": 150,
-              "item": [
-                {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                            "code": "help"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                      "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$"
-                    }
-                  ],
-                  "linkId": "100.20.1.40.1",
-                  "text": "Batch- / LOT-nummer er en identifikasjonsmerking som gir viktig informasjon om når og hvor legemiddelet er produsert.\r\n\r\nDette nummeret finner du ved utløpsdatoen på pakken. Batchnummer kan inneholde både tall og bokstaver.",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                        "valueMarkdown": "Batch- / LOT-nummer er en identifikasjonsmerking som gir viktig informasjon om når og hvor legemiddelet er produsert.\r\n\r\n\r\nDette nummeret finner du ved utløpsdatoen på pakken. Batchnummer kan inneholde både tall og bokstaver."
-                      }
-                    ]
-                  },
-                  "type": "text",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": false,
-                  "maxLength": 250
                 }
               ]
             }
           ]
         }
       ]
+    },
+    {
+      "linkId": "c82dbd8b-691c-40ae-fc4e-ff2b0373f35e",
+      "type": "group",
+      "text": "Container group",
+      "item": [
+        {
+          "linkId": "404f665b-4ef3-4f97-85a9-c17d82d216b6",
+          "type": "group",
+          "text": "Repeterende gruppe",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+              "valueInteger": 5
+            }
+          ],
+          "required": false,
+          "repeats": true,
+          "item": [
+            {
+              "linkId": "46865be3-be90-40e3-920b-9a1f69453759",
+              "type": "choice",
+              "required": false,
+              "text": "Choice ",
+              "answerValueSet": "#1101",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                        "code": "check-box"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "item": [
+                {
+                  "linkId": "28fb1982-4f17-46af-e609-1a3f15a4e102",
+                  "type": "boolean",
+                  "text": "Vis meg ved ja TOP",
+                  "required": false,
+                  "enableWhen": [
+                    {
+                      "question": "46865be3-be90-40e3-920b-9a1f69453759",
+                      "operator": "=",
+                      "answerCoding": {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1101",
+                        "code": "1"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "8e1ae7b2-b397-4721-864e-52e00ca589e4",
+                  "type": "boolean",
+                  "text": "Vis meg ved Nei TOP",
+                  "required": false,
+                  "enableWhen": [
+                    {
+                      "question": "46865be3-be90-40e3-920b-9a1f69453759",
+                      "operator": "=",
+                      "answerCoding": {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1101",
+                        "code": "2"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "5cd06bc1-8083-4053-8305-9f4783a93658",
+              "type": "string",
+              "text": "Text",
+              "required": false
+            },
+            {
+              "linkId": "c812ce5c-e91f-4305-8b07-28398d2b4457",
+              "type": "choice",
+              "text": "Choice 2",
+              "required": false,
+              "answerValueSet": "#1102",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                        "code": "check-box"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "item": [
+                {
+                  "linkId": "21f74f47-9098-4947-8281-bc066dd07643",
+                  "type": "integer",
+                  "text": "Vis meg ved ja og usikker",
+                  "required": false,
+                  "enableWhen": [
+                    {
+                      "question": "c812ce5c-e91f-4305-8b07-28398d2b4457",
+                      "operator": "=",
+                      "answerCoding": {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                        "code": "1"
+                      }
+                    },
+                    {
+                      "question": "c812ce5c-e91f-4305-8b07-28398d2b4457",
+                      "operator": "=",
+                      "answerCoding": {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                        "code": "3"
+                      }
+                    }
+                  ],
+                  "enableBehavior": "all"
+                },
+                {
+                  "linkId": "c826c731-31cc-428c-8554-16b346c19a5d",
+                  "type": "integer",
+                  "text": "Vis meg ved nei og usikker",
+                  "required": false,
+                  "enableWhen": [
+                    {
+                      "question": "c812ce5c-e91f-4305-8b07-28398d2b4457",
+                      "operator": "=",
+                      "answerCoding": {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                        "code": "2"
+                      }
+                    },
+                    {
+                      "question": "c812ce5c-e91f-4305-8b07-28398d2b4457",
+                      "operator": "=",
+                      "answerCoding": {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                        "code": "3"
+                      }
+                    }
+                  ],
+                  "enableBehavior": "all"
+                },
+                {
+                  "linkId": "71ec7203-2d05-4a95-8bf3-ec4a569d1a0d",
+                  "type": "group",
+                  "text": "Vis meg ved ja",
+                  "required": false,
+                  "enableWhen": [
+                    {
+                      "question": "c812ce5c-e91f-4305-8b07-28398d2b4457",
+                      "operator": "=",
+                      "answerCoding": {
+                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                        "code": "1"
+                      }
+                    }
+                  ],
+                  "item": [
+                    {
+                      "linkId": "fb8a68fd-fd47-49e1-8a8f-0d8c6ffa08f2",
+                      "type": "string",
+                      "required": false,
+                      "initial": [
+                        {
+                          "valueString": "Initial value"
+                        }
+                      ],
+                      "text": "Med initial"
+                    },
+                    {
+                      "linkId": "924a6fbd-318b-4e51-ff55-8137887d95cf",
+                      "type": "group",
+                      "text": "repeatable",
+                      "required": false,
+                      "repeats": true,
+                      "item": [
+                        {
+                          "linkId": "9964377f-af6a-483a-def1-0105d2e84be0",
+                          "type": "string",
+                          "required": false,
+                          "text": "Inside repeat repeat"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "required": false
     }
   ]
 }

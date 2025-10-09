@@ -40,8 +40,6 @@ import {
   isGroupAndDescendantsHasAnswer,
 } from '../util/fhirpathHelper';
 
-import { RunEnableWhenParams, runEnableWhenPure, RunEnableWhenResult } from '@/calculators/runEnableWhen_pure';
-
 // ---- dispatcher -------------------
 
 const handlers = {
@@ -61,7 +59,6 @@ const handlers = {
     isGroupAndDescendantsHasAnswer(p.responseItem),
   runCalculators: (p: RunCalculatorsParams): RunCalculatorsResult =>
     runCalculators({ questionnaireResponse: p.questionnaireResponse, questionnaire: p.questionnaire }),
-  runEnableWhen: (p: RunEnableWhenParams): RunEnableWhenResult => runEnableWhenPure(p),
 } satisfies { [K in keyof Methods]: (p: Methods[K]['params']) => Promise<Methods[K]['result']> | Methods[K]['result'] };
 
 // ---- Runtime ---------------------------------------------------------------
