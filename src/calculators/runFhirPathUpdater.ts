@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import { newAnswerValuesAction } from '@/actions/newValue';
+import { AnswerValuesItemPayload, newAnswerValuesAction } from '@/actions/newValue';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
@@ -26,19 +26,12 @@ export const runFhirPathQrUpdater = async ({
   try {
     let fhirScores: AnswerPad;
     if (typeof window !== 'undefined' && window.Worker) {
-      try {
-        fhirScores = await postTaskToFhirPathWorker({ questionnaireResponse, questionnaire });
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (_e) {
-        const fhirPathUpdater = new FhirPathExtensions(questionnaire);
-        fhirScores = fhirPathUpdater.calculateFhirScore(fhirPathUpdater.evaluateAllExpressions(questionnaireResponse));
-      }
+      fhirScores = await postTaskToFhirPathWorker({ questionnaireResponse, questionnaire });
     } else {
       const fhirPathUpdater = new FhirPathExtensions(questionnaire);
       fhirScores = fhirPathUpdater.calculateFhirScore(fhirPathUpdater.evaluateAllExpressions(questionnaireResponse));
     }
-    const answerValues = [];
+    const answerValues: AnswerValuesItemPayload = [];
     for (const linkId in fhirScores) {
       const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
       if (!item) continue;

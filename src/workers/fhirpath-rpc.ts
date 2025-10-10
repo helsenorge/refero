@@ -9,6 +9,7 @@ import { AnyRpcResponse, Methods } from './fhirpath-rpc-worker';
 import { runCalculators } from './helpers';
 import { WorkaroundWorkerRpc } from './WorkaroundWorkerRpc';
 
+import { runEnableWhenNew } from '@/calculators/runEnableWhen_new';
 import {
   evaluateFhirpathExpressionToGetDate as evaluateFhirpathExpressionToGetDateCore,
   getAnswerFromResponseItem as getAnswerFromResponseItemCore,
@@ -171,6 +172,7 @@ const handlers = {
   evaluateExtension: ({ path, questionnaire, context }) => evaluateExtensionCore(path, questionnaire, context),
   isGroupAndDescendantsHasAnswer: ({ responseItem }) => isGroupAndDescendantsHasAnswerCore(responseItem),
   runCalculators: ({ questionnaireResponse, questionnaire }) => runCalculators({ questionnaireResponse, questionnaire }),
+  runEnableWhen: ({ questionnaireResponse, questionnaire }) => runEnableWhenNew({ questionnaireResponse, questionnaire }),
 } satisfies {
   [K in keyof Methods]: (params: Methods[K]['params']) => Awaitable<Methods[K]['result']>;
 };
@@ -355,6 +357,14 @@ export const postTaskToFhirPathWorker = ({
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
 }) => call('runCalculators', { questionnaire, questionnaireResponse });
+
+export const calculateEnableWhen = ({
+  questionnaire,
+  questionnaireResponse,
+}: {
+  questionnaire: Questionnaire | null | undefined;
+  questionnaireResponse: QuestionnaireResponse | null | undefined;
+}) => call('runEnableWhen', { questionnaire, questionnaireResponse });
 
 export function __disableFhirpathWorkerForSession() {
   disableWorkerAndFallbackAll('manual-disable');

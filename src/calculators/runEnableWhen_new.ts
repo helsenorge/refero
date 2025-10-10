@@ -11,7 +11,6 @@ import {
   copyPath,
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemWithLinkid,
-  IActionRequester,
   isInGroupContext,
   isRepeat,
   Path,
@@ -19,25 +18,48 @@ import {
   resetAnswerValueAction,
   deleteRepeatItemAction,
   ClearAction,
+  AppDispatch,
 } from '..';
 
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
+import { calculateEnableWhen } from '@/workers/fhirpath-rpc';
 
-type Input = {
+type RunEnableWhenInput = {
   questionnaire: Questionnaire | null | undefined;
   questionnaireResponse: QuestionnaireResponse | null | undefined;
-  requester?: IActionRequester;
 };
-
+export type RunEnableWhenResult = ClearAction[];
 // ---- Public API -----------------------------------------------------
-export function runEnableWhenNew({ questionnaire, questionnaireResponse }: Input): ClearAction[] {
+
+export async function startEnableWhenCalculation({
+  questionnaire,
+  questionnaireResponse,
+  dispatch,
+}: RunEnableWhenInput & { dispatch: AppDispatch }): Promise<RunEnableWhenResult> {
+  let actions: ClearAction[] = [];
+  if (typeof window !== 'undefined' && window.Worker) {
+    try {
+      actions = await calculateEnableWhen({ questionnaireResponse, questionnaire });
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_e) {
+      actions = runEnableWhenNew({ questionnaire, questionnaireResponse });
+    }
+  } else {
+    actions = runEnableWhenNew({ questionnaire, questionnaireResponse });
+  }
+  actions.forEach(action => dispatch(action));
+  return actions;
+}
+
+export function runEnableWhenNew({ questionnaire, questionnaireResponse }: RunEnableWhenInput): ClearAction[] {
   if (!questionnaire || !questionnaireResponse) return [];
   if (!questionnaire.item || questionnaire.item.length === 0) return [];
   if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) return [];
   let actions: ClearAction[] = [];
-  //Find all items with enableWhen recursively
-  actions = findItemsWithEnableWhen(questionnaire.item, questionnaireResponse.item);
-  // requester.console.log('runEnableWhenNew actions', actions);
+
+  actions = findItemsWithEnableWhen(questionnaire.item, questionnaireResponse.item, [], [], questionnaireResponse);
+
   return actions;
 }
 
@@ -46,23 +68,26 @@ const findItemsWithEnableWhen = (
   items: QuestionnaireItem[],
   responseItems: QuestionnaireResponseItem[],
   parentPath: Path[] = [],
-  acc: ClearAction[] = []
+  acc: ClearAction[] = [],
+  questionnaireResponse: QuestionnaireResponse | null | undefined = undefined
 ): ClearAction[] => {
   for (const item of items) {
     const matches = getResponseItemsWithLinkId(item.linkId, responseItems);
     for (let i = 0; i < matches.length; i++) {
-      const path = [...parentPath, { linkId: item.linkId, index: item.repeats ? i : 0 }];
+      const respMatch = matches[i];
+      const itemPath = [...parentPath, { linkId: item.linkId, index: item.repeats ? i : 0 }];
       if (item.enableWhen && item.enableWhen.length > 0) {
-        const enabled = isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path, responseItems);
+        const enabled = isEnableWhenEnabled(item.enableWhen, item.enableBehavior, itemPath, questionnaireResponse?.item);
 
         if (!enabled) {
-          acc.push(...collectClearAnswerActions(items, matches, parentPath));
+          const clears = collectClearAnswerActions([item], [respMatch], parentPath);
+          acc.push(...clears);
         }
         continue;
       }
-
+      const nextScope: QuestionnaireResponseItem[] = [...(respMatch.item ?? []), ...(respMatch.answer ?? []).flatMap(a => a.item ?? [])];
       if (item.item && item.item.length > 0) {
-        findItemsWithEnableWhen(item.item, responseItems, path, acc);
+        findItemsWithEnableWhen(item.item, nextScope, itemPath, acc, questionnaireResponse);
       }
     }
   }
@@ -260,7 +285,9 @@ export function resetAnswerValuePure({
 }): QuestionnaireResponseItemAnswer | undefined {
   if (!answer || !item) return undefined;
   const initialAnswer = createQuestionnaireResponseAnswer(item);
-  return nullAnswerValue(answer, initialAnswer);
+  const newAnswer = nullAnswerValue(answer, initialAnswer);
+
+  return newAnswer;
 }
 
 export function nullAnswerValue(
@@ -269,7 +296,7 @@ export function nullAnswerValue(
 ): QuestionnaireResponseItemAnswer | undefined {
   if (!answer) return undefined;
 
-  const valueKeys: (keyof QuestionnaireResponseItemAnswer)[] = [
+  const valueKeys = [
     'valueBoolean',
     'valueDecimal',
     'valueInteger',
@@ -280,27 +307,89 @@ export function nullAnswerValue(
     'valueCoding',
     'valueQuantity',
     'valueAttachment',
-  ];
+  ] as const;
 
-  const key = valueKeys.find(k => answer[k] !== undefined);
-  if (!key) {
-    return undefined;
-  }
+  type ValueKey = (typeof valueKeys)[number];
 
-  // Clone once
+  const key = valueKeys.find(k => answer[k] !== undefined) as ValueKey | undefined;
+  if (!key) return undefined;
+
   const out: QuestionnaireResponseItemAnswer = { ...answer };
 
-  if (initialAnswer && initialAnswer[key] !== undefined) {
-    // If initialAnswer has that field, use it
-    out[key] = initialAnswer[key];
-  } else {
-    // No initial — for boolean default to false, else delete
-    if (key === 'valueBoolean') {
-      out[key] = false;
-    } else {
-      delete out[key];
+  switch (key) {
+    case 'valueBoolean': {
+      const init = initialAnswer?.valueBoolean;
+      out.valueBoolean = init !== undefined ? init : false;
+      break;
+    }
+    case 'valueDecimal': {
+      const init = initialAnswer?.valueDecimal;
+      if (init !== undefined) out.valueDecimal = init;
+      else delete out.valueDecimal;
+      break;
+    }
+    case 'valueInteger': {
+      const init = initialAnswer?.valueInteger;
+      if (init !== undefined) out.valueInteger = init;
+      else delete out.valueInteger;
+      break;
+    }
+    case 'valueDate': {
+      const init = initialAnswer?.valueDate;
+      if (init !== undefined) out.valueDate = init;
+      else delete out.valueDate;
+      break;
+    }
+    case 'valueDateTime': {
+      const init = initialAnswer?.valueDateTime;
+      if (init !== undefined) out.valueDateTime = init;
+      else delete out.valueDateTime;
+      break;
+    }
+    case 'valueTime': {
+      const init = initialAnswer?.valueTime;
+      if (init !== undefined) out.valueTime = init;
+      else delete out.valueTime;
+      break;
+    }
+    case 'valueString': {
+      const init = initialAnswer?.valueString;
+      if (init !== undefined) out.valueString = init;
+      else delete out.valueString;
+      break;
+    }
+    case 'valueCoding': {
+      const init = initialAnswer?.valueCoding;
+      if (init !== undefined) out.valueCoding = init;
+      else delete out.valueCoding;
+      break;
+    }
+    case 'valueQuantity': {
+      const init = initialAnswer?.valueQuantity;
+      if (init !== undefined) out.valueQuantity = init;
+      else delete out.valueQuantity;
+      break;
+    }
+    case 'valueAttachment': {
+      const init = initialAnswer?.valueAttachment;
+      if (init !== undefined) out.valueAttachment = init;
+      else delete out.valueAttachment;
+      break;
     }
   }
 
-  return out;
+  return isEmptyObject(out) ? undefined : out;
+}
+
+function isEmptyObject(obj: object | undefined | null): boolean {
+  if (typeof obj !== 'object' || obj === null || obj === undefined) {
+    return false;
+  }
+
+  return Object.keys(obj).length === 0;
+}
+export function pruneEmptyAnswers(answers: QuestionnaireResponseItemAnswer[] | undefined): QuestionnaireResponseItemAnswer[] | undefined {
+  if (!answers || answers.length === 0) return undefined;
+  const answersFiltered = answers.filter(answer => !isEmptyObject(answer));
+  return answersFiltered.length > 0 ? answersFiltered : undefined;
 }
