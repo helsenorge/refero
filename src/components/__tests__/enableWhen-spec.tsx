@@ -145,26 +145,26 @@ describe('choice  med repeat som første item, inneholder text som child', () =>
   it('skifter fra Ja→Nei i item #2 tømmer KUN tekst i item #2', async () => {
     await createWrapper(q2);
 
-    // Instans #0: velg "Ja" og skriv tekst
+    // Instans #1: velg "Ja" og skriv tekst
     await userEvent.click(screen.getByText('Ja')); // 1 = Ja
     await userEvent.type(within(await screen.findByTestId('test-string-item_2')).getByRole('textbox'), 'abc');
 
-    // Legg til instans #1
+    // Legg til instans #2
     await userEvent.click(screen.getByTestId('1-repeat-button'));
 
-    // Instans #1: velg "Ja" og skriv tekst
+    // Instans #2: velg "Ja" og skriv tekst
     await userEvent.click(screen.getAllByText('Ja')[1]);
     await userEvent.type(within(screen.getByTestId('test-string-item_2^1')).getByRole('textbox'), 'xyz');
 
-    // Skjul i instans #1 (velg "Nei")
+    // Skjul i instans #2 (velg "Nei")
     await userEvent.click(screen.getAllByText('Nei')[1]);
     await userEvent.click(screen.getAllByText('Ja')[1]);
 
-    // Forvent: tekst i instans #1 er tømt
+    // Forvent: tekst i instans #2 er tømt
     await waitFor(async () => {
       expect(within(await screen.findByTestId('test-string-item_2^1')).getByRole('textbox')).not.toHaveValue('xyz');
     });
-    // Forvent: tekst i instans #0 er uendret
+    // Forvent: tekst i instans #1 er uendret
     await waitFor(async () => {
       expect(within(await screen.findByTestId('test-string-item_2')).getByRole('textbox')).toHaveValue('abc');
     });

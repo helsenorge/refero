@@ -24,11 +24,6 @@ export type RunEnableWhenParams = {
 
 export type RepeatRemoval = { itemPath: Path[]; item: QuestionnaireItem | undefined };
 
-export type RunEnableWhenResult = {
-  answerValues: Array<NewValuePayload>;
-  repeatRemovals: RepeatRemoval[];
-};
-
 type QrItemsToClear = {
   qItemWithEnableWhen: QuestionnaireItem;
   linkId: string;

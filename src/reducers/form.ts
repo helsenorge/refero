@@ -39,7 +39,7 @@ import {
 } from '@/actions/newValue';
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
 // import { runEnableWhen } from '@/calculators/runEnableWhen';
-import { resetAnswerValuePure } from '@/calculators/runEnableWhen_new';
+import { pruneEmptyAnswers, resetAnswerValuePure } from '@/calculators/runEnableWhen_new';
 import itemType from '@/constants/itemType';
 import { GlobalState } from '@/reducers/index';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
@@ -135,7 +135,7 @@ function processResetAnswerValue(action: ResetAnswerValuePayload, state: Form): 
     return state;
   }
 
-  responseItem.answer = newAnswer;
+  responseItem.answer = pruneEmptyAnswers(newAnswer);
   return state;
 }
 
@@ -407,7 +407,7 @@ function processNewAnswerValueAction(payload: AnswerValueItemPayload, state: For
   }
 
   const answer = payload.newAnswer;
-  responseItem.answer = answer;
+  responseItem.answer = pruneEmptyAnswers(answer);
 
   // runEnableWhen(payload, state);
 
