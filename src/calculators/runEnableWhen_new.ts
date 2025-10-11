@@ -76,11 +76,22 @@ const findItemsWithEnableWhen = (
     for (let i = 0; i < matches.length; i++) {
       const respMatch = matches[i];
       const itemPath = [...parentPath, { linkId: item.linkId, index: item.repeats ? i : 0 }];
+      // if (item.linkId === '7.1.2') {
+      //   console.group('collectClearAnswerActions for 7.1.2');
+      //   console.log('item:', JSON.stringify(item, null, 2));
+      //   console.log('matches:', JSON.stringify(matches, null, 2));
+
+      //   console.log('respMatch:', JSON.stringify(respMatch, null, 2));
+      //   console.log('parentPath:', JSON.stringify(parentPath, null, 2));
+      //   console.log('i:', i);
+      //   console.log('itemPath:', JSON.stringify(itemPath, null, 2));
+      //   console.groupEnd();
+      // }
       if (item.enableWhen && item.enableWhen.length > 0) {
         const enabled = isEnableWhenEnabled(item.enableWhen, item.enableBehavior, itemPath, questionnaireResponse?.item);
 
         if (!enabled) {
-          const clears = collectClearAnswerActions([item], [respMatch], parentPath);
+          const clears = collectClearAnswerActions([item], [respMatch], parentPath, 1, itemPath);
           acc.push(...clears);
         }
         continue;
@@ -97,7 +108,9 @@ const findItemsWithEnableWhen = (
 function collectClearAnswerActions(
   items: QuestionnaireItem[] | undefined,
   responseItems: QuestionnaireResponseItem[],
-  parentPath: Path[]
+  parentPath: Path[],
+  itteration: number = 1,
+  path: Path[] = []
 ): ClearAction[] {
   const actions: ClearAction[] = [];
   if (!items || items.length === 0) return actions;
@@ -106,8 +119,18 @@ function collectClearAnswerActions(
     const respMatches = getResponseItemsWithLinkId(item.linkId, responseItems);
     for (let i = 0; i < respMatches.length; i++) {
       const respItem = respMatches[i];
-      const itemPath = [...parentPath, { linkId: item.linkId, index: item.repeats ? i : 0 }];
-      if (item.repeats && i > 0) {
+      let itemPath = [...parentPath, { linkId: item.linkId, index: item.repeats ? i : 0 }];
+      if (itteration === 1) {
+        itemPath = path;
+      }
+      // console.group('collectClearAnswerActions for 7.1.2');
+
+      // console.log('itemPath:', JSON.stringify(itemPath, null, 2));
+      // console.log('respItem:', JSON.stringify(respItem, null, 2));
+      // console.groupEnd();
+
+      const lastIndex = itemPath?.at(-1)?.index ?? 0;
+      if (item.repeats && lastIndex > 0) {
         actions.push(
           deleteRepeatItemAction({
             item,
@@ -121,6 +144,7 @@ function collectClearAnswerActions(
           const answer = respItem.answer[ai];
           if (hasValueX(answer)) {
             const isInitial = isInitialAnswer(answer, item);
+
             if (!isInitial) {
               actions.push(
                 resetAnswerValueAction({
@@ -133,13 +157,13 @@ function collectClearAnswerActions(
             }
           }
           if (answer.item && answer.item.length > 0) {
-            const nestedActs = collectClearAnswerActions(item.item, answer.item ?? [], itemPath);
+            const nestedActs = collectClearAnswerActions(item.item, answer.item ?? [], itemPath, itteration + 1);
             actions.push(...nestedActs);
           }
         }
       }
       if (item.item && item.item.length > 0) {
-        const childActs = collectClearAnswerActions(item.item, respItem.item ?? [], itemPath);
+        const childActs = collectClearAnswerActions(item.item, respItem.item ?? [], itemPath, itteration + 1);
         actions.push(...childActs);
       }
     }
@@ -175,8 +199,8 @@ function isInitialAnswer(answer: QuestionnaireResponseItemAnswer, item: Question
     return answer.valueString === init.valueString;
   }
   if (answer.valueCoding !== undefined && init.valueCoding !== undefined) {
-    const a = answer.valueCoding!;
-    const b = init.valueCoding!;
+    const a = answer.valueCoding,
+      b = init.valueCoding;
     return (a.system ?? '') === (b.system ?? '') && (a.code ?? '') === (b.code ?? '') && (a.display ?? '') === (b.display ?? '');
   }
   if (answer.valueQuantity !== undefined && init.valueQuantity !== undefined) {
