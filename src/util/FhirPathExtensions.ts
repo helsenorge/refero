@@ -119,12 +119,12 @@ export class FhirPathExtensions {
 
     return this.questionnaire?.item?.some(item => hasScoringInItem(item)) ?? false;
   }
-  private createQuantity(item: QuestionnaireItem, extension?: Coding, value?: number | string): Quantity {
+  private createQuantity(item: QuestionnaireItem, extension?: Coding, value?: number | string | undefined): Quantity {
     return {
       unit: extension?.display || '',
       system: extension?.system || '',
       code: extension?.code || '',
-      value: value || value === 0 ? getDecimalValue(item, Number(value)) : undefined,
+      ...(value && { value: value || value === 0 ? getDecimalValue(item, Number(value)) : undefined }),
     };
   }
 
@@ -134,72 +134,83 @@ export class FhirPathExtensions {
     response: QuestionnaireResponse
   ): QuestionnaireResponseItemAnswer[] | null => {
     if (expressionExtension.valueString) {
-      const result = evaluateFhirpathExpressionToGetString(expressionExtension, response);
-
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any[] = evaluateFhirpathExpressionToGetString(expressionExtension, response);
       const qrItem = getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
       const itemAnswer: QuestionnaireResponseItemAnswer[] = [];
-      if (result.length > 0) {
-        switch (qItem.type) {
-          case itemType.BOOLEAN:
-            itemAnswer.push(...result.map((x: boolean): QuestionnaireResponseItemAnswer => ({ valueBoolean: Boolean(x) })));
-            break;
-          case itemType.DECIMAL:
-            itemAnswer.push(
-              ...result.map(
-                (x: string | number): QuestionnaireResponseItemAnswer => ({
-                  valueDecimal: getDecimalValue(qItem, x !== undefined && x !== null ? Number(x) : undefined),
-                })
-              )
-            );
-            break;
-          case itemType.INTEGER:
-            itemAnswer.push(
-              ...result.map(
-                (x: string | number): QuestionnaireResponseItemAnswer => ({
-                  valueInteger: isNaN(Number(x)) || !isFinite(Number(x)) ? undefined : Math.round(Number(x)),
-                })
-              )
-            );
-            break;
-          case itemType.QUANTITY:
-            itemAnswer.push(
-              ...result.map(
-                (x: string | number | Quantity): QuestionnaireResponseItemAnswer => ({
-                  valueQuantity: isQuantity(x) ? x : this.createQuantity(qItem, getQuestionnaireUnitExtensionValue(qItem), x),
-                })
-              )
-            );
-            break;
-          case itemType.DATE:
-            itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueDate: String(x) })));
-            break;
-          case itemType.DATETIME:
-            itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueDateTime: String(x) })));
-            break;
-          case itemType.TIME:
-            itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueTime: String(x) })));
-            break;
-          case itemType.STRING:
-          case itemType.TEXT:
-            itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueString: String(x) })));
-            break;
-          case itemType.CHOICE:
-          case itemType.OPENCHOICE:
-            itemAnswer.push(...result.map((x: Coding | Quantity): QuestionnaireResponseItemAnswer => ({ valueCoding: x })));
-            break;
-          case itemType.ATTATCHMENT:
-            itemAnswer.push(...result.map((x: Attachment): QuestionnaireResponseItemAnswer => ({ valueAttachment: x })));
-            break;
-          default:
-            break;
+      switch (qItem.type) {
+        case itemType.BOOLEAN: {
+          const res: boolean[] = result.length === 0 ? [false] : result;
+          itemAnswer.push(...res.map((x: boolean): QuestionnaireResponseItemAnswer => ({ valueBoolean: Boolean(x) })));
+          break;
         }
+
+        case itemType.DECIMAL:
+          itemAnswer.push(
+            ...result.map(
+              (x: string | number | undefined): QuestionnaireResponseItemAnswer => ({
+                valueDecimal: getDecimalValue(qItem, x !== undefined && x !== null ? Number(x) : undefined),
+              })
+            )
+          );
+          break;
+
+        case itemType.INTEGER:
+          itemAnswer.push(
+            ...result.map(
+              (x: string | number): QuestionnaireResponseItemAnswer => ({
+                valueInteger: isNaN(Number(x)) || !isFinite(Number(x)) ? undefined : Math.round(Number(x)),
+              })
+            )
+          );
+          break;
+        case itemType.QUANTITY:
+          itemAnswer.push(
+            ...result.map(
+              (x: string | number | Quantity): QuestionnaireResponseItemAnswer => ({
+                valueQuantity: isQuantity(x) ? x : this.createQuantity(qItem, getQuestionnaireUnitExtensionValue(qItem), x),
+              })
+            )
+          );
+          break;
+        case itemType.DATE:
+          itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueDate: String(x) })));
+          break;
+        case itemType.DATETIME:
+          itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueDateTime: String(x) })));
+          break;
+        case itemType.TIME:
+          itemAnswer.push(...result.map((x: string | number): QuestionnaireResponseItemAnswer => ({ valueTime: String(x) })));
+          break;
+        case itemType.STRING:
+        case itemType.TEXT: {
+          const res: Array<string | undefined> = result ?? [undefined];
+          itemAnswer.push(...res.map((x: string | number | undefined): QuestionnaireResponseItemAnswer => ({ valueString: String(x) })));
+          break;
+        }
+
+        case itemType.CHOICE:
+        case itemType.OPENCHOICE:
+          itemAnswer.push(...result.map((x: Coding | Quantity): QuestionnaireResponseItemAnswer => ({ valueCoding: x })));
+          break;
+        case itemType.ATTATCHMENT:
+          itemAnswer.push(...result.map((x: Attachment): QuestionnaireResponseItemAnswer => ({ valueAttachment: x })));
+          break;
+        default:
+          break;
       }
       const qrItemAnswer = itemAnswer.map((x: QuestionnaireResponseItemAnswer, index: number) => ({
         ...(x && { ...x }),
         ...(qrItem?.[0]?.answer?.[index]?.item && { item: qrItem?.[0]?.answer?.[index]?.item }),
       }));
       if (qrItemAnswer.length === 0) {
-        return qrItem?.[0].answer || [];
+        if (!qrItem?.[0]?.answer) {
+          return null;
+        }
+        const fallback = qrItem[0].answer
+          .map((y: QuestionnaireResponseItemAnswer) => (y.item ? ({ item: y.item } as QuestionnaireResponseItemAnswer) : undefined))
+          .filter((a): a is QuestionnaireResponseItemAnswer => a !== undefined);
+        return fallback;
       }
       return qrItemAnswer;
     }

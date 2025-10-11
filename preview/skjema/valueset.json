@@ -1,0 +1,93 @@
+{
+  "resourceType": "ValueSet",
+  "id": "830e806f-0a52-4a0c-ec84-78a50a16bfe7",
+  "version": "2.0",
+  "name": "Hverdagsoppgaver_valueset_2",
+  "title": "Hva gjør du hver dag",
+  "date": "2025-10-10T16:37:46.198Z",
+  "status": "draft",
+  "publisher": "nhn.no",
+  "url": "",
+  "contact": [],
+  "compose": {
+    "include": [
+      {
+        "id": "1ac580db-2564-4c2f-8c0e-b9291697abdc",
+        "system": "urn:uuid:01b2bf4f-ce95-4626-843e-0e2cd5857b4c",
+        "version": "1",
+        "concept": [
+          {
+            "valueCoding": {
+              "id": "c1d95dd8-93e6-449a-887f-0aab0003d883",
+              "code": "rydder-stua",
+              "display": "Rydder stua",
+              "extension": [
+                {
+                  "id": "c1cf5af1-eb8e-465e-edda-6d5065a3c1f8",
+                  "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                  "valueDecimal": 10
+                }
+              ]
+            }
+          },
+          {
+            "valueCoding": {
+              "id": "95e574e3-16ff-458a-c921-c7c73de84140",
+              "code": "vasker-opp",
+              "display": "Vasker opp",
+              "extension": [
+                {
+                  "id": "8fb2e8bd-70b7-4d36-b31a-acc3c31fe625",
+                  "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                  "valueDecimal": 20
+                }
+              ]
+            }
+          },
+          {
+            "valueCoding": {
+              "id": "1dff1c26-5978-4944-8b1a-2206dea37ad4",
+              "code": "lager-mat",
+              "display": "Lager mat",
+              "extension": [
+                {
+                  "id": "2e5df8de-0632-42db-b0ce-dda2f2c65b7a",
+                  "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                  "valueDecimal": 15
+                }
+              ]
+            }
+          },
+          {
+            "valueCoding": {
+              "id": "599f8431-aa5c-4c05-b3a8-faf125aa7994",
+              "code": "vasker-kler",
+              "display": "vasker klær",
+              "extension": [
+                {
+                  "id": "01baf6e4-0744-424a-8ce6-e021507937ae",
+                  "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                  "valueDecimal": 25
+                }
+              ]
+            }
+          },
+          {
+            "valueCoding": {
+              "id": "877a1fdc-cf39-4ed8-d3d9-6368108955df",
+              "code": "rer-opp-senga",
+              "display": "rer opp senga",
+              "extension": [
+                {
+                  "id": "8c4f0ad8-e5ff-4c84-dfd2-ffabac862cdb",
+                  "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                  "valueDecimal": 5
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
