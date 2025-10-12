@@ -1,6 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Questionnaire } from 'fhir/r4';
 
+import { resetAnswerValueAsync } from './newValue';
+
 import { startEnableWhenCalculation } from '@/calculators/runEnableWhen_new';
 import { runFhirPathQrUpdater } from '@/calculators/runFhirPathUpdater';
 import { runScoringCalculator } from '@/calculators/runScoringCalculator';
@@ -60,17 +62,26 @@ export const runCalculatorsAction = createAsyncThunk<void, void, { state: RootSt
 
 export const runEnableWhenAction = createAsyncThunk<void, void, { state: RootState; dispatch: AppDispatch }>(
   'questionnaireResponse/runEnableWhen',
-  async (_, { getState, dispatch, rejectWithValue }) => {
-    const state = getState();
-    const questionnaire = state.refero.form.FormDefinition.Content;
-    const questionnaireResponse = state.refero.form.FormData.Content;
+  async (_, { getState, rejectWithValue, dispatch }) => {
+    const {
+      refero: {
+        form: { FormDefinition, FormData },
+      },
+    } = getState();
+    const questionnaire = FormDefinition.Content;
+    const questionnaireResponse = FormData.Content;
 
     if (!questionnaire || !questionnaireResponse) {
       return rejectWithValue('Missing questionnaire or questionnaireResponse');
     }
 
     try {
-      startEnableWhenCalculation({ questionnaire, questionnaireResponse, dispatch });
+      const actions = await startEnableWhenCalculation({ questionnaire, questionnaireResponse });
+      if (actions.length === 0) {
+        return;
+      }
+      await dispatch(resetAnswerValueAsync(actions));
+      dispatch(runEnableWhenAction());
     } catch (error) {
       return rejectWithValue(error);
     }

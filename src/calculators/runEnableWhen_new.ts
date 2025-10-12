@@ -18,7 +18,6 @@ import {
   resetAnswerValueAction,
   deleteRepeatItemAction,
   ClearAction,
-  AppDispatch,
 } from '..';
 
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
@@ -34,8 +33,7 @@ export type RunEnableWhenResult = ClearAction[];
 export async function startEnableWhenCalculation({
   questionnaire,
   questionnaireResponse,
-  dispatch,
-}: RunEnableWhenInput & { dispatch: AppDispatch }): Promise<RunEnableWhenResult> {
+}: RunEnableWhenInput): Promise<RunEnableWhenResult> {
   let actions: ClearAction[] = [];
   if (typeof window !== 'undefined' && window.Worker) {
     try {
@@ -48,7 +46,7 @@ export async function startEnableWhenCalculation({
   } else {
     actions = runEnableWhenNew({ questionnaire, questionnaireResponse });
   }
-  actions.forEach(action => dispatch(action));
+
   return actions;
 }
 
@@ -87,14 +85,20 @@ const findItemsWithEnableWhen = (
       //   console.log('itemPath:', JSON.stringify(itemPath, null, 2));
       //   console.groupEnd();
       // }
+      // console.group('collectClearAnswerActions for', item.linkId);
+
+      // console.log('itemPath:', JSON.stringify(itemPath, null, 2));
+      // console.log('respMatch:', JSON.stringify(respMatch, null, 2));
+      // console.groupEnd();
+
       if (item.enableWhen && item.enableWhen.length > 0) {
         const enabled = isEnableWhenEnabled(item.enableWhen, item.enableBehavior, itemPath, questionnaireResponse?.item);
 
         if (!enabled) {
           const clears = collectClearAnswerActions([item], [respMatch], parentPath, 1, itemPath);
           acc.push(...clears);
+          continue;
         }
-        continue;
       }
       const nextScope: QuestionnaireResponseItem[] = [...(respMatch.item ?? []), ...(respMatch.answer ?? []).flatMap(a => a.item ?? [])];
       if (item.item && item.item.length > 0) {
@@ -123,11 +127,6 @@ function collectClearAnswerActions(
       if (itteration === 1) {
         itemPath = path;
       }
-      // console.group('collectClearAnswerActions for 7.1.2');
-
-      // console.log('itemPath:', JSON.stringify(itemPath, null, 2));
-      // console.log('respItem:', JSON.stringify(respItem, null, 2));
-      // console.groupEnd();
 
       const lastIndex = itemPath?.at(-1)?.index ?? 0;
       if (item.repeats && lastIndex > 0) {
