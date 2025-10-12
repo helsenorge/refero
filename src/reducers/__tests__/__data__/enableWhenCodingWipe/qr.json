@@ -3,18 +3,10 @@
   "status": "in-progress",
   "item": [
     {
-      "linkId": "A",
-      "answer": [
-        {
-          "valueBoolean": false
-        }
-      ]
-    },
-    {
-      "linkId": "G",
+      "linkId": "1",
       "item": [
         {
-          "linkId": "G.1",
+          "linkId": "1.1",
           "answer": [
             {
               "valueBoolean": false
@@ -24,10 +16,10 @@
       ]
     },
     {
-      "linkId": "G",
+      "linkId": "2",
       "item": [
         {
-          "linkId": "G.1",
+          "linkId": "2.1",
           "answer": [
             {
               "valueBoolean": false
@@ -37,10 +29,10 @@
       ]
     },
     {
-      "linkId": "G",
+      "linkId": "3",
       "item": [
         {
-          "linkId": "G.1",
+          "linkId": "3.1",
           "answer": [
             {
               "valueBoolean": false

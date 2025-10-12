@@ -26,7 +26,7 @@ export const store = (preloadedState?: Form) =>
       },
     }),
   });
-type AppStore = ReturnType<typeof store>;
+export type AppStore = ReturnType<typeof store>;
 
 export type AppDispatch = ThunkDispatch<GlobalState, unknown, UnknownAction>;
 export type RootState = ReturnType<AppStore['getState']>;

@@ -1,42 +1,34 @@
 /* tslint:disable */
 import { fail } from 'assert';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import { renderReferoWithStore, screen, userEvent, waitFor } from '@test/test-utils';
+import { Questionnaire } from 'fhir/r4';
 
+import { AppStore } from '..';
 import { Form } from '../form';
 import dataModel from './__data__/enableWhenAndWipingAnswers';
-import { getResponseItem, clickCheckbox, enterText, selectChoice, createCoding, pathifyExpand } from './utils';
-import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
+import { getResponseItem, pathifyExpand } from './utils';
 
 describe('wipe answers when collapsing enable whens', () => {
   let newState: Form;
-  let definitionItems: QuestionnaireItem[];
 
   beforeEach(() => {
-    process.env.DEBUG_LOG = '1';
     newState = dataModel.refero.form;
-    const dItems = getDefinitionItems(newState.FormDefinition);
-    if (!dItems || dItems.length === 0) {
-      return fail();
-    }
-    definitionItems = dItems;
   });
-  //BUG not wiping items correctly yet - skipping these tests for now
-  it.skip('should remove added repeats and clear answers when collapsing toplevel enableWhen', async () => {
-    let state = await fillOutForm(newState, definitionItems);
-    if (!state) return fail();
+  it('should remove added repeats and clear answers when collapsing toplevel enableWhen', async () => {
+    const { store } = await createWrapper(newState.FormDefinition.Content);
+    newState = (await fillOutForm(store)) as Form;
+    if (!newState) return fail();
 
-    // unclick first checkbox
-    const qItem = getQuestionnaireDefinitionItem('1', definitionItems);
-    if (!qItem) return;
-    state = await clickCheckbox(state, pathifyExpand('1'), false, qItem);
-
-    const i1 = getResponseItem('1', state, pathifyExpand('1'));
-    const i11 = getResponseItem('1.1', state, pathifyExpand('1.1'));
-    const i111 = getResponseItem('1.1.1', state, pathifyExpand('1.1.1'));
-    const i1111 = getResponseItem('1.1.1.1', state, pathifyExpand('1.1.1.1'));
-    const i2 = getResponseItem('2', state, pathifyExpand('2'));
-    const i21 = getResponseItem('2.1', state, pathifyExpand('2.1'));
+    //Click checkbox with label "Klikk for å åpne"
+    await userEvent.click(screen.getByText('Klikk for å åpne'));
+    newState = store.getState().refero.form;
+    const i1 = getResponseItem('1', newState, pathifyExpand('1'));
+    const i11 = getResponseItem('1.1', newState, pathifyExpand('1.1'));
+    const i111 = getResponseItem('1.1.1', newState, pathifyExpand('1.1.1'));
+    const i1111 = getResponseItem('1.1.1.1', newState, pathifyExpand('1.1.1.1'));
+    const i2 = getResponseItem('2', newState, pathifyExpand('2'));
+    const i21 = getResponseItem('2.1', newState, pathifyExpand('2.1'));
 
     if (!i1 || !i11 || !i111 || !i1111 || !i2 || !i21) {
       return fail();
@@ -45,30 +37,59 @@ describe('wipe answers when collapsing enable whens', () => {
     expect(i1.answer![0]).toHaveProperty('valueBoolean', false);
 
     // answers are wiped completely -> arrays should be empty
-    expect(i11.answer).toHaveLength(0);
-    expect(i111.answer).toHaveLength(0);
-    expect(i1111.answer).toHaveLength(0);
+    expect(i11.answer).toEqual([
+      {
+        item: [
+          {
+            linkId: '1.1.1',
+            text: 'nested enable when',
+            answer: [
+              {
+                item: [
+                  {
+                    linkId: '1.1.1.1',
+                    text: 'turtles all the way down',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+    expect(i111.answer).toEqual([
+      {
+        item: [
+          {
+            linkId: '1.1.1.1',
+            text: 'turtles all the way down',
+          },
+        ],
+      },
+    ]);
+    expect(i1111.answer).toBeUndefined();
 
     // unrelated branch intact
     expect(i2.answer![0]).toHaveProperty('valueBoolean', true);
     expect(i21.answer![0]).toHaveProperty('valueString', 'unrelated');
   });
-  //BUG not wiping items correctly yet - skipping these tests for now
-  it.skip('should remove added repeats and clear answers when collapsing sublevel enableWhen', async () => {
-    let state = await fillOutForm(newState, definitionItems);
-    if (!state) return fail();
+  it('should remove added repeats and clear answers when collapsing sublevel enableWhen', async () => {
+    const { store } = await createWrapper(newState.FormDefinition.Content);
+    newState = (await fillOutForm(store)) as Form;
+    if (!newState) return fail();
 
     // remove "hello" answer
-    const qItem = getQuestionnaireDefinitionItem('1.1', definitionItems);
-    if (!qItem) return fail();
-    state = await enterText(state, pathifyExpand('1.1'), '', qItem);
-
-    const i1 = getResponseItem('1', state, pathifyExpand('1'));
-    const i11 = getResponseItem('1.1', state, pathifyExpand('1.1'));
-    const i111 = getResponseItem('1.1.1', state, pathifyExpand('1.1.1'));
-    const i1111 = getResponseItem('1.1.1.1', state, pathifyExpand('1.1.1.1'));
-    const i2 = getResponseItem('2', state, pathifyExpand('2'));
-    const i21 = getResponseItem('2.1', state, pathifyExpand('2.1'));
+    // const qItem = getQuestionnaireDefinitionItem('1.1', definitionItems);
+    await userEvent.type(await screen.findByLabelText('skriv noe'), '{backspace}{backspace}{backspace}{backspace}{backspace}');
+    // if (!qItem) return fail();
+    // newState = await enterText(newState, pathifyExpand('1.1'), '', qItem);
+    newState = store.getState().refero.form;
+    const i1 = getResponseItem('1', newState, pathifyExpand('1'));
+    const i11 = getResponseItem('1.1', newState, pathifyExpand('1.1'));
+    const i111 = getResponseItem('1.1.1', newState, pathifyExpand('1.1.1'));
+    const i1111 = getResponseItem('1.1.1.1', newState, pathifyExpand('1.1.1.1'));
+    const i2 = getResponseItem('2', newState, pathifyExpand('2'));
+    const i21 = getResponseItem('2.1', newState, pathifyExpand('2.1'));
 
     if (!i1 || !i11 || !i111 || !i1111 || !i2 || !i21) {
       return fail();
@@ -81,8 +102,17 @@ describe('wipe answers when collapsing enable whens', () => {
     expect(i11.answer![0]).not.toHaveProperty('valueString');
 
     // Children are wiped completely
-    expect(i111.answer).toHaveLength(0);
-    expect(i1111.answer).toHaveLength(0);
+    expect(i111.answer).toEqual([
+      {
+        item: [
+          {
+            linkId: '1.1.1.1',
+            text: 'turtles all the way down',
+          },
+        ],
+      },
+    ]);
+    expect(i1111.answer).toBeUndefined();
 
     // Unrelated branch intact
     expect(i2.answer![0]).toHaveProperty('valueBoolean', true);
@@ -90,30 +120,40 @@ describe('wipe answers when collapsing enable whens', () => {
   });
 });
 
-async function fillOutForm(newState: Form, definitionItems: QuestionnaireItem[]): Promise<Form | undefined> {
-  let qItem = getQuestionnaireDefinitionItem('1', definitionItems);
-  if (!qItem) return;
-  newState = await clickCheckbox(newState, pathifyExpand('1'), true, qItem);
+async function fillOutForm(store: AppStore): Promise<Form | undefined> {
+  // let qItem = getQuestionnaireDefinitionItem('1', definitionItems);
+  // if (!qItem) return;
+  //Click checkbox with label "Klikk for å åpne"
+  await userEvent.click(screen.getByText('Klikk for å åpne'));
 
-  qItem = getQuestionnaireDefinitionItem('1.1', definitionItems);
-  if (!qItem) return;
-  newState = await enterText(newState, pathifyExpand('1.1'), 'hello', qItem);
+  // qItem = getQuestionnaireDefinitionItem('1.1', definitionItems);
+  // if (!qItem) return;
+  // newState = await enterText(newState, pathifyExpand('1.1'), 'hello', qItem);
+  //Fill out first enable when question
+  await userEvent.type(await screen.findByLabelText('skriv noe'), 'hello');
+  // qItem = getQuestionnaireDefinitionItem('1.1.1', definitionItems);
+  // if (!qItem) fail();
+  // newState = await enterText(newState, pathifyExpand('1.1.1'), 'world', qItem);
+  //fill out nested enable when question
+  await userEvent.type(await screen.findByLabelText('nested enable when'), 'world');
+  // qItem = getQuestionnaireDefinitionItem('1.1.1.1', definitionItems);
+  // if (!qItem) fail();
+  // newState = await selectChoice(newState, pathifyExpand('1.1.1.1'), createCoding('1', 'urn:oid:2.16.578.1.12.4.1.1101'), qItem, false);
+  //Select option "Ja" (in turtles all the way down)
+  await userEvent.click(await screen.findByText('Ja'));
+  // qItem = getQuestionnaireDefinitionItem('2', definitionItems);
+  // if (!qItem) fail();
+  // newState = await clickCheckbox(newState, pathifyExpand('2'), true, qItem);
+  //Click checkbox with label "unrelated"
+  await userEvent.click(await screen.findByText('unrelated'));
+  // qItem = getQuestionnaireDefinitionItem('2.1', definitionItems);
+  // if (!qItem) fail();
+  await userEvent.type(await screen.findByLabelText('urelated nested'), 'unrelated');
+  // newState = await enterText(newState, pathifyExpand('2.1'), 'unrelated', qItem);
 
-  qItem = getQuestionnaireDefinitionItem('1.1.1', definitionItems);
-  if (!qItem) return;
-  newState = await enterText(newState, pathifyExpand('1.1.1'), 'world', qItem);
-
-  qItem = getQuestionnaireDefinitionItem('1.1.1.1', definitionItems);
-  if (!qItem) return;
-  newState = await selectChoice(newState, pathifyExpand('1.1.1.1'), createCoding('1', 'urn:oid:2.16.578.1.12.4.1.1101'), qItem, false);
-
-  qItem = getQuestionnaireDefinitionItem('2', definitionItems);
-  if (!qItem) return;
-  newState = await clickCheckbox(newState, pathifyExpand('2'), true, qItem);
-
-  qItem = getQuestionnaireDefinitionItem('2.1', definitionItems);
-  if (!qItem) return;
-  newState = await enterText(newState, pathifyExpand('2.1'), 'unrelated', qItem);
-
-  return newState;
+  return store.getState().refero.form;
+}
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function createWrapper(questionnaire: Questionnaire | undefined | null) {
+  return waitFor(async () => await renderReferoWithStore({ questionnaire, props: { authorized: true } }));
 }

@@ -607,7 +607,6 @@ function processSetSkjemaDefinition(payload: SetFormDefinitionAction, state: For
   if (!payload) {
     return state;
   }
-
   const formDefinition: FormDefinition = {
     Content: payload.questionnaire,
   };

@@ -124,7 +124,7 @@ export class FhirPathExtensions {
       unit: extension?.display || '',
       system: extension?.system || '',
       code: extension?.code || '',
-      ...(value && { value: value || value === 0 ? getDecimalValue(item, Number(value)) : undefined }),
+      ...(value !== undefined && value !== null && { value: value || value === 0 ? getDecimalValue(item, Number(value)) : undefined }),
     };
   }
 
@@ -149,7 +149,7 @@ export class FhirPathExtensions {
           itemAnswer.push(
             ...result.map(
               (x: string | number | undefined): QuestionnaireResponseItemAnswer => ({
-                valueDecimal: getDecimalValue(qItem, x !== undefined && x !== null ? Number(x) : undefined),
+                valueDecimal: getDecimalValue(qItem, x !== 0 && x !== null ? Number(x) : undefined),
               })
             )
           );
@@ -159,7 +159,7 @@ export class FhirPathExtensions {
           itemAnswer.push(
             ...result.map(
               (x: string | number): QuestionnaireResponseItemAnswer => ({
-                valueInteger: isNaN(Number(x)) || !isFinite(Number(x)) ? undefined : Math.round(Number(x)),
+                valueInteger: isNaN(Number(x)) || !isFinite(Number(x)) ? 0 : Math.round(Number(x)),
               })
             )
           );
