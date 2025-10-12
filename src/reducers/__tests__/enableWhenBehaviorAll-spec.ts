@@ -1,38 +1,46 @@
 import { fail } from 'assert';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import { renderReferoWithStore, screen, userEvent, waitFor } from '@test/test-utils';
+import { Questionnaire } from 'fhir/r4';
 
 import { Form } from '../form';
 import enableWhenDataModel from './__data__/enableWhenBehaviorAll';
-import { getResponseItem, pathify, clickCheckbox } from './utils';
-import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
+import { getResponseItem, pathify } from './utils';
 
 describe('questionnaire with enableWhen behavior all', () => {
   let newState: Form;
-  let definitionItems: QuestionnaireItem[];
 
   beforeEach(() => {
     newState = enableWhenDataModel.refero.form;
-    const dItems = getDefinitionItems(newState.FormDefinition);
-    if (!dItems || dItems.length === 0) {
-      return fail();
-    }
-    definitionItems = dItems;
   });
 
   it('should clear answer when one enableWhen condition is false', async () => {
-    newState = await clickCheckbox(newState, pathify('1', '1.1'), true, getQuestionnaireDefinitionItem('1.1', definitionItems));
-    newState = await clickCheckbox(newState, pathify('1', '1.2'), true, getQuestionnaireDefinitionItem('1.2', definitionItems));
-    newState = await clickCheckbox(newState, pathify('2', '2.1'), true, getQuestionnaireDefinitionItem('2.1', definitionItems));
+    const { store } = await createWrapper(newState.FormDefinition.Content);
+    //Click checkbox with label "Spørsmål 1.1"
+    await userEvent.click(screen.getByText('Spørsmål 1.1'));
+    //Click checkbox with label "Spørsmål 1.2"
+    await userEvent.click(screen.getByText('Spørsmål 1.2'));
+    //Click checkbox with label "Vises bare dersom alle over er krysset av"
+    await userEvent.click(await screen.findByText('Vises bare dersom alle over er krysset av'));
+    //Verify that item 2.1 (Vises bare dersom alle over er krysset av) is checked
+    expect(await screen.findByLabelText('Vises bare dersom alle over er krysset av')).toBeChecked();
+    //Verify that item 2.1 (Vises bare dersom alle over er krysset av) has answer true in state
+    newState = store.getState().refero.form;
     let responseItem21 = getResponseItem('2.1', newState, pathify('2', '2.1'));
 
     if (!responseItem21) return fail();
     expect(responseItem21.answer).toMatchObject([{ valueBoolean: true }]);
+    //Click checkbox with label "Spørsmål 1.1"
+    await userEvent.click(screen.getByText('Spørsmål 1.1'));
 
-    newState = await clickCheckbox(newState, pathify('1', '1.1'), false, getQuestionnaireDefinitionItem('1.1', definitionItems));
+    newState = store.getState().refero.form;
 
     responseItem21 = getResponseItem('2.1', newState, pathify('2', '2.1'));
     if (!responseItem21) return fail();
     expect(responseItem21.answer).toMatchObject([{ valueBoolean: false }]);
   });
 });
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function createWrapper(questionnaire: Questionnaire | undefined | null) {
+  return waitFor(async () => await renderReferoWithStore({ questionnaire, props: { authorized: true } }));
+}

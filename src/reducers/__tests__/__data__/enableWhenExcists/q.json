@@ -1,0 +1,36 @@
+{
+  "resourceType": "Questionnaire",
+  "item": [
+    {
+      "linkId": "A",
+      "text": "A",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "A.1",
+          "text": "A.1",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "linkId": "T",
+      "text": "T",
+      "type": "group",
+      "enableWhen": [
+        {
+          "question": "A.1",
+          "operator": "exists",
+          "answerBoolean": true
+        }
+      ],
+      "item": [
+        {
+          "text": "T.1",
+          "linkId": "T.1",
+          "type": "string"
+        }
+      ]
+    }
+  ]
+}

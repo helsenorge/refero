@@ -1,0 +1,58 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-enablewhen",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Hva trenger du nå",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "Vet du hva du trenger nå?",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "Selvhjelp",
+      "type": "group",
+      "enableBehavior": "any",
+      "enableWhen": [
+        {
+          "question": "1.1",
+          "operator": "=",
+          "answerBoolean": true
+        }
+      ],
+      "item": [
+        {
+          "linkId": "2.1",
+          "text": "Ønsker du selvhjelp?",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "linkId": "3",
+      "text": "Rådgiving og psykolog",
+      "type": "group",
+      "enableBehavior": "any",
+      "enableWhen": [
+        {
+          "question": "2.1",
+          "operator": "=",
+          "answerBoolean": true
+        }
+      ],
+      "item": [
+        {
+          "linkId": "3.1",
+          "text": "Har du utfordringer?",
+          "type": "boolean"
+        }
+      ]
+    }
+  ]
+}

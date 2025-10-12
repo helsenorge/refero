@@ -1,106 +1,76 @@
 import { fail } from 'assert';
 
-import { Questionnaire, QuestionnaireResponse, QuestionnaireItem } from 'fhir/r4';
+import { renderReferoWithStore, screen, userEvent, waitFor } from '@test/test-utils';
+import { Questionnaire } from 'fhir/r4';
 
 import { Form } from '../form';
-import { createGlobalStateWithQuestionnaire, clickCheckbox, getResponseItem, pathify } from './utils';
-import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
-
-const makeQR = (): QuestionnaireResponse => ({
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress',
-  item: [
-    {
-      linkId: 'A',
-      item: [
-        { linkId: 'A.1', answer: [{ valueBoolean: false }] },
-        { linkId: 'A.2', answer: [{ valueBoolean: false }] },
-      ],
-    },
-    { linkId: 'T', item: [{ linkId: 'T.1', answer: [{ valueBoolean: false }] }] },
-  ],
-});
+import dataModels from './__data__/enableWhenAnyVsAll';
+import { getResponseItem, pathify } from './utils';
 
 describe('enableBehavior any vs all', () => {
-  let def: QuestionnaireItem[];
-
+  let newState: Form;
   it('ANY: ett sant vil enable; når det blir false wipes T.1', async () => {
-    const q: Questionnaire = {
-      resourceType: 'Questionnaire',
-      item: [
-        {
-          linkId: 'A',
-          type: 'group',
-          item: [
-            { linkId: 'A.1', type: 'boolean' },
-            { linkId: 'A.2', type: 'boolean' },
-          ],
-        },
-        {
-          linkId: 'T',
-          type: 'group',
-          enableBehavior: 'any',
-          enableWhen: [
-            { question: 'A.1', operator: '=', answerBoolean: true },
-            { question: 'A.2', operator: '=', answerBoolean: true },
-          ],
-          item: [{ linkId: 'T.1', type: 'boolean' }],
-        },
-      ],
-    } as Questionnaire;
+    newState = dataModels.anyDataModel.refero.form;
+    const { store } = await createWrapper(newState.FormDefinition.Content);
+    newState = store.getState().refero.form;
 
-    let state: Form = createGlobalStateWithQuestionnaire(q, makeQR()).refero.form;
-    def = getDefinitionItems(state.FormDefinition)!;
+    //Click checkbox with label "Spørsmål A1"
+    await userEvent.click(screen.getByText('Spørsmål A1'));
+    //Check that T.1 is visible
+    expect(await screen.findByText('Spørsmål T1')).toBeVisible();
+    //click checkbox with label "Spørsmål T1"
+    await userEvent.click(screen.getByText('Spørsmål T1'));
 
-    // Sett A.1 = true -> T enabled
-    state = await clickCheckbox(state, pathify('A', 'A.1'), true, getQuestionnaireDefinitionItem('A.1', def));
-    // Sett T.1 = true
-    state = await clickCheckbox(state, pathify('T', 'T.1'), true, getQuestionnaireDefinitionItem('T.1', def));
-    // Sett A.1 = false -> ANY har fortsatt A.2=false, ingen true => disable, wipe T.1 -> false
-    state = await clickCheckbox(state, pathify('A', 'A.1'), false, getQuestionnaireDefinitionItem('A.1', def));
+    //Check that T.1 is checked
+    newState = store.getState().refero.form;
+    let t1 = getResponseItem('T.1', newState, pathify('T', 'T.1'));
+    if (!t1) return fail();
+    expect(t1.answer).toMatchObject([{ valueBoolean: true }]);
 
-    const t1 = getResponseItem('T.1', state, pathify('T', 'T.1'));
+    //Click checkbox with label "Spørsmål A1" again to uncheck it
+    await userEvent.click(screen.getByText('Spørsmål A1'));
+    //Check that T.1 is not visible
+    expect(screen.queryByText('Spørsmål T1')).toBeNull();
+
+    //Check that T.1 is wiped (false)
+    newState = store.getState().refero.form;
+    t1 = getResponseItem('T.1', newState, pathify('T', 'T.1'));
     if (!t1) return fail();
     expect(t1.answer).toMatchObject([{ valueBoolean: false }]);
   });
 
   it('ALL: alle må være sanne; sette én til false skal wipe', async () => {
-    const q: Questionnaire = {
-      resourceType: 'Questionnaire',
-      item: [
-        {
-          linkId: 'A',
-          type: 'group',
-          item: [
-            { linkId: 'A.1', type: 'boolean' },
-            { linkId: 'A.2', type: 'boolean' },
-          ],
-        },
-        {
-          linkId: 'T',
-          type: 'group',
-          enableBehavior: 'all',
-          enableWhen: [
-            { question: 'A.1', operator: '=', answerBoolean: true },
-            { question: 'A.2', operator: '=', answerBoolean: true },
-          ],
-          item: [{ linkId: 'T.1', type: 'boolean' }],
-        },
-      ],
-    } as Questionnaire;
+    newState = dataModels.allDataModel.refero.form;
+    const { store } = await createWrapper(newState.FormDefinition.Content);
+    newState = store.getState().refero.form;
+    //Click checkbox with label "Spørsmål A1"
+    await userEvent.click(screen.getByText('Spørsmål A1'));
+    //Click checkbox with label "Spørsmål A2"
+    await userEvent.click(screen.getByText('Spørsmål A2'));
+    //Check that T.1 is visible
+    expect(await screen.findByText('Spørsmål T1')).toBeVisible();
+    //click checkbox with label "Spørsmål T1"
+    await userEvent.click(screen.getByText('Spørsmål T1'));
 
-    let state: Form = createGlobalStateWithQuestionnaire(q, makeQR()).refero.form;
-    def = getDefinitionItems(state.FormDefinition)!;
-
-    state = await clickCheckbox(state, pathify('A', 'A.1'), true, getQuestionnaireDefinitionItem('A.1', def));
-    state = await clickCheckbox(state, pathify('A', 'A.2'), true, getQuestionnaireDefinitionItem('A.2', def));
-    state = await clickCheckbox(state, pathify('T', 'T.1'), true, getQuestionnaireDefinitionItem('T.1', def));
-
-    // Slå av A.2 -> ALL bryter og T.1 wipes -> false
-    state = await clickCheckbox(state, pathify('A', 'A.2'), false, getQuestionnaireDefinitionItem('A.2', def));
-
-    const t1 = getResponseItem('T.1', state, pathify('T', 'T.1'));
+    //Check that T.1 is checked
+    newState = store.getState().refero.form;
+    const t1 = getResponseItem('T.1', newState, pathify('T', 'T.1'));
     if (!t1) return fail();
-    expect(t1.answer).toMatchObject([{ valueBoolean: false }]);
+    expect(t1.answer).toMatchObject([{ valueBoolean: true }]);
+
+    //Click checkbox with label "Spørsmål A2" again to uncheck it
+    await userEvent.click(screen.getByText('Spørsmål A2'));
+    //Check that T.1 is not visible
+    expect(screen.queryByText('Spørsmål T1')).toBeNull();
+
+    //Check that T.1 is wiped (false)
+    newState = store.getState().refero.form;
+    const t1After = getResponseItem('T.1', newState, pathify('T', 'T.1'));
+    if (!t1After) return fail();
+    expect(t1After.answer).toMatchObject([{ valueBoolean: false }]);
   });
 });
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function createWrapper(questionnaire: Questionnaire | undefined | null) {
+  return waitFor(async () => await renderReferoWithStore({ questionnaire, props: { authorized: true } }));
+}

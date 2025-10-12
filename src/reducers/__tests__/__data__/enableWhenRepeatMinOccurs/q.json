@@ -1,0 +1,36 @@
+{
+  "resourceType": "Questionnaire",
+  "item": [
+    {
+      "linkId": "A",
+      "text": "A",
+      "type": "boolean"
+    },
+    {
+      "linkId": "G",
+      "text": "G",
+      "type": "group",
+      "repeats": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 2
+        }
+      ],
+      "enableWhen": [
+        {
+          "question": "A",
+          "operator": "=",
+          "answerBoolean": true
+        }
+      ],
+      "item": [
+        {
+          "text": "G.1",
+          "linkId": "G.1",
+          "type": "boolean"
+        }
+      ]
+    }
+  ]
+}

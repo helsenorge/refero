@@ -18,6 +18,7 @@ import {
   resetAnswerValueAction,
   deleteRepeatItemAction,
   ClearAction,
+  getMinOccursExtensionValue,
 } from '..';
 
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
@@ -130,12 +131,17 @@ function collectClearAnswerActions(
 
       const lastIndex = itemPath?.at(-1)?.index ?? 0;
       if (item.repeats && lastIndex > 0) {
-        actions.push(
-          deleteRepeatItemAction({
-            item,
-            itemPath,
-          })
-        );
+        getMinOccursExtensionValue(item);
+        const minOccurs = getMinOccursExtensionValue(item) ?? 0;
+        const keepThreshold = minOccurs ? minOccurs : 1;
+        if (lastIndex >= keepThreshold) {
+          actions.push(
+            deleteRepeatItemAction({
+              item,
+              itemPath,
+            })
+          );
+        }
         continue;
       }
       if (respItem.answer && respItem.answer.length > 0) {

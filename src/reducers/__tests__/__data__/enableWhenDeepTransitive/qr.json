@@ -11,39 +11,22 @@
       ]
     },
     {
-      "linkId": "G",
+      "linkId": "B",
       "item": [
         {
-          "linkId": "G.1",
+          "linkId": "B.1",
           "answer": [
             {
               "valueBoolean": false
             }
           ]
-        }
-      ]
-    },
-    {
-      "linkId": "G",
-      "item": [
+        },
         {
-          "linkId": "G.1",
-          "answer": [
+          "linkId": "C",
+          "item": [
             {
-              "valueBoolean": false
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "linkId": "G",
-      "item": [
-        {
-          "linkId": "G.1",
-          "answer": [
-            {
-              "valueBoolean": false
+              "linkId": "C.1",
+              "answer": []
             }
           ]
         }

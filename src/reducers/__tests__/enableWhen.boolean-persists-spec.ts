@@ -1,74 +1,40 @@
 import { fail } from 'assert';
 
-import { QuestionnaireItem, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import { renderReferoWithStore, screen, userEvent, waitFor } from '@test/test-utils';
+import { Questionnaire } from 'fhir/r4';
 
 import { Form } from '../form';
-import { createGlobalStateWithQuestionnaire, clickCheckbox, getResponseItem, pathify } from './utils';
-import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
-
-const q: Questionnaire = {
-  resourceType: 'Questionnaire',
-  id: 'test-enablewhen',
-  item: [
-    {
-      linkId: '1',
-      text: 'Hva trenger du nå',
-      type: 'group',
-      item: [{ linkId: '1.1', text: 'Vet du hva du trenger nå?', type: 'boolean' }],
-    },
-    {
-      linkId: '2',
-      text: 'Selvhjelp',
-      type: 'group',
-      enableBehavior: 'any',
-      enableWhen: [{ question: '1.1', operator: '=', answerBoolean: true }],
-      item: [{ linkId: '2.1', text: 'Ønsker du selvhjelp?', type: 'boolean' }],
-    },
-    {
-      linkId: '3',
-      text: 'Rådgiving og psykolog',
-      type: 'group',
-      enableBehavior: 'any',
-      enableWhen: [{ question: '2.1', operator: '=', answerBoolean: true }],
-      item: [{ linkId: '3.1', text: 'Har du utfordringer?', type: 'boolean' }],
-    },
-  ],
-} as Questionnaire;
-
-// minimal tom QR
-const qr: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress',
-  item: [
-    { linkId: '1', item: [{ linkId: '1.1', answer: [{ valueBoolean: false }] }] },
-    { linkId: '2', item: [{ linkId: '2.1', answer: [{ valueBoolean: false }] }] },
-    { linkId: '3', item: [{ linkId: '3.1', answer: [{ valueBoolean: false }] }] },
-  ],
-};
+import dataModel from './__data__/enableWhenBooleanPersists';
+import { getResponseItem, pathify } from './utils';
 
 describe('booleans keep explicit value when hidden (enableWhen)', () => {
   let newState: Form;
-  let definitionItems: QuestionnaireItem[];
 
   beforeEach(() => {
-    const gs = createGlobalStateWithQuestionnaire(q, qr);
-    newState = gs.refero.form;
-    const dItems = getDefinitionItems(newState.FormDefinition);
-    if (!dItems?.length) return fail();
-    definitionItems = dItems;
+    newState = dataModel.refero.form;
   });
 
   it('2.1 og 3.1 blir eksplisitt false når 1.1 settes false', async () => {
+    const { store } = await createWrapper(newState.FormDefinition.Content);
     // Skru på kjeden 1.1 -> 2.1 -> 3.1
-    newState = await clickCheckbox(newState, pathify('1', '1.1'), true, getQuestionnaireDefinitionItem('1.1', definitionItems));
-    newState = await clickCheckbox(newState, pathify('2', '2.1'), true, getQuestionnaireDefinitionItem('2.1', definitionItems));
-    newState = await clickCheckbox(newState, pathify('3', '3.1'), true, getQuestionnaireDefinitionItem('3.1', definitionItems));
+    // newState = await clickCheckbox(newState, pathify('1', '1.1'), true, getQuestionnaireDefinitionItem('1.1', definitionItems));
+    //Click checkbox with label "Vet du hva du trenger nå?"
+    await userEvent.click(screen.getByText('Vet du hva du trenger nå?'));
+    //Click checkbox with label "Ønsker du selvhjelp?"
+    await userEvent.click(await screen.findByText('Ønsker du selvhjelp?'));
 
+    //Click checkbox with label "Har du utfordringer?"
+    await userEvent.click(await screen.findByText('Har du utfordringer?'));
+
+    //Click checkbox with label "Vet du hva du trenger nå?"
     // slå av 1.1 => begge etterkommere skjules og skal bli false (ikke tomme)
-    newState = await clickCheckbox(newState, pathify('1', '1.1'), false, getQuestionnaireDefinitionItem('1.1', definitionItems));
+    await userEvent.click(screen.getByText('Vet du hva du trenger nå?'));
 
+    //Check store that boolean answers are false, not undefined/null/empty
+    newState = store.getState().refero.form;
     const ri21 = getResponseItem('2.1', newState, pathify('2', '2.1'));
     const ri31 = getResponseItem('3.1', newState, pathify('3', '3.1'));
+
     if (!ri21 || !ri31) return fail();
 
     expect(ri21.answer).toMatchObject([{ valueBoolean: false }]);
@@ -76,16 +42,34 @@ describe('booleans keep explicit value when hidden (enableWhen)', () => {
   });
 
   it('re-enable påvirker ikke wiped verdi (verdier kommer ikke tilbake automatisk)', async () => {
-    newState = await clickCheckbox(newState, pathify('1', '1.1'), true, getQuestionnaireDefinitionItem('1.1', definitionItems));
-    newState = await clickCheckbox(newState, pathify('2', '2.1'), true, getQuestionnaireDefinitionItem('2.1', definitionItems));
-    // slå av 1.1 -> wipes under
-    newState = await clickCheckbox(newState, pathify('1', '1.1'), false, getQuestionnaireDefinitionItem('1.1', definitionItems));
-    // skru på igjen
-    newState = await clickCheckbox(newState, pathify('1', '1.1'), true, getQuestionnaireDefinitionItem('1.1', definitionItems));
+    const { store } = await createWrapper(newState.FormDefinition.Content);
 
+    //Click checkbox with label "Vet du hva du trenger nå?"
+    await userEvent.click(screen.getByText('Vet du hva du trenger nå?'));
+    //Click checkbox with label "Ønsker du selvhjelp?"
+    await userEvent.click(await screen.findByText('Ønsker du selvhjelp?'));
+    //Click checkbox with label "Har du utfordringer?"
+    await userEvent.click(await screen.findByText('Har du utfordringer?'));
+    //Click checkbox with label "Vet du hva du trenger nå?"
+    // slå av 1.1 -> wipes under
+    await userEvent.click(screen.getByText('Vet du hva du trenger nå?'));
+    // newState = await clickCheckbox(newState, pathify('1', '1.1'), false, getQuestionnaireDefinitionItem('1.1', definitionItems));
+
+    //Click checkbox with label "Vet du hva du trenger nå?"
+    // skru på igjen 1.1
+    await userEvent.click(screen.getByText('Vet du hva du trenger nå?'));
+
+    newState = store.getState().refero.form;
     const ri21 = getResponseItem('2.1', newState, pathify('2', '2.1'));
-    if (!ri21) return fail();
+    const ri31 = getResponseItem('3.1', newState, pathify('3', '3.1'));
+
+    if (!ri21 || !ri31) return fail();
     // den er fortsatt false (default), ikke auto-restored til true
     expect(ri21.answer).toMatchObject([{ valueBoolean: false }]);
+    expect(ri31.answer).toMatchObject([{ valueBoolean: false }]);
   });
 });
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function createWrapper(questionnaire: Questionnaire | undefined | null) {
+  return waitFor(async () => await renderReferoWithStore({ questionnaire, props: { authorized: true } }));
+}
