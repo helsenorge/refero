@@ -344,6 +344,15 @@ export const addRepeatItem = (
 
 export const resetAnswerValueAction = createAction<ResetAnswerValuePayload>(RESET_ANSWER_VALUE);
 
+export function resetAnswerValueAsync(actions: ClearAction[]) {
+  return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
+    for (const action of actions) {
+      dispatch(action);
+    }
+    return await Promise.resolve(getState());
+  };
+}
+
 export const deleteRepeatItemAction = createAction<DeleteRepeatItemPayload>(DELETE_REPEAT_ITEM);
 /*
  * @deprecated this will be removed in a future version, use deleteRepeatItemAction instead

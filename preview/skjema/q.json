@@ -1,533 +1,138 @@
 {
   "resourceType": "Questionnaire",
-  "language": "nb-NO",
-  "id": "63979fa8-d2c1-4ef8-8c8e-419cbbf09cee",
-  "name": "Nested_Enable_When",
-  "title": "Nested Enable When",
-  "description": "Testskjema for nøstede enableWhen",
-  "version": "0.5",
-  "status": "draft",
-  "publisher": "NHN",
+  "id": "test-enablewhen",
   "meta": {
+    "versionId": "19",
+    "lastUpdated": "2019-10-17T12:12:08.8076697+00:00",
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
-        "display": "Bokmål"
-      }
-    ],
-    "security": [
-      {
-        "code": "3",
-        "display": "Helsehjelp (Full)",
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+        "display": "Norsk bokmål"
       }
     ]
   },
-  "contact": [
+  "language": "nb-NO",
+  "contained": [],
+  "extension": [],
+  "url": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/42",
+  "version": "0.1",
+  "name": "SIO-Psykolog",
+  "title": "Noen å snakke med",
+  "status": "draft",
+  "date": "2019-09-23",
+  "publisher": "Direktoratet for e-helse",
+  "useContext": [
     {
-      "name": "http://www.nhn.no"
-    }
-  ],
-  "subjectType": ["Patient"],
-  "extension": [
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
-        "code": "1"
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
-        "code": "1"
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "code": {
+        "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+        "code": "focus",
+        "display": "Clinical Focus"
+      },
       "valueCodeableConcept": {
         "coding": [
           {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-help",
-            "display": "Hide help texts"
-          },
-          {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-sublabel",
-            "display": "Hide sublabel texts"
-          }
-        ]
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-save-capabilities",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-save-capabilities",
-        "code": "3"
-      }
-    },
-    {
-      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
-      "valueCoding": {
-        "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement",
-        "code": "1"
-      }
-    }
-  ],
-  "date": "2025-10-09T00:00:00+02:00",
-  "url": "Questionnaire/63979fa8-d2c1-4ef8-8c8e-419cbbf09cee",
-  "contained": [
-    {
-      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
-      "resourceType": "ValueSet",
-      "id": "1101",
-      "version": "1.0",
-      "name": "urn:oid:1101",
-      "title": "Ja / Nei (structor)",
-      "status": "draft",
-      "publisher": "NHN",
-      "compose": {
-        "include": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.1101",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Ja"
-              },
-              {
-                "code": "2",
-                "display": "Nei"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
-      "resourceType": "ValueSet",
-      "id": "1102",
-      "version": "1.0",
-      "name": "urn:oid:1102",
-      "title": "Ja / Nei / Vet ikke (structor)",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.1102",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Ja"
-              },
-              {
-                "code": "2",
-                "display": "Nei"
-              },
-              {
-                "code": "3",
-                "display": "Vet ikke"
-              }
-            ]
+            "system": "urn:oid:2.16.578.1.12.4.1.1.8655",
+            "code": "P",
+            "display": "Psykisk helsevern"
           }
         ]
       }
     }
   ],
+  "contact": [
+    {
+      "name": "https://sio.no/helse"
+    }
+  ],
+  "subjectType": ["Patient"],
   "item": [
     {
       "linkId": "1",
+      "text": "Hva trenger du nå",
       "type": "group",
-      "text": "Repeterende gruppe",
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-          "valueInteger": 5
-        }
-      ],
-      "required": false,
-      "repeats": true,
+      "repeats": false,
       "item": [
         {
           "linkId": "1.1",
-          "type": "choice",
-          "required": false,
-          "text": "Choice ",
-          "answerValueSet": "#1101",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "check-box"
-                  }
-                ]
-              }
-            }
-          ],
-          "item": [
-            {
-              "linkId": "1.1.1",
-              "type": "boolean",
-              "text": "Vis meg ved ja TOP",
-              "required": false,
-              "enableWhen": [
-                {
-                  "question": "1.1",
-                  "operator": "=",
-                  "answerCoding": {
-                    "system": "urn:oid:2.16.578.1.12.4.1.1101",
-                    "code": "1"
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "1.1.2",
-              "type": "boolean",
-              "text": "Vis meg ved Nei TOP",
-              "required": false,
-              "enableWhen": [
-                {
-                  "question": "1.1",
-                  "operator": "=",
-                  "answerCoding": {
-                    "system": "urn:oid:2.16.578.1.12.4.1.1101",
-                    "code": "2"
-                  }
-                }
-              ]
-            }
-          ]
-        },
+          "text": "Vet du hva du trenger nå?",
+          "type": "boolean",
+
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+
+    {
+      "linkId": "2",
+      "text": "Selvhjelp",
+      "type": "group",
+      "enableBehavior": "any",
+      "enableWhen": [
         {
-          "linkId": "1.2",
-          "type": "string",
-          "text": "Text",
-          "required": false
-        },
+          "question": "1.1",
+          "answerBoolean": true,
+          "operator": "="
+        }
+      ],
+      "repeats": false,
+      "item": [
         {
-          "linkId": "1.3",
-          "type": "choice",
-          "text": "Choice 2",
-          "required": false,
-          "answerValueSet": "#1102",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "check-box"
-                  }
-                ]
-              }
-            }
-          ],
-          "item": [
-            {
-              "linkId": "1.3.1",
-              "type": "integer",
-              "text": "Vis meg ved ja og usikker",
-              "required": false,
-              "enableWhen": [
-                {
-                  "question": "1.3",
-                  "operator": "=",
-                  "answerCoding": {
-                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                    "code": "1"
-                  }
-                },
-                {
-                  "question": "1.3",
-                  "operator": "=",
-                  "answerCoding": {
-                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                    "code": "3"
-                  }
-                }
-              ],
-              "enableBehavior": "all"
-            },
-            {
-              "linkId": "1.3.2",
-              "type": "integer",
-              "text": "Vis meg ved nei og usikker",
-              "required": false,
-              "enableWhen": [
-                {
-                  "question": "1.3",
-                  "operator": "=",
-                  "answerCoding": {
-                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                    "code": "2"
-                  }
-                },
-                {
-                  "question": "1.3",
-                  "operator": "=",
-                  "answerCoding": {
-                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                    "code": "3"
-                  }
-                }
-              ],
-              "enableBehavior": "all"
-            },
-            {
-              "linkId": "1.3.3",
-              "type": "group",
-              "text": "Vis meg ved ja",
-              "required": false,
-              "enableWhen": [
-                {
-                  "question": "1.3",
-                  "operator": "=",
-                  "answerCoding": {
-                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                    "code": "1"
-                  }
-                }
-              ],
-              "item": [
-                {
-                  "linkId": "1.3.3.1",
-                  "type": "string",
-                  "required": false,
-                  "initial": [
-                    {
-                      "valueString": "Initial value"
-                    }
-                  ],
-                  "text": "Med initial"
-                },
-                {
-                  "linkId": "1.3.3.2",
-                  "type": "group",
-                  "text": "repeatable",
-                  "required": false,
-                  "repeats": true,
-                  "item": [
-                    {
-                      "linkId": "1.3.3.2.1",
-                      "type": "string",
-                      "required": false,
-                      "text": "Inside repeat repeat"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "linkId": "2.1",
+          "text": "Er selvhjelpsverkøy noe du ønsker å forsøke?",
+          "type": "boolean",
+          "repeats": false,
+          "readOnly": false
         }
       ]
     },
     {
-      "linkId": "2",
+      "linkId": "3",
+      "text": "Rådgiving og psykolog",
       "type": "group",
-      "text": "Container group",
-      "required": false,
+      "enableBehavior": "any",
+      "enableWhen": [
+        {
+          "question": "2.1",
+          "answerBoolean": true,
+          "operator": "="
+        }
+      ],
+      "repeats": false,
       "item": [
         {
-          "linkId": "2.1",
-          "type": "group",
-          "text": "Repeterende gruppe",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-              "valueInteger": 5
-            }
-          ],
-          "required": false,
-          "repeats": true,
-          "item": [
-            {
-              "linkId": "2.1.1",
-              "type": "choice",
-              "required": false,
-              "text": "Choice ",
-              "answerValueSet": "#1101",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "check-box"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "item": [
-                {
-                  "linkId": "2.1.1.1",
-                  "type": "boolean",
-                  "text": "Vis meg ved ja TOP",
-                  "required": false,
-                  "enableWhen": [
-                    {
-                      "question": "2.1.1",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1101",
-                        "code": "1"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "linkId": "2.1.1.2",
-                  "type": "boolean",
-                  "text": "Vis meg ved Nei TOP",
-                  "required": false,
-                  "enableWhen": [
-                    {
-                      "question": "2.1.1",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1101",
-                        "code": "2"
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "linkId": "2.1.2",
-              "type": "string",
-              "text": "Text",
-              "required": false
-            },
-            {
-              "linkId": "2.1.3",
-              "type": "choice",
-              "text": "Choice 2",
-              "required": false,
-              "answerValueSet": "#1102",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "check-box"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "item": [
-                {
-                  "linkId": "2.1.3.1",
-                  "type": "integer",
-                  "text": "Vis meg ved ja og usikker",
-                  "required": false,
-                  "enableWhen": [
-                    {
-                      "question": "2.1.3",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                        "code": "1"
-                      }
-                    },
-                    {
-                      "question": "2.1.3",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                        "code": "3"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "all"
-                },
-                {
-                  "linkId": "2.1.3.2",
-                  "type": "integer",
-                  "text": "Vis meg ved nei og usikker",
-                  "required": false,
-                  "enableWhen": [
-                    {
-                      "question": "2.1.3",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                        "code": "2"
-                      }
-                    },
-                    {
-                      "question": "2.1.3",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                        "code": "3"
-                      }
-                    }
-                  ],
-                  "enableBehavior": "all"
-                },
-                {
-                  "linkId": "2.1.3.3",
-                  "type": "group",
-                  "text": "Vis meg ved ja",
-                  "required": false,
-                  "enableWhen": [
-                    {
-                      "question": "2.1.3",
-                      "operator": "=",
-                      "answerCoding": {
-                        "system": "urn:oid:2.16.578.1.12.4.1.1102",
-                        "code": "1"
-                      }
-                    }
-                  ],
-                  "item": [
-                    {
-                      "linkId": "2.1.3.3.1",
-                      "type": "string",
-                      "required": false,
-                      "initial": [
-                        {
-                          "valueString": "Initial value"
-                        }
-                      ],
-                      "text": "Med initial"
-                    },
-                    {
-                      "linkId": "2.1.3.3.2",
-                      "type": "group",
-                      "text": "repeatable",
-                      "required": false,
-                      "repeats": true,
-                      "item": [
-                        {
-                          "linkId": "2.1.3.3.2.1",
-                          "type": "string",
-                          "required": false,
-                          "text": "Inside repeat repeat"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "linkId": "3.1",
+          "text": "Sliter med en eller flere av disse utfordringene?",
+          "type": "boolean",
+
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "4",
+      "text": "Din psykiske helse",
+      "type": "group",
+      "enableBehavior": "any",
+      "enableWhen": [
+        {
+          "question": "3.1",
+          "answerBoolean": true,
+          "operator": "="
+        }
+      ],
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "5",
+          "text": "Opplever du at du er engstelig eller redd?",
+          "type": "text",
+          "required": true,
+          "repeats": false,
+          "readOnly": false
         }
       ]
     }
