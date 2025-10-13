@@ -75,22 +75,6 @@ const findItemsWithEnableWhen = (
     for (let i = 0; i < matches.length; i++) {
       const respMatch = matches[i];
       const itemPath = [...parentPath, { linkId: item.linkId, index: item.repeats ? i : 0 }];
-      // if (item.linkId === '7.1.2') {
-      //   console.group('collectClearAnswerActions for 7.1.2');
-      //   console.log('item:', JSON.stringify(item, null, 2));
-      //   console.log('matches:', JSON.stringify(matches, null, 2));
-
-      //   console.log('respMatch:', JSON.stringify(respMatch, null, 2));
-      //   console.log('parentPath:', JSON.stringify(parentPath, null, 2));
-      //   console.log('i:', i);
-      //   console.log('itemPath:', JSON.stringify(itemPath, null, 2));
-      //   console.groupEnd();
-      // }
-      // console.group('collectClearAnswerActions for', item.linkId);
-
-      // console.log('itemPath:', JSON.stringify(itemPath, null, 2));
-      // console.log('respMatch:', JSON.stringify(respMatch, null, 2));
-      // console.groupEnd();
 
       if (item.enableWhen && item.enableWhen.length > 0) {
         const enabled = isEnableWhenEnabled(item.enableWhen, item.enableBehavior, itemPath, questionnaireResponse?.item);
