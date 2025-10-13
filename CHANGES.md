@@ -1,3 +1,11 @@
+## 21.1.0-beta01
+
+- Fix issues with enableWhen in some edge cases
+- Fix issues with nested repeatable items getting the same id's
+- Fix issues with calculators not removing answers but insted leaving an empty array
+- Fix issues with enable when not clearing items inside nested items when not wrapped in a container group
+- Fix issues with enableWhen clearing wrong items in direct descendants to questionnaireResponse with repeat
+
 ## 21.0.3
 
 - Rollback enableWhen listners to fix bug where enableWhen did not work in some cases when the first item in a questionnaire had repeat and
