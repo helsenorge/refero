@@ -3,7 +3,7 @@ import { Questionnaire } from 'fhir/r4';
 
 import { q as questionnaireWithEnableWhen, prr, q2, q3 } from './__data__/enableWhen';
 import { selectCheckboxOption } from '../../../test/selectors';
-import { renderRefero, screen, userEvent, waitFor, within } from '../../../test/test-utils';
+import { renderReferoWithStore, screen, userEvent, waitFor, within } from '../../../test/test-utils';
 
 describe('enableWhen with checkboxes and multiple answers', () => {
   it('enableWhen should trigger when correct answer is selected', async () => {
@@ -31,15 +31,13 @@ describe('enableWhen med repeterende gruppe på root', () => {
     // Velg alternativ 3 i item nr 1 (Andre legemidler)
     await userEvent.click(screen.getByText('Andre legemidler'));
     // Fyll ut tekstfelt som kommer opp
-    await userEvent.type(within(screen.getByTestId('test-string-item_100%2E20%2E2%2E70')).getByRole('textbox'), 'abc');
+    await userEvent.type((await screen.findAllByLabelText('Batch- eller LOT-nummer'))[1], 'abc');
     // Legg til nytt item
-    await userEvent.click(screen.getByTestId('100-repeat-button'));
+    await userEvent.click(await screen.findByTestId('100-repeat-button'));
     // Velg alternativ 3 i item nr 2 (Andre legemidler)
-    await userEvent.click(screen.getByTestId('item_100%2E3^1-2-radio-choice-label'));
+    await userEvent.click((await screen.findAllByText('Andre legemidler'))[1]);
     // Sjekk at tekst i item nr 1 fortsatt er der
-    await waitFor(async () =>
-      expect(within(screen.getByTestId('test-string-item_100%2E20%2E2%2E70')).getByRole('textbox')).toHaveValue('abc')
-    );
+    await waitFor(async () => expect((await screen.findAllByLabelText('Batch- eller LOT-nummer'))[1]).toHaveValue('abc'));
   });
 
   it('skal slette valg i repeterende grupper når de blir disabled', async () => {
@@ -53,14 +51,14 @@ describe('enableWhen med repeterende gruppe på root', () => {
     //velg alternativ 3 i item nr 2
     await userEvent.click(screen.getAllByText('Andre legemidler')[1]);
     //legg til text i alternativ nr 2
-    await userEvent.type(within(screen.getByTestId('test-string-item_100%2E20%2E2%2E70^1')).getByRole('textbox'), 'xyz');
+    await userEvent.type(within(screen.getByTestId('test-string-item_100%2E20%2E2%2E70-0^1')).getByRole('textbox'), 'xyz');
     //velg alternativ 2 i item nr 2
     await userEvent.click(screen.getAllByText('Annen vaksine')[1]);
     //velg alternativ 3 i item nr 2
     await userEvent.click(screen.getAllByText('Andre legemidler')[1]);
     // sjekk at text i item nr 2 er borte
     await waitFor(async () =>
-      expect(within(await screen.findByTestId('test-string-item_100%2E20%2E2%2E70^1')).getByRole('textbox')).not.toHaveValue('xyz')
+      expect(within(await screen.findByTestId('test-string-item_100%2E20%2E2%2E70-0^1')).getByRole('textbox')).not.toHaveValue('xyz')
     );
   });
 
@@ -92,8 +90,8 @@ describe('enableWhen med repeterende gruppe på root', () => {
     await userEvent.click(screen.getByTestId('100-repeat-button'));
 
     //Velg valg nr 3 (Andre legemidler) i item nr 2
-    expect(screen.getByTestId('item_100%2E3^1-2-radio-choice-label')).toBeInTheDocument();
-    await userEvent.click(screen.getByTestId('item_100%2E3^1-2-radio-choice-label'));
+    expect(screen.getByTestId('item_100%2E3-0^1-0-radio-choice-label')).toBeInTheDocument();
+    await userEvent.click(screen.getByTestId('item_100%2E3-0^1-0-radio-choice-label'));
 
     //Item nr 1 skal fortsatt ha svar i tekstfeltet
     const inputWrapper = await screen.findByTestId('test-string-item_100%2E20%2E2%2E70');
@@ -114,7 +112,7 @@ describe('enableWhen med repeterende gruppe på root', () => {
     await userEvent.click(screen.getAllByText('Andre legemidler')[1]);
 
     //Fyll ut tekst i andre item
-    await userEvent.type(within(screen.getByTestId('test-string-item_100%2E20%2E2%2E70^1')).getByRole('textbox'), 'xyz');
+    await userEvent.type(within(screen.getByTestId('test-string-item_100%2E20%2E2%2E70-0^1')).getByRole('textbox'), 'xyz');
 
     //velg Annen vaksine i choice i andre item
     await userEvent.click(screen.getAllByText('Annen vaksine')[1]);
@@ -147,31 +145,27 @@ describe('choice  med repeat som første item, inneholder text som child', () =>
 
     // Instans #1: velg "Ja" og skriv tekst
     await userEvent.click(screen.getByText('Ja')); // 1 = Ja
-    await userEvent.type(within(await screen.findByTestId('test-string-item_2')).getByRole('textbox'), 'abc');
+    await userEvent.type(await screen.findByLabelText(/Textsvar/i), 'abc');
 
     // Legg til instans #2
     await userEvent.click(screen.getByTestId('1-repeat-button'));
 
     // Instans #2: velg "Ja" og skriv tekst
     await userEvent.click(screen.getAllByText('Ja')[1]);
-    await userEvent.type(within(screen.getByTestId('test-string-item_2^1')).getByRole('textbox'), 'xyz');
+    await userEvent.type((await screen.findAllByLabelText(/Textsvar/i))[1], 'xyz');
 
     // Skjul i instans #2 (velg "Nei")
     await userEvent.click(screen.getAllByText('Nei')[1]);
     await userEvent.click(screen.getAllByText('Ja')[1]);
 
     // Forvent: tekst i instans #2 er tømt
-    await waitFor(async () => {
-      expect(within(await screen.findByTestId('test-string-item_2^1')).getByRole('textbox')).not.toHaveValue('xyz');
-    });
+    expect((await screen.findAllByLabelText('Textsvar'))[0]).toHaveValue('abc');
     // Forvent: tekst i instans #1 er uendret
-    await waitFor(async () => {
-      expect(within(await screen.findByTestId('test-string-item_2')).getByRole('textbox')).toHaveValue('abc');
-    });
+    expect((await screen.findAllByLabelText('Textsvar'))[1]).toHaveValue('');
   });
 });
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(questionnaire: Questionnaire) {
-  return waitFor(async () => await renderRefero({ questionnaire, props: { authorized: true } }));
+  return await renderReferoWithStore({ questionnaire, props: { authorized: true } });
 }

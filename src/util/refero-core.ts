@@ -522,13 +522,14 @@ export function enableWhenMatchesAnswer(
   });
   return matches;
 }
+
 export function createIdSuffix(path: Path[] | undefined, index = 0, repeats: boolean | undefined): string {
   let suffix = '';
 
   if (path) {
-    path.forEach(p => {
+    path.forEach((p, index) => {
       if (p.index) {
-        suffix += '^' + p.index;
+        suffix += '-' + index + '^' + p.index;
       }
     });
   }
@@ -561,12 +562,6 @@ export function findFirstGuidInString(input: string): string | null {
   return match ? match[0] : null;
 }
 
-export const getUniqueId = (item: QuestionnaireItem, path?: Path[], index?: number): string => {
-  let rawId = '';
-  const newPath = createPathForItem(path, item, index);
-  rawId = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
-  return rawId.replace(/\./g, '-');
-};
 export function extractLinkIdFromUniqueId(uniqueId: string): string {
   const [linkIdWithDashes] = uniqueId.split('^');
 
@@ -579,7 +574,7 @@ export function createPathForItem(path?: Path[] | undefined, item?: Questionnair
   if (path === null || path === undefined) {
     newPath = [];
   } else {
-    newPath = copyPath(path);
+    newPath = [...path];
   }
 
   index = isRepeat(item) ? index : undefined;
