@@ -2,6 +2,7 @@
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { AnswerValuesItemPayload, newAnswerValuesAction } from '@/actions/newValue';
+import { isEnableWhenEnabled } from '@/hooks/useIsEnabled';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
@@ -39,12 +40,20 @@ export const runFhirPathQrUpdater = async ({
       const value = fhirScores[linkId];
       const newAnswer = isQuestionnaireResponseItemAnswerArray(value) ? value : [];
       for (const itemAndPath of itemsAndPaths) {
+        let enabled = true;
+        if (item.enableWhen && item.enableWhen.length > 0 && itemAndPath.path) {
+          enabled = isEnableWhenEnabled(item?.enableWhen, item?.enableBehavior, itemAndPath.path, questionnaireResponse.item);
+        }
+        if (!enabled) {
+          continue;
+        }
         if (JSON.stringify(itemAndPath.item.answer) === JSON.stringify(newAnswer)) {
           continue;
         }
         if (actionRequester) {
           actionRequester.setNewAnswer(linkId, newAnswer, itemAndPath.path[0]?.index);
         } else {
+          console.log('Dispatching new answer for linkId:', linkId, 'New Answer:', newAnswer);
           answerValues.push({
             itemPath: itemAndPath.path,
             newAnswer,
