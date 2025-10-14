@@ -1,10 +1,11 @@
 ## 21.1.0-beta01
 
 - Fix issues with enableWhen in some edge cases
-- Fix issues with nested repeatable items getting the same id's
-- Fix issues with calculators not removing answers but insted leaving an empty array
-- Fix issues with enable when not clearing items inside nested items when not wrapped in a container group
+- Fix issues with nested repeatable items getting the same id's and showing the wrong values in the UI
+- Fix issues with enableWhen not clearing items inside nested items when not wrapped in a container group
 - Fix issues with enableWhen clearing wrong items in direct descendants to questionnaireResponse with repeat
+- Fix issues with calculators not removing answers but instead leaving an empty array
+- Fix calculations with zeros not working as expected. Now 0 is treated as a value.
 
 ## 21.0.3
 
