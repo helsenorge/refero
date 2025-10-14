@@ -1,5 +1,4 @@
 import {
-  Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
@@ -7,30 +6,15 @@ import {
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
 
-import {
-  copyPath,
-  enableWhenMatchesAnswer,
-  getQuestionnaireResponseItemWithLinkid,
-  isInGroupContext,
-  isRepeat,
-  Path,
-  QuestionnaireItemEnableBehaviorCodes,
-  resetAnswerValueAction,
-  deleteRepeatItemAction,
-  ClearAction,
-  getMinOccursExtensionValue,
-} from '..';
+import { RunEnableWhenInput, RunEnableWhenResult } from './types';
 
+import { ClearAction, deleteRepeatItemAction, resetAnswerValueAction } from '@/actions/newValue';
+import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
+import { isRepeat } from '@/util';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
+import { getMinOccursExtensionValue } from '@/util/extension';
+import { copyPath, enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, Path } from '@/util/refero-core';
 import { calculateEnableWhen } from '@/workers/fhirpath-rpc';
-
-type RunEnableWhenInput = {
-  questionnaire: Questionnaire | null | undefined;
-  questionnaireResponse: QuestionnaireResponse | null | undefined;
-};
-export type RunEnableWhenResult = ClearAction[];
-// ---- Public API -----------------------------------------------------
-
 export async function startEnableWhenCalculation({
   questionnaire,
   questionnaireResponse,
@@ -38,8 +22,9 @@ export async function startEnableWhenCalculation({
   let actions: ClearAction[] = [];
   if (typeof window !== 'undefined' && window.Worker) {
     try {
-      actions = await calculateEnableWhen({ questionnaireResponse, questionnaire });
+      actions = runEnableWhenNew({ questionnaire, questionnaireResponse });
 
+      actions = await calculateEnableWhen({ questionnaireResponse, questionnaire });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_e) {
       actions = runEnableWhenNew({ questionnaire, questionnaireResponse });
@@ -50,7 +35,6 @@ export async function startEnableWhenCalculation({
 
   return actions;
 }
-
 export function runEnableWhenNew({ questionnaire, questionnaireResponse }: RunEnableWhenInput): ClearAction[] {
   if (!questionnaire || !questionnaireResponse) return [];
   if (!questionnaire.item || questionnaire.item.length === 0) return [];

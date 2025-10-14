@@ -5,8 +5,6 @@ import type { Path } from 'fhirpath';
 
 import { AnswerPad } from '../util/FhirPathExtensions';
 
-import { RunEnableWhenInput, RunEnableWhenResult } from '@/calculators/runEnableWhen_new';
-
 /**
  * Method names supported by the worker.
  */
@@ -26,7 +24,14 @@ export type RpcMethodName =
 /**
  * Per-method params/result types
  */
-
+export type RunEnableWhenInput = {
+  questionnaire: Questionnaire | null | undefined;
+  questionnaireResponse: QuestionnaireResponse | null | undefined;
+};
+export type RunEnableWhenResult = {
+  type: string;
+  payload: any;
+}[];
 export interface EvaluateFhirpathExpressionToGetDateParams {
   item?: QuestionnaireItem;
   fhirExpression?: string;
