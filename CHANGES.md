@@ -2,7 +2,7 @@
 
 - Remove scrollToTop onStepChange. This can be handled by the consumer of the library if needed.
 
-## 21.1.0-beta01
+## 21.1.0-beta02
 
 - Fix issues with enableWhen in some edge cases
 - Fix issues with nested repeatable items getting the same id's and showing the wrong values in the UI

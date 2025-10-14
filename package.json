@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "21.0.4",
+  "version": "21.1.3-beta02",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
