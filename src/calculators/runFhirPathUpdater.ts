@@ -38,7 +38,7 @@ export const runFhirPathQrUpdater = async ({
       if (!item) continue;
       const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
       const value = fhirScores[linkId];
-      const newAnswer = isQuestionnaireResponseItemAnswerArray(value) ? value : [];
+      const newAnswer = isQuestionnaireResponseItemAnswerArray(value) ? value : undefined;
       for (const itemAndPath of itemsAndPaths) {
         let enabled = true;
         if (item.enableWhen && item.enableWhen.length > 0 && itemAndPath.path) {
@@ -47,13 +47,12 @@ export const runFhirPathQrUpdater = async ({
         if (!enabled) {
           continue;
         }
-        if (JSON.stringify(itemAndPath.item.answer) === JSON.stringify(newAnswer)) {
+        if (JSON.stringify(itemAndPath.item.answer ?? undefined) === JSON.stringify(newAnswer ?? undefined)) {
           continue;
         }
         if (actionRequester) {
-          actionRequester.setNewAnswer(linkId, newAnswer, itemAndPath.path[0]?.index);
+          actionRequester.setNewAnswer(linkId, newAnswer ?? [], itemAndPath.path[0]?.index);
         } else {
-          console.log('Dispatching new answer for linkId:', linkId, 'New Answer:', newAnswer);
           answerValues.push({
             itemPath: itemAndPath.path,
             newAnswer,
