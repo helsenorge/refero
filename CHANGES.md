@@ -2,7 +2,7 @@
 
 - Remove scrollToTop onStepChange. This can be handled by the consumer of the library if needed.
 
-## 21.1.0-beta03
+## 21.1.0-beta04
 
 - Fix issues with enableWhen in some edge cases
 - Fix issues with nested repeatable items getting the same id's and showing the wrong values in the UI
@@ -11,6 +11,8 @@
 - Fix issues with calculators not removing answers but instead leaving an empty array
 - Fix calculations with zeros not working as expected. Now 0 is treated as a value.
 - Added check for enableWhen conditions on FhirPath calculations to avoid unnecessary dispatches and re-renders
+- Added better checks for newAnswer and current answers inside calculations, to check what items to dispatch a new answer to.
+- Not casting newAnswer to empty array but returning undefined if no newAnswer exists
 
 ## 21.0.3
 
