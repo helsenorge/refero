@@ -1,4 +1,4 @@
-## 21.1.0-beta02
+## 21.1.0-beta03
 
 - Fix issues with enableWhen in some edge cases
 - Fix issues with nested repeatable items getting the same id's and showing the wrong values in the UI
@@ -6,6 +6,7 @@
 - Fix issues with enableWhen clearing wrong items in direct descendants to questionnaireResponse with repeat
 - Fix issues with calculators not removing answers but instead leaving an empty array
 - Fix calculations with zeros not working as expected. Now 0 is treated as a value.
+- Added check for enableWhen conditions on FhirPath calculations to avoid unnecessary dispatches and re-renders
 
 ## 21.0.3
 
