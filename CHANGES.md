@@ -1,3 +1,7 @@
+## 21.0.4
+
+- Remove scrollToTop onStepChange. This can be handled by the consumer of the library if needed.
+
 ## 21.0.3
 
 - Rollback enableWhen listners to fix bug where enableWhen did not work in some cases when the first item in a questionnaire had repeat and
