@@ -32,6 +32,7 @@ interface RenderFormProps {
   validationSummaryPlacement?: ValidationSummaryPlacement;
   methods: UseFormReturn<DefaultValues, unknown, DefaultValues>;
   onFieldsNotCorrectlyFilledOut: ReferoProps['onFieldsNotCorrectlyFilledOut'];
+  setStepIndex?: (index: number) => void;
 }
 
 const RenderForm = ({
@@ -49,6 +50,7 @@ const RenderForm = ({
   validationSummaryPlacement,
   isAuthorized,
   onFieldsNotCorrectlyFilledOut,
+  setStepIndex,
 }: RenderFormProps): JSX.Element | null => {
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const { formState } = useFormContext();
@@ -66,7 +68,11 @@ const RenderForm = ({
 
   const { errors } = formState;
   const errorsExist = Object.keys(errors).length > 0;
-
+  const setNewStepIndex = (index: number): void => {
+    if (setStepIndex) {
+      setStepIndex(index);
+    }
+  };
   const onErrorReactHookForm = (errors: FieldValues): void => {
     if (onFieldsNotCorrectlyFilledOut && errors) {
       onFieldsNotCorrectlyFilledOut();
@@ -114,6 +120,7 @@ const RenderForm = ({
           nextStep,
           previousStep,
           reactHookFormMethods: methods,
+          setNewStepIndex,
           presentationButtonsType,
         })
       ) : (

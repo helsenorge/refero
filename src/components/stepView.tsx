@@ -49,6 +49,7 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: S
     if (onStepChange) {
       onStepChange(stepIndex);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepIndex]);
 
   if (visibleElements.length === 0) {
@@ -61,6 +62,7 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: S
         isAuthorized={isAuthorized}
         isStepView={true}
         referoProps={referoProps}
+        setStepIndex={setStepIndex}
         resources={resources}
         onSubmit={onSubmit}
         displayNextButton={stepIndex !== visibleElements.length - 1}
