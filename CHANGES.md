@@ -10,6 +10,11 @@
 - Added better checks for newAnswer and current answers inside calculations, to check what items to dispatch a new answer to.
 - Not casting newAnswer to empty array but returning undefined if no newAnswer exists
 
+## 21.0.5
+
+- Add new method to RenderCustomButtonsArgs, <code>setNewStepIndex?: (newIndex: number) => void;</code>, which can be used to change the
+  current step in step-view mode.
+
 ## 21.0.4
 
 - Remove scrollToTop onStepChange. This can be handled by the consumer of the library if needed.

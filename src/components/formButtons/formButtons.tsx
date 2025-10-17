@@ -26,6 +26,10 @@ interface FormButtonsInterface {
   loginButton?: JSX.Element;
 }
 
+/*
+ * @deprecated this will be removed in a future version. We encourage you to build your own buttons.
+ * See https://github.com/helsenorge/refero/blob/master/src/types/referoProps.ts#L331 for more information.
+ */
 const FormButtons = ({
   isStepView,
   submitButtonText,

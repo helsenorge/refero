@@ -75,6 +75,7 @@ const App = () => {
           fetchReceivers={...}
           onFieldsNotCorrectlyFilledOut={...}
           onStepChange={...}
+          renderCustomActionButton={...}
         />
       </Provider>
     );

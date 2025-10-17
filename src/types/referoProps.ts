@@ -72,6 +72,10 @@ export interface RenderCustomButtonsArgs {
    */
   reactHookFormMethods: UseFormReturn<DefaultValues, unknown, DefaultValues>;
   presentationButtonsType: PresentationButtonsType | null;
+  /*
+   * Sets the new step index when in step view.
+   */
+  setNewStepIndex?: (newIndex: number) => void;
 }
 
 export interface ReferoProps {
