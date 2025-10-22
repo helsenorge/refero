@@ -1,5 +1,6 @@
 const ItemControlConstants = {
   CHECKBOX: 'check-box',
+  IFRAME: 'iframe',
   DROPDOWN: 'drop-down',
   RADIOBUTTON: 'radio-button',
   AUTOCOMPLETE: 'autocomplete',

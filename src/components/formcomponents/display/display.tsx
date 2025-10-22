@@ -2,9 +2,11 @@ import { memo } from 'react';
 
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
+import Youtube from './Youtube';
+
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import SafeText from '@/components/referoLabel/SafeText';
-import itemControlConstants from '@/constants/itemcontrol';
+import ItemControlConstants from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
@@ -22,7 +24,7 @@ const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element |
   const questionnaire = formDefinition?.Content;
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
-    itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)
+    itemControls && itemControls.some(itemControl => itemControl.code === ItemControlConstants.HIGHLIGHT)
       ? 'page_refero__component_highlight'
       : '';
 
@@ -38,15 +40,21 @@ const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element |
       value = <p id={getId(id)}>{`${renderPrefix(item)} ${text}`}</p>;
     }
   }
-
   if (pdf) {
     if (!value) {
       return null;
     }
     return <div>{value}</div>;
   }
-
-  return <div className={`page_refero__component page_refero__component_display ${highlightClass}`}>{value}</div>;
+  const getIframeUrl = item ? getItemControlExtensionValue(item)?.find(ic => ic.code === ItemControlConstants.IFRAME) : undefined;
+  return (
+    <>
+      <div className={`page_refero__component page_refero__component_display ${highlightClass}`}>
+        {getIframeUrl && <Youtube getIframeUrl={getIframeUrl} />}
+        {value}
+      </div>
+    </>
+  );
 });
 
 export default Display;
