@@ -1,0 +1,50 @@
+{
+  "resourceType": "Questionnaire",
+  "item": [
+    {
+      "linkId": "A",
+      "text": "A",
+      "type": "boolean"
+    },
+    {
+      "linkId": "B",
+      "text": "B",
+      "type": "group",
+      "enableBehavior": "all",
+      "enableWhen": [
+        {
+          "question": "A",
+          "operator": "=",
+          "answerBoolean": true
+        }
+      ],
+      "item": [
+        {
+          "linkId": "B.1",
+          "text": "B.1",
+          "type": "boolean"
+        },
+        {
+          "linkId": "C",
+          "text": "C",
+          "type": "group",
+          "enableBehavior": "all",
+          "enableWhen": [
+            {
+              "question": "B.1",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ],
+          "item": [
+            {
+              "linkId": "C.1",
+              "text": "C.1",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

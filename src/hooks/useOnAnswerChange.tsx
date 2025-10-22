@@ -1,6 +1,6 @@
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { runCalculatorsAction } from '@/actions/thunks';
+import { runCalculatorsAction, runEnableWhenAction } from '@/actions/thunks';
 import { GlobalState, useAppDispatch } from '@/reducers';
 import { ActionRequester, IActionRequester } from '@/util/actionRequester';
 import { IQuestionnaireInspector, QuestionniareInspector } from '@/util/questionnaireInspector';
@@ -21,6 +21,7 @@ const useOnAnswerChange = (
     if (questionnaire && questionnaireResponse) {
       const actionRequester = new ActionRequester(questionnaire, questionnaireResponse);
       dispatch(runCalculatorsAction());
+      dispatch(runEnableWhenAction());
       const questionnaireInspector = new QuestionniareInspector(questionnaire, questionnaireResponse);
       if (onChange && answer && item) {
         onChange(item, answer, actionRequester, questionnaireInspector);

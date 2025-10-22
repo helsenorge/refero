@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactElement, ReactNode } from 'react';
@@ -20,7 +20,6 @@ import { createIntitialFormValues, DefaultValues } from '../src/validation/defau
 
 import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
-import { enableWhenListener } from '@/index';
 
 export const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
   const methods = useForm({
@@ -35,7 +34,6 @@ export const ExternalRenderProviderWrapper = ({ children, props }: { children: R
 };
 const AllTheProviders = ({
   children,
-  initialState = {},
   defaultValues = {},
   store,
   referoProps,
@@ -71,7 +69,6 @@ const customRender = (
       </AllTheProviders>
     ),
     ...renderOptions,
-    store,
   });
 };
 const customRender2 = (
@@ -135,7 +132,7 @@ const renderWithReduxAndHookFormMock = (
 };
 
 interface InputProps {
-  questionnaire: Questionnaire;
+  questionnaire: Questionnaire | undefined | null;
   props?: Partial<ReferoProps>;
   initialState?: GlobalState;
   resources?: Partial<Resources>;
@@ -166,7 +163,7 @@ async function renderRefero({ questionnaire, props, initialState, resources, def
     middleware: getDefaultMiddleware => getDefaultMiddleware(),
     //.prepend(enableWhenListener.middleware),
   });
-  const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire.item);
+  const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire?.item);
 
   return customRender(
     <ReferoContainer
@@ -175,7 +172,7 @@ async function renderRefero({ questionnaire, props, initialState, resources, def
       onCancel={() => {}}
       onSave={() => {}}
       onSubmit={() => {}}
-      questionnaire={questionnaire}
+      questionnaire={questionnaire ?? undefined}
       resources={resourcesDefault}
       onChange={() => {}}
       {...props}
@@ -183,7 +180,54 @@ async function renderRefero({ questionnaire, props, initialState, resources, def
     { store, defaultValues: defaultReactHookFormValues, referoProps: props }
   );
 }
+export async function renderReferoWithStore({ questionnaire, props, initialState, resources, defaultValues }: InputProps) {
+  const resourcesDefault = {
+    ...getResources(''),
+    ...resources,
+  };
 
+  const state = initialState || {
+    refero: {
+      form: {
+        FormDefinition: {
+          Content: questionnaire,
+        },
+        FormData: {
+          Content: generateQuestionnaireResponse(questionnaire),
+        },
+        Language: 'nb',
+      },
+    },
+  };
+
+  const store = configureStore({
+    reducer: rootReducer,
+    preloadedState: state,
+    middleware: getDefaultMiddleware => getDefaultMiddleware(),
+    //.prepend(enableWhenListener.middleware),
+  });
+
+  const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire?.item);
+
+  // do the normal render
+  const rtl = customRender(
+    <ReferoContainer
+      loginButton={<React.Fragment />}
+      authorized={true}
+      onCancel={() => {}}
+      onSave={() => {}}
+      onSubmit={() => {}}
+      questionnaire={questionnaire ?? undefined}
+      resources={resourcesDefault}
+      onChange={() => {}}
+      {...props}
+    />,
+    { store, defaultValues: defaultReactHookFormValues, referoProps: props }
+  );
+
+  // return everything you usually get from RTL + store
+  return { ...rtl, store };
+}
 async function renderRefero2({ questionnaire, props, initialState, resources, defaultValues }: InputProps) {
   const resourcesDefault = {
     ...getResources(''),
@@ -208,7 +252,7 @@ async function renderRefero2({ questionnaire, props, initialState, resources, de
     middleware: getDefaultMiddleware => getDefaultMiddleware(),
     //.prepend(enableWhenListener.middleware),
   });
-  const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire.item);
+  const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire?.item);
 
   return customRender2(
     <ReferoContainer
@@ -217,7 +261,7 @@ async function renderRefero2({ questionnaire, props, initialState, resources, de
       onCancel={() => {}}
       onSave={() => {}}
       onSubmit={() => {}}
-      questionnaire={questionnaire}
+      questionnaire={questionnaire ?? undefined}
       resources={resourcesDefault}
       onChange={() => {}}
       {...props}

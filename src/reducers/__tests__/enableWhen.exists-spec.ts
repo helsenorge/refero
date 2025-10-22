@@ -1,54 +1,35 @@
 import { fail } from 'assert';
 
-import { Questionnaire, QuestionnaireResponse, QuestionnaireItem } from 'fhir/r4';
+import { renderReferoWithStore, screen, userEvent, waitFor } from '@test/test-utils';
+import { Questionnaire } from 'fhir/r4';
 
 import { Form } from '../form';
-import { createGlobalStateWithQuestionnaire, enterText, getResponseItem, pathify } from './utils';
-import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
-
-const q: Questionnaire = {
-  resourceType: 'Questionnaire',
-  item: [
-    { linkId: 'A', type: 'group', item: [{ linkId: 'A.1', type: 'string' }] },
-    {
-      linkId: 'T',
-      type: 'group',
-      enableWhen: [{ question: 'A.1', operator: 'exists', answerBoolean: true }],
-      item: [{ linkId: 'T.1', type: 'string' }],
-    },
-  ],
-} as Questionnaire;
-
-const qr: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress',
-  item: [
-    { linkId: 'A', item: [{ linkId: 'A.1', answer: [] }] },
-    { linkId: 'T', item: [{ linkId: 'T.1', answer: [] }] },
-  ],
-};
+import dataModel from './__data__/enableWhenExcists';
+import { getResponseItem, pathify } from './utils';
 
 describe('enableWhen operator: exists/hasAnswer', () => {
-  let state: Form;
-  let def: QuestionnaireItem[];
+  let newState: Form;
 
   beforeEach(() => {
-    const gs = createGlobalStateWithQuestionnaire(q, qr);
-    state = gs.refero.form;
-    def = getDefinitionItems(state.FormDefinition)!;
+    newState = dataModel.refero.form;
   });
-
   it('T er enabled når A.1 har svar, disabled + wipe når A.1 tømmes', async () => {
+    const { store } = await createWrapper(newState.FormDefinition.Content);
     // gi A.1 verdi
-    state = await enterText(state, pathify('A', 'A.1'), 'x', getQuestionnaireDefinitionItem('A.1', def));
+    await userEvent.type(await screen.findByLabelText('A.1'), 'hello');
     // fyll T.1
-    state = await enterText(state, pathify('T', 'T.1'), 'keeps?', getQuestionnaireDefinitionItem('T.1', def));
+    await userEvent.type(await screen.findByLabelText('T.1'), 'keeps?');
 
     // tøm A.1 -> exists=false => T disables og T.1 wipes (blir tomt svar-array)
-    state = await enterText(state, pathify('A', 'A.1'), '', getQuestionnaireDefinitionItem('A.1', def));
-
-    const t1 = getResponseItem('T.1', state, pathify('T', 'T.1'));
+    await userEvent.type(await screen.findByLabelText('A.1'), '{backspace}{backspace}{backspace}{backspace}{backspace}');
+    expect(screen.queryByText('keeps?a')).not.toBeInTheDocument();
+    newState = store.getState().refero.form;
+    const t1 = getResponseItem('T.1', newState, pathify('T', 'T.1'));
     if (!t1) return fail();
     expect(t1.answer?.length ?? 0).toBe(0);
   });
 });
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function createWrapper(questionnaire: Questionnaire | undefined | null) {
+  return waitFor(async () => await renderReferoWithStore({ questionnaire, props: { authorized: true } }));
+}

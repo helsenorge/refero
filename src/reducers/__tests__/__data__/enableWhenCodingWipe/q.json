@@ -1,0 +1,45 @@
+{
+  "resourceType": "Questionnaire",
+  "item": [
+    {
+      "text": "A",
+      "linkId": "A",
+      "type": "boolean"
+    },
+    {
+      "text": "C",
+      "linkId": "C",
+      "type": "group",
+      "enableWhen": [
+        {
+          "question": "A",
+          "operator": "=",
+          "answerBoolean": true
+        }
+      ],
+      "item": [
+        {
+          "text": "C1",
+          "linkId": "C.1",
+          "type": "choice",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "x",
+                "system": "s",
+                "display": "x"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "y",
+                "system": "s",
+                "display": "y"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

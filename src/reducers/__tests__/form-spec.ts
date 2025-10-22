@@ -4,7 +4,8 @@ import '../../util/__tests__/defineFetch';
 import { fail } from 'assert';
 
 import { PayloadAction } from '@reduxjs/toolkit';
-import { QuestionnaireResponseItem } from 'fhir/r4';
+import { renderReferoWithStore, screen, userEvent, waitFor } from '@test/test-utils';
+import { Questionnaire, QuestionnaireResponseItem } from 'fhir/r4';
 
 import dataModel from './__data__/dummy-data-model';
 import { reduce } from './utils';
@@ -572,21 +573,20 @@ describe('new value action', () => {
 
 describe('update enable when action', () => {
   it('should update deactivated and tømme answers', async () => {
+    let newState: Form = dataModel.refero.form;
+    const { store } = await createWrapper(newState.FormDefinition.Content);
+
     // slå PÅ b
-    let action: PayloadAction<NewValuePayload> = newBooleanValueAction({
-      itemPath: [{ linkId: 'b' }],
-      valueBoolean: true,
-      item: { linkId: 'b', type: 'boolean' },
-    });
-    let newState: Form = await reduce(dataModel.refero.form, action);
+    await userEvent.click(await screen.findByTestId('item_b-label-boolean'));
+
+    newState = store.getState().refero.form;
 
     // slå AV b (trigger enableWhen → skal tømme felt som avhenger)
-    action = newBooleanValueAction({
-      itemPath: [{ linkId: 'b' }],
-      valueBoolean: false,
-      item: { linkId: 'b', type: 'boolean' },
-    });
-    newState = await reduce(newState, action);
+    await userEvent.click(await screen.findByTestId('item_b-label-boolean'));
+
+    await userEvent.click(await screen.findByTestId('item_b-label-boolean'));
+    await userEvent.type(await screen.findByTestId('item_d-decimal-label'), '2.5');
+    newState = store.getState().refero.form;
 
     // --- diagnostikk: vis hele toppnivået og spesifikt 'd'/'i'
     const definitionItems = getDefinitionItems(newState.FormDefinition);
@@ -608,14 +608,27 @@ describe('update enable when action', () => {
         answerItem = responseItem;
       }
     }
-
     if (!answerItem) return fail('answerItem not found');
     if (!answerItem.answer) return fail('answerItem has no answer array');
-
+    for (let i = 0; responseItems && i < responseItems.length; i++) {
+      let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
+      if (responseItem && responseItem.linkId !== 'i') {
+        responseItem = getQuestionnaireResponseItemWithLinkid('i', responseItems[i], []);
+      }
+      if (!responseItem) {
+        continue;
+      } else {
+        answerItem = responseItem;
+      }
+    }
     const integerAnswer = answerItem.answer;
     const integer = getQuestionnaireDefinitionItem('i', definitionItems);
     if (!integer) return fail();
 
-    expect(integerAnswer).toHaveLength(0);
+    expect(integerAnswer).toBeUndefined();
   });
 });
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+async function createWrapper(questionnaire: Questionnaire | undefined | null) {
+  return waitFor(async () => await renderReferoWithStore({ questionnaire, props: { authorized: true } }));
+}
