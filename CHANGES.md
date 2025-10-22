@@ -1,4 +1,4 @@
-## 21.1.0-beta06
+## 21.1.0-beta07
 
 - Fix issues with enableWhen in some edge cases
 - Fix issues with nested repeatable items getting the same id's and showing the wrong values in the UI
@@ -9,6 +9,7 @@
 - Added check for enableWhen conditions on FhirPath calculations to avoid unnecessary dispatches and re-renders
 - Added better checks for newAnswer and current answers inside calculations, to check what items to dispatch a new answer to.
 - Not casting newAnswer to empty array but returning undefined if no newAnswer exists
+- Dependabot package updates
 
 ## 21.0.5
 
