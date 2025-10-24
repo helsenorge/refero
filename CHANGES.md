@@ -1,3 +1,7 @@
+## 21.1.0
+
+- Removed unused resource texts, updated Resource file for Helsenorge HN-Skjema
+
 ## 21.0.5
 
 - Add new method to RenderCustomButtonsArgs, <code>setNewStepIndex?: (newIndex: number) => void;</code>, which can be used to change the
