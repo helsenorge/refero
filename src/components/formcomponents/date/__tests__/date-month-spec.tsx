@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access */
 import { renderRefero, userEvent } from '@test/test-utils.tsx';
 import { Matcher, screen, waitFor } from '@testing-library/react';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -17,8 +18,6 @@ const resources = {
   year_field_maxdate: 'Årstall er etter det eldste tillatte år',
   year_field_mindate: 'Årstall er før det minste tillatte år',
   yearmonth_field_required: 'Årstall og måned er påkrevd',
-  yearmonth_field_invalid: 'Ugyldig verdi',
-  yearmonth_field_invalid_year: 'Du må skrive inn et gyldig årstall',
   errorAfterMaxDate: 'Dato kan ikke være etter maksimum dato',
 };
 

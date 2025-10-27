@@ -519,7 +519,6 @@ interface UploadedFile {
 interface Resources {
   deleteButtonText: string;
   validationSummaryHeader: string;
-  validationFileType: string;
   supportedFileFormats: string;
   selectDefaultPlaceholder: string;
   errorAfterMaxDate: string;
@@ -530,7 +529,6 @@ interface Resources {
   formSend: string;
   formSave: string;
   formOptional: string;
-  formRequired: string;
   repeatButtonText: string;
   confirmDeleteButtonText: string;
   confirmDeleteCancelButtonText: string;
@@ -550,13 +548,8 @@ interface Resources {
   year_field_maxdate?: string;
   year_field_mindate?: string;
   year_field_required?: string;
-  yearmonth_field_invalid?: string;
-  yearmonth_field_invalid_year?: string;
-  yearmonth_field_maxdate?: string;
-  yearmonth_field_mindate?: string;
   yearmonth_field_month_placeholder?: string;
   yearmonth_field_required?: string;
-  yearmonth_field_year_placeholder?: string;
   adresseKomponent_header?: string;
   adresseKomponent_skjemaSendesTil?: string;
   adresseKomponent_sublabel?: string;
@@ -575,7 +568,6 @@ interface Resources {
   nextStep?: string;
   previousStep?: string;
   openChoiceOption?: string;
-  attachmentError_required?: string;
   attachmentError_minFiles?: string;
   attachmentError_maxFiles?: string;
   attachmentError_fileSize?: string;
