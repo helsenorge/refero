@@ -1,7 +1,9 @@
 import { memo } from 'react';
 
+import { IllustrationName } from '@helsenorge/designsystem-react/components/Illustrations/IllustrationNames';
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
+import { Illustration } from './Illustration';
 import Youtube from './Youtube';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -47,13 +49,13 @@ const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element |
     return <div>{value}</div>;
   }
   const getIframeUrl = item ? getItemControlExtensionValue(item)?.find(ic => ic.code === ItemControlConstants.IFRAME) : undefined;
+  const getIllustration = item ? getItemControlExtensionValue(item)?.find(ic => ic.code === ItemControlConstants.ILLUSTRATION) : undefined;
   return (
-    <>
-      <div className={`page_refero__component page_refero__component_display ${highlightClass}`}>
-        {getIframeUrl && <Youtube getIframeUrl={getIframeUrl} />}
-        {value}
-      </div>
-    </>
+    <div className={`page_refero__component page_refero__component_display ${highlightClass}`}>
+      {getIllustration && <Illustration illustrationName={getIllustration.display as IllustrationName} />}
+      {getIframeUrl && <Youtube getIframeUrl={getIframeUrl} />}
+      {value}
+    </div>
   );
 });
 

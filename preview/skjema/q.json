@@ -121,6 +121,28 @@
           "text": "Andre del av quizen handler om halloween!"
         },
         {
+          "linkId": "9022fd1e-d017-4d4f-84eb-f9c610720b3a",
+          "type": "display",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "illustration",
+                    "display": "FacialRecognitionFingerprint"
+                  }
+                ]
+              },
+              "id": "d3e02a24-a31c-4bb7-8475-6f4c8bf4301f"
+            }
+          ],
+          "required": false,
+          "text": "Andre del av quizen handler om halloween!"
+        },
+
+        {
           "linkId": "54dacaf0-898a-4806-d6f8-01553282ad4a",
           "type": "text",
           "extension": [

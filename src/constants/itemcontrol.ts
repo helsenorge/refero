@@ -20,6 +20,7 @@ const ItemControlConstants = {
     ANSWER_TABLE: 'atable',
     GRID: 'grid',
   },
+  ILLUSTRATION: 'illustration',
   SLIDER: 'slider',
 } as const;
 
