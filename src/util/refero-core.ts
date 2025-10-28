@@ -8,6 +8,7 @@ import {
   Reference,
   Attachment,
   Quantity,
+  Questionnaire,
 } from 'fhir/r4';
 
 import { QuestionnaireEnableOperator } from '../types/fhirEnums';
@@ -63,7 +64,7 @@ export function isInGroupContext(path: Path[], item: QuestionnaireResponseItem, 
 }
 
 export function getQuestionnaireResponseItemWithLinkid(
-  linkId: string,
+  linkId: string | undefined,
   responseItem: QuestionnaireResponseItem,
   referencePath: Path[]
 ): QuestionnaireResponseItem | undefined {
@@ -97,7 +98,7 @@ export function getQuestionnaireResponseItemWithLinkid(
 
 export const getAllResponseitemsByLinkIdAndQuestionnaireResponse = (
   linkId: string | undefined,
-  qr: QuestionnaireResponse | undefined
+  qr: QuestionnaireResponse | undefined | null
 ): QuestionnaireResponseItem[] => {
   const items: QuestionnaireResponseItem[] = [];
   if (!qr || !qr.item || !linkId || qr.item.length === 0) {
@@ -549,6 +550,27 @@ export function parseSuffix(suffix: string, linkId: string): Path[] {
 
   return paths;
 }
+export function findQuestionnaireItem(linkId?: string, items?: QuestionnaireItem[]): QuestionnaireItem | undefined {
+  if (items === undefined) return;
+  for (const item of items) {
+    if (item.linkId === linkId) return item;
+
+    const found = findQuestionnaireItem(linkId, item.item);
+    if (found !== undefined) return found;
+  }
+  return undefined;
+}
+export function findQuestionnaireItemInQuestionnaire({
+  linkId,
+  questionnaire,
+}: {
+  linkId?: string;
+  questionnaire?: Questionnaire | null;
+}): QuestionnaireItem | undefined {
+  if (!questionnaire || !linkId) return undefined;
+
+  return findQuestionnaireItem(linkId, questionnaire?.item);
+}
 export function parseIdSuffix(input: string): Path[] {
   const [linkId, suffix] = input.split(/^([^\\^]+)/).filter(part => part !== ''); // Split into two parts: linkId and the rest as suffix
   const paths: Path[] = [{ linkId: linkId.trim() }, ...parseSuffix(suffix, linkId.trim())]; // Combine linkId and parsed suffix paths
@@ -769,3 +791,22 @@ function getItemLinkIdsWithType(type: string, items: QuestionnaireItem[] | undef
     items.filter(f => f.type === type).forEach(f => itemsWithType.push(f));
   }
 }
+export const getResponseItemsWithLinkId = (linkId?: string, items?: QuestionnaireResponseItem[]): QuestionnaireResponseItem[] => {
+  let result: QuestionnaireResponseItem[] = [];
+  for (const item of items || []) {
+    if (item.linkId === linkId) {
+      result.push(item);
+    }
+    if (item.item && item.item.length > 0) {
+      result = result.concat(getResponseItemsWithLinkId(linkId, item.item));
+    }
+    if (item.answer && item.answer.length > 0) {
+      for (const answer of item.answer) {
+        if (answer.item && answer.item.length > 0) {
+          result = result.concat(getResponseItemsWithLinkId(linkId, answer.item));
+        }
+      }
+    }
+  }
+  return result;
+};

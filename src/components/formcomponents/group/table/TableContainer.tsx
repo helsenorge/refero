@@ -1,7 +1,7 @@
 import React, { Dispatch } from 'react';
 
 import GroupHeader from '../GroupHeader';
-import GTable from './tables/gtable/GTable';
+import GTable from './tables/gtable/Gtable';
 import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
@@ -41,7 +41,7 @@ const TableContainer = ({ linkId, isHelpVisible, setIsHelpVisible, headerTag }: 
         return <TableHn2 items={items} tableCodesCoding={tableCodesCoding} questionnaireResponse={questionnaireResponse} />;
 
       case TableCodes.gtable:
-        return <GTable items={items} questionnaireResponse={questionnaireResponse} tableCodesCoding={tableCodesCoding} />;
+        return <GTable item={item} questionnaireResponse={questionnaireResponse} />;
 
       case TableCodes.table:
         return <StandardTable items={items} questionnaireResponse={questionnaireResponse} tableCodesCoding={tableCodesCoding} />;

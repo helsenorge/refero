@@ -1,53 +1,54 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
-import { TableBody, Table as HnTable, TableRow, TableCell, SortDirection } from '@helsenorge/designsystem-react/components/Table';
+import { TableBody, Table as HnTable, SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { GTableHeader } from './GTableHeader';
-import { getGtablebodyObject, getLinkIdToSortBy } from './utils';
-import { transformCodingToSortDirection } from '../utils';
-import { IGTable } from './interface';
+import { GTableRows } from './GTableRows';
+import { getDefaultSortFromGTableItem, sortRowsByKey } from './sorting';
+import { getColumnsFromGTableItem, inferSourceGroupLinkId, buildGTableRows } from './utils';
+
+import { useAppSelector } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
 
 interface Props {
-  items: QuestionnaireItem[];
+  item: QuestionnaireItem;
   questionnaireResponse?: QuestionnaireResponse | null;
-  tableCodesCoding: Coding[];
 }
 
-const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): React.JSX.Element | null => {
-  const linkIdToSortBy = getLinkIdToSortBy(tableCodesCoding);
-  const SORT_DIRECTION = transformCodingToSortDirection(tableCodesCoding) || SortDirection.asc;
-  const [sortDir, setSortDir] = useState<SortDirection>(SORT_DIRECTION);
-  const [gTable, setTableData] = useState<IGTable>({ headerRow: [], id: '', rows: [] });
-  useEffect(() => {
-    const fetchTableData = async (): Promise<void> => {
-      const gTable = await getGtablebodyObject(items, questionnaireResponse, sortDir, linkIdToSortBy);
-      setTableData(gTable);
-    };
-    fetchTableData();
-  }, [items, linkIdToSortBy, questionnaireResponse, sortDir]);
+const GTable = ({ questionnaireResponse, item }: Props): React.JSX.Element | null => {
+  const questionnaire = useAppSelector(getFormDefinition)?.Content;
+  const columns = getColumnsFromGTableItem(item);
 
-  return gTable && gTable.rows.length > 0 ? (
+  const { sortKey: defaultKey, sortDir: defaultDir } = getDefaultSortFromGTableItem(item, columns);
+
+  const [sortKey, setSortKey] = useState<string | undefined>(defaultKey);
+  const [sortDir, setSortDir] = useState<SortDirection>(defaultDir ?? SortDirection.asc);
+
+  if (columns.length === 0) return null;
+
+  const sourceGroupLinkId = inferSourceGroupLinkId(questionnaire, columns);
+
+  const unsortedRows = buildGTableRows(questionnaireResponse, sourceGroupLinkId, columns);
+
+  const onSort = (summaryLinkId: string): void => {
+    if (sortKey === summaryLinkId) {
+      setSortDir(prev => (prev === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
+    } else {
+      setSortKey(summaryLinkId);
+      setSortDir(SortDirection.asc);
+    }
+  };
+
+  // 5) Sorted rows
+  const rows = sortKey ? sortRowsByKey(unsortedRows, sortKey, sortDir) : unsortedRows;
+
+  return rows.length > 0 ? (
     <HnTable className="page_refero__table__gtable" testId="gtable">
-      <GTableHeader headerRow={gTable.headerRow} sortDir={sortDir} setSortDir={setSortDir} linkIdToSortBy={linkIdToSortBy} />
+      <GTableHeader columns={columns} activeSortKey={sortKey} sortDir={sortDir} onSort={onSort} />
       <TableBody className="page_refero__table__gtable__body">
-        {gTable.rows.map((item, index) => {
-          return (
-            <TableRow key={item.id} className="page_refero__table__gtable__body__row">
-              {item.columns.map(column => (
-                <TableCell
-                  testId={column.id}
-                  key={column.id}
-                  dataLabel={gTable.headerRow[index]?.value ?? column.value}
-                  className="page_refero__table__gtable__body__row__cell"
-                >
-                  {column.value}
-                </TableCell>
-              ))}
-            </TableRow>
-          );
-        })}
+        <GTableRows rows={rows} columns={columns} />
       </TableBody>
     </HnTable>
   ) : null;

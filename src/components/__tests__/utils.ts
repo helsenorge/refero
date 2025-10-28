@@ -48,7 +48,7 @@ export async function findItemByDispayValue(value: string): Promise<HTMLElement>
   return el;
 }
 
-export function findQuestionnaireItem(linkId: string, items?: QuestionnaireItem[]): QuestionnaireItem | undefined {
+export function findQuestionnaireItem(linkId?: string, items?: QuestionnaireItem[]): QuestionnaireItem | undefined {
   if (items === undefined) return;
   for (const item of items) {
     if (item.linkId === linkId) return item;
