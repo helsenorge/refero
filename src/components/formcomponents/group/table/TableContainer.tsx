@@ -1,7 +1,7 @@
 import React, { Dispatch } from 'react';
 
 import GroupHeader from '../GroupHeader';
-import GTable from './tables/gtable/Gtable';
+import GTable from './tables/gtable';
 import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
