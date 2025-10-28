@@ -279,7 +279,7 @@ function copyItem(
   }
   if (defItem && defItem.type !== itemType.ATTATCHMENT) {
     for (let i = 0; source.answer && i < source.answer.length; i++) {
-      if (defItem.initial && defItem.initial.length > 0) {
+      if (defItem.initial && defItem.initial.length > 0 && (!source.answer || source.answer.length === 0)) {
         if (!target.answer) {
           target.answer = [];
         }
