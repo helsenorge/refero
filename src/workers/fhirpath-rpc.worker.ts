@@ -26,8 +26,10 @@ import {
   RpcResponse,
   RunCalculatorsParams,
   RunCalculatorsResult,
+  RunEnableWhenInput,
+  RunEnableWhenResult,
 } from './fhirpath-rpc-worker';
-import { runCalculators } from './helpers';
+import { runCalculators, runEnableWhen } from './helpers';
 import {
   evaluateFhirpathExpressionToGetDate,
   getAnswerFromResponseItem,
@@ -39,8 +41,6 @@ import {
   evaluateExtension,
   isGroupAndDescendantsHasAnswer,
 } from '../util/fhirpathHelper';
-
-import { RunEnableWhenParams, runEnableWhenPure, RunEnableWhenResult } from '@/calculators/runEnableWhen_pure';
 
 // ---- dispatcher -------------------
 
@@ -61,7 +61,8 @@ const handlers = {
     isGroupAndDescendantsHasAnswer(p.responseItem),
   runCalculators: (p: RunCalculatorsParams): RunCalculatorsResult =>
     runCalculators({ questionnaireResponse: p.questionnaireResponse, questionnaire: p.questionnaire }),
-  runEnableWhen: (p: RunEnableWhenParams): RunEnableWhenResult => runEnableWhenPure(p),
+  runEnableWhen: (p: RunEnableWhenInput): RunEnableWhenResult =>
+    runEnableWhen({ questionnaire: p.questionnaire, questionnaireResponse: p.questionnaireResponse }),
 } satisfies { [K in keyof Methods]: (p: Methods[K]['params']) => Promise<Methods[K]['result']> | Methods[K]['result'] };
 
 // ---- Runtime ---------------------------------------------------------------

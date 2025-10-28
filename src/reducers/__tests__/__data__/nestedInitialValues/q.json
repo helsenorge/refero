@@ -1,0 +1,33 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-initial-values",
+  "language": "nb-NO",
+  "status": "draft",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Hovedgruppe",
+      "type": "group",
+      "repeats": true,
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "Tekstfelt med initial verdi",
+          "type": "string",
+          "repeats": false,
+          "initial": [
+            {
+              "valueString": "Dette er en initial verdi"
+            }
+          ]
+        },
+        {
+          "linkId": "1.2",
+          "text": "Vedlegg",
+          "type": "attachment",
+          "repeats": true
+        }
+      ]
+    }
+  ]
+}

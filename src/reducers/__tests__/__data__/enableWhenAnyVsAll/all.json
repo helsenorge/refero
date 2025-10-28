@@ -1,0 +1,46 @@
+{
+  "resourceType": "Questionnaire",
+  "item": [
+    {
+      "text": "group A",
+      "linkId": "A",
+      "type": "group",
+      "item": [
+        {
+          "text": "Spørsmål A1",
+          "linkId": "A.1",
+          "type": "boolean"
+        },
+        {
+          "text": "Spørsmål A2",
+          "linkId": "A.2",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "linkId": "T",
+      "type": "group",
+      "enableBehavior": "all",
+      "enableWhen": [
+        {
+          "question": "A.1",
+          "operator": "=",
+          "answerBoolean": true
+        },
+        {
+          "question": "A.2",
+          "operator": "=",
+          "answerBoolean": true
+        }
+      ],
+      "item": [
+        {
+          "text": "Spørsmål T1",
+          "linkId": "T.1",
+          "type": "boolean"
+        }
+      ]
+    }
+  ]
+}

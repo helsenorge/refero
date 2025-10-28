@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import { newAnswerValuesAction } from '@/actions/newValue';
+import { AnswerValuesItemPayload, newAnswerValuesAction } from '@/actions/newValue';
+import { isEnableWhenEnabled } from '@/hooks/useIsEnabled';
 import { AppDispatch } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
 import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
@@ -26,31 +27,31 @@ export const runFhirPathQrUpdater = async ({
   try {
     let fhirScores: AnswerPad;
     if (typeof window !== 'undefined' && window.Worker) {
-      try {
-        fhirScores = await postTaskToFhirPathWorker({ questionnaireResponse, questionnaire });
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (_e) {
-        const fhirPathUpdater = new FhirPathExtensions(questionnaire);
-        fhirScores = fhirPathUpdater.calculateFhirScore(fhirPathUpdater.evaluateAllExpressions(questionnaireResponse));
-      }
+      fhirScores = await postTaskToFhirPathWorker({ questionnaireResponse, questionnaire });
     } else {
       const fhirPathUpdater = new FhirPathExtensions(questionnaire);
       fhirScores = fhirPathUpdater.calculateFhirScore(fhirPathUpdater.evaluateAllExpressions(questionnaireResponse));
     }
-    const answerValues = [];
+    const answerValues: AnswerValuesItemPayload = [];
     for (const linkId in fhirScores) {
       const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
       if (!item) continue;
       const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
       const value = fhirScores[linkId];
-      const newAnswer = isQuestionnaireResponseItemAnswerArray(value) ? value : [];
+      const newAnswer = isQuestionnaireResponseItemAnswerArray(value) ? value : undefined;
       for (const itemAndPath of itemsAndPaths) {
-        if (JSON.stringify(itemAndPath.item.answer) === JSON.stringify(newAnswer)) {
+        let enabled = true;
+        if (item.enableWhen && item.enableWhen.length > 0 && itemAndPath.path) {
+          enabled = isEnableWhenEnabled(item?.enableWhen, item?.enableBehavior, itemAndPath.path, questionnaireResponse.item);
+        }
+        if (!enabled) {
+          continue;
+        }
+        if (JSON.stringify(itemAndPath.item.answer ?? undefined) === JSON.stringify(newAnswer ?? undefined)) {
           continue;
         }
         if (actionRequester) {
-          actionRequester.setNewAnswer(linkId, newAnswer, itemAndPath.path[0]?.index);
+          actionRequester.setNewAnswer(linkId, newAnswer ?? [], itemAndPath.path[0]?.index);
         } else {
           answerValues.push({
             itemPath: itemAndPath.path,
