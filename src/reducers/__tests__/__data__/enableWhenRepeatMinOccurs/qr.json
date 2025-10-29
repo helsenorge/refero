@@ -1,0 +1,53 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "A",
+      "answer": [
+        {
+          "valueBoolean": false
+        }
+      ]
+    },
+    {
+      "linkId": "G",
+      "item": [
+        {
+          "linkId": "G.1",
+          "answer": [
+            {
+              "valueBoolean": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "G",
+      "item": [
+        {
+          "linkId": "G.1",
+          "answer": [
+            {
+              "valueBoolean": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "G",
+      "item": [
+        {
+          "linkId": "G.1",
+          "answer": [
+            {
+              "valueBoolean": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

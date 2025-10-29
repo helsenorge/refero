@@ -15,7 +15,6 @@ export { default as form } from './reducers/form';
 
 export * from './reducers/index';
 export { default as rootReducer } from './reducers/index';
-export { enableWhenListener } from './reducers/middleware/enableWhenMiddleware';
 //Hooks
 export { useIsEnabled, isEnableWhenEnabled, useCheckIfEnabled } from './hooks/useIsEnabled';
 

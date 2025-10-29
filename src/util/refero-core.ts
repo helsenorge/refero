@@ -8,6 +8,7 @@ import {
   Reference,
   Attachment,
   Quantity,
+  Questionnaire,
 } from 'fhir/r4';
 
 import { QuestionnaireEnableOperator } from '../types/fhirEnums';
@@ -63,7 +64,7 @@ export function isInGroupContext(path: Path[], item: QuestionnaireResponseItem, 
 }
 
 export function getQuestionnaireResponseItemWithLinkid(
-  linkId: string,
+  linkId: string | undefined,
   responseItem: QuestionnaireResponseItem,
   referencePath: Path[]
 ): QuestionnaireResponseItem | undefined {
@@ -97,7 +98,7 @@ export function getQuestionnaireResponseItemWithLinkid(
 
 export const getAllResponseitemsByLinkIdAndQuestionnaireResponse = (
   linkId: string | undefined,
-  qr: QuestionnaireResponse | undefined
+  qr: QuestionnaireResponse | undefined | null
 ): QuestionnaireResponseItem[] => {
   const items: QuestionnaireResponseItem[] = [];
   if (!qr || !qr.item || !linkId || qr.item.length === 0) {
@@ -522,13 +523,14 @@ export function enableWhenMatchesAnswer(
   });
   return matches;
 }
+
 export function createIdSuffix(path: Path[] | undefined, index = 0, repeats: boolean | undefined): string {
   let suffix = '';
 
   if (path) {
-    path.forEach(p => {
+    path.forEach((p, index) => {
       if (p.index) {
-        suffix += '^' + p.index;
+        suffix += '-' + index + '^' + p.index;
       }
     });
   }
@@ -548,6 +550,27 @@ export function parseSuffix(suffix: string, linkId: string): Path[] {
 
   return paths;
 }
+export function findQuestionnaireItem(linkId?: string, items?: QuestionnaireItem[]): QuestionnaireItem | undefined {
+  if (items === undefined) return;
+  for (const item of items) {
+    if (item.linkId === linkId) return item;
+
+    const found = findQuestionnaireItem(linkId, item.item);
+    if (found !== undefined) return found;
+  }
+  return undefined;
+}
+export function findQuestionnaireItemInQuestionnaire({
+  linkId,
+  questionnaire,
+}: {
+  linkId?: string;
+  questionnaire?: Questionnaire | null;
+}): QuestionnaireItem | undefined {
+  if (!questionnaire || !linkId) return undefined;
+
+  return findQuestionnaireItem(linkId, questionnaire?.item);
+}
 export function parseIdSuffix(input: string): Path[] {
   const [linkId, suffix] = input.split(/^([^\\^]+)/).filter(part => part !== ''); // Split into two parts: linkId and the rest as suffix
   const paths: Path[] = [{ linkId: linkId.trim() }, ...parseSuffix(suffix, linkId.trim())]; // Combine linkId and parsed suffix paths
@@ -561,12 +584,6 @@ export function findFirstGuidInString(input: string): string | null {
   return match ? match[0] : null;
 }
 
-export const getUniqueId = (item: QuestionnaireItem, path?: Path[], index?: number): string => {
-  let rawId = '';
-  const newPath = createPathForItem(path, item, index);
-  rawId = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
-  return rawId.replace(/\./g, '-');
-};
 export function extractLinkIdFromUniqueId(uniqueId: string): string {
   const [linkIdWithDashes] = uniqueId.split('^');
 
@@ -579,7 +596,7 @@ export function createPathForItem(path?: Path[] | undefined, item?: Questionnair
   if (path === null || path === undefined) {
     newPath = [];
   } else {
-    newPath = copyPath(path);
+    newPath = [...path];
   }
 
   index = isRepeat(item) ? index : undefined;
@@ -687,10 +704,10 @@ export function getResponseItemWithPath(path: Path[], formData: FormData): Quest
   let item: QuestionnaireResponseItem = rootItems[path[0].index ?? 0];
 
   for (let i = 1; i < path.length; i++) {
-    let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item.item);
+    let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item?.item);
 
     if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
-      const itemsFromAnswer = item.answer && item.answer.flatMap(a => a.item ?? []);
+      const itemsFromAnswer = item?.answer && item?.answer.flatMap(a => a.item ?? []);
       itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, itemsFromAnswer);
       if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) break;
     }
@@ -774,3 +791,22 @@ function getItemLinkIdsWithType(type: string, items: QuestionnaireItem[] | undef
     items.filter(f => f.type === type).forEach(f => itemsWithType.push(f));
   }
 }
+export const getResponseItemsWithLinkId = (linkId?: string, items?: QuestionnaireResponseItem[]): QuestionnaireResponseItem[] => {
+  let result: QuestionnaireResponseItem[] = [];
+  for (const item of items || []) {
+    if (item.linkId === linkId) {
+      result.push(item);
+    }
+    if (item.item && item.item.length > 0) {
+      result = result.concat(getResponseItemsWithLinkId(linkId, item.item));
+    }
+    if (item.answer && item.answer.length > 0) {
+      for (const answer of item.answer) {
+        if (answer.item && answer.item.length > 0) {
+          result = result.concat(getResponseItemsWithLinkId(linkId, answer.item));
+        }
+      }
+    }
+  }
+  return result;
+};

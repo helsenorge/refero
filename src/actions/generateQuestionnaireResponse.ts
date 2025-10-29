@@ -13,7 +13,7 @@ const shouldNotAddItemToResponse = (item: QuestionnaireItem): boolean => {
   return isHelpItem(item);
 };
 
-export function generateQuestionnaireResponse(questionnaire: Questionnaire): QuestionnaireResponse | undefined {
+export function generateQuestionnaireResponse(questionnaire: Questionnaire | undefined | null): QuestionnaireResponse | undefined {
   const response: QuestionnaireResponse = {
     resourceType: Constants.QUESTIONNAIRE_RESPONSE_RESOURCE_TYPE,
     status: StatusConstants.questionnaireResponse.IN_PROGRESS,

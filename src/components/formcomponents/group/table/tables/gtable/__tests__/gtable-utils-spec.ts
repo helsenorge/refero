@@ -1,272 +1,256 @@
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { describe, it, expect, vi } from 'vitest';
 
-import { QuestionnaireItemWithAnswers } from '../../interface';
+import type {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer,
+} from 'fhir/r4';
+
 import {
-  columnsForRowIndex,
-  createTableHeader,
-  createTableRows,
-  getGtablebodyObject,
-  getNumberOfRowsGTable,
-  getValueFromAnswer,
+  extractLinkIdFromExpression,
+  getColumnsFromGTableItem,
+  indexQuestionnaire,
+  inferSourceGroupLinkId,
+  collectAnswersWithin,
+  buildGTableRows,
+  extractValueFromCoding,
+  extractValueFromQuantity,
+  extractValueFromDate,
+  extractValueFromDateTime,
+  extractValueFromTime,
+  answerToStrings,
+  type Column,
 } from '../utils';
 
-import { Extensions } from '@/constants/extensions';
-import ItemType, { IItemType } from '@/constants/itemType';
-import { QUESTIONNAIRE_ITEM_CONTROL_SYSTEM } from '@/constants/valuesets';
+// Constants mocks
+vi.mock('@/constants/dateTimeConstants', () => ({
+  TIME_SEPARATOR: ':',
+}));
+vi.mock('../constants', () => ({
+  DATEFORMATS: { DATE: 'yyyy-MM-dd', DATETIME: "yyyy-MM-dd'T'HH:mm" },
+}));
+vi.mock('@/constants/extensions', () => ({
+  COPY_EXPRESSION_URL: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+}));
 
-type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;
-type MockResponseItemProps = Partial<QuestionnaireResponseItem>;
-type MockQuestionnaireItemProps = Partial<Omit<QuestionnaireItem, 'type'>> & {
-  type: IItemType;
-};
-type MockResponseProps = Partial<QuestionnaireResponse>;
-
-function generateMockResponseAnswer(props: MockAnswerProps = {}): QuestionnaireResponseItemAnswer {
+vi.mock('date-fns', () => {
   return {
-    valueString: 'Default Answer',
-    ...props,
+    format: (date: string | number | Date): string => (typeof date === 'string' ? date : String(date)),
+    isValid: (input: unknown): boolean => !!input,
   };
-}
+});
 
-function generateMockResponseItem(props: MockResponseItemProps = {}): QuestionnaireResponseItem {
-  return {
-    linkId: 'default-linkId',
-    answer: [],
-    ...props,
-  };
-}
+// Mock refero-core util
+vi.mock('@/util/refero-core', () => ({
+  getResponseItemsWithLinkId: (linkId?: string, items?: QuestionnaireResponseItem[]) => {
+    const out = [];
+    (function dfs(arr?: QuestionnaireResponseItem[]) {
+      if (!arr) return;
+      for (const it of arr) {
+        if (it.linkId === linkId) out.push(it);
+        if (it.item?.length) dfs(it.item);
+        if (it.answer?.length) for (const a of it.answer) dfs(a.item);
+      }
+    })(items);
+    return out;
+  },
+}));
 
-function generateMockQuestionnaireItem(props: MockQuestionnaireItemProps): QuestionnaireItem {
-  return {
-    linkId: 'default-question-linkId',
-    text: 'Default Question Text',
-    ...props,
-  };
-}
-function generateMockQuestionnaireItemWithAnswers(
-  props: Partial<Omit<QuestionnaireItemWithAnswers, 'linkId'>>
-): QuestionnaireItemWithAnswers {
-  return {
-    linkId: 'default-question-linkId',
-    type: ItemType.TEXT,
-    answer: [],
-    ...props,
-  };
-}
-function generateMockQuestionnaireResponse(props: MockResponseProps = {}): QuestionnaireResponse {
-  return {
-    resourceType: 'QuestionnaireResponse',
-    status: 'in-progress',
-    item: [],
-    ...props,
-  };
-}
-
-describe('gtable-utils-spec', () => {
-  describe('getNumberOfRowsGTable', () => {
-    it('should return 0 for an empty array', () => {
-      expect(getNumberOfRowsGTable([])).toBe(0);
-    });
-
-    it('should return the maximum length of answers from all items', () => {
-      const items: QuestionnaireResponseItem[] = [
-        generateMockResponseItem({ answer: [generateMockResponseAnswer(), generateMockResponseAnswer()] }),
-        generateMockResponseItem({ answer: [generateMockResponseAnswer()] }),
-      ];
-      expect(getNumberOfRowsGTable(items)).toBe(2);
-    });
-
-    it('should handle items with no answers correctly', () => {
-      const items: QuestionnaireResponseItem[] = [
-        generateMockResponseItem({ answer: [] }),
-        generateMockResponseItem({ answer: [generateMockResponseAnswer(), generateMockResponseAnswer(), generateMockResponseAnswer()] }),
-      ];
-      expect(getNumberOfRowsGTable(items)).toBe(3);
-    });
-  });
-  describe('getValueFromAnswer', () => {
-    it('should return an empty string if no answer is provided', () => {
-      expect(getValueFromAnswer(0, undefined)).toBe('');
-    });
-
-    it('should return the correct string value from the answer at the specified index', () => {
-      const answers: QuestionnaireResponseItemAnswer[] = [
-        generateMockResponseAnswer({ valueString: 'Answer 1' }),
-        generateMockResponseAnswer({ valueString: 'Answer 2' }),
-      ];
-      const item = generateMockQuestionnaireItemWithAnswers({ answer: answers });
-      expect(getValueFromAnswer(1, { ...item, type: ItemType.TEXT })).toBe('Answer 2');
-    });
-
-    it('should return an empty string if the index is out of bounds', () => {
-      const answers: QuestionnaireResponseItemAnswer[] = [generateMockResponseAnswer({ valueString: 'Answer 1' })];
-      const item = generateMockQuestionnaireItemWithAnswers({ answer: answers });
-      expect(getValueFromAnswer(2, item)).toBe('');
-    });
-
-    it('should return an empty string if the answer at the index is empty', () => {
-      const answers: QuestionnaireResponseItemAnswer[] = [generateMockResponseAnswer({ valueString: '' })];
-      const item = generateMockQuestionnaireItemWithAnswers({ answer: answers });
-      expect(getValueFromAnswer(0, item)).toBe('');
-    });
-  });
-  describe('columnsForRowIndex', () => {
-    it('should create columns with correct values for a valid row index', () => {
-      const answerItems: QuestionnaireItemWithAnswers[] = [
-        generateMockQuestionnaireItemWithAnswers({
-          answer: [generateMockResponseAnswer({ valueString: 'Answer 1' }), generateMockResponseAnswer({ valueString: 'Answer 2' })],
-          type: ItemType.TEXT,
-        }),
-        generateMockQuestionnaireItemWithAnswers({
-          answer: [generateMockResponseAnswer({ valueString: 'Another Answer 1' })],
-          type: ItemType.TEXT,
-        }),
-      ];
-      const columns = columnsForRowIndex(answerItems, 0);
-      expect(columns).toEqual([
-        { id: 'default-question-linkId', index: 0, value: 'Answer 1', type: ItemType.TEXT },
-        { id: 'default-question-linkId', index: 1, value: 'Another Answer 1', type: ItemType.TEXT },
-      ]);
-    });
-
-    it('should create columns with empty values for a row index with no answers', () => {
-      const answerItems: QuestionnaireItemWithAnswers[] = [
-        generateMockQuestionnaireItemWithAnswers({ answer: [generateMockResponseAnswer({ valueString: 'Answer 1' })] }),
-        generateMockQuestionnaireItemWithAnswers({ answer: [] }),
-      ];
-      const columns = columnsForRowIndex(answerItems, 1);
-      expect(columns).toEqual([
-        { id: 'default-question-linkId', index: 0, value: '', type: ItemType.TEXT },
-        { id: 'default-question-linkId', index: 1, value: '', type: ItemType.TEXT },
-      ]);
-    });
-
-    it('should handle empty answer items correctly', () => {
-      const answerItems: QuestionnaireItemWithAnswers[] = [];
-      const columns = columnsForRowIndex(answerItems, 0);
-      expect(columns).toEqual([]);
-    });
-  });
-  describe('createTableRows', () => {
-    it('should create table rows based on the input items', () => {
-      const items: QuestionnaireItemWithAnswers[] = [
-        generateMockQuestionnaireItemWithAnswers({
-          answer: [generateMockResponseAnswer({ valueString: 'Answer 1' }), generateMockResponseAnswer({ valueString: 'Answer 2' })],
-        }),
-        generateMockQuestionnaireItemWithAnswers({
-          answer: [generateMockResponseAnswer({ valueString: 'Another Answer 1' })],
-        }),
-      ];
-      const rows = createTableRows(items);
-      expect(rows.length).toBe(2);
-      expect(rows[0].columns.length).toBe(items.length);
-      expect(rows[1].columns.length).toBe(items.length);
-    });
-
-    it('should handle items with no answers correctly', () => {
-      const items: QuestionnaireItemWithAnswers[] = [
-        generateMockQuestionnaireItemWithAnswers({ answer: [] }),
-        generateMockQuestionnaireItemWithAnswers({ answer: [generateMockResponseAnswer({ valueString: 'Only Answer' })] }),
-      ];
-      const rows = createTableRows(items);
-      expect(rows.length).toBe(1);
-      expect(rows[0].columns.length).toBe(items.length);
-    });
-
-    it('should handle empty items correctly', () => {
-      const items: QuestionnaireItemWithAnswers[] = [];
-      const rows = createTableRows(items);
-      expect(rows).toEqual([]);
-    });
-  });
-  describe('createTableHeader', () => {
-    it('should create table headers from input items', () => {
-      const items: QuestionnaireItem[] = [
-        generateMockQuestionnaireItem({ linkId: '1', text: 'First Question', type: 'string' }),
-        generateMockQuestionnaireItem({ linkId: '2', text: 'Second Question', type: 'string' }),
-      ];
-      const headers = createTableHeader(items);
-      expect(headers).toEqual([
-        { id: '1', value: 'First Question' },
-        { id: '2', value: 'Second Question' },
-      ]);
-    });
-
-    it('should handle items with missing text correctly', () => {
-      const items: QuestionnaireItem[] = [
-        generateMockQuestionnaireItem({ linkId: '1', type: 'string' }),
-        generateMockQuestionnaireItem({ linkId: '2', text: 'Second Question', type: 'string' }),
-      ];
-      const headers = createTableHeader(items);
-      expect(headers).toEqual([
-        { id: '1', value: 'Default Question Text' },
-        { id: '2', value: 'Second Question' },
-      ]);
-    });
-
-    it('should handle empty items array correctly', () => {
-      const items: QuestionnaireItem[] = [];
-      const headers = createTableHeader(items);
-      expect(headers).toEqual([]);
-    });
+describe('extractLinkIdFromExpression', () => {
+  it('parses single quotes', () => {
+    expect(extractLinkIdFromExpression(`QuestionnaireResponse.descendants().where(linkId='abc').answer.value`)).toBe('abc');
   });
 
-  describe('getGtablebodyObject', () => {
-    it('should create a GTable object with rows and headers', async () => {
-      const items: QuestionnaireItem[] = [
-        generateMockQuestionnaireItem({
-          linkId: '1',
-          text: 'First Question',
+  it('parses double quotes', () => {
+    expect(extractLinkIdFromExpression(`QuestionnaireResponse.descendants().where(linkId="xyz").answer.value`)).toBe('xyz');
+  });
+
+  it('returns undefined if no match', () => {
+    expect(extractLinkIdFromExpression('invalid')).toBeUndefined();
+  });
+});
+
+describe('getColumnsFromGTableItem', () => {
+  const cell = (linkId: string, text: string, source: string): QuestionnaireItem => ({
+    linkId,
+    type: 'string',
+    text,
+    extension: [
+      {
+        url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+        valueString: `QuestionnaireResponse.descendants().where(linkId='${source}').answer.value`,
+      },
+    ],
+  });
+
+  it('extracts columns correctly', () => {
+    const g: QuestionnaireItem = {
+      linkId: 'gtable',
+      type: 'group',
+      item: [cell('col1', 'Dato', 'd1'), cell('col2', 'Tid', 't1')],
+    };
+    const result = getColumnsFromGTableItem(g);
+    expect(result).toEqual<Column[]>([
+      { header: 'Dato', sourceLinkId: 'd1', summaryLinkId: 'col1' },
+      { header: 'Tid', sourceLinkId: 't1', summaryLinkId: 'col2' },
+    ]);
+  });
+
+  it('ignores cells without expressions', () => {
+    const g: QuestionnaireItem = { linkId: 'gtable', type: 'group', item: [{ linkId: 'col', type: 'string' }] };
+    expect(getColumnsFromGTableItem(g)).toEqual([]);
+  });
+});
+
+describe('indexQuestionnaire & inferSourceGroupLinkId', () => {
+  const q: Questionnaire = {
+    resourceType: 'Questionnaire',
+    status: 'draft',
+    item: [
+      {
+        linkId: 'root',
+        type: 'group',
+        item: [
+          {
+            linkId: 'outer',
+            type: 'group',
+            repeats: true,
+            item: [
+              { linkId: 'd1', type: 'date' },
+              { linkId: 't1', type: 'time' },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+
+  it('builds parent paths', () => {
+    const idx = indexQuestionnaire(q);
+    expect(idx.byLinkId.has('t1')).toBe(true);
+    const chain = idx.parentPath.get('t1')!;
+    expect(chain.map(n => n.linkId)).toEqual(['root', 'outer']);
+  });
+
+  it('infers the deepest repeating group', () => {
+    const gTable: QuestionnaireItem = {
+      linkId: 'gt',
+      type: 'group',
+      item: [
+        {
+          linkId: 'c1',
           type: 'string',
           extension: [
             {
-              url: Extensions.ITEMCONTROL_URL,
-              valueCodeableConcept: {
-                coding: [
-                  {
-                    system: QUESTIONNAIRE_ITEM_CONTROL_SYSTEM,
-                    code: 'data-receiver',
-                  },
-                ],
-              },
-            },
-            {
-              url: Extensions.COPY_EXPRESSION_URL,
-              valueString: "QuestionnaireResponse.descendants().where(linkId='1').answer.value",
+              url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+              valueString: `QuestionnaireRespons e.descendants().where(linkId='d1').answer.value`,
             },
           ],
-        }),
-        generateMockQuestionnaireItem({ linkId: '2', text: 'Second Question', type: 'string' }),
-      ];
-      const questionnaireResponse = generateMockQuestionnaireResponse({
-        status: 'completed',
+        },
+        {
+          linkId: 'c2',
+          type: 'string',
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+              valueString: `QuestionnaireResponse.descendants().where(linkId='t1').answer.value`,
+            },
+          ],
+        },
+      ],
+    };
+    const cols = getColumnsFromGTableItem(gTable);
+    const parent = inferSourceGroupLinkId(q, cols);
+    expect(parent).toBe('outer');
+  });
+});
+
+describe('answer value extraction', () => {
+  it('handles coding', () => {
+    expect(extractValueFromCoding({ display: 'Yes', code: 'ja' }, 'display')).toBe('Yes');
+    expect(extractValueFromCoding({ code: 'ja' }, 'display')).toBe('');
+  });
+
+  it('handles quantity', () => {
+    expect(extractValueFromQuantity({ value: 5, unit: 'kg' }, 'display')).toBe('5 kg');
+    expect(extractValueFromQuantity(undefined)).toBe('');
+  });
+
+  it('handles dates, datetime, time', () => {
+    expect(extractValueFromDate('2025-10-28')).toBe('2025-10-28');
+    expect(extractValueFromDateTime('2025-10-28T11:33:00Z')).toBe('2025-10-28T11:33:00Z');
+    expect(extractValueFromTime('12:34:56')).toBe('12:34');
+    expect(extractValueFromTime('12:34')).toBe('');
+  });
+
+  it('answerToStrings covers all value[x]', () => {
+    const answers: QuestionnaireResponseItemAnswer[] = [
+      { valueString: 'A' },
+      { valueBoolean: true },
+      { valueInteger: 1 },
+      { valueDecimal: 1.5 },
+      { valueDate: '2025-10-28' },
+      { valueDateTime: '2025-10-28T10:00:00Z' },
+      { valueTime: '08:15:00' },
+      { valueCoding: { display: 'ja' } },
+      { valueQuantity: { value: 10, unit: 'ml' } },
+    ];
+    const results = answers.map(answerToStrings);
+    expect(results[0]).toEqual(['A']);
+    expect(results[1]).toEqual(['[X]']);
+    expect(results[2]).toEqual(['1']);
+    expect(results[3]).toEqual(['1.5']);
+    expect(results[4]).toEqual(['2025-10-28']);
+    expect(results[5]).toEqual(['2025-10-28T10:00:00Z']);
+    expect(results[6]).toEqual(['08:15']);
+    expect(results[7]).toEqual(['ja']);
+    expect(results[8]).toEqual(['10 ml']);
+  });
+});
+
+describe('collectAnswersWithin & buildGTableRows', () => {
+  const qr: QuestionnaireResponse = {
+    resourceType: 'QuestionnaireResponse',
+    status: 'completed',
+    item: [
+      {
+        linkId: 'root',
         item: [
-          generateMockResponseItem({ linkId: '1', answer: [generateMockResponseAnswer({ valueString: 'Answer 1' })] }),
-          generateMockResponseItem({ linkId: '2', answer: [generateMockResponseAnswer({ valueString: 'Answer 2' })] }),
+          {
+            linkId: 'outer',
+            item: [
+              { linkId: 'd1', answer: [{ valueDate: '2025-10-28' }] },
+              { linkId: 't1', answer: [{ valueTime: '12:34:56' }] },
+            ],
+          },
+          {
+            linkId: 'outer',
+            item: [{ linkId: 't1', answer: [{ valueTime: '08:15:00' }] }],
+          },
         ],
-      });
-      const gTable = await getGtablebodyObject(items, questionnaireResponse);
-      expect(gTable.rows.length).toBe(1);
-      expect(gTable.headerRow.length).toBe(2);
-      expect(gTable.rows[0].columns.length).toBe(2);
-    });
+      },
+    ],
+  };
 
-    it('should handle empty questionnaire items correctly', async () => {
-      const items: QuestionnaireItem[] = [];
-      const questionnaireResponse = generateMockQuestionnaireResponse({
-        status: 'completed',
-        item: [generateMockResponseItem({ linkId: '1', answer: [generateMockResponseAnswer({ valueString: 'Answer 1' })] })],
-      });
-      const gTable = await getGtablebodyObject(items, questionnaireResponse);
-      expect(gTable.rows.length).toBe(0);
-      expect(gTable.headerRow.length).toBe(0);
-    });
+  it('collects answers', () => {
+    const first = qr.item![0].item![0];
+    const vals = collectAnswersWithin(first, 'd1');
+    expect(vals).toEqual(['2025-10-28']);
+  });
 
-    it('should handle null questionnaire response correctly', async () => {
-      const items: QuestionnaireItem[] = [generateMockQuestionnaireItem({ linkId: '1', text: 'First Question', type: 'string' })];
-      const gTable = await getGtablebodyObject(items, null);
-      expect(gTable.rows.length).toBe(0);
-      expect(gTable.headerRow.length).toBe(0);
-    });
+  it('builds rows correctly', () => {
+    const columns: Column[] = [
+      { header: 'Date', sourceLinkId: 'd1', summaryLinkId: 'col-d' },
+      { header: 'Time', sourceLinkId: 't1', summaryLinkId: 'col-t' },
+    ];
+    const rows = buildGTableRows(qr, 'outer', columns);
+    expect(rows).toHaveLength(2);
+    expect(rows[0]['col-d']).toBe('2025-10-28');
+    expect(rows[0]['col-t']).toBe('12:34');
+    expect(rows[1]['col-d']).toBeUndefined();
+    expect(rows[1]['col-t']).toBe('08:15');
   });
 });

@@ -1,0 +1,14 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "A",
+      "item": [
+        { "linkId": "A.1", "answer": [{ "valueBoolean": false }] },
+        { "linkId": "A.2", "answer": [{ "valueBoolean": false }] }
+      ]
+    },
+    { "linkId": "T", "item": [{ "linkId": "T.1", "answer": [{ "valueBoolean": false }] }] }
+  ]
+}
