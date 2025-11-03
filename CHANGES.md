@@ -1,4 +1,4 @@
-## 21.2.0-beta01
+## 21.2.0
 
 - Fix issues with enableWhen in some edge cases
 - Fix issues with nested repeatable items getting the same id's and showing the wrong values in the UI
