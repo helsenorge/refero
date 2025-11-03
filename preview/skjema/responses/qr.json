@@ -1,49 +1,178 @@
 {
   "resourceType": "QuestionnaireResponse",
   "status": "in-progress",
+  "questionnaire": "Questionnaire/72e96fee-021b-45de-8489-7651727bca71",
   "item": [
     {
-      "linkId": "A",
-      "answer": [
-        {
-          "valueBoolean": false
-        }
-      ]
-    },
-    {
-      "linkId": "G",
+      "linkId": "0d9f27f0-3e86-49de-dc60-fe35820c807a",
+      "text": "Helsesjekk",
       "item": [
         {
-          "linkId": "G.1",
-          "answer": [
+          "linkId": "6947d2ba-28b3-4798-802b-cc1f241bde1a",
+          "text": "Gruppe med items som ikke er påkrevd",
+          "item": [
             {
-              "valueBoolean": false
+              "linkId": "316eab89-4850-40b3-8021-9db6ef39a9e4",
+              "text": "Test Dato"
+            },
+            {
+              "linkId": "2cd2d2d8-bca5-4ca5-8786-ff2cafa9b974",
+              "text": "Test time",
+              "answer": [
+                {
+                  "valueTime": "01:01:00"
+                }
+              ]
+            },
+            {
+              "linkId": "2473e32b-ed59-41ae-80e5-e372b062cf03",
+              "text": "Urinmendge",
+              "answer": [
+                {
+                  "valueInteger": 1
+                }
+              ]
+            },
+            {
+              "linkId": "360895bd-9f43-4a4b-8fa8-5ceece0d0b42",
+              "text": "Vekt våt bleie"
+            },
+            {
+              "linkId": "714fe9e1-cbba-47dd-d136-3fcc690d8501",
+              "text": "Vektøkning bleie"
+            }
+          ]
+        },
+        {
+          "linkId": "6947d2ba-28b3-4798-802b-cc1f241bde1a",
+          "text": "Gruppe med items som ikke er påkrevd",
+          "item": [
+            {
+              "linkId": "316eab89-4850-40b3-8021-9db6ef39a9e4",
+              "text": "Test Dato"
+            },
+            {
+              "linkId": "2cd2d2d8-bca5-4ca5-8786-ff2cafa9b974",
+              "text": "Test time",
+              "answer": [
+                {
+                  "valueTime": "02:02:00"
+                }
+              ]
+            },
+            {
+              "linkId": "2473e32b-ed59-41ae-80e5-e372b062cf03",
+              "text": "Urinmendge"
+            },
+            {
+              "linkId": "360895bd-9f43-4a4b-8fa8-5ceece0d0b42",
+              "text": "Vekt våt bleie",
+              "answer": [
+                {
+                  "valueInteger": 2
+                }
+              ]
+            },
+            {
+              "linkId": "714fe9e1-cbba-47dd-d136-3fcc690d8501",
+              "text": "Vektøkning bleie",
+              "answer": [
+                {
+                  "valueInteger": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "6947d2ba-28b3-4798-802b-cc1f241bde1a",
+          "text": "Gruppe med items som ikke er påkrevd",
+          "item": [
+            {
+              "linkId": "316eab89-4850-40b3-8021-9db6ef39a9e4",
+              "text": "Test Dato"
+            },
+            {
+              "linkId": "2cd2d2d8-bca5-4ca5-8786-ff2cafa9b974",
+              "text": "Test time",
+              "answer": [
+                {
+                  "valueTime": "03:03:00"
+                }
+              ]
+            },
+            {
+              "linkId": "2473e32b-ed59-41ae-80e5-e372b062cf03",
+              "text": "Urinmendge",
+              "answer": [
+                {
+                  "valueInteger": 3
+                }
+              ]
+            },
+            {
+              "linkId": "360895bd-9f43-4a4b-8fa8-5ceece0d0b42",
+              "text": "Vekt våt bleie",
+              "answer": [
+                {
+                  "valueInteger": 3
+                }
+              ]
+            },
+            {
+              "linkId": "714fe9e1-cbba-47dd-d136-3fcc690d8501",
+              "text": "Vektøkning bleie"
             }
           ]
         }
       ]
     },
     {
-      "linkId": "G",
+      "linkId": "e5aa46fe-7ddb-45c8-8c0d-65cb8bc25f4f",
+      "text": "Oppsummering",
       "item": [
         {
-          "linkId": "G.1",
-          "answer": [
+          "linkId": "babe2e6c-b403-43f0-8167-8dd959703f42",
+          "text": "GTable Oppsummering (siste item har flere errors)",
+          "item": [
             {
-              "valueBoolean": false
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "linkId": "G",
-      "item": [
-        {
-          "linkId": "G.1",
-          "answer": [
+              "linkId": "91de4de8-feac-4f1c-839b-75c11eafa22d",
+              "text": "Dato"
+            },
             {
-              "valueBoolean": false
+              "linkId": "923ad9c4-5550-4938-9656-08f9ed15beed",
+              "text": "Kl",
+              "answer": [
+                {
+                  "valueTime": "01:01:00"
+                },
+                {
+                  "valueTime": "02:02:00"
+                },
+                {
+                  "valueTime": "03:03:00"
+                }
+              ]
+            },
+            {
+              "linkId": "980bcdf0-14f3-4215-fc82-a642c93a2ede",
+              "text": "Urinmendge",
+              "answer": [
+                {
+                  "valueInteger": 1
+                },
+                {
+                  "valueInteger": 3
+                }
+              ]
+            },
+            {
+              "linkId": "0a1d3059-81e3-4dc2-db1e-216e0f0277a2",
+              "text": "Vekt våt bleie"
+            },
+            {
+              "linkId": "1ea2cd02-2fa4-49a6-b195-7f37e813ddfc",
+              "text": "Vektøkning bleie"
             }
           ]
         }
