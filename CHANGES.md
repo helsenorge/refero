@@ -1,3 +1,7 @@
+## 21.3.0
+
+- rewrite core logic for gTable to fix issues with data being shown in wrong rows and columns
+
 ## 21.2.0
 
 - Fix issues with enableWhen in some edge cases
