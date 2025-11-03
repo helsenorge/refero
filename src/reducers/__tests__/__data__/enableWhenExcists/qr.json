@@ -1,0 +1,24 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "A",
+      "item": [
+        {
+          "linkId": "A.1",
+          "answer": []
+        }
+      ]
+    },
+    {
+      "linkId": "T",
+      "item": [
+        {
+          "linkId": "T.1",
+          "answer": []
+        }
+      ]
+    }
+  ]
+}

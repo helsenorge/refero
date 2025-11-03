@@ -48,39 +48,7 @@ export const findQuestionnaireItem = createSelector(
 export const getResponseItemWithPathSelector = createSelector(
   [(state: GlobalState): FormData => state.refero.form.FormData, (_: GlobalState, path?: Path[]): Path[] | undefined => path],
   (formData, path) => {
-    if (!path || path.length === 0) {
-      return undefined;
-    }
-
-    if (!formData?.Content || !formData.Content.item) {
-      return undefined;
-    }
-
-    const rootItems = getRootQuestionnaireResponseItemFromData(path[0].linkId, formData);
-
-    if (!rootItems || rootItems.length === 0) {
-      return undefined;
-    }
-
-    let item = rootItems[path[0].index || 0];
-
-    for (let i = 1; i < path.length; i++) {
-      let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item?.item);
-
-      if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
-        const itemsFromAnswer = item?.answer?.map(a => a.item).reduce((a, b) => (a || []).concat(b || []), []);
-
-        itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, itemsFromAnswer);
-
-        if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
-          break;
-        }
-      }
-
-      item = itemsWithLinkIdFromPath[path[i].index || 0];
-    }
-
-    return item;
+    return getResponseItemWithPath(path, formData?.Content?.item || []);
   }
 );
 

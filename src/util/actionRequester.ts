@@ -19,6 +19,10 @@ import {
   removeCodingStringValueAction,
   NewValuePayload,
   newAnswerValueAction,
+  resetAnswerValueAction,
+  ResetAnswerValuePayload,
+  DeleteRepeatItemPayload,
+  deleteRepeatItemAction,
 } from '@/actions/newValue';
 import itemControlConstants from '@/constants/itemcontrol';
 import { AppDispatch } from '@/reducers';
@@ -34,7 +38,9 @@ export interface IActionRequester {
   addDateTimeAnswer(linkId: string, value: string, index?: number): void;
   addQuantityAnswer(linkId: string, value: Quantity, index?: number): void;
   addStringAnswer(linkId: string, value: string, index?: number): void;
-
+  addResetAnswerValueAction(payload: ResetAnswerValuePayload): void;
+  addDeleteRepeatItemAction(payload: DeleteRepeatItemPayload): void;
+  setNewAnswer(linkId: string, value: QuestionnaireResponseItemAnswer[], index?: number): void;
   clearIntegerAnswer(linkId: string, index?: number): void;
   clearDecimalAnswer(linkId: string, index?: number): void;
   clearBooleanAnswer(linkId: string, index?: number): void;
@@ -43,7 +49,6 @@ export interface IActionRequester {
   clearDateTimeAnswer(linkId: string, index?: number): void;
   clearQuantityAnswer(linkId: string, index?: number): void;
   clearStringAnswer(linkId: string, index?: number): void;
-
   removeChoiceAnswer(linkId: string, value: Coding, index?: number): void;
   removeOpenChoiceAnswer(linkId: string, value: Coding | string, index?: number): void;
 }
@@ -214,7 +219,12 @@ export class ActionRequester implements IActionRequester {
       this.actions.push(newStringValueAction({ itemPath: itemAndPath.path, valueString: value, item: itemAndPath.item }));
     }
   }
-
+  public addResetAnswerValueAction({ itemPath, qItem, rItem, index }: ResetAnswerValuePayload): void {
+    this.actions.push(resetAnswerValueAction({ itemPath, qItem, rItem, index }));
+  }
+  public addDeleteRepeatItemAction({ itemPath, item }: DeleteRepeatItemPayload): void {
+    this.actions.push(deleteRepeatItemAction({ itemPath, item }));
+  }
   public clearStringAnswer(linkId: string, index: number = 0): void {
     this.addStringAnswer(linkId, '', index);
   }

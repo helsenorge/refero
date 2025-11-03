@@ -1,8 +1,7 @@
 import { configureStore, combineReducers, ThunkDispatch, UnknownAction, ThunkAction } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
-import formReducer, { Form } from './form'; // Importing the `Form` type for explicit typing
-// import { enableWhenListener } from './middleware/enableWhenMiddleware';
+import formReducer, { Form } from './form';
 
 export interface ReferoState {
   form: Form;
@@ -21,14 +20,13 @@ export const store = (preloadedState?: Form) =>
   configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware => getDefaultMiddleware(),
-    //.prepend(enableWhenListener.middleware),
     ...(preloadedState && {
       preloadedState: {
         refero: { form: preloadedState },
       },
     }),
   });
-type AppStore = ReturnType<typeof store>;
+export type AppStore = ReturnType<typeof store>;
 
 export type AppDispatch = ThunkDispatch<GlobalState, unknown, UnknownAction>;
 export type RootState = ReturnType<AppStore['getState']>;

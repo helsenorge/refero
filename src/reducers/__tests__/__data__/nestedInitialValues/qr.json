@@ -1,0 +1,24 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "questionnaire": "Questionnaire/test-initial-values",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "1",
+      "item": [
+        {
+          "linkId": "1.1",
+          "answer": [
+            {
+              "valueString": "Brukersvar overskriver initial verdi"
+            }
+          ]
+        },
+        {
+          "linkId": "1.2",
+          "answer": []
+        }
+      ]
+    }
+  ]
+}

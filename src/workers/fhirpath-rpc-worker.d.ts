@@ -5,8 +5,6 @@ import type { Path } from 'fhirpath';
 
 import { AnswerPad } from '../util/FhirPathExtensions';
 
-import { RunEnableWhenParams, RunEnableWhenResult } from '@/calculators/runEnableWhen_pure';
-
 /**
  * Method names supported by the worker.
  */
@@ -26,7 +24,14 @@ export type RpcMethodName =
 /**
  * Per-method params/result types
  */
-
+export type RunEnableWhenInput = {
+  questionnaire: Questionnaire | null | undefined;
+  questionnaireResponse: QuestionnaireResponse | null | undefined;
+};
+export type RunEnableWhenResult = {
+  type: string;
+  payload: any;
+}[];
 export interface EvaluateFhirpathExpressionToGetDateParams {
   item?: QuestionnaireItem;
   fhirExpression?: string;
@@ -98,7 +103,7 @@ export interface RpcParamsByMethod {
   evaluateExtension: EvaluateExtensionParams;
   isGroupAndDescendantsHasAnswer: IsGroupAndDescendantsHasAnswerParams;
   runCalculators: RunCalculatorsParams;
-  runEnableWhen: RunEnableWhenParams;
+  runEnableWhen: RunEnableWhenInput;
 }
 
 export interface RpcResultByMethod {
@@ -115,6 +120,10 @@ export interface RpcResultByMethod {
   runEnableWhen: RunEnableWhenResult;
 }
 export type Methods = {
+  runEnableWhen: {
+    params: RunEnableWhenInput;
+    result: RunEnableWhenResult;
+  };
   evaluateFhirpathExpressionToGetDate: {
     params: EvaluateFhirpathExpressionToGetDateParams;
     result: EvaluateFhirpathExpressionToGetDateResult;
@@ -154,10 +163,6 @@ export type Methods = {
   runCalculators: {
     params: RunCalculatorsParams;
     result: RunCalculatorsResult;
-  };
-  runEnableWhen: {
-    params: RunEnableWhenParams;
-    result: RunEnableWhenResult;
   };
 };
 /**

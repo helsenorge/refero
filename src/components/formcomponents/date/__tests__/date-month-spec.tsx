@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access */
 import { renderRefero, userEvent } from '@test/test-utils.tsx';
 import { Matcher, screen, waitFor } from '@testing-library/react';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';

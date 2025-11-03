@@ -1,5 +1,12 @@
 import itemType from '../../constants/itemType';
-import { Path, createIdSuffix, descendantsHasPrimitiveAnswer, findFirstGuidInString, getQuestionnaireItemsWithType, parseIdSuffix } from '../refero-core';
+import {
+  Path,
+  createIdSuffix,
+  descendantsHasPrimitiveAnswer,
+  findFirstGuidInString,
+  getQuestionnaireItemsWithType,
+  parseIdSuffix,
+} from '../refero-core';
 import { GroupRepeatWithAnswer, GroupRepeatWithNoAnswer } from './__data__/valuesets/valueset-8459';
 
 describe('utils', () => {
@@ -89,7 +96,7 @@ describe('utils', () => {
         { linkId: 'link2', index: 2 },
       ];
       const result = createIdSuffix(path, 3, true);
-      expect(result).toBe('^1^2^3');
+      expect(result).toBe('-0^1-1^2^3');
     });
 
     it('should create a suffix with indices from path only when repeats is false', () => {
@@ -98,7 +105,7 @@ describe('utils', () => {
         { linkId: 'link2', index: 2 },
       ];
       const result = createIdSuffix(path, 3, false);
-      expect(result).toBe('^1^2');
+      expect(result).toBe('-0^1-1^2');
     });
 
     it('should handle undefined path and return index only when repeats is true', () => {
@@ -117,7 +124,7 @@ describe('utils', () => {
         { linkId: 'link2', index: 2 },
       ];
       const result = createIdSuffix(path, 3, true);
-      expect(result).toBe('^2^3');
+      expect(result).toBe('-1^2^3');
     });
 
     it('should handle zero index correctly', () => {
@@ -126,7 +133,40 @@ describe('utils', () => {
         { linkId: 'link2', index: 2 },
       ];
       const result = createIdSuffix(path, 3, true);
-      expect(result).toBe('^2^3');
+      expect(result).toBe('-1^2^3');
+    });
+    it('should handle very complex paths correctly', () => {
+      const path: Path[] = [
+        { linkId: 'Z' },
+        { linkId: 'Z.2', index: 0 },
+        { linkId: 'Z.2.1', index: 1 },
+        { linkId: 'Z.2.1.2', index: 0 },
+        { linkId: 'Z.2.1.2.2', index: 1 },
+        { linkId: 'Z.2.1.2.2.2' },
+      ];
+      const result = createIdSuffix(path, 3, true);
+      expect(result).toBe('-2^1-4^1^3');
+    });
+    it('two paths with same amount of index: 1 should not be equal if the index are on different pathindexes', () => {
+      const path1: Path[] = [
+        { linkId: 'Z' },
+        { linkId: 'Z.2', index: 0 },
+        { linkId: 'Z.2.1', index: 1 },
+        { linkId: 'Z.2.1.2', index: 0 },
+        { linkId: 'Z.2.1.2.2', index: 1 },
+        { linkId: 'Z.2.1.2.2.2' },
+      ];
+      const path2: Path[] = [
+        { linkId: 'Z' },
+        { linkId: 'Z.2', index: 1 },
+        { linkId: 'Z.2.1', index: 0 },
+        { linkId: 'Z.2.1.2', index: 0 },
+        { linkId: 'Z.2.1.2.2', index: 1 },
+        { linkId: 'Z.2.1.2.2.2' },
+      ];
+      const result = createIdSuffix(path1, 3, true);
+      const result2 = createIdSuffix(path2, 3, true);
+      expect(result).not.toEqual(result2);
     });
   });
 
@@ -212,7 +252,7 @@ describe('utils', () => {
     });
 
     it('should group not be repeatable, when items has no asnwer', () => {
-       const item = GroupRepeatWithNoAnswer;
+      const item = GroupRepeatWithNoAnswer;
 
       const result = descendantsHasPrimitiveAnswer(item);
       expect(result).toBeFalsy();
