@@ -1,0 +1,31 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "questionnaire": "Questionnaire/test-initial-values",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "1",
+      "item": [
+        {
+          "linkId": "1.1",
+          "answer": [
+            {
+              "valueString": "Brukersvar"
+            }
+          ]
+        },
+        {
+          "linkId": "1.2",
+          "answer": [
+            {
+              "valueAttachment": {
+                "url": "urn:uuid:some-file-id",
+                "title": "Første vedlegg"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

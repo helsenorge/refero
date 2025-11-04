@@ -20,8 +20,8 @@ describe('copy item - initial values', () => {
     definitionItems = dItems;
   });
 
-  it('should not copy initial values when source has answer', async () => {
-    // get first group
+  it('should apply initial value on new repeated group even when source has answer', async () => {
+    // get first group (1^0)
     const firstRootItem = getResponseItemWithPath(pathify('1^0'), newState.FormData);
     if (!firstRootItem || !firstRootItem.item) {
       return fail('Missing root item');
@@ -32,14 +32,18 @@ describe('copy item - initial values', () => {
       return fail('Missing text item or answer');
     }
 
+    // user has already overwritten the initial value in the first repetition
     expect(textItem.answer[0].valueString).toBe('Brukersvar overskriver initial verdi');
 
-    // click repeat
-    const defItem = getQuestionnaireDefinitionItem('1', definitionItems);
-    if (!defItem) return fail('Missing definition item for 1');
+    // click repeat on group "1"
+    const defGroupItem = getQuestionnaireDefinitionItem('1', definitionItems);
+    if (!defGroupItem) {
+      return fail('Missing definition item for linkId 1');
+    }
 
-    const updatedState = await clickRepeat(newState, [], defItem, [firstRootItem as QuestionnaireResponseItem]);
+    const updatedState = await clickRepeat(newState, [], defGroupItem, [firstRootItem as QuestionnaireResponseItem]);
 
+    // get second group instance (1^1)
     const secondRootItem = getResponseItemWithPath(pathify('1^1'), updatedState.FormData);
     if (!secondRootItem || !secondRootItem.item) {
       return fail('Missing second root item');
@@ -47,8 +51,20 @@ describe('copy item - initial values', () => {
 
     const copiedTextItem = secondRootItem.item.find(i => i.linkId === '1.1');
     expect(copiedTextItem).toBeDefined();
-    // 👇 Dette er kjernen i testen:
-    // initialverdi skal IKKE dukke opp når source hadde svar
-    expect(copiedTextItem?.answer).toBeUndefined();
+
+    // look up initial value from Questionnaire definition for item 1.1
+    const defTextItem = getQuestionnaireDefinitionItem('1.1', definitionItems);
+    if (!defTextItem) {
+      return fail('Missing definition item for linkId 1.1');
+    }
+    if (!defTextItem.initial || defTextItem.initial.length === 0) {
+      return fail('Definition item 1.1 has no initial value');
+    }
+
+    const expectedInitialValue = defTextItem.initial[0].valueString;
+
+    expect(copiedTextItem?.answer).toBeDefined();
+    expect(copiedTextItem?.answer?.length).toBe(1);
+    expect(copiedTextItem?.answer?.[0].valueString).toBe(expectedInitialValue);
   });
 });

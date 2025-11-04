@@ -1,3 +1,9 @@
+## 21.3.1
+
+- Fix bug related to intial values with repeatable items
+- Added more unittests
+- Dependabot package updates
+
 ## 21.3.0
 
 - rewrite core logic for gTable to fix issues with data being shown in wrong rows and columns
