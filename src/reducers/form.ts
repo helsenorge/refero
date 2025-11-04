@@ -7,6 +7,7 @@ import {
   QuestionnaireResponse,
   Coding,
   Attachment,
+  QuestionnaireItemInitial,
 } from 'fhir/r4';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
@@ -39,7 +40,7 @@ import {
 } from '@/actions/newValue';
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
 // import { runEnableWhen } from '@/calculators/runEnableWhen';
-import { pruneEmptyAnswers, resetAnswerValuePure } from '@/calculators/runEnableWhen_new';
+import { pruneEmptyAnswers, resetAnswerValuePure, nullAnswerValue as nullAnswerValue_pure } from '@/calculators/runEnableWhen_new';
 import itemType from '@/constants/itemType';
 import { GlobalState } from '@/reducers/index';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
@@ -231,6 +232,23 @@ function processDeleteRepeatItemAction(action: NewValuePayload, state: Form): Fo
   return state;
 }
 
+const clearValueXAndApplyInitial = (
+  targetAnswer: QuestionnaireResponseItemAnswer[],
+  initialAnswer: QuestionnaireItemInitial[]
+): QuestionnaireResponseItemAnswer[] => {
+  const newAnswer: QuestionnaireResponseItemAnswer[] = [];
+  for (let i = 0; i < targetAnswer.length; i++) {
+    const ans = nullAnswerValue_pure(targetAnswer[i], initialAnswer[i]);
+    if (ans && Object.keys(ans).length > 0) {
+      newAnswer.push(ans);
+    }
+  }
+  if (newAnswer.length === 0 && initialAnswer.length > 0) {
+    newAnswer.push(...initialAnswer);
+  }
+  return newAnswer;
+};
+
 function copyItem(
   source: QuestionnaireResponseItem,
   target: QuestionnaireResponseItem | undefined,
@@ -277,40 +295,41 @@ function copyItem(
       target.answer = [answer];
     }
   }
-  if (defItem && defItem.type !== itemType.ATTATCHMENT) {
-    for (let i = 0; source.answer && i < source.answer.length; i++) {
-      if (defItem.initial && defItem.initial.length > 0 && (!source.answer || source.answer.length === 0)) {
-        if (!target.answer) {
-          target.answer = [];
-        }
-        target.answer.push(...defItem.initial);
-      }
-      if (!source.answer[i].item || source.answer[i].item?.length === 0) {
-        continue;
-      }
-      if (!target.answer) {
-        target.answer = [];
-      }
-      const answer = source.answer[i];
-      const targetAnswer: QuestionnaireResponseItemAnswer = {
-        item: [],
-      };
-
-      for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
-        const newResponseItem: QuestionnaireResponseItem = {
-          linkId: answer.item[j].linkId,
-          answer: getInitialAnswerForCopyItem(source, questionnaire, answer.item[j]),
-          text: answer.item[j]?.text,
-        };
-        targetAnswer.item?.push(newResponseItem);
-        target.text = source.text;
-        copyItem(answer.item[j], newResponseItem, questionnairestate, questionnaire);
-      }
-
-      target.answer.push(targetAnswer);
-    }
+  if ((defItem && defItem.type === itemType.ATTATCHMENT) || !defItem) {
+    return target;
   }
 
+  for (let i = 0; source.answer && i < source.answer.length; i++) {
+    if (!target.answer) {
+      target.answer = [];
+    }
+    if (defItem.initial && defItem.initial.length > 0) {
+      target.answer = clearValueXAndApplyInitial(target.answer, defItem.initial);
+      //target.answer.push(...defItem.initial);
+    }
+    if (!source.answer[i].item || source.answer[i].item?.length === 0) {
+      continue;
+    }
+
+    const answer = source.answer[i];
+    const targetAnswer: QuestionnaireResponseItemAnswer = {
+      item: [],
+    };
+
+    for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
+      const newResponseItem: QuestionnaireResponseItem = {
+        linkId: answer.item[j].linkId,
+        answer: getInitialAnswerForCopyItem(source, questionnaire, answer.item[j]),
+        text: answer.item[j]?.text,
+      };
+      targetAnswer.item?.push(newResponseItem);
+      target.text = source.text;
+      copyItem(answer.item[j], newResponseItem, questionnairestate, questionnaire);
+    }
+
+    target.answer = [...target.answer, targetAnswer];
+  }
+  target.answer = pruneEmptyAnswers(target.answer);
   return target;
 }
 
