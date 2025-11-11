@@ -64,7 +64,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   }
 
   return (
-    <div className="page_refero__component page_refero__component_date">
+    <div className="page_refero__date_component">
       {element}
       <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton path={path} item={item} index={index} />
