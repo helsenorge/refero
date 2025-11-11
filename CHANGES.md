@@ -1,6 +1,10 @@
+## 21.3.3
+
+- Bugfix: Do not validate required on autosuggest before submit
+
 ## 21.3.2
 
-- Use antother styling class for date components, to remove extra spacing
+- Bugfix: Use antother styling class for date components, to remove extra spacing
 
 ## 21.3.1
 

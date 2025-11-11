@@ -130,7 +130,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     if (fetchValueSet && item) {
       setIsLoading(true);
       setSuggestions([]);
-      setLastSearchValue(value);
 
       clearCodingAnswerIfExists();
       fetchValueSet(value, item, successCallback, errorCallback);
