@@ -1,3 +1,7 @@
+## 21.3.2
+
+- Use antother styling class for date components, to remove extra spacing
+
 ## 21.3.1
 
 - Fix bug related to intial values with repeatable items
