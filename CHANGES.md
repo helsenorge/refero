@@ -1,6 +1,7 @@
 ## 21.3.3
 
 - Bugfix: Do not validate required on autosuggest before submit
+- Bugfix: Added style class that was necessary back to date component
 
 ## 21.3.2
 
