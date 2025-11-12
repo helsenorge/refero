@@ -1,214 +1,124 @@
 {
+  "title": "Title",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "2026",
-  "name": "Skjema_for_slektsopplysninger",
-  "title": "Skjema for slektsopplysninger",
-  "version": "0.2",
-  "status": "active",
+  "name": "Techinal_boolean",
+  "status": "draft",
   "publisher": "NHN",
   "meta": {
-    "versionId": "4",
-    "lastUpdated": "2025-09-26T07:31:48.317+00:00",
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "security": [
-      { "system": "urn:oid:2.16.578.1.12.4.1.1.7618", "code": "3", "display": "Helsehjelp (Full)" },
-      { "system": "http://helsenorge.no/fhir/KanUtforesAv", "code": "1", "display": "Kun innbygger selv" }
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
     ],
-    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }]
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
   },
-  "contact": [{ "name": "http://www.nhn.no" }],
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
   "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-navgiator-state",
-      "valueCodeableConcept": {
-        "coding": [{ "system": "http://helsenorge.no/fhir/CodeSystem/sdf-questionnaire-navigator-state", "code": "navigator" }]
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
       }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
       "valueCodeableConcept": {
         "coding": [
-          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
           {
             "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
             "code": "hide-sublabel",
             "display": "Hide sublabel texts"
-          },
-          {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-sidebar",
-            "display": "Hide sidebar texts"
           }
         ]
       }
     }
   ],
-  "date": "2025-10-22T00:00:00+02:00",
-  "url": "Questionnaire/2026",
   "item": [
     {
-      "linkId": "e1c1de7b-1031-42e7-f6d7-fb62afd2eaf6",
-      "type": "group",
-      "text": "Familie",
-      "required": false,
-      "_text": { "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "## Familie" }] },
-      "item": [{ "linkId": "9eb7d712-0ebe-4a09-9f4b-ad9c28252822", "text": "Opplysninger om barn", "type": "group", "required": false }]
-    },
-    {
       "extension": [
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }] }
+          "valueCodeableConcept": {
+            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "autocomplete" }]
+          }
+        },
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "For eksempel Ibux Tab 400 mg. Skriv inn minst 3 tegn for å søke."
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
         }
       ],
-      "linkId": "2f7286e4-95ea-4535-82ae-3a60c11f0b7b",
-      "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-2", "display": "SOT-2" }],
-      "_text": {
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "Helse Sør-Øst er ansvarlig for innholdet i skjemaet. \n\nVed spørsmål om innholdet i skjemaet, ta kontakt via vår hjemmeside [Avdeling for medisinsk genetikk](https://www.oslo-universitetssykehus.no/avdelinger/klinikk-for-laboratoriemedisin/avdeling-for-medisinsk-genetikk/)."
-          }
-        ]
-      },
-      "type": "text",
-      "required": false,
+      "linkId": "af3cff52-5879-4db0-c671-1fb2bec90309",
+      "text": "Mistenkt legemiddel",
+      "type": "choice",
+      "required": true,
       "repeats": false,
-      "readOnly": false
-    },
-    {
-      "extension": [
-        { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 },
-        { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til barn" },
-        { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 15 }
-      ],
-      "linkId": "da62b315-a095-47e9-f3b7-b720212e7c25",
-      "text": "Informasjon om barn.",
-      "type": "group",
-      "required": false,
-      "repeats": true,
+      "readOnly": false,
+      "answerValueSet": "http://helsedirektoratet.no/ValueSet/legemiddeloppslag",
       "item": [
         {
-          "linkId": "4391a3d8-185e-45cc-b6bc-a04446a43af4",
-          "text": "Har dette barnet ditt hatt kreft?",
-          "type": "choice",
-          "required": true,
-
-          "answerOption": [
+          "extension": [
             {
-              "valueCoding": {
-                "id": "acb697b8-a3d7-4d56-869a-1b2433854826",
-                "system": "urn:uuid:a0387913-ca50-4acf-8522-f2a26137f73d",
-                "code": "ja",
-                "display": "Ja"
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
               }
             },
-            {
-              "valueCoding": {
-                "id": "212a330c-280a-496f-8c23-ea0d041b0557",
-                "system": "urn:uuid:a0387913-ca50-4acf-8522-f2a26137f73d",
-                "code": "nei",
-                "display": "Nei"
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "aa9d473e-7712-475b-83e2-0756fb0cba0c",
-                "system": "urn:uuid:a0387913-ca50-4acf-8522-f2a26137f73d",
-                "code": "usikker",
-                "display": "Usikker"
-              }
-            }
+            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$" }
           ],
-          "item": [
-            {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                  "valueString": "^(?:[æøåÆØÅëËäÄöÖáÁéÉóÓàÀèÈòÒa-zA-Z0-9,.!?()+-/:\"']|[ \\r\\n\\t])*$"
-                },
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Fyll ut feltet. Skriv kun norske bokstaver og tall. Spesialtegn og tegn på andre språk er ikke mulig."
-                }
-              ],
-              "linkId": "931ce4b5-3eda-4f17-8aea-b1be6feed350",
-              "text": "Hva slags type kreft?",
-              "type": "string",
-              "required": true,
-              "maxLength": 250,
-              "initial": [{ "valueString": "ikke relevant" }]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                  "valueString": "^(?:[æøåÆØÅëËäÄöÖáÁéÉóÓàÀèÈòÒa-zA-Z0-9,.!?()+-/:\"']|[ \\r\\n\\t])*$"
-                },
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Fyll ut feltet. Skriv kun norske bokstaver og tall. Spesialtegn og tegn på andre språk er ikke mulig."
-                }
-              ],
-              "linkId": "ab4fc9dd-ab05-44c9-d88d-2d34a4945d67",
-              "text": "Omtrent alder ved diagnosetidspunkt?",
-              "type": "string",
-              "required": true,
-              "maxLength": 250,
-              "initial": [{ "valueString": "ca 19 år" }]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                  "valueString": "^(?:[æøåÆØÅëËäÄöÖáÁéÉóÓàÀèÈòÒa-zA-Z0-9,.!?()+-/:\"']|[ \\r\\n\\t])*$"
-                },
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Fyll ut feltet. Skriv kun norske bokstaver og tall. Spesialtegn og tegn på andre språk er ikke mulig."
-                }
-              ],
-              "linkId": "3f159540-9258-4f4a-954a-0621e956cbb0",
-              "text": "Behandlingssted",
-              "type": "string",
-              "required": true,
-              "maxLength": 250
-            }
-          ]
+          "linkId": "af3cff52-5879-4db0-c671-1fb2bec90310",
+          "text": "Hvis du ikke finner legemiddelet (medisinen) eller vaksinen ved å søke på minimum 3 bokstaver, må du kontakte lege, tannlege eller farmasøyt for å få meldt bivirkningen.\r\n\r\nMange legemidler finnes i ulike legemiddelformer, for eksempel tabletter og stikkpiller. Finner du ikke riktig legemiddelform eller styrken, velger du øverste alternativ og krysser av for at du er usikker.",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Hvis du ikke finner legemiddelet (medisinen) eller vaksinen ved å søke på minimum 3 bokstaver, må du kontakte lege, tannlege eller farmasøyt for å få meldt bivirkningen.\n\nMange legemidler finnes i ulike legemiddelformer, for eksempel tabletter og stikkpiller. Finner du ikke riktig legemiddelform eller styrken, velger du øverste alternativ og krysser av for at du er usikker."
+              }
+            ]
+          },
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "maxLength": 250
         }
       ]
-    },
-    {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }] }
-        }
-      ],
-      "linkId": "4e8edb47-e8e9-41d2-86c8-49a44b47ced8",
-      "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-3", "display": "SOT-3" }],
-      "_text": {
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "Når du trykker Send inn vil skjemaet gå elektronisk til din pasientjournal, og det er bare de som skal gi deg helsehjelp som har tilgang til det. \n\n**Dersom du trenger helsehjelp før din time, ta kontakt med din fastlege eller legevakten på telefon 116 117.**\n\nSykehuset du sender skjemaet til er dataansvarlig for personopplysningene oppgitt i skjemaet. [Les mer om personvern hos mottaker her.](https://www.helse-sorost.no/informasjonssikkerhet-og-personvern/personvernerklering)"
-          }
-        ]
-      },
-      "type": "text",
-      "required": false,
-      "repeats": false,
-      "readOnly": false
     }
-  ]
+  ],
+  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c"
 }

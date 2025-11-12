@@ -130,7 +130,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     if (fetchValueSet && item) {
       setIsLoading(true);
       setSuggestions([]);
-      setLastSearchValue(value);
 
       clearCodingAnswerIfExists();
       fetchValueSet(value, item, successCallback, errorCallback);
@@ -156,8 +155,8 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   );
 
   const onSuggestionSelected = (_event: FormEvent<HTMLInputElement>, { suggestion }: { suggestion: Suggestion }): void => {
-    setValue(idWithLinkIdAndItemIndex, suggestion.value, { shouldValidate: !!lastSearchValue });
     setLastSearchValue(suggestion.label);
+    setValue(idWithLinkIdAndItemIndex, suggestion.value, { shouldValidate: true });
     setIsDirty(false);
 
     handleChange(suggestion.value, system, suggestion.label);
