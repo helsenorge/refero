@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
-import { FieldValues, useFormContext } from 'react-hook-form';
 
 import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag';
 import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
