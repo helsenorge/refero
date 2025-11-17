@@ -78,10 +78,12 @@ const ExtraTextField = (props: Props): JSX.Element | null => {
         labelId={`${getId(id)}-extra-field-label`}
         testId={`${getId(id)}-label`}
         sublabelId={`${getId(id)}-sublabel`}
+        formFieldTagId={`${getId(id)}-extra-field-formfieldtag`}
       />
 
       <Input
         {...rest}
+        aria-describedby={`${getId(id)}-extra-field-formfieldtag`}
         disabled={isReadOnly(item)}
         type="text"
         onColor="ongrey"

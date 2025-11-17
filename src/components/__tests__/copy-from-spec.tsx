@@ -409,7 +409,5 @@ function _createItem(
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(q: Questionnaire) {
-  return await act(async () => {
-    return await renderRefero({ questionnaire: q });
-  });
+  return renderRefero({ questionnaire: q });
 }

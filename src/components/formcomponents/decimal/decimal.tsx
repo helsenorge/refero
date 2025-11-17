@@ -135,10 +135,12 @@ const Decimal = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label-decimal`}
           testId={`${getId(id)}-decimal-label`}
           sublabelId={`${getId(id)}-decimal-sublabel`}
+          formFieldTagId={`${getId(id)}-decimal-formfieldtag`}
         />
         <Input
           {...rest}
           type="number"
+          aria-describedby={`${getId(id)}-decimal-formfieldtag`}
           inputId={getId(id)}
           testId={`test-decimal-${getId(id)}`}
           value={value}

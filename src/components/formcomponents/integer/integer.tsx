@@ -117,10 +117,12 @@ const Integer = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label-integer`}
           testId={`${getId(id)}-integer-label`}
           sublabelId={`${getId(id)}-integer-sublabel`}
+          formFieldTagId={`${getId(id)}-integer-formfieldtag`}
         />
 
         <Input
           {...rest}
+          aria-describedby={`${getId(id)}-integer-formfieldtag`}
           type="number"
           value={Array.isArray(value) ? value.join(', ') : value}
           inputId={getId(id)}

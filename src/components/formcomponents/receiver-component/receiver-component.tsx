@@ -226,9 +226,11 @@ const ReceiverComponent = ({
           testId={`${getId(id)}-label-test`}
           sublabelId={`${getId(id)}-sublabel`}
           labelText={label}
+          formFieldTagId={`${getId(id)}-receiver-${selectKey}-formfieldtag`}
         />
         <Select
           {...rest}
+          aria-describedby={`${getId(id)}-receiver-${selectKey}-formfieldtag`}
           key={`${selectKey}-${level}`}
           onChange={(e): void => {
             handleSelectChange(e);

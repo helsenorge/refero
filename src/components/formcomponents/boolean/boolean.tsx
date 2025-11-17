@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
@@ -119,10 +120,12 @@ const Boolean = (props: Props): JSX.Element | null => {
   return (
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
+        <FormFieldTag id={getId(id) + '-boolean-formfieldtag'} level="required-field" />
         <Checkbox
           {...rest}
           testId={`test-boolean-${getId(id)}`}
           inputId={getId(id)}
+          aria-describedby={getId(id) + '-boolean-formfieldtag'}
           label={
             <Label
               labelId={labelId}

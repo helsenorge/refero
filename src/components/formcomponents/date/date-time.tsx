@@ -260,15 +260,16 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
           testId={`${getId(id)}-datetime-label`}
           sublabelId={`${getId(id)}-sublabel`}
           dateLabel={resources?.dateFormat_ddmmyyyy}
+          formFieldTagId={`${getId(id)}-date-time-formfieldtag`}
         />
         <div className={dateStyles.dateTimeWrapper}>
           <div>
             <DatePicker
               {...restDate}
+              aria-describedby={`${getId(id)}-date-time-formfieldtag`}
               inputId={`${getId(id)}-datepicker`}
               testId={`test-datetime-${getId(id)}`}
               autoComplete=""
-              dateButtonAriaLabel="Open datepicker"
               dateFormat={'dd.MM.yyyy'}
               dateValue={isValid(dateValue) ? dateValue : undefined}
               minDate={minDateTime ?? defaultMinDate}

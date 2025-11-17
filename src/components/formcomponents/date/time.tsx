@@ -203,10 +203,12 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label-test`}
           sublabelId={`${getId(id)}-sublabel`}
+          formFieldTagId={`${getId(id)}-time-formfieldtag`}
         />
         <div className={dateStyles.timeWrapper}>
           <Input
             {...restHours}
+            aria-describedby={`${getId(id)}-time-formfieldtag`}
             inputId={`${getId(id)}-datetime-hours`}
             type="number"
             min={0}

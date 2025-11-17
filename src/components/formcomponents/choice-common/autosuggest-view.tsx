@@ -1,8 +1,9 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import type { InputProps } from 'react-autosuggest';
 
 import { ValueSet, Coding } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { InputProps } from 'react-autosuggest';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
@@ -227,12 +228,14 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           labelId={`${getId(id)}-autosuggest-label`}
           testId={`${getId(id)}-label`}
           sublabelId={`${getId(id)}-sublabel`}
+          formFieldTagId={`${getId(id)}-autosuggest-formfieldtag`}
         />
 
         <Autosuggest
           inputProps={
             {
               ...rest,
+              'aria-describedby': `${getId(id)}-autosuggest-formfieldtag`,
               id: getId(id),
               'data-testid': `test-autosuggest-${getId(id)}`,
               width,
