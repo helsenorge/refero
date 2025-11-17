@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
+import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag';
 import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
 
 import SafeText from './SafeText';
@@ -14,6 +16,7 @@ import styles from './referoLabel.module.css';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
+import { questionnaireRequiredStateSelector } from '@/reducers/selectors';
 import { getId, getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
 import { Resources } from '@/util/resources';
 
@@ -32,6 +35,7 @@ type Props = {
   quantityUnitSubLabel?: string;
   afterLabelChildren?: JSX.Element | null;
   children?: React.ReactNode;
+  formFieldTagId: string;
 };
 
 export const ReferoLabel = ({
@@ -49,19 +53,33 @@ export const ReferoLabel = ({
   quantityUnitSubLabel,
   afterLabelChildren,
   children,
+  formFieldTagId,
 }: Props): JSX.Element => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const questionnaire = useAppSelector(state => getFormDefinition(state))?.Content;
+
   const { onRenderMarkdown } = useExternalRenderContext();
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = labelText ? labelText : getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const id = getId(item?.id);
-
+  const { showLabelPerItem } = useAppSelector(questionnaireRequiredStateSelector);
   return (
     <>
       <div className={styles.referoLabel_label_wrapper}>
         <div>
           <Label
+            formFieldTag={
+              showLabelPerItem ? (
+                <FormFieldTag
+                  id={formFieldTagId}
+                  level={!isRequired(item) && !isReadOnly(item) ? 'optional' : 'required-field'}
+                  resources={{
+                    optional: resources?.formOptional,
+                    required: resources?.formRequired,
+                  }}
+                />
+              ) : null
+            }
             labelId={labelId}
             testId={testId}
             labelTexts={
@@ -80,11 +98,7 @@ export const ReferoLabel = ({
           </Label>
         </div>
         <div className={styles.referoLabel_extraLabel_and_helpButton_wrapper}>
-          {!isRequired(item) && !isReadOnly(item) ? (
-            <span className={styles.referoLabel_extraLabel}>{`${dateLabel || ''} ${resources?.formOptional || `(valgfritt)`}`}</span>
-          ) : (
-            dateLabel && <span className={styles.referoLabel_extraLabel}>{dateLabel}</span>
-          )}
+          {dateLabel && <span className={styles.referoLabel_extraLabel}>{dateLabel}</span>}
           <div className={styles.referoLabel_helpButton}>
             <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} ariaLabeledBy={labelId} />
           </div>

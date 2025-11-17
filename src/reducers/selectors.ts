@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { Form, FormData, FormDefinition, getFormDefinition } from './form';
 
@@ -159,4 +159,97 @@ export const getLinkIdFromResponseItems = createSelector([getFlatMapResponseItem
 export const languageSelector = createSelector(
   [(state: GlobalState): QuestionnaireResponse | null | undefined => state.refero.form.FormData?.Content],
   formData => formData?.language
+);
+
+// const formFieldTagVariantSelector = createSelector(
+//   [
+//     (state: GlobalState): Questionnaire | undefined | null => state?.refero?.form.FormDefinition.Content,
+//     (_: GlobalState, linkId?: string): string | undefined => linkId,
+//   ],
+//   (
+//     formDefinition: Questionnaire | undefined | null,
+//     linkId?: string
+//   ): 'allRequired' | 'allOptional' | 'singleItemQuestionnaire' | null => {}
+// );
+
+const INPUT_ITEM_TYPES: ReadonlySet<QuestionnaireItem['type']> = new Set([
+  'boolean',
+  'decimal',
+  'integer',
+  'date',
+  'dateTime',
+  'time',
+  'string',
+  'text',
+  'url',
+  'choice',
+  'open-choice',
+  'attachment',
+  'reference',
+  'quantity',
+]);
+function countInputItems(items: QuestionnaireItem[] | undefined): number {
+  if (!items || items.length === 0) return 0;
+
+  let count = 0;
+
+  for (const item of items) {
+    if (INPUT_ITEM_TYPES.has(item.type)) {
+      count += 1;
+    }
+
+    if (item.item && item.item.length > 0) {
+      count += countInputItems(item.item);
+    }
+  }
+
+  return count;
+}
+function allInputItemsMatchPredicate(items: QuestionnaireItem[] | undefined, predicate: (item: QuestionnaireItem) => boolean): boolean {
+  if (!items || items.length === 0) return true;
+
+  for (const item of items) {
+    if (INPUT_ITEM_TYPES.has(item.type)) {
+      if (!predicate(item)) {
+        return false;
+      }
+    }
+
+    if (item.item && item.item.length > 0) {
+      if (!allInputItemsMatchPredicate(item.item, predicate)) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+export function areAllInputItemsRequired(questionnaire?: Questionnaire | null): boolean {
+  return allInputItemsMatchPredicate(questionnaire?.item, item => item.required === true && item.readOnly !== true);
+}
+export function areAllInputItemsOptional(questionnaire?: Questionnaire | null): boolean {
+  return allInputItemsMatchPredicate(questionnaire?.item, item => item.required !== true || item.readOnly === true);
+}
+export function hasExactlyOneInputItem(questionnaire: Questionnaire | undefined | null): boolean {
+  if (!questionnaire) return false;
+  const totalInputItems = countInputItems(questionnaire.item);
+  return totalInputItems === 1;
+}
+type QuestionnaireRequiredState = {
+  allRequired: boolean;
+  allOptional: boolean;
+  singleItemQuestionnaire: boolean;
+  showLabelPerItem: boolean;
+};
+export const questionnaireRequiredStateSelector = createSelector(
+  [(state: GlobalState): Questionnaire | undefined | null => state?.refero?.form.FormDefinition.Content],
+  (q: Questionnaire | undefined | null): QuestionnaireRequiredState => {
+    const singleItemQuestionnaire = hasExactlyOneInputItem(q);
+    return {
+      allRequired: areAllInputItemsRequired(q || undefined),
+      allOptional: areAllInputItemsOptional(q || undefined),
+      singleItemQuestionnaire: singleItemQuestionnaire ?? false,
+      showLabelPerItem: !singleItemQuestionnaire && !areAllInputItemsRequired(q || undefined) && !areAllInputItemsOptional(q || undefined),
+    };
+  }
 );

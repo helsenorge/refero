@@ -171,11 +171,13 @@ const Quantity = (props: Props): JSX.Element | null => {
           testId={`${getId(id)}-quantity-label`}
           sublabelId={`${getId(id)}-quantity-sublabel`}
           quantityUnitSubLabel={getUnitSubLabel()}
+          formFieldTagId={`${getId(id)}-quantity-formfieldtag`}
         />
 
         <div className={styles.inputWrapper}>
           <Input
             {...rest}
+            aria-describedby={`${getId(id)}-quantity-formfieldtag`}
             value={value}
             type="number"
             inputId={getId(id)}

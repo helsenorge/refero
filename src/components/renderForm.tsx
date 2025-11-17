@@ -4,6 +4,7 @@ import { FieldValues, SubmitHandler, useFormContext, UseFormReturn } from 'react
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
 
+import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import ValidationSummary from '@helsenorge/designsystem-react/components/Validation';
 import { ValidationErrors } from '@helsenorge/designsystem-react/components/Validation/types';
@@ -12,6 +13,7 @@ import FormButtons from './formButtons/formButtons';
 
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
+import { questionnaireRequiredStateSelector } from '@/reducers/selectors';
 import { ReferoProps } from '@/types/referoProps';
 import { getPresentationButtonsExtension } from '@/util/extension';
 import { Resources } from '@/util/resources';
@@ -53,6 +55,8 @@ const RenderForm = ({
   setStepIndex,
 }: RenderFormProps): JSX.Element | null => {
   const formDefinition = useAppSelector(state => getFormDefinition(state));
+  const { showLabelPerItem, allRequired, singleItemQuestionnaire } = useAppSelector(questionnaireRequiredStateSelector);
+
   const { formState } = useFormContext();
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} color="black" />;
@@ -90,7 +94,6 @@ const RenderForm = ({
     ? methods.handleSubmit(handleNextStep, onErrorReactHookForm)
     : methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm);
   const onPauseButtonClicked = isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView;
-
   return (
     <React.Fragment>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
@@ -101,6 +104,15 @@ const RenderForm = ({
             errors={errors as ValidationErrors}
           />
         )}
+        {!showLabelPerItem && !singleItemQuestionnaire ? (
+          <FormFieldTag
+            level={allRequired ? 'all-required' : 'optional'}
+            resources={{
+              optional: resources?.formAllOptional ?? 'All felter er valgfrie',
+              required: resources?.formAllRequired ?? 'Alle felter er påkrevd',
+            }}
+          />
+        ) : null}
         {children}
         {!displayValidationSummaryOnTop && !referoProps.hideValidationSummary && errorsExist && (
           <ValidationSummary

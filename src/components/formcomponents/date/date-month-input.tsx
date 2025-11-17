@@ -168,10 +168,12 @@ export const DateYearMonthInput = ({
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
+        formFieldTagId={`${getId(id)}-month-formfieldtag`}
       />
       <div className={styles.yearMonthWrapper}>
         <Input
           {...restYear}
+          aria-describedby={`${getId(id)}-month-formfieldtag`}
           type="number"
           inputId={`${getId(id)}-input`}
           testId={`test-yearmonth-${getId(id)}`}

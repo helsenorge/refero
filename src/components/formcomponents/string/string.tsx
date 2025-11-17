@@ -103,9 +103,11 @@ export const String = (props: Props): JSX.Element | null => {
           htmlFor={getId(id)}
           labelId={`${getId(id)}-string-label`}
           testId={`${getId(id)}-string-label`}
+          formFieldTagId={`${getId(id)}-string-formfieldtag`}
         />
         <Input
           {...rest}
+          aria-describedby={`${getId(id)}-string-formfieldtag`}
           value={value ?? ''}
           readOnly={item?.readOnly}
           onChange={(e): void => {

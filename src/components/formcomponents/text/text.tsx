@@ -127,10 +127,12 @@ export const Text = (props: Props): JSX.Element | null => {
           item={item}
           labelId={`${getId(id)}-text-label`}
           resources={resources}
+          formFieldTagId={`${getId(id)}-text-formfieldtag`}
         />
 
         <Textarea
           {...rest}
+          aria-describedby={`${getId(id)}-text-formfieldtag`}
           onChange={(e): void => {
             onTextAreaChange(e);
             onChange(e);

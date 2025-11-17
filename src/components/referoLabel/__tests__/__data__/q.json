@@ -116,6 +116,26 @@
               }
             ]
           }
+        },
+        {
+          "linkId": "dd07621d-e11d-42d0-866a-6524f885a573",
+          "type": "string",
+          "text": "String - Label - scriptinjectionalert(4)\">",
+          "extension": [
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "String - Sublabel - scriptinjection\\<math>\\<mi//xlink:href=\"data:x,\\<script>alert(4)\\</script>\">"
+            }
+          ],
+          "required": true,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "String - Label - scriptinjection\\<math>\\<mi//xlink:href=\"data:x,\\<script>alert(4)\\</script>\">"
+              }
+            ]
+          }
         }
       ],
       "required": false,

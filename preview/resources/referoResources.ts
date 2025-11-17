@@ -81,6 +81,9 @@ export const getResources = (language: string): Resources => {
       dateLabel_month: 'Month',
       maxCharactersText: 'characters',
       quantity_unit_sublabel: 'Enter in',
+      formAllOptional: 'All fields are optional',
+      formAllRequired: 'All fields are required',
+      formRequired: 'Required field',
     };
   }
   return {
@@ -96,7 +99,7 @@ export const getResources = (language: string): Resources => {
     formCancel: 'Avbryt',
     formSend: 'Fullfør',
     formSave: 'Vis QuestionnaireResponse',
-    formOptional: '(Valgfritt)',
+    formOptional: 'Valgfritt',
     repeatButtonText: 'Legg til',
     confirmDeleteButtonText: 'Forkast endringer',
     confirmDeleteCancelButtonText: 'Avbryt',
@@ -162,5 +165,22 @@ export const getResources = (language: string): Resources => {
     dateLabel_month: 'Måned',
     maxCharactersText: 'tegn',
     quantity_unit_sublabel: 'Oppgi i',
+    formAllOptional: 'Alle felter er valgfrie',
+    formAllRequired: 'Alle felter er påkrevd',
+    formRequired: 'Påkrevd felt',
+    alternativer_tekst: 'Alternativer',
+    anonymousUploadDescription: 'Filen(e) du laster opp vil bli knyttet til skjemaet ditt og sendt til mottakeren av skjemaet.',
+    anonymousUploadTitle: 'Last opp fil(er)',
+    attachment_max_occurrences: 'Maksimalt antall vedlegg er nådd',
+    attachment_max_occurrences_single_file: 'Maksimalt antall vedlegg er nådd',
+    attachment_min_occurrences_single_file: 'Du må legge til minst ett vedlegg',
+    attachmentError_fileSize_total: 'Total filstørrelse må være mindre enn {0}MB',
+    attachmentError_wrong_file_type: 'Følgende filtyper er ikke tillatt:',
+    autolagering_emne: 'Autolagring av skjema',
+    autolagering_tekst: 'Skjemaet ditt har blitt autolagret.',
+    berikingFailedOnRetrievalBody: 'Det oppstod en feil ved henting av data for beriking. Prøv igjen senere.',
+    berikingFailedOnRetrievalTitle: 'Feil ved henting av data',
+    confirmationActionButton: 'Fortsett',
+    confirmDiscretionlagreAndSendButtonText: 'Fortsett uten å lagre',
   };
 };

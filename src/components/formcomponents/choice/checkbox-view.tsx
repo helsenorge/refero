@@ -67,10 +67,12 @@ const CheckboxView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label`}
           sublabelId="select-sublsbel"
+          formFieldTagId={`${getId(id)}-checkbox-formfieldtag`}
         />
         {options?.map((option, index) => (
           <Checkbox
             {...rest}
+            aria-describedby={`${getId(id)}-checkbox-formfieldtag`}
             key={option.id}
             inputId={`${getId(id)}-hn-${index}`}
             testId={`test-choice-checkbox-${getId(id)}-${index}`}

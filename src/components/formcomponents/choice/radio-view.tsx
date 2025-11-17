@@ -68,10 +68,12 @@ const RadioView = (props: Props): JSX.Element => {
           testId={`${getId(id)}-choice-label`}
           htmlFor={`${getId(id)}-hn-${index}`}
           sublabelId={`${getId(id)}-choice-sublabel`}
+          formFieldTagId={`${getId(id)}-radio-formfieldtag`}
         />
         {options?.map((option: Options, index: number) => (
           <RadioButton
             {...rest}
+            aria-describedby={`${getId(id)}-radio-formfieldtag`}
             onChange={(e): void => {
               handleChange(option.type);
               onChange(e);

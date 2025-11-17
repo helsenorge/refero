@@ -96,9 +96,11 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
+        formFieldTagId={`${getId(id)}-year-formfieldtag`}
       />
       <Input
         {...rest}
+        aria-describedby={`${getId(id)}-year-formfieldtag`}
         inputId={`${getId(id)}-input`}
         type="number"
         testId={`test-year-${getId(id)}`}

@@ -680,4 +680,17 @@ Gå til {personverninnstillingerLink} på Helsenorge for å endre samtykkenivå.
    * Alternativer
    */
   alternativer_tekst: string;
+  /**
+   * Velg ett eller flere alternativer
+   *
+   */
+  formRequired: string;
+  /**
+   * Alle valgfrie
+   */
+  formAllOptional: string;
+  /**
+   * Alle påkrevde
+   */
+  formAllRequired: string;
 }

@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
@@ -24,7 +26,6 @@ import { getId, isReadOnly } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
 import { getExtensionFromExtensions } from '@/util/extension';
 import { isString } from '@/util/typeguards';
-import { useState } from 'react';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
@@ -113,9 +114,11 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
           testId={`${getId(id)}-slider-choice-label`}
           sublabelId={`${getId(id)}-slider-choice-sublabel`}
           resources={resources}
+          formFieldTagId={`${getId(id)}-slider-formfieldtag`}
         />
         <Slider
           {...rest}
+          aria-describedby={`${getId(id)}-slider-formfieldtag`}
           id={getId(id)}
           labelLeft={leftRightLabels?.leftLabel}
           labelRight={leftRightLabels?.rightLabel}

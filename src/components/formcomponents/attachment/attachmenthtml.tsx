@@ -183,9 +183,11 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           htmlFor={`${getId(id)}-button`}
           labelId={`${getId(id)}-attachment-label`}
           testId={`${getId(id)}-attachment-label`}
+          formFieldTagId={`${getId(id)}-attachment-formfieldtag`}
           attachmentLabel={resources?.supportedFileFormats}
         />
         <FileUpload
+          aria-describedby={`${getId(id)}-attachment-formfieldtag`}
           {...register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined)}
           wrapperTestId={`${getId(id)}-attachment`}
           inputId={getId(id)}
