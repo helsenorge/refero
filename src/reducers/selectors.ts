@@ -167,7 +167,6 @@ export const languageSelector = createSelector(
 // --------------------------------------------------------
 // Input item classification
 // --------------------------------------------------------
-
 const INPUT_ITEM_TYPES: ReadonlySet<QuestionnaireItem['type']> = new Set([
   'boolean',
   'decimal',
@@ -231,6 +230,8 @@ function countInputItems(items: QuestionnaireItem[] | undefined): number {
 }
 
 function allInputItemsMatchPredicate(items: QuestionnaireItem[] | undefined, predicate: (item: QuestionnaireItem) => boolean): boolean {
+  // IMPORTANT: for undefined/empty items we return true (vacuous truth),
+  // which is what your tests expect.
   if (!items?.length) return true;
 
   const stack: QuestionnaireItem[] = [...items];
@@ -336,6 +337,9 @@ export const RequiredLevelSelector = createSelector(
   } => {
     const questionnaire = q || undefined;
 
+    const inputCount = questionnaire?.item ? countInputItems(questionnaire.item) : 0;
+    const hasAnyInputs = inputCount > 0;
+
     const singleItemQuestionnaire = hasExactlyOneInputItem(questionnaire || null);
     const allRequired = areAllInputItemsRequired(questionnaire);
     const allOptional = areAllInputItemsOptional(questionnaire);
@@ -344,21 +348,27 @@ export const RequiredLevelSelector = createSelector(
 
     let level: FormFieldTagLevel | undefined;
 
-    if (!item) {
-      if (singleItemQuestionnaire) {
-        level = undefined;
-      } else if (allRequired) {
-        level = 'all-required';
-      } else if (allOptional) {
-        level = 'all-optional';
-      }
-    } else if (showLabelPerItem) {
-      level = resolveRequiredLevelPerItem({
-        item,
-        itemType: item.type,
-      });
-    } else {
+    // For questionnaires with 0 input items we never show any required level,
+    // globally or per-item.
+    if (!hasAnyInputs) {
       level = undefined;
+    } else {
+      if (!item) {
+        if (singleItemQuestionnaire) {
+          level = undefined;
+        } else if (allRequired) {
+          level = 'all-required';
+        } else if (allOptional) {
+          level = 'all-optional';
+        }
+      } else if (showLabelPerItem) {
+        level = resolveRequiredLevelPerItem({
+          item,
+          itemType: item.type,
+        });
+      } else {
+        level = undefined;
+      }
     }
 
     return {
