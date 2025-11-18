@@ -290,6 +290,7 @@ describe('areAllInputItemsOptional', () => {
 });
 
 describe('RequiredLevelSelector', () => {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const buildStore = (content: Questionnaire | null | undefined) => {
     return configureStore({
       reducer: rootReducer,
