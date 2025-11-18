@@ -3,6 +3,10 @@ import { Resources } from '../../src/util/resources.ts';
 export const getResources = (language: string): Resources => {
   if (language === 'en-GB') {
     return {
+      formRequiredInputs: 'Must be filled out',
+      formRequiredSingleCheckbox: 'Must be selected',
+      formRequiredMultiCheckbox: 'Select one or more',
+      formRequiredRadiobuttonList: 'Select one',
       openChoiceOption: 'Other',
       deleteButtonText: 'Delete',
       validationSummaryHeader: 'Check that the following are filled in correctly:',
@@ -164,21 +168,6 @@ export const getResources = (language: string): Resources => {
     dateLabel_month: 'Måned',
     maxCharactersText: 'tegn',
     quantity_unit_sublabel: 'Oppgi i',
-
-    alternativer_tekst: 'Alternativer',
-    anonymousUploadDescription: 'Filen(e) du laster opp vil bli knyttet til skjemaet ditt og sendt til mottakeren av skjemaet.',
-    anonymousUploadTitle: 'Last opp fil(er)',
-    attachment_max_occurrences: 'Maksimalt antall vedlegg er nådd',
-    attachment_max_occurrences_single_file: 'Maksimalt antall vedlegg er nådd',
-    attachment_min_occurrences_single_file: 'Du må legge til minst ett vedlegg',
-    attachmentError_fileSize_total: 'Total filstørrelse må være mindre enn {0}MB',
-    attachmentError_wrong_file_type: 'Følgende filtyper er ikke tillatt:',
-    autolagering_emne: 'Autolagring av skjema',
-    autolagering_tekst: 'Skjemaet ditt har blitt autolagret.',
-    berikingFailedOnRetrievalBody: 'Det oppstod en feil ved henting av data for beriking. Prøv igjen senere.',
-    berikingFailedOnRetrievalTitle: 'Feil ved henting av data',
-    confirmationActionButton: 'Fortsett',
-    confirmDiscretionlagreAndSendButtonText: 'Fortsett uten å lagre',
     formOptional: 'Valgfritt',
     formAllOptional: 'Alle felt er valgfrie',
     formAllRequired: 'Alle felt må fylles ut',
