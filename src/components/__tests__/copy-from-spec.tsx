@@ -3,7 +3,7 @@ import '../../util/__tests__/defineFetch';
 import { clickByLabelText } from '@test/selectors';
 import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
-import { act, renderRefero, screen, userEvent, waitFor } from '../../../test/test-utils';
+import { renderRefero, screen, userEvent, waitFor } from '../../../test/test-utils';
 import ItemType from '../../constants/itemType';
 import { createDataReceiverExpressionExtension, createItemControlExtension } from '../__tests__/utils';
 
