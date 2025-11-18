@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { describe, it, expect } from 'vitest';
 
-import rootReducer from '..';
+import rootReducer, { GlobalState } from '..';
 import { areAllInputItemsOptional, areAllInputItemsRequired, hasExactlyOneInputItem, RequiredLevelSelector } from '../selectors';
 
 import { Resources } from '@/util/resources';
@@ -290,7 +290,7 @@ describe('areAllInputItemsOptional', () => {
 });
 
 describe('RequiredLevelSelector', () => {
-  const buildStore = (content: Questionnaire | null | undefined) => {
+  const buildStore = (content: Questionnaire | null | undefined): ReturnType<typeof configureStore> => {
     return configureStore({
       reducer: rootReducer,
       preloadedState: {
@@ -322,7 +322,7 @@ describe('RequiredLevelSelector', () => {
   } as Resources;
 
   it('global: null questionnaire => allRequired=true => level "all-required"', () => {
-    const state = buildStore(null).getState();
+    const state = buildStore(null).getState() as GlobalState;
 
     const result = RequiredLevelSelector(state, undefined, resources);
 
@@ -349,7 +349,7 @@ describe('RequiredLevelSelector', () => {
       ],
     };
 
-    const state = buildStore(q).getState();
+    const state = buildStore(q).getState() as GlobalState;
     const result = RequiredLevelSelector(state, undefined, resources);
 
     expect(result.level).toBeUndefined();
@@ -365,7 +365,7 @@ describe('RequiredLevelSelector', () => {
       ],
     };
 
-    const state = buildStore(q).getState();
+    const state = buildStore(q).getState() as GlobalState;
     const result = RequiredLevelSelector(state, undefined, resources);
 
     expect(result.level).toBe('all-optional');
@@ -381,7 +381,7 @@ describe('RequiredLevelSelector', () => {
       ],
     };
 
-    const state = buildStore(q).getState();
+    const state = buildStore(q).getState() as GlobalState;
     const result = RequiredLevelSelector(state, undefined, resources);
 
     expect(result.level).toBeUndefined();
@@ -397,7 +397,7 @@ describe('RequiredLevelSelector', () => {
       ],
     };
 
-    const state = buildStore(q).getState();
+    const state = buildStore(q).getState() as GlobalState;
     const item = (q.item as QuestionnaireItem[])[0]; // required string
 
     const result = RequiredLevelSelector(state, item, resources);
@@ -415,7 +415,7 @@ describe('RequiredLevelSelector', () => {
       ],
     };
 
-    const state = buildStore(q).getState();
+    const state = buildStore(q).getState() as GlobalState;
     const item = (q.item as QuestionnaireItem[])[0]; // required boolean
 
     const result = RequiredLevelSelector(state, item, resources);
@@ -433,7 +433,7 @@ describe('RequiredLevelSelector', () => {
       ],
     };
 
-    const state = buildStore(q).getState();
+    const state = buildStore(q).getState() as GlobalState;
     const item = (q.item as QuestionnaireItem[])[0];
 
     const result = RequiredLevelSelector(state, item, resources);
