@@ -15,8 +15,8 @@ import styles from './referoLabel.module.css';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
-import { questionnaireRequiredStateSelector } from '@/reducers/selectors';
-import { getId, getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
+import { RequiredLevelSelector } from '@/reducers/selectors';
+import { getId, getLabelText, getSublabelText } from '@/util';
 import { Resources } from '@/util/resources';
 
 type Props = {
@@ -61,24 +61,14 @@ export const ReferoLabel = ({
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = labelText ? labelText : getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const id = getId(item?.id);
-  const { showLabelPerItem } = useAppSelector(questionnaireRequiredStateSelector);
+  const { level, errorLevelResources } = useAppSelector(state => RequiredLevelSelector(state, item, resources));
+
   return (
     <>
       <div className={styles.referoLabel_label_wrapper}>
         <div>
           <Label
-            formFieldTag={
-              showLabelPerItem ? (
-                <FormFieldTag
-                  id={formFieldTagId}
-                  level={!isRequired(item) && !isReadOnly(item) ? 'optional' : 'required-field'}
-                  resources={{
-                    optional: resources?.formOptional,
-                    required: resources?.formRequired,
-                  }}
-                />
-              ) : null
-            }
+            formFieldTag={level ? <FormFieldTag id={formFieldTagId} level={level} resources={errorLevelResources} /> : null}
             labelId={labelId}
             testId={testId}
             labelTexts={

@@ -69,7 +69,7 @@
   "devDependencies": {
     "@helsenorge/autosuggest": "^36.0.0",
     "@helsenorge/datepicker": "^12.0.0",
-    "@helsenorge/designsystem-react": "^12.0.0",
+    "@helsenorge/designsystem-react": "^12.12.0",
     "@helsenorge/file-upload": "^36.0.0",
     "@reduxjs/toolkit": "^2.2.7",
     "@rollup/plugin-replace": "^6.0.2",

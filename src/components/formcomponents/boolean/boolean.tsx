@@ -25,7 +25,7 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
-import { findQuestionnaireItem } from '@/reducers/selectors';
+import { findQuestionnaireItem, RequiredLevelSelector } from '@/reducers/selectors';
 import { isReadOnly, getId, getLabelText } from '@/util/index';
 
 export type Props = QuestionnaireComponentItemProps & {
@@ -34,7 +34,9 @@ export type Props = QuestionnaireComponentItemProps & {
 
 const Boolean = (props: Props): JSX.Element | null => {
   const { path, pdf, id, index, idWithLinkIdAndItemIndex, linkId, children } = props;
+
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
+
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
@@ -46,6 +48,8 @@ const Boolean = (props: Props): JSX.Element | null => {
 
   const dispatch = useAppDispatch();
   const { onRenderMarkdown, promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const { level, errorLevelResources } = useAppSelector(state => RequiredLevelSelector(state, item, resources));
+
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
   const [isHelpVisible, setIsHelpVisible] = useState(false);
@@ -120,7 +124,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   return (
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
-        <FormFieldTag id={getId(id) + '-boolean-formfieldtag'} level="required-field" />
+        {level && <FormFieldTag id={getId(id) + '-boolean-formfieldtag'} level={level} resources={errorLevelResources} />}
         <Checkbox
           {...rest}
           testId={`test-boolean-${getId(id)}`}

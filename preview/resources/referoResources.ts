@@ -99,7 +99,6 @@ export const getResources = (language: string): Resources => {
     formCancel: 'Avbryt',
     formSend: 'Fullfør',
     formSave: 'Vis QuestionnaireResponse',
-    formOptional: 'Valgfritt',
     repeatButtonText: 'Legg til',
     confirmDeleteButtonText: 'Forkast endringer',
     confirmDeleteCancelButtonText: 'Avbryt',
@@ -165,9 +164,7 @@ export const getResources = (language: string): Resources => {
     dateLabel_month: 'Måned',
     maxCharactersText: 'tegn',
     quantity_unit_sublabel: 'Oppgi i',
-    formAllOptional: 'Alle felter er valgfrie',
-    formAllRequired: 'Alle felter er påkrevd',
-    formRequired: 'Påkrevd felt',
+
     alternativer_tekst: 'Alternativer',
     anonymousUploadDescription: 'Filen(e) du laster opp vil bli knyttet til skjemaet ditt og sendt til mottakeren av skjemaet.',
     anonymousUploadTitle: 'Last opp fil(er)',
@@ -182,5 +179,13 @@ export const getResources = (language: string): Resources => {
     berikingFailedOnRetrievalTitle: 'Feil ved henting av data',
     confirmationActionButton: 'Fortsett',
     confirmDiscretionlagreAndSendButtonText: 'Fortsett uten å lagre',
+    formOptional: 'Valgfritt',
+    formAllOptional: 'Alle felt er valgfrie',
+    formAllRequired: 'Alle felt må fylles ut',
+    formRequired: 'Påkrevd felt',
+    formRequiredInputs: 'Må fylles ut',
+    formRequiredSingleCheckbox: 'Må velges',
+    formRequiredMultiCheckbox: 'Velg en eller flere',
+    formRequiredRadiobuttonList: 'Velg én',
   };
 };

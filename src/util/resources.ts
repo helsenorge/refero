@@ -39,10 +39,7 @@ export interface Resources {
    * Send inn
    */
   formSend: string;
-  /**
-   * (valgfritt)
-   */
-  formOptional: string;
+
   /**
    * Legg til
    */
@@ -681,6 +678,10 @@ Gå til {personverninnstillingerLink} på Helsenorge for å endre samtykkenivå.
    */
   alternativer_tekst: string;
   /**
+   * (valgfritt)
+   */
+  formOptional: string;
+  /**
    * Velg ett eller flere alternativer
    *
    */
@@ -693,4 +694,20 @@ Gå til {personverninnstillingerLink} på Helsenorge for å endre samtykkenivå.
    * Alle påkrevde
    */
   formAllRequired: string;
+  /**
+   * Alle påkrevde inndatafelter
+   */
+  formRequiredInputs: string;
+  /**
+   * Alle påkrevde enkeltkryssbokser
+   */
+  formRequiredSingleCheckbox: string;
+  /**
+   * Alle påkrevde flerkryssbokser
+   */
+  formRequiredMultiCheckbox: string;
+  /**
+   * Alle påkrevde radioknapplister
+   */
+  formRequiredRadiobuttonList: string;
 }
