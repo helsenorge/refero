@@ -1,3 +1,8 @@
+## 21.4.0
+
+- Bugfix: Remove unused resource teksts, updated README.md
+- added FormFieldTagLevel to indicate what fields are required/optional in the form
+
 ## 21.3.3
 
 - Bugfix: Do not validate required on autosuggest before submit
