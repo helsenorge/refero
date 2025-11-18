@@ -72,11 +72,6 @@
           "type": "string",
           "text": "Kun et item som er obligatorisk",
           "required": true
-        },
-        {
-          "linkId": "49ff96de-aa5f-4f6a-864b-cfdd42f3e506",
-          "type": "string",
-          "text": "Kun et item som er obligatorisk"
         }
       ],
       "required": false

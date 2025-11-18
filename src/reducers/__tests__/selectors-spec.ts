@@ -1,15 +1,12 @@
 // questionnaireRequiredState.test.ts
 import { configureStore } from '@reduxjs/toolkit';
-import { Questionnaire } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { describe, it, expect } from 'vitest';
 
 import rootReducer from '..';
-import {
-  areAllInputItemsOptional,
-  areAllInputItemsRequired,
-  hasExactlyOneInputItem,
-  questionnaireRequiredStateSelector,
-} from '../selectors';
+import { areAllInputItemsOptional, areAllInputItemsRequired, hasExactlyOneInputItem, RequiredLevelSelector } from '../selectors';
+
+import { Resources } from '@/util/resources';
 
 describe('hasExactlyOneInputItem', () => {
   it('returns false for undefined questionnaire', () => {
@@ -292,8 +289,8 @@ describe('areAllInputItemsOptional', () => {
   });
 });
 
-describe('questionnaireRequiredStateSelector', () => {
-  const buildState = (content: Questionnaire | null | undefined) => {
+describe('RequiredLevelSelector', () => {
+  const buildStore = (content: Questionnaire | null | undefined) => {
     return configureStore({
       reducer: rootReducer,
       preloadedState: {
@@ -313,18 +310,33 @@ describe('questionnaireRequiredStateSelector', () => {
     });
   };
 
-  it('handles null questionnaire in state', () => {
-    const state = buildState(null).getState();
+  const resources: Resources = {
+    formAllRequired: 'All required',
+    formRequired: 'Required field',
+    formOptional: 'Optional',
+    formAllOptional: 'All optional',
+    formRequiredRadiobuttonList: 'Required radio list',
+    formRequiredMultiCheckbox: 'Required multi checkbox',
+    formRequiredSingleCheckbox: 'Required single checkbox',
+    // other fields can be left undefined
+  } as Resources;
 
-    const result = questionnaireRequiredStateSelector(state);
+  it('global: null questionnaire => allRequired=true => level "all-required"', () => {
+    const state = buildStore(null).getState();
 
-    expect(result.singleItemQuestionnaire).toBe(false);
-    expect(result.allRequired).toBe(true); // allInputItemsMatchPredicate(undefined) => true
-    expect(result.allOptional).toBe(true);
-    expect(result.showLabelPerItem).toBe(false);
+    const result = RequiredLevelSelector(state, undefined, resources);
+
+    expect(result.level).toBe('all-required');
+    expect(result.errorLevelResources?.['all-required']).toBe(resources.formAllRequired);
+    expect(result.errorLevelResources?.['required-field']).toBe(resources.formRequired);
+    expect(result.errorLevelResources?.optional).toBe(resources.formOptional);
+    expect(result.errorLevelResources?.['all-optional']).toBe(resources.formAllOptional);
+    expect(result.errorLevelResources?.['required-radiobutton-list']).toBe(resources.formRequiredRadiobuttonList);
+    expect(result.errorLevelResources?.['required-checkbox-list']).toBe(resources.formRequiredMultiCheckbox);
+    expect(result.errorLevelResources?.['required-single-checkbox']).toBe(resources.formRequiredSingleCheckbox);
   });
 
-  it('single required item: singleItemQuestionnaire=true, allRequired=true, allOptional=false, showLabelPerItem=false', () => {
+  it('global: single required item => singleItemQuestionnaire=true => level undefined', () => {
     const q: Questionnaire = {
       status: 'draft',
       resourceType: 'Questionnaire',
@@ -337,17 +349,13 @@ describe('questionnaireRequiredStateSelector', () => {
       ],
     };
 
-    const state = buildState(q).getState();
-    const result = questionnaireRequiredStateSelector(state);
+    const state = buildStore(q).getState();
+    const result = RequiredLevelSelector(state, undefined, resources);
 
-    expect(result.singleItemQuestionnaire).toBe(true);
-    expect(result.allRequired).toBe(true);
-    expect(result.allOptional).toBe(false);
-    // showLabelPerItem: !single && !allRequired && !allOptional => false
-    expect(result.showLabelPerItem).toBe(false);
+    expect(result.level).toBeUndefined();
   });
 
-  it('all optional, multiple items: showLabelPerItem=false', () => {
+  it('global: all optional, multiple items => level "all-optional"', () => {
     const q: Questionnaire = {
       status: 'draft',
       resourceType: 'Questionnaire',
@@ -357,16 +365,13 @@ describe('questionnaireRequiredStateSelector', () => {
       ],
     };
 
-    const state = buildState(q).getState();
-    const result = questionnaireRequiredStateSelector(state);
+    const state = buildStore(q).getState();
+    const result = RequiredLevelSelector(state, undefined, resources);
 
-    expect(result.singleItemQuestionnaire).toBe(false);
-    expect(result.allRequired).toBe(false);
-    expect(result.allOptional).toBe(true);
-    expect(result.showLabelPerItem).toBe(false);
+    expect(result.level).toBe('all-optional');
   });
 
-  it('mixed required/optional items: showLabelPerItem=true', () => {
+  it('global: mixed required/optional items => level undefined', () => {
     const q: Questionnaire = {
       status: 'draft',
       resourceType: 'Questionnaire',
@@ -376,39 +381,64 @@ describe('questionnaireRequiredStateSelector', () => {
       ],
     };
 
-    const state = buildState(q).getState();
-    const result = questionnaireRequiredStateSelector(state);
+    const state = buildStore(q).getState();
+    const result = RequiredLevelSelector(state, undefined, resources);
 
-    expect(result.singleItemQuestionnaire).toBe(false);
-    expect(result.allRequired).toBe(false);
-    expect(result.allOptional).toBe(false);
-    // !single && !allRequired && !allOptional => true
-    expect(result.showLabelPerItem).toBe(true);
+    expect(result.level).toBeUndefined();
   });
 
-  it('readOnly=true items behave correctly in selector', () => {
+  it('per-item: mixed questionnaire => showLabelPerItem=true => required string => "required-field"', () => {
     const q: Questionnaire = {
       status: 'draft',
       resourceType: 'Questionnaire',
       item: [
-        {
-          linkId: 'q1',
-          type: 'string',
-          required: true,
-          readOnly: true,
-        },
+        { linkId: 'q1', type: 'string', required: true },
+        { linkId: 'q2', type: 'integer', required: false },
       ],
     };
 
-    const state = buildState(q).getState();
-    const result = questionnaireRequiredStateSelector(state);
+    const state = buildStore(q).getState();
+    const item = (q.item as QuestionnaireItem[])[0]; // required string
 
-    // singleItemQuestionnaire should still be true (input-type count)
-    expect(result.singleItemQuestionnaire).toBe(true);
-    // allRequired should be false because readOnly=true overrides required
-    expect(result.allRequired).toBe(false);
-    // allOptional should be true because readOnly=true makes predicate true
-    expect(result.allOptional).toBe(true);
-    expect(result.showLabelPerItem).toBe(false);
+    const result = RequiredLevelSelector(state, item, resources);
+
+    expect(result.level).toBe('required-field');
+  });
+
+  it('per-item: mixed questionnaire => required boolean => "required-single-checkbox"', () => {
+    const q: Questionnaire = {
+      status: 'draft',
+      resourceType: 'Questionnaire',
+      item: [
+        { linkId: 'q1', type: 'boolean', required: true },
+        { linkId: 'q2', type: 'integer', required: false },
+      ],
+    };
+
+    const state = buildStore(q).getState();
+    const item = (q.item as QuestionnaireItem[])[0]; // required boolean
+
+    const result = RequiredLevelSelector(state, item, resources);
+
+    expect(result.level).toBe('required-single-checkbox');
+  });
+
+  it('per-item: allRequired questionnaire => showLabelPerItem=false => level undefined even if item is required', () => {
+    const q: Questionnaire = {
+      status: 'draft',
+      resourceType: 'Questionnaire',
+      item: [
+        { linkId: 'q1', type: 'string', required: true },
+        { linkId: 'q2', type: 'integer', required: true },
+      ],
+    };
+
+    const state = buildStore(q).getState();
+    const item = (q.item as QuestionnaireItem[])[0];
+
+    const result = RequiredLevelSelector(state, item, resources);
+
+    // allRequired=true, allOptional=false, singleItem=false => showLabelPerItem=false
+    expect(result.level).toBeUndefined();
   });
 });

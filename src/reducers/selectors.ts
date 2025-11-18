@@ -1,11 +1,17 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
+import { FormFieldTagLevel } from '@helsenorge/designsystem-react/components/FormFieldTag';
+
 import { Form, FormData, FormDefinition, getFormDefinition } from './form';
 
 import { GlobalState } from '.';
 
+import ItemControlConstants from '@/constants/itemcontrol';
+import { isReadOnly, isRequired } from '@/util';
+import { getItemControlValue } from '@/util/choice';
 import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 
 export const questionnaireSelector = createSelector(
   [(state: GlobalState): FormDefinition | undefined | null => state?.refero?.form.FormDefinition],
@@ -115,10 +121,8 @@ export const getFlatMapResponseItemsForItemSelector = createSelector(
     }
 
     if (responseItem.linkId === item?.linkId) {
-      // If the response item matches the current item, return it
       return [responseItem];
     } else {
-      // Otherwise, search within its child items
       const childItems = responseItem?.item;
       const childAnswers = responseItem.answer?.flatMap(ans => ans.item || []);
 
@@ -146,7 +150,6 @@ function getResponseItemWithPath(path: Path[] = [], items: QuestionnaireResponse
       return undefined;
     }
 
-    // Prepare for the next iteration
     currentItems = responseItem.item || responseItem.answer?.flatMap(ans => ans?.item || []) || [];
   }
 
@@ -161,16 +164,9 @@ export const languageSelector = createSelector(
   formData => formData?.language
 );
 
-// const formFieldTagVariantSelector = createSelector(
-//   [
-//     (state: GlobalState): Questionnaire | undefined | null => state?.refero?.form.FormDefinition.Content,
-//     (_: GlobalState, linkId?: string): string | undefined => linkId,
-//   ],
-//   (
-//     formDefinition: Questionnaire | undefined | null,
-//     linkId?: string
-//   ): 'allRequired' | 'allOptional' | 'singleItemQuestionnaire' | null => {}
-// );
+// --------------------------------------------------------
+// Input item classification
+// --------------------------------------------------------
 
 const INPUT_ITEM_TYPES: ReadonlySet<QuestionnaireItem['type']> = new Set([
   'boolean',
@@ -188,68 +184,194 @@ const INPUT_ITEM_TYPES: ReadonlySet<QuestionnaireItem['type']> = new Set([
   'reference',
   'quantity',
 ]);
+
+const INPUT_LIKE_TYPES: ReadonlySet<QuestionnaireItem['type']> = new Set([
+  'string',
+  'text',
+  'date',
+  'dateTime',
+  'time',
+  'url',
+  'decimal',
+  'integer',
+  'quantity',
+  'attachment',
+  'reference',
+]);
+
+const isInputItemType = (type: QuestionnaireItem['type'] | undefined): boolean => !!type && INPUT_ITEM_TYPES.has(type);
+
+const isInputLikeType = (type: QuestionnaireItem['type'] | undefined): boolean => !!type && INPUT_LIKE_TYPES.has(type);
+
+const isChoiceType = (type: QuestionnaireItem['type'] | undefined): boolean => type === 'choice' || type === 'open-choice';
+
+// --------------------------------------------------------
+// Core traversal helpers
+// --------------------------------------------------------
+
 function countInputItems(items: QuestionnaireItem[] | undefined): number {
-  if (!items || items.length === 0) return 0;
+  if (!items?.length) return 0;
 
   let count = 0;
+  const stack: QuestionnaireItem[] = [...items];
 
-  for (const item of items) {
-    if (INPUT_ITEM_TYPES.has(item.type)) {
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+
+    if (isInputItemType(current.type)) {
       count += 1;
     }
 
-    if (item.item && item.item.length > 0) {
-      count += countInputItems(item.item);
+    if (current.item?.length) {
+      stack.push(...current.item);
     }
   }
 
   return count;
 }
-function allInputItemsMatchPredicate(items: QuestionnaireItem[] | undefined, predicate: (item: QuestionnaireItem) => boolean): boolean {
-  if (!items || items.length === 0) return true;
 
-  for (const item of items) {
-    if (INPUT_ITEM_TYPES.has(item.type)) {
-      if (!predicate(item)) {
-        return false;
-      }
+function allInputItemsMatchPredicate(items: QuestionnaireItem[] | undefined, predicate: (item: QuestionnaireItem) => boolean): boolean {
+  if (!items?.length) return true;
+
+  const stack: QuestionnaireItem[] = [...items];
+
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+
+    if (isInputItemType(current.type) && !predicate(current)) {
+      return false;
     }
 
-    if (item.item && item.item.length > 0) {
-      if (!allInputItemsMatchPredicate(item.item, predicate)) {
-        return false;
-      }
+    if (current.item?.length) {
+      stack.push(...current.item);
     }
   }
 
   return true;
 }
+
+// --------------------------------------------------------
+// Public questionnaire helpers
+// --------------------------------------------------------
+
 export function areAllInputItemsRequired(questionnaire?: Questionnaire | null): boolean {
   return allInputItemsMatchPredicate(questionnaire?.item, item => item.required === true && item.readOnly !== true);
 }
+
 export function areAllInputItemsOptional(questionnaire?: Questionnaire | null): boolean {
   return allInputItemsMatchPredicate(questionnaire?.item, item => item.required !== true || item.readOnly === true);
 }
+
 export function hasExactlyOneInputItem(questionnaire: Questionnaire | undefined | null): boolean {
   if (!questionnaire) return false;
-  const totalInputItems = countInputItems(questionnaire.item);
-  return totalInputItems === 1;
+  return countInputItems(questionnaire.item) === 1;
 }
-type QuestionnaireRequiredState = {
-  allRequired: boolean;
-  allOptional: boolean;
-  singleItemQuestionnaire: boolean;
-  showLabelPerItem: boolean;
+
+// --------------------------------------------------------
+// Required level per item
+// --------------------------------------------------------
+
+type ResolveRequiredLevelArgs = {
+  item: QuestionnaireItem | undefined;
+  itemType: QuestionnaireItem['type'] | undefined;
 };
-export const questionnaireRequiredStateSelector = createSelector(
-  [(state: GlobalState): Questionnaire | undefined | null => state?.refero?.form.FormDefinition.Content],
-  (q: Questionnaire | undefined | null): QuestionnaireRequiredState => {
-    const singleItemQuestionnaire = hasExactlyOneInputItem(q);
+
+const CHOICE_REQUIRED_RESOURCE_BY_CONTROL: Record<string, FormFieldTagLevel> = {
+  [ItemControlConstants.DROPDOWN]: 'required-radiobutton-list',
+  [ItemControlConstants.CHECKBOX]: 'required-checkbox-list',
+  [ItemControlConstants.RADIOBUTTON]: 'required-radiobutton-list',
+  [ItemControlConstants.SLIDER]: 'required-radiobutton-list',
+};
+
+const resolveRequiredLevelPerItem = ({ item, itemType }: ResolveRequiredLevelArgs): FormFieldTagLevel | undefined => {
+  if (!itemType) return undefined;
+
+  if (!isRequired(item) || isReadOnly(item)) {
+    return 'optional';
+  }
+
+  if (isInputLikeType(itemType)) {
+    return 'required-field';
+  }
+
+  if (itemType === 'boolean') {
+    return 'required-single-checkbox';
+  }
+
+  if (isChoiceType(itemType)) {
+    const itemControlValue = getItemControlValue(item);
+    return itemControlValue
+      ? (CHOICE_REQUIRED_RESOURCE_BY_CONTROL[itemControlValue] ?? 'required-radiobutton-list')
+      : 'required-radiobutton-list';
+  }
+
+  return 'optional';
+};
+
+// --------------------------------------------------------
+// Selector
+// --------------------------------------------------------
+
+export const RequiredLevelSelector = createSelector(
+  [
+    (state: GlobalState): Questionnaire | undefined | null => state?.refero?.form.FormDefinition.Content,
+    (_: GlobalState, item?: QuestionnaireItem): QuestionnaireItem | undefined => item,
+    (_: GlobalState, __?: QuestionnaireItem, resources?: Resources): Resources | undefined => resources,
+  ],
+  (
+    q: Questionnaire | undefined | null,
+    item?: QuestionnaireItem,
+    resources?: Resources
+  ): {
+    level: FormFieldTagLevel | undefined;
+    errorLevelResources?: {
+      'all-required': string | undefined;
+      'required-field': string | undefined;
+      optional: string | undefined;
+      'all-optional': string | undefined;
+      'required-radiobutton-list': string | undefined;
+      'required-checkbox-list': string | undefined;
+      'required-single-checkbox': string | undefined;
+    };
+  } => {
+    const questionnaire = q || undefined;
+
+    const singleItemQuestionnaire = hasExactlyOneInputItem(questionnaire || null);
+    const allRequired = areAllInputItemsRequired(questionnaire);
+    const allOptional = areAllInputItemsOptional(questionnaire);
+
+    const showLabelPerItem = !singleItemQuestionnaire && !allRequired && !allOptional;
+
+    let level: FormFieldTagLevel | undefined;
+
+    if (!item) {
+      if (singleItemQuestionnaire) {
+        level = undefined;
+      } else if (allRequired) {
+        level = 'all-required';
+      } else if (allOptional) {
+        level = 'all-optional';
+      }
+    } else if (showLabelPerItem) {
+      level = resolveRequiredLevelPerItem({
+        item,
+        itemType: item.type,
+      });
+    } else {
+      level = undefined;
+    }
+
     return {
-      allRequired: areAllInputItemsRequired(q || undefined),
-      allOptional: areAllInputItemsOptional(q || undefined),
-      singleItemQuestionnaire: singleItemQuestionnaire ?? false,
-      showLabelPerItem: !singleItemQuestionnaire && !areAllInputItemsRequired(q || undefined) && !areAllInputItemsOptional(q || undefined),
+      level,
+      errorLevelResources: {
+        'all-required': resources?.formAllRequired,
+        'required-field': resources?.formRequired,
+        optional: resources?.formOptional,
+        'all-optional': resources?.formAllOptional,
+        'required-radiobutton-list': resources?.formRequiredRadiobuttonList,
+        'required-checkbox-list': resources?.formRequiredMultiCheckbox,
+        'required-single-checkbox': resources?.formRequiredSingleCheckbox,
+      },
     };
   }
 );
