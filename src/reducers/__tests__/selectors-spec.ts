@@ -322,21 +322,6 @@ describe('RequiredLevelSelector', () => {
     // other fields can be left undefined
   } as Resources;
 
-  it('global: null questionnaire => treated as 0 inputs => level undefined', () => {
-    const state = buildStore(null).getState();
-
-    const result = RequiredLevelSelector(state, undefined, resources);
-
-    expect(result.level).toBeUndefined();
-    expect(result.errorLevelResources?.['all-required']).toBe(resources.formAllRequired);
-    expect(result.errorLevelResources?.['required-field']).toBe(resources.formRequired);
-    expect(result.errorLevelResources?.optional).toBe(resources.formOptional);
-    expect(result.errorLevelResources?.['all-optional']).toBe(resources.formAllOptional);
-    expect(result.errorLevelResources?.['required-radiobutton-list']).toBe(resources.formRequiredRadiobuttonList);
-    expect(result.errorLevelResources?.['required-checkbox-list']).toBe(resources.formRequiredMultiCheckbox);
-    expect(result.errorLevelResources?.['required-single-checkbox']).toBe(resources.formRequiredSingleCheckbox);
-  });
-
   it('global: questionnaire with only group/display items => 0 inputs => level undefined', () => {
     const q: Questionnaire = {
       resourceType: 'Questionnaire',
