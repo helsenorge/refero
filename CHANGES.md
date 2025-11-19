@@ -1,3 +1,7 @@
+## 21.4.2
+
+- Bugfix: added correct resource texts for form field tag levels
+
 ## 21.4.1
 
 - Bugfix: Questionnaire with many items but no input-items would get "all felds are optional" tag

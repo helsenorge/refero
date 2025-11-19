@@ -326,13 +326,13 @@ export const RequiredLevelSelector = createSelector(
   ): {
     level: FormFieldTagLevel | undefined;
     errorLevelResources?: {
-      'all-required': string | undefined;
-      'required-field': string | undefined;
+      allRequired: string | undefined;
+      requiredField: string | undefined;
       optional: string | undefined;
-      'all-optional': string | undefined;
-      'required-radiobutton-list': string | undefined;
-      'required-checkbox-list': string | undefined;
-      'required-single-checkbox': string | undefined;
+      allOptional: string | undefined;
+      requiredRadiobuttonList: string | undefined;
+      requiredCheckboxList: string | undefined;
+      requiredSingleCheckbox: string | undefined;
     };
   } => {
     const questionnaire = q || undefined;
@@ -374,13 +374,13 @@ export const RequiredLevelSelector = createSelector(
     return {
       level,
       errorLevelResources: {
-        'all-required': resources?.formAllRequired,
-        'required-field': resources?.formRequired,
+        allRequired: resources?.formAllRequired,
+        requiredField: resources?.formRequired,
         optional: resources?.formOptional,
-        'all-optional': resources?.formAllOptional,
-        'required-radiobutton-list': resources?.formRequiredRadiobuttonList,
-        'required-checkbox-list': resources?.formRequiredMultiCheckbox,
-        'required-single-checkbox': resources?.formRequiredSingleCheckbox,
+        allOptional: resources?.formAllOptional,
+        requiredRadiobuttonList: resources?.formRequiredRadiobuttonList,
+        requiredCheckboxList: resources?.formRequiredMultiCheckbox,
+        requiredSingleCheckbox: resources?.formRequiredSingleCheckbox,
       },
     };
   }

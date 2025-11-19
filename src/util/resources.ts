@@ -316,7 +316,7 @@ export interface Resources {
   quantity_unit_sublabel: string;
 
   /**
-   * (valgfritt)
+   * valgfritt
    */
   formOptional: string;
   /**
@@ -325,11 +325,11 @@ export interface Resources {
    */
   formRequired: string;
   /**
-   * Alle valgfrie
+   * Alle felt er valgfrie
    */
   formAllOptional: string;
   /**
-   * Alle påkrevde
+   * Alle felt må fylles ut
    */
   formAllRequired: string;
   /**
