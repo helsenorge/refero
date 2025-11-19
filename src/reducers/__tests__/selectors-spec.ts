@@ -373,6 +373,57 @@ describe('RequiredLevelSelector', () => {
     expect(result.level).toBeUndefined();
   });
 
+  it('global: questionnaire with only group/display items => 0 inputs => level undefined', () => {
+    const q: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'draft',
+      item: [
+        {
+          linkId: 'step-1',
+          type: 'group',
+          item: [
+            { linkId: 'info-1', type: 'display', text: 'Lorem ipsum' },
+            { linkId: 'info-2', type: 'display', text: 'Dolor sit amet' },
+          ],
+        },
+        {
+          linkId: 'step-2',
+          type: 'group',
+          item: [{ linkId: 'info-3', type: 'display', text: 'More text' }],
+        },
+      ],
+    };
+
+    const state = buildStore(q).getState();
+    const result = RequiredLevelSelector(state, undefined, resources);
+
+    expect(result.level).toBeUndefined();
+  });
+
+  it('per-item: questionnaire with only group/display items => level undefined', () => {
+    const q: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'draft',
+      item: [
+        {
+          linkId: 'step-1',
+          type: 'group',
+          item: [
+            { linkId: 'info-1', type: 'display', text: 'Lorem ipsum' },
+            { linkId: 'info-2', type: 'display', text: 'Dolor sit amet' },
+          ],
+        },
+      ],
+    };
+
+    const state = buildStore(q).getState();
+    const item = (q.item?.[0].item?.[0] ?? null) as QuestionnaireItem; // a display item
+
+    const result = RequiredLevelSelector(state, item, resources);
+
+    expect(result.level).toBeUndefined();
+  });
+
   it('global: single required item => singleItemQuestionnaire=true => level undefined', () => {
     const q: Questionnaire = {
       status: 'draft',
