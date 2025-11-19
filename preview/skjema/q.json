@@ -1,394 +1,905 @@
 {
-  "resourceType": "Questionnaire",
-  "language": "nb-NO",
-  "id": "ab9941af-ced6-4f27-c006-c9f953a3e25f",
-  "name": "Stegvisning_med_lange_steg",
-  "title": "Stegvisning med lange steg",
-  "version": "0.1",
-  "status": "draft",
-  "publisher": "NHN",
-  "meta": {
-    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "security": [
-      {
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
-        "code": "3",
-        "display": "Helsehjelp (Full)"
-      }
-    ],
-    "tag": [
-      {
-        "system": "urn:ietf:bcp:47",
-        "code": "nb-NO",
-        "display": "Bokmål"
-      }
-    ]
-  },
-  "contact": [
+  "resourceType": "Bundle",
+  "type": "collection",
+  "entry": [
     {
-      "name": "http://www.nhn.no"
-    }
-  ],
-  "subjectType": ["Patient"],
-  "extension": [
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
-        "code": "1"
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
-        "code": "1"
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
-      "valueCodeableConcept": {
-        "coding": [
+      "resource": {
+        "resourceType": "Questionnaire",
+        "id": "701",
+        "meta": {
+          "versionId": "93",
+          "lastUpdated": "2024-01-18T09:38:20.351+00:00",
+          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+          "security": [
+            {
+              "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
+              "code": "1",
+              "display": "Helseregister"
+            },
+            {
+              "system": "http://helsenorge.no/fhir/KanUtforesAv",
+              "code": "1",
+              "display": "Kun innbygger selv"
+            }
+          ],
+          "tag": [
+            {
+              "system": "urn:ietf:bcp:47",
+              "code": "nb-NO",
+              "display": "Norsk bokmål"
+            }
+          ]
+        },
+        "language": "nb-NO",
+        "extension": [
           {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-help",
-            "display": "Hide help texts"
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
+            "valueCoding": {
+              "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons",
+              "code": "static"
+            }
           },
           {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-sublabel",
-            "display": "Hide sublabel texts"
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+            "valueReference": {
+              "reference": "Endpoint/40"
+            }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf",
+            "valueBoolean": true
+          }
+        ],
+        "url": "Questionnaire/701",
+        "version": "2.2",
+        "name": "HELFO_EHIC",
+        "title": "Søknad om Europeisk helsetrygdkort",
+        "status": "active",
+        "subjectType": ["Patient"],
+        "date": "2023-09-14T09:00:00+02:00",
+        "publisher": "NHN",
+        "contact": [
+          {
+            "name": "https://fhi.no/"
+          }
+        ],
+        "description": "Skjema for søknad om Europeisk helsetrygdkort.",
+        "useContext": [
+          {
+            "code": {
+              "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+              "code": "focus",
+              "display": "Clinical Focus"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.7615",
+                  "display": "Søknad om Europeisk helsetrygdkort"
+                }
+              ]
+            }
+          }
+        ],
+        "purpose": "Søk om EHIC",
+        "copyright": "Helfo",
+        "item": [
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "highlight"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "INTRO_TEKST",
+            "text": "Europeisk helsetrygdkort dokumenterer at du, når du oppholder deg midlertidig i et annet EØS-land eller i Sveits, har rett til dekning av nødvendig helsehjelp på samme vilkår som innbyggerne der. Kortet er personlig.  Du kan søke om Europeisk helsetrygdkort for deg selv og barn under 18 år som du har foreldreansvar for. Hvis du søker for barn, må du bruke søknadsskjemaet som gjelder for deg selv, og ikke den du har foreldreansvar for. Du bør lese informasjonen på nettsiden «Europeisk helsetrygdkort» før du søker om å få kortet. Dette er fordi det er viktig at du vet hvilke rettigheter kortet gir ikke alle har rett til å få Europeisk helsetrygdkort fra Norge",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Europeisk helsetrygdkort dokumenterer at du, når du oppholder deg midlertidig i et annet [EØS-land](https://www.helsenorge.no/behandling-i-utlandet/eu-eos-landene/) eller i Sveits, har rett til dekning av nødvendig helsehjelp på samme vilkår som innbyggerne der. Kortet er personlig. \n\nDu kan søke om Europeisk helsetrygdkort for deg selv og barn under 18 år som du har foreldreansvar for. Hvis du søker for barn, må du bruke søknadsskjemaet som gjelder for deg selv, og ikke den du har foreldreansvar for.\n\nDu bør lese informasjonen på nettsiden «[Europeisk helsetrygdkort](https://www.helsenorge.no/turist-i-utlandet/europeisk-helsetrygdkort)» før du søker om å få kortet. Dette er fordi\n\n*   det er viktig at du vet hvilke rettigheter kortet gir\n*   ikke alle har rett til å få Europeisk helsetrygdkort fra Norge"
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "readOnly": true
+          },
+          {
+            "linkId": "GR_BESTILLING",
+            "text": "Søknad",
+            "type": "group",
+            "item": [
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+                  }
+                ],
+                "linkId": "FNR",
+                "text": "Fødselsnummer til søkeren:",
+                "type": "string",
+                "required": true,
+                "repeats": false,
+                "readOnly": true,
+                "maxLength": 11,
+                "initial": [
+                  {
+                    "valueString": "13766991003"
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Velg ett eller flere av alternativene."
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "check-box"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "linkId": "HVEM_BESTILLES_FOR",
+                "text": "Søknaden om Europeisk helsetrygdkort gjelder for",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "**Søknaden om Europeisk helsetrygdkort gjelder for**"
+                    }
+                  ]
+                },
+                "type": "choice",
+                "required": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "system": "urn:uuid:3346f40f-6334-4d69-dd05-0f08794e013d-system",
+                      "code": "c7b81e69-e40f-43a1-8afb-c2e76f7040fe",
+                      "display": "meg selv"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "system": "urn:uuid:3346f40f-6334-4d69-dd05-0f08794e013d-system",
+                      "code": "1f321b56-de32-45c7-e3f0-2f65d04701b3",
+                      "display": "barn under 18 år som jeg har foreldreansvar for"
+                    }
+                  }
+                ],
+                "initial": [
+                  {
+                    "valueCoding": {
+                      "system": "urn:uuid:3346f40f-6334-4d69-dd05-0f08794e013d-system",
+                      "code": "c7b81e69-e40f-43a1-8afb-c2e76f7040fe"
+                    }
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "inline"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "linkId": "63c0c72e-8ca7-4c7a-c6bb-d10601f8886f",
+                "text": "Søknaden din blir behandlet automatisk hvis Helfo har nødvendige opplysninger om deg.",
+                "type": "text",
+                "required": false,
+                "item": [
+                  {
+                    "linkId": "a0c4b10d-249c-4bd3-bcf3-dc7c5ba23dc2",
+                    "text": "Helfo innvilger søknad om Europeisk helsetrygdkort basert på automatisert saksbehandling, jf. folketrygdloven § 21-11 a andre ledd. \n\nDen automatiserte saksbehandlingen baserer seg på opplysninger fra\n\n*   Folkeregisteret (bosted, sivilstatus og statsborgerskap)\n\nog eventuelt\n\n*   Arbeidsgiver- og arbeidstakerregisteret (om arbeidsforholdene dine)\n*   NAV (pensjonsutbetalinger og medlemskapsperioder)\n\n[Les mer om automatisert saksbehandling i Helfo.](https://www.helsenorge.no/rettigheter/automatisk-saksbehandling-i-helfo/)",
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                          "valueMarkdown": "Helfo innvilger søknad om Europeisk helsetrygdkort basert på automatisert saksbehandling, jf. folketrygdloven § 21-11 a andre ledd. \n\nDen automatiserte saksbehandlingen baserer seg på opplysninger fra\n\n*   Folkeregisteret (bosted, sivilstatus og statsborgerskap)\n\nog eventuelt\n\n*   Arbeidsgiver- og arbeidstakerregisteret (om arbeidsforholdene dine)\n*   NAV (pensjonsutbetalinger og medlemskapsperioder)\n\n[Les mer om automatisert saksbehandling i Helfo.](https://www.helsenorge.no/rettigheter/automatisk-saksbehandling-i-helfo/)"
+                        }
+                      ]
+                    },
+                    "type": "display",
+                    "required": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "SIDEBAR_2",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-2",
+                "display": "SIDEBAR_2"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "**Leveringstid**  \nVed automatisk saksbehandling tar det opptil ti dager fra du søker Europeisk helsetrygdkort til det er i postkassen din. Ved manuell saksbehandling kan det ta opptil seks uker.\n\nDet europeiske helsetrygdkortet blir sendt til adressen som er registrert i Folkeregisteret.\n\n**Reise uten kort**  \nHvis du har behov for nødvendig helsehjelp i EØS-området eller Sveits og ikke har kortet med, kan du ta kontakt med [Veiledning Helsenorge](https://www.helsenorge.no/kontakt) på +47 23 32 70 00 fra klokken 08:00 til 15:30. Helfo vil da kunne utstede en attest (hasteblankett) som midlertidig erstatter helsetrygdkortet."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "SIDEBAR_3",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-3",
+                "display": "SIDEBAR_3"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Les om hvordan [Helsedirektoratet/Helfo samler inn informasjon og bruker helse- og personopplysninger](https://www.helsedirektoratet.no/om-oss/om-nettstedet/personvernerklaering)."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
           }
         ]
       }
-    }
-  ],
-  "date": "2025-10-15T00:00:00+02:00",
-  "url": "Questionnaire/ab9941af-ced6-4f27-c006-c9f953a3e25f",
-  "item": [
-    {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "step"
-              }
-            ]
-          }
-        }
-      ],
-      "linkId": "608b3d91-417c-4a6a-9e2b-86841fe6a73d",
-      "text": "STEG 1",
-      "type": "group",
-      "required": false,
-      "item": [
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "f498e42c-4b28-43ed-8fb0-c057f6a8155c",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        },
-        {
-          "linkId": "b629fc8b-74e7-429c-8b1d-cbac9d19eda2",
-          "type": "string",
-          "text": "tet",
-          "required": false
-        },
-        {
-          "linkId": "3c23c8b1-0515-45e5-9c18-f45226333dc9",
-          "type": "string",
-          "text": "tet",
-          "required": false
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "a3c4732e-ee45-40a6-8b02-1f8c59f749d2",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "dadb523d-384c-45d2-f655-2cd3bf07b374",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        }
-      ]
     },
     {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
+      "resource": {
+        "resourceType": "Questionnaire",
+        "id": "702",
+        "meta": {
+          "versionId": "93",
+          "lastUpdated": "2024-01-18T09:38:20.351+00:00",
+          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+          "security": [
+            {
+              "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
+              "code": "1",
+              "display": "Helseregister"
+            },
+            {
+              "system": "http://helsenorge.no/fhir/KanUtforesAv",
+              "code": "1",
+              "display": "Kun innbygger selv"
+            }
+          ],
+          "tag": [
+            {
+              "system": "urn:ietf:bcp:47",
+              "code": "nn-NO",
+              "display": "Nynorsk"
+            }
+          ]
+        },
+        "language": "nn-NO",
+        "extension": [
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
+            "valueCoding": {
+              "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons",
+              "code": "static"
+            }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+            "valueReference": {
+              "reference": "Endpoint/40"
+            }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf",
+            "valueBoolean": true
+          }
+        ],
+        "url": "Questionnaire/702",
+        "version": "2.2",
+        "name": "HELFO_EHIC",
+        "title": "Søknad om  Europeisk helsetrygdkort",
+        "status": "active",
+        "subjectType": ["Patient"],
+        "date": "2023-09-14T09:00:00+02:00",
+        "publisher": "NHN",
+        "contact": [
+          {
+            "name": "https://fhi.no/"
+          }
+        ],
+        "description": "Skjema for søknad om Europeisk helsetrygdkort.",
+        "useContext": [
+          {
+            "code": {
+              "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+              "code": "focus",
+              "display": "Clinical Focus"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.7615",
+                  "display": "Søknad om Europeisk helsetrygdkort"
+                }
+              ]
+            }
+          }
+        ],
+        "purpose": "Søke om EHIC",
+        "copyright": "Helfo",
+        "item": [
+          {
+            "extension": [
               {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "step"
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "highlight"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "INTRO_TEKST",
+            "text": "Europeisk helsetrygdkort dokumenterer at du, når du oppheld deg midlertidig i eit anna [EØS-land](https://www.helsenorge.no/behandling-i-utlandet/eu-eos-landene/) eller i Sveits, har rett til dekning av nødvendig helsehjelp på same vilkår som innbyggarane der. Kortet er personleg. \n\nDu kan søke om Europeisk helsetrygdkort for deg sjølv og barn under 18 år som du har foreldreansvar for. Dersom du søker for barn, må du bruke søknadsskjemaet som gjeld for deg sjølv, og ikkje den du har foreldreansvar for.\n\nDu bør lese informasjonen på nettsida «[Europeisk helsetrygdkort](https://www.helsenorge.no/turist-i-utlandet/europeisk-helsetrygdkort)» før du søker om å få kortet. Dette er fordi\n\n*   det er viktig at du veit kva kortet gir deg rett til\n*   ikkje alle har rett til å få Europeisk helsetrygdkort frå Noreg",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Europeisk helsetrygdkort dokumenterer at du, når du oppheld deg midlertidig i eit anna [EØS-land](https://www.helsenorge.no/behandling-i-utlandet/eu-eos-landene/) eller i Sveits, har rett til dekning av nødvendig helsehjelp på same vilkår som innbyggarane der. Kortet er personleg. \n\nDu kan søke om Europeisk helsetrygdkort for deg sjølv og barn under 18 år som du har foreldreansvar for. Dersom du søker for barn, må du bruke søknadsskjemaet som gjeld for deg sjølv, og ikkje den du har foreldreansvar for.\n\nDu bør lese informasjonen på nettsida «[Europeisk helsetrygdkort](https://www.helsenorge.no/turist-i-utlandet/europeisk-helsetrygdkort)» før du søker om å få kortet. Dette er fordi\n\n*   det er viktig at du veit kva kortet gir deg rett til\n*   ikkje alle har rett til å få Europeisk helsetrygdkort frå Noreg"
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "readOnly": true
+          },
+          {
+            "linkId": "GR_BESTILLING",
+            "text": "Søknad",
+            "type": "group",
+            "item": [
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+                  }
+                ],
+                "linkId": "FNR",
+                "text": "Fødselsnummer til søkaren:",
+                "type": "string",
+                "required": true,
+                "repeats": false,
+                "readOnly": true,
+                "maxLength": 11,
+                "initial": [
+                  {
+                    "valueString": "13766991003"
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Velg ett eller flere av alternativene."
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "check-box"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "linkId": "HVEM_BESTILLES_FOR",
+                "text": "**Søknaden om Europeisk helsetrygdkort gjeld for**",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "**Søknaden om Europeisk helsetrygdkort gjeld for**"
+                    }
+                  ]
+                },
+                "type": "choice",
+                "required": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "system": "urn:uuid:3346f40f-6334-4d69-dd05-0f08794e013d-system",
+                      "code": "c7b81e69-e40f-43a1-8afb-c2e76f7040fe",
+                      "display": "meg sjølv"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "system": "urn:uuid:3346f40f-6334-4d69-dd05-0f08794e013d-system",
+                      "code": "1f321b56-de32-45c7-e3f0-2f65d04701b3",
+                      "display": "barn under 18 år som eg har foreldreansvar for"
+                    }
+                  }
+                ],
+                "initial": [
+                  {
+                    "valueCoding": {
+                      "system": "urn:uuid:3346f40f-6334-4d69-dd05-0f08794e013d-system",
+                      "code": "c7b81e69-e40f-43a1-8afb-c2e76f7040fe"
+                    }
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "inline"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "linkId": "63c0c72e-8ca7-4c7a-c6bb-d10601f8886f",
+                "text": "Søknaden din blir behandla automatisk dersom Helfo har nødvendige opplysningar om deg.",
+                "type": "text",
+                "required": false,
+                "item": [
+                  {
+                    "linkId": "a0c4b10d-249c-4bd3-bcf3-dc7c5ba23dc2",
+                    "text": "Helfo innvilgar søknad om Europeisk helsetrygdkort basert på automatisert saksbehandling, jf. folketrygdloven § 21-11 a andre ledd. \n\nDen automatiserte saksbehandlinga baserer seg på opplysningar frå\n\n*   Folkeregisteret (bustad, sivilstatus og statsborgarskap)\n\nog eventuelt\n\n*   Arbeidsgiver- og arbeidstakerregisteret  (om arbeidsforholda dine)\n*   NAV (pensjonsutbetalingar og medlemskapsperioder)\n\n[Les meir om automatisert saksbehandling i Helfo.](https://www.helsenorge.no/rettigheter/automatisk-saksbehandling-i-helfo/)",
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                          "valueMarkdown": "Helfo innvilgar søknad om Europeisk helsetrygdkort basert på automatisert saksbehandling, jf. folketrygdloven § 21-11 a andre ledd. \n\nDen automatiserte saksbehandlinga baserer seg på opplysningar frå\n\n*   Folkeregisteret (bustad, sivilstatus og statsborgarskap)\n\nog eventuelt\n\n*   Arbeidsgiver- og arbeidstakerregisteret  (om arbeidsforholda dine)\n*   NAV (pensjonsutbetalingar og medlemskapsperioder)\n\n[Les meir om automatisert saksbehandling i Helfo.](https://www.helsenorge.no/rettigheter/automatisk-saksbehandling-i-helfo/)"
+                        }
+                      ]
+                    },
+                    "type": "display",
+                    "required": false
+                  }
+                ]
               }
             ]
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "SIDEBAR_2",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-2",
+                "display": "SIDEBAR_2"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "**Leveringstid**  \nVed automatisk saksbehandling tek det opptil ti dagar frå du søker om Europeisk helsetrygdkort til det er i postkassa di. Ved manuell saksbehandling kan det ta opptil seks veker.\n\nDet europeiske helsetrygdkortet blir sendt til adressa som er registrert i Folkeregisteret.\n\n**Reise utan kort**  \nDersom du har behov for nødvendig helsehjelp i EØS-området eller Sveits og ikkje har kortet med, kan du ta kontakt med Rettleiing Helsenorge på +47 23 32 70 00 frå klokka 08:00 til 15:30. Helfo kan då utferde ein attest (hasteblankett) som inntil vidare erstattar helsetrygdkortet."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "SIDEBAR_3",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-3",
+                "display": "SIDEBAR_3"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Les om korleis [Helsedirektoratet/Helfo samlar inn informasjon og brukar helse- og personopplysningar](https://www.helsedirektoratet.no/om-oss/om-nettstedet/personvernerklaering)."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
           }
-        }
-      ],
-      "linkId": "7e06cce1-4a44-4365-e82c-c6a08e3dff6c",
-      "text": "STEG 2",
-      "type": "group",
-      "required": false,
-      "item": [
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "3d5ec726-c1f1-4ceb-885a-016cdd5652b8",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "f55162b0-e0fc-4db0-9484-480c76ea2d90",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "5fedda82-2f34-425d-cdb6-50452f7f5443",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        }
-      ]
+        ]
+      }
     },
     {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
+      "resource": {
+        "resourceType": "Questionnaire",
+        "id": "703",
+        "meta": {
+          "versionId": "93",
+          "lastUpdated": "2024-01-18T09:38:20.351+00:00",
+          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+          "security": [
+            {
+              "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
+              "code": "1",
+              "display": "Helseregister"
+            },
+            {
+              "system": "http://helsenorge.no/fhir/KanUtforesAv",
+              "code": "1",
+              "display": "Kun innbygger selv"
+            }
+          ],
+          "tag": [
+            {
+              "system": "urn:ietf:bcp:47",
+              "code": "en-GB",
+              "display": "English"
+            }
+          ]
+        },
+        "language": "en-GB",
+        "extension": [
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
+            "valueCoding": {
+              "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons",
+              "code": "static"
+            }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+            "valueReference": {
+              "reference": "Endpoint/40"
+            }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf",
+            "valueBoolean": true
+          }
+        ],
+        "url": "Questionnaire/703",
+        "version": "2.2",
+        "name": "HELFO_EHIC",
+        "title": "Application for the European Health Insurance Card",
+        "status": "active",
+        "subjectType": ["Patient"],
+        "date": "2023-09-14T09:00:00+02:00",
+        "publisher": "NHN",
+        "contact": [
+          {
+            "name": "https://fhi.no/"
+          }
+        ],
+        "description": "Søke Europeisk helsetrygdkort.",
+        "useContext": [
+          {
+            "code": {
+              "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+              "code": "focus",
+              "display": "Clinical Focus"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.7615",
+                  "display": "Søknad om Europeisk helsetrygdkort"
+                }
+              ]
+            }
+          }
+        ],
+        "purpose": "Søke EHIC",
+        "copyright": "Helfo",
+        "item": [
+          {
+            "extension": [
               {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "step"
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "highlight"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "INTRO_TEKST",
+            "text": "The European Health Insurance Card officially documents that, when you temporarily stay in another [EEA country](https://www.helsenorge.no/en/treatment-abroad/the-eu-eea-countries/) or Switzerland, you are entitled to coverage of medically necessary healthcare under the same conditions as the residents in these countries. Each card is personalised.\n\nYou can apply for the European Health Insurance Card for yourself and children under the age of 18 that you have parental responsibility for. If you are applying for children, you must use the application form that applies to yourself, and not the person you have parental responsibility for.\n\nYou should read the information on the “[European Health Insurance Card](https://www.helsenorge.no/en/health-rights-tourist-abroad/the-european-health-insurance-card/)” webpage before applying for the card. This is because\n\n*   it is important that you know what the card entitles you to\n*   not everyone has the right to a European Health Insurance Card from Norway",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "The European Health Insurance Card officially documents that, when you temporarily stay in another [EEA country](https://www.helsenorge.no/en/treatment-abroad/the-eu-eea-countries/) or Switzerland, you are entitled to coverage of medically necessary healthcare under the same conditions as the residents in these countries. Each card is personalised.\n\nYou can apply for the European Health Insurance Card for yourself and children under the age of 18 that you have parental responsibility for. If you are applying for children, you must use the application form that applies to yourself, and not the person you have parental responsibility for.\n\nYou should read the information on the “[European Health Insurance Card](https://www.helsenorge.no/en/health-rights-tourist-abroad/the-european-health-insurance-card/)” webpage before applying for the card. This is because\n\n*   it is important that you know what the card entitles you to\n*   not everyone has the right to a European Health Insurance Card from Norway"
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "readOnly": true
+          },
+          {
+            "linkId": "GR_BESTILLING",
+            "text": "Application",
+            "type": "group",
+            "item": [
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+                  }
+                ],
+                "linkId": "FNR",
+                "text": "The Norwegian identity number of the person applying:",
+                "type": "string",
+                "required": true,
+                "repeats": false,
+                "readOnly": true,
+                "maxLength": 11,
+                "initial": [
+                  {
+                    "valueString": "13766991003"
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "check-box"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "linkId": "HVEM_BESTILLES_FOR",
+                "text": "**European Health Insurance Card is being ordered for**",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "**European Health Insurance Card is being ordered for**"
+                    }
+                  ]
+                },
+                "type": "choice",
+                "required": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "system": "urn:uuid:3346f40f-6334-4d69-dd05-0f08794e013d-system",
+                      "code": "c7b81e69-e40f-43a1-8afb-c2e76f7040fe",
+                      "display": "myself"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "system": "urn:uuid:3346f40f-6334-4d69-dd05-0f08794e013d-system",
+                      "code": "1f321b56-de32-45c7-e3f0-2f65d04701b3",
+                      "display": "children under the age of 18 that I have parental responsibility for"
+                    }
+                  }
+                ],
+                "initial": [
+                  {
+                    "valueCoding": {
+                      "system": "urn:uuid:3346f40f-6334-4d69-dd05-0f08794e013d-system",
+                      "code": "c7b81e69-e40f-43a1-8afb-c2e76f7040fe"
+                    }
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "inline"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "linkId": "63c0c72e-8ca7-4c7a-c6bb-d10601f8886f",
+                "text": "Your application will be processed automatically if Helfo has the necessary information about you.",
+                "type": "text",
+                "required": false,
+                "item": [
+                  {
+                    "linkId": "a0c4b10d-249c-4bd3-bcf3-dc7c5ba23dc2",
+                    "text": "Helfo grants applications for the European Health Insurance Card based on automated processing, cf. folketrygdloven (the National Insurance Act) § 21-11 a second paragraph. \n\nThe automated processing is based on information from\n\n*   The National Population Register (residence, marital status, and citizenship)\n\nand if necessary\n\n*   State Register of Employers and Employees (about your employment relationships)\n*   NAV (pension payments and membership periods)\n\n[Read more about automated processing in Helfo (in Norwegian)](https://www.helsenorge.no/rettigheter/automatisk-saksbehandling-i-helfo/).",
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                          "valueMarkdown": "Helfo grants applications for the European Health Insurance Card based on automated processing, cf. folketrygdloven (the National Insurance Act) § 21-11 a second paragraph. \n\nThe automated processing is based on information from\n\n*   The National Population Register (residence, marital status, and citizenship)\n\nand if necessary\n\n*   State Register of Employers and Employees (about your employment relationships)\n*   NAV (pension payments and membership periods)\n\n[Read more about automated processing in Helfo (in Norwegian)](https://www.helsenorge.no/rettigheter/automatisk-saksbehandling-i-helfo/)."
+                        }
+                      ]
+                    },
+                    "type": "display",
+                    "required": false
+                  }
+                ]
               }
             ]
-          }
-        }
-      ],
-      "linkId": "54f48db9-ebc6-4e33-929d-c6451251cb09",
-      "text": "STEG 3",
-      "type": "group",
-      "required": false,
-      "item": [
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "ca510c1b-678d-46ef-800c-0e751dbc153d",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "16d3df33-69b1-41a9-89a7-331814d5576a",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "55a4fc58-e3e9-4020-8e37-7e004c53a1a4",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        }
-      ]
-    },
-    {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
+          },
+          {
+            "extension": [
               {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "step"
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
               }
-            ]
+            ],
+            "linkId": "SIDEBAR_2",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-2",
+                "display": "SIDEBAR_2"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "**Time of delivery**  \nWith automated processing, the card will arrive within ten days of you applying for it. With manual processing, it can take up to six weeks. \n\nThe European Health Insurance Card will be sent to your address registrered in the National Registry.\n\n**Travel without a card**  \nIf you need medical care in another EEA country or Switzerland, but did not bring your card, contact Helsenorge’s helpline by calling +47 23 32 70 00 during office hours from 08:00 to 15:30. Helfo will issue a Provisional Replacement Certificate (\"hasteblankett\") to temporarily replace the European Health Insurance Card."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "SIDEBAR_3",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-3",
+                "display": "SIDEBAR_3"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Read more about how [The Directorate of health/Helfo collects and uses information about you and your health](https://www.helsedirektoratet.no/om-oss/om-nettstedet/personvernerklaering)."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
           }
-        }
-      ],
-      "linkId": "c961aa49-b86b-4588-e8cb-401b0dc120a3",
-      "text": "SISTE STEG",
-      "type": "group",
-      "required": false,
-      "item": [
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "ba9905c2-02f1-4918-d01d-78eec9c3a436",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "feb3ab4e-e290-47e4-e8ed-37cd87e8c8fe",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ],
-          "linkId": "17e050eb-53a6-42d2-8602-cd51b15332f8",
-          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
-          "type": "display",
-          "required": false
-        }
-      ]
+        ]
+      }
     }
   ]
 }
