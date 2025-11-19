@@ -1,3 +1,7 @@
+## 21.4.1
+
+- Bugfix: Questionnaire with many items but no input-items would get "all felds are optional" tag
+
 ## 21.4.0
 
 - Bugfix: Remove unused resource teksts, updated README.md

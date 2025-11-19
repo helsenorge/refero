@@ -1,22 +1,26 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "id": "ab9941af-ced6-4f27-c006-c9f953a3e25f",
+  "name": "Stegvisning_med_lange_steg",
+  "title": "Stegvisning med lange steg",
+  "version": "0.1",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "security": [
+      {
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
+        "code": "3",
+        "display": "Helsehjelp (Full)"
+      }
+    ],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
         "display": "Bokmål"
-      }
-    ],
-    "security": [
-      {
-        "code": "3",
-        "display": "Helsehjelp (Full)",
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
       }
     ]
   },
@@ -59,22 +63,332 @@
       }
     }
   ],
-  "id": "e954a021-db91-4602-8641-c75d80ae0c6a",
-  "url": "Questionnaire/e954a021-db91-4602-8641-c75d80ae0c6a",
+  "date": "2025-10-15T00:00:00+02:00",
+  "url": "Questionnaire/ab9941af-ced6-4f27-c006-c9f953a3e25f",
   "item": [
     {
-      "linkId": "6306b275-9921-48df-c2e0-88b3c6e24c25",
-      "type": "group",
-      "text": "tester gruppe med 1 item\n",
-      "item": [
+      "extension": [
         {
-          "linkId": "fde12052-1bae-49ea-eb80-f62e54779755",
-          "type": "string",
-          "text": "Kun et item som er obligatorisk",
-          "required": true
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "step"
+              }
+            ]
+          }
         }
       ],
-      "required": false
+      "linkId": "608b3d91-417c-4a6a-9e2b-86841fe6a73d",
+      "text": "STEG 1",
+      "type": "group",
+      "required": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "f498e42c-4b28-43ed-8fb0-c057f6a8155c",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        },
+        {
+          "linkId": "b629fc8b-74e7-429c-8b1d-cbac9d19eda2",
+          "type": "string",
+          "text": "tet",
+          "required": false
+        },
+        {
+          "linkId": "3c23c8b1-0515-45e5-9c18-f45226333dc9",
+          "type": "string",
+          "text": "tet",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "a3c4732e-ee45-40a6-8b02-1f8c59f749d2",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "dadb523d-384c-45d2-f655-2cd3bf07b374",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "step"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "7e06cce1-4a44-4365-e82c-c6a08e3dff6c",
+      "text": "STEG 2",
+      "type": "group",
+      "required": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "3d5ec726-c1f1-4ceb-885a-016cdd5652b8",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "f55162b0-e0fc-4db0-9484-480c76ea2d90",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "5fedda82-2f34-425d-cdb6-50452f7f5443",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "step"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "54f48db9-ebc6-4e33-929d-c6451251cb09",
+      "text": "STEG 3",
+      "type": "group",
+      "required": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "ca510c1b-678d-46ef-800c-0e751dbc153d",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "16d3df33-69b1-41a9-89a7-331814d5576a",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "55a4fc58-e3e9-4020-8e37-7e004c53a1a4",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "step"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "c961aa49-b86b-4588-e8cb-401b0dc120a3",
+      "text": "SISTE STEG",
+      "type": "group",
+      "required": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "ba9905c2-02f1-4918-d01d-78eec9c3a436",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "feb3ab4e-e290-47e4-e8ed-37cd87e8c8fe",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "17e050eb-53a6-42d2-8602-cd51b15332f8",
+          "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dictum finibus viverra. Phasellus id neque tortor. Sed scelerisque nulla et odio condimentum ornare. Donec sed laoreet nisl. Ut eget ipsum justo. Vestibulum gravida, massa ut mollis varius, ante lorem rutrum magna, eu dapibus diam orci nec quam. Pellentesque tincidunt magna in dictum suscipit.\n\nDonec sit amet placerat massa. Nam placerat leo vitae nunc sodales sagittis. Maecenas convallis rutrum lacus ac faucibus. Nam auctor est et erat consectetur, ac gravida mauris tempus. Aenean ultricies, nunc at finibus sodales, ipsum nulla malesuada leo, vitae euismod dui justo eu lectus. Vestibulum nunc mauris, aliquet sed aliquet vel, interdum in dui. Donec vitae condimentum mauris.\n\nCras vestibulum orci a magna faucibus, a molestie nisl pretium. Suspendisse ut sapien enim. Duis lobortis nibh nisl, quis tincidunt metus porta sed. Aliquam convallis mattis tortor vel varius. Aliquam vehicula quam eget neque placerat fermentum. Nam pulvinar porta arcu, id sagittis leo. Aliquam at aliquam leo. Duis urna leo, elementum ut fringilla pulvinar, sodales eu lectus. Nullam elit purus, imperdiet ac mauris quis, ornare volutpat purus. Nullam est quam, finibus ut urna a, placerat finibus tellus.\n\nVivamus et nisl ipsum. In volutpat posuere lectus, id placerat enim cursus sit amet. Praesent laoreet tempor massa, at accumsan neque feugiat id. Aenean risus augue, consectetur eget pellentesque vel, dapibus ac justo. Donec quis purus nec est interdum porta. Praesent fermentum lobortis velit eleifend mattis. Proin sit amet iaculis risus. Nullam sem turpis, tempor nec fermentum sed, porttitor sed purus. Maecenas orci lectus, feugiat sit amet efficitur at, euismod vel augue. Proin urna ex, viverra eget suscipit ac, scelerisque sed risus. Proin vel dignissim ligula, et vehicula enim. Etiam vel magna iaculis, dignissim purus eu, pellentesque odio. Mauris id interdum urna, sed laoreet eros. Pellentesque ac volutpat purus. Donec vehicula finibus volutpat. Aenean porta ex quis augue mollis, ac dictum nunc euismod.\n\nMorbi arcu ligula, interdum a tincidunt aliquet, convallis a enim. Proin ac dui in ex tempor scelerisque. Proin fringilla consectetur elit in auctor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus maximus eu justo in pulvinar. Phasellus nec consequat quam. Duis et eros mattis, auctor nisl a, tincidunt purus. Vestibulum bibendum massa libero, nec elementum sapien varius nec. Sed ac metus in orci ultrices vehicula. In et orci quam. Aliquam ante nibh, lobortis id laoreet sit amet, dignissim quis purus. Aenean vitae mauris non dolor efficitur faucibus eget eget odio.",
+          "type": "display",
+          "required": false
+        }
+      ]
     }
   ]
 }
