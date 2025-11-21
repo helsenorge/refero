@@ -251,10 +251,16 @@ export function getCalculatedExpressionExtension(item?: QuestionnaireItem): Exte
   return calculatedExpressionExtension;
 }
 
-export function getCopyExtension(item?: QuestionnaireItem): Extension | undefined {
+export function getCopyExtension(item?: QuestionnaireItem, useLegacyValueString: boolean = true): Extension | undefined {
   const extension = getExtension(Extensions.COPY_EXPRESSION_URL, item);
-  if (!extension || !extension.valueString) {
-    return;
+  if (useLegacyValueString) {
+    if (!extension || !extension.valueString) {
+      return;
+    }
+  } else {
+    if (!extension || !extension.valueExpression?.expression) {
+      return;
+    }
   }
   return extension;
 }

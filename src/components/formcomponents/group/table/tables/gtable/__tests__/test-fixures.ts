@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 // test-utils/fhir-fixtures.ts
+
 import {
   Coding,
   Extension,
@@ -74,9 +75,10 @@ export const extItemControl = (code: string): Extension => ({
   },
 });
 
-export const extCQFExpression = (valueString: string): Extension => ({
+export const extCQFExpression = (value: string, useLegacyValueString: boolean = true): Extension => ({
   url: COPY_EXPRESSION_URL,
-  valueString,
+  ...(!useLegacyValueString && { valueExpression: { expression: value, language: 'text/fhirpath' } }),
+  ...(useLegacyValueString && { valueString: value }),
 });
 
 /** gTable header cell with cqf-expression pointing to source linkId */
@@ -343,13 +345,23 @@ export function makeQRWithNestedRepeating(ids: ReturnType<typeof makeBigQuestion
  * 4) Columns and summary helpers (for your gTable code)
  * ====================================================================================== */
 
+const getCopyTargetFhirPath = (extensions?: Extension[], useLegacyValueString: boolean = true): string | undefined => {
+  const extension = extensions?.find(ext => ext.url === COPY_EXPRESSION_URL);
+  if (!extension) return undefined;
+  if (typeof extension.valueString === 'string' && useLegacyValueString) return extension.valueString;
+  if (extension.valueExpression?.expression) return extension.valueExpression.expression;
+  return undefined;
+};
+
 /** Build columns from a summary item (the one created in makeBigQuestionnaire) */
 export function getColumnsFromSummary(summary: QuestionnaireItem) {
   const cols: { header: string; sourceLinkId: string; summaryLinkId: string }[] = [];
   for (const cell of summary.item ?? []) {
     const header = cell.text ?? cell.linkId ?? '(kolonne)';
     const summaryLinkId = cell.linkId ?? '';
-    const expr = cell.extension?.find(e => e.url === COPY_EXPRESSION_URL && typeof e.valueString === 'string')?.valueString;
+
+    const expr = getCopyTargetFhirPath(cell.extension);
+
     if (!expr) continue;
     const source = extractLinkId(expr);
     if (!source) continue;
