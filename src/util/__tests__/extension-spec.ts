@@ -32,5 +32,17 @@ describe('extensions', () => {
       };
       expect(getCopyExtension(item)).toEqual(extension);
     });
+    it('should return extension with expression', () => {
+      const extension: Extension = {
+        url: Extensions.COPY_EXPRESSION_URL,
+        valueExpression: { expression: 'today()', language: 'text/fhirpath' },
+      };
+      const item: QuestionnaireItem = {
+        linkId: '2.1',
+        type: 'group',
+        extension: [extension],
+      };
+      expect(getCopyExtension(item, false)).toEqual(extension);
+    });
   });
 });

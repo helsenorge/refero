@@ -180,10 +180,16 @@ export const createMaxOccursExtension = ({ value, extension }: { extension?: Ext
   });
 };
 
-export function createDataReceiverExpressionExtension(value: string): Extension {
+export function createDataReceiverExpressionExtension(value: string, useLegacyValueString: boolean = true): Extension {
   return createExtension({
     url: Extensions.COPY_EXPRESSION_URL,
-    valueString: value,
+    ...(!useLegacyValueString && {
+      valueExpression: {
+        language: 'text/fhirpath',
+        expression: value,
+      },
+    }),
+    ...(useLegacyValueString && { valueString: value }),
   });
 }
 export function createItemControlExtension(code: string): Extension {

@@ -38,8 +38,14 @@ export function extractLinkIdFromExpression(expr: string): string | undefined {
   return match?.[1];
 }
 
-const getCopyTargetFhirPath = (extensions?: Extension[]): string | undefined =>
-  extensions?.find(ext => ext.url === COPY_EXPRESSION_URL)?.valueString;
+const getCopyTargetFhirPath = (extensions?: Extension[]): string | undefined => {
+  const extension = extensions?.find(ext => ext.url === COPY_EXPRESSION_URL);
+  if (extension?.valueExpression?.expression) {
+    return extension.valueExpression.expression;
+  } else {
+    return extension?.valueString;
+  }
+};
 
 /**
  * Extract columns from a gTable group item

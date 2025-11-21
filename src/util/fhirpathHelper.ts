@@ -68,12 +68,17 @@ export const hasDescendants = (questionnaire?: QuestionnaireResponseItem[] | nul
   return false;
 };
 
-export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnare?: QuestionnaireResponse | null): any {
+export function evaluateFhirpathExpressionToGetString(
+  fhirExtension: Extension,
+  questionnare?: QuestionnaireResponse | null,
+  useLegacyValueString: boolean = true
+): any {
   const qCopy = structuredClone(questionnare);
   const qExt = structuredClone(fhirExtension);
+  const expression = useLegacyValueString ? qExt.valueString : qExt.valueExpression?.expression;
   try {
-    if (qExt.valueString) {
-      const compiledExpression = fhirpath.compile(qExt.valueString, fhirpath_r4_model);
+    if (expression) {
+      const compiledExpression = fhirpath.compile(expression, fhirpath_r4_model);
 
       return compiledExpression(qCopy);
     } else {
