@@ -1,86 +1,297 @@
 {
   "resourceType": "Questionnaire",
-  "language": "nb-NO",
-  "status": "draft",
-  "publisher": "NHN",
+  "id": "patient-intake",
   "meta": {
-    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "tag": [
-      {
-        "system": "urn:ietf:bcp:47",
-        "code": "nb-NO",
-        "display": "Bokmål"
-      }
-    ],
-    "security": [
-      {
-        "code": "3",
-        "display": "Helsehjelp (Full)",
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
-      }
-    ]
+    "profile": ["http://hl7.org/fhir/StructureDefinition/Questionnaire"]
   },
-  "contact": [
-    {
-      "name": "http://www.nhn.no"
-    }
-  ],
-  "subjectType": ["Patient"],
-  "extension": [
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
-        "code": "1"
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
-        "code": "1"
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
-      "valueCodeableConcept": {
-        "coding": [
-          {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-help",
-            "display": "Hide help texts"
-          },
-          {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-sublabel",
-            "display": "Hide sublabel texts"
-          }
-        ]
-      }
-    }
-  ],
-  "id": "69c87ee9-984c-4fe0-9d7a-7de602e88462",
-  "url": "Questionnaire/69c87ee9-984c-4fe0-9d7a-7de602e88462",
+  "status": "draft",
+  "title": "Patient Intake Form",
+  "description": "A comprehensive patient intake form including demographics, medical history, social history, and insurance information.",
   "item": [
     {
-      "linkId": "dd1572bc-e8f1-416b-c080-ac1b929f7806",
+      "linkId": "demographics",
       "type": "group",
-      "text": "test",
+      "text": "Demographics",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+            "valueString": "Section for collecting basic demographic information."
+          }
+        ]
+      },
       "item": [
         {
-          "linkId": "87b252d5-a802-41e6-81b2-a59c85a9df49",
+          "linkId": "name",
           "type": "string",
-          "text": "string",
-          "required": false
+          "text": "Full Name",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "Patient's full legal name."
+              }
+            ]
+          },
+          "required": true
         },
         {
-          "linkId": "c701f62b-b170-4140-d7d9-7a38eafd3e2a",
-          "type": "text",
-          "text": "text",
-          "required": false
+          "linkId": "dob",
+          "type": "date",
+          "text": "Date of Birth",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "Patient's date of birth. Validation: must be in the past."
+              }
+            ]
+          },
+          "required": true
+        },
+        {
+          "linkId": "gender",
+          "type": "choice",
+          "text": "Gender",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "male",
+                "display": "Male",
+                "system": "http://hl7.org/fhir/administrative-gender"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "female",
+                "display": "Female",
+                "system": "http://hl7.org/fhir/administrative-gender"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "other",
+                "display": "Other",
+                "system": "http://hl7.org/fhir/administrative-gender"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "unknown",
+                "display": "Unknown",
+                "system": "http://hl7.org/fhir/administrative-gender"
+              }
+            }
+          ],
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "Patient's gender, using FHIR AdministrativeGender value set."
+              }
+            ]
+          },
+          "required": true
+        },
+        {
+          "linkId": "contact",
+          "type": "string",
+          "text": "Contact Number",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "Primary phone number. Validation: E.164 format recommended."
+              }
+            ]
+          },
+          "required": true
         }
-      ],
-      "required": false
+      ]
+    },
+    {
+      "linkId": "medical-history",
+      "type": "group",
+      "text": "Medical History",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+            "valueString": "Section for allergies, current medications, and chronic conditions."
+          }
+        ]
+      },
+      "item": [
+        {
+          "linkId": "allergies",
+          "type": "text",
+          "text": "List any allergies",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "Free text entry. Specify 'None' if no known allergies."
+              }
+            ]
+          }
+        },
+        {
+          "linkId": "current-medications",
+          "type": "text",
+          "text": "Current Medications",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "List all medications patient is currently taking."
+              }
+            ]
+          }
+        },
+        {
+          "linkId": "chronic-conditions",
+          "type": "text",
+          "text": "Chronic Conditions",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "List any chronic or ongoing conditions (e.g., diabetes, hypertension)."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "social-history",
+      "type": "group",
+      "text": "Social History",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+            "valueString": "Section for lifestyle and social history, such as tobacco and alcohol use."
+          }
+        ]
+      },
+      "item": [
+        {
+          "linkId": "smoking",
+          "type": "choice",
+          "text": "Do you smoke or use tobacco products?",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "never",
+                "display": "Never",
+                "system": "http://terminology.hl7.org/CodeSystem/usage-context-type"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "former",
+                "display": "Former",
+                "system": "http://terminology.hl7.org/CodeSystem/usage-context-type"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "current",
+                "display": "Current",
+                "system": "http://terminology.hl7.org/CodeSystem/usage-context-type"
+              }
+            }
+          ],
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "Patient's smoking status. Use standard codes for status."
+              }
+            ]
+          }
+        },
+        {
+          "linkId": "alcohol",
+          "type": "choice",
+          "text": "Do you consume alcohol?",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "code": "never",
+                "display": "Never",
+                "system": "http://terminology.hl7.org/CodeSystem/usage-context-type"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "occasionally",
+                "display": "Occasionally",
+                "system": "http://terminology.hl7.org/CodeSystem/usage-context-type"
+              }
+            },
+            {
+              "valueCoding": {
+                "code": "regularly",
+                "display": "Regularly",
+                "system": "http://terminology.hl7.org/CodeSystem/usage-context-type"
+              }
+            }
+          ],
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "Patient's alcohol consumption status."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "insurance",
+      "type": "group",
+      "text": "Insurance Information",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+            "valueString": "Section for insurance provider and policy details."
+          }
+        ]
+      },
+      "item": [
+        {
+          "linkId": "provider",
+          "type": "string",
+          "text": "Insurance Provider",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "Name of the insurance company."
+              }
+            ]
+          },
+          "required": true
+        },
+        {
+          "linkId": "policy-number",
+          "type": "string",
+          "text": "Policy Number",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/elementdefinition-comments",
+                "valueString": "The member's insurance policy or ID number."
+              }
+            ]
+          },
+          "required": true
+        }
+      ]
     }
   ]
 }
