@@ -1,3 +1,8 @@
+## 22.0.0-beta01
+
+- Beta release for testing Refero with Helsenorge packages v.37.x.x and 13.x.x
+- add debounce to string inputs to improve performance on large forms
+
 ## 21.4.2
 
 - Bugfix: added correct resource texts for form field tag levels
