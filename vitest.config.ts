@@ -10,19 +10,6 @@ export default defineConfig(configEnv =>
     defineConfig({
       root: path.resolve(__dirname, '.'),
 
-      resolve: {
-        alias: [
-          {
-            find: '@helsenorge/datepicker/components/DatePicker',
-            replacement: path.resolve(__dirname, 'node_modules/@helsenorge/datepicker/lib/components/DatePicker/index.js'),
-          },
-          {
-            find: '@helsenorge/datepicker',
-            replacement: path.resolve(__dirname, 'node_modules/@helsenorge/datepicker/lib/index.js'),
-          },
-        ],
-      },
-
       test: {
         testTimeout: 30000,
         include: ['src/**/*-spec.ts', 'src/**/*-spec.tsx'],
