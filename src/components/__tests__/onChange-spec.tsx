@@ -1,10 +1,11 @@
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
+import type { IActionRequester } from '../../util/actionRequester';
+import type { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
+import type { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
 import { screen, userEvent, renderRefero, waitFor } from '../../../test/test-utils';
+
 import '../../util/__tests__/defineFetch';
 import { OPEN_CHOICE_ID } from '../../constants/index';
-import { IActionRequester } from '../../util/actionRequester';
-import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import questionnaireWithNestedItems from './__data__/onChange/nestedItems';
 import questionnaireWithRepeats from './__data__/onChange/repeats';
@@ -249,22 +250,18 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
   describe('date fields gets updated', () => {
     beforeEach(() => {
-      process.env.TZ = 'Europe/Oslo';
+      vi.stubEnv('TZ', 'Europe/Oslo');
     });
     afterEach(() => {
-      delete process.env.TZ;
+      vi.unstubAllEnvs();
     });
     it('date gets updated', async () => {
       const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
         actionRequester.addDateAnswer('7a', '2024-08-14');
       });
-      await wrapper(onChange, questionnaireWithAllItemTypes);
+      const { container } = await wrapper(onChange, questionnaireWithAllItemTypes);
 
-      const booleanInput = screen.getByTestId(/test-boolean/i).querySelector('input');
-      if (booleanInput) {
-        await userEvent.click(booleanInput);
-      }
-
+      await inputAnswer('1', 0.1, container);
       const dateElement = screen.getByTestId(/test-dateDay/i);
       const dateInput = dateElement.querySelector('input');
 

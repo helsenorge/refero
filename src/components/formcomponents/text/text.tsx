@@ -1,12 +1,13 @@
 import React from 'react';
 
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Textarea from '@helsenorge/designsystem-react/components/Textarea';
-
-import { debounce } from '@helsenorge/core-utils/debounce';
+import { debounce } from '@helsenorge/designsystem-react/utils/debounce';
 
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
 import styles from '../common-styles.module.css';
@@ -16,7 +17,6 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 import { newStringValueAsync } from '@/actions/newValue';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import Constants from '@/constants/index';
@@ -46,18 +46,21 @@ export const Text = (props: Props): JSX.Element | null => {
   const value = getStringValue(answer);
 
   useResetFormField(idWithLinkIdAndItemIndex, value, item);
-  const handleChange = (event: React.FormEvent): void => {
-    const value = (event.target as HTMLInputElement).value;
-    if (dispatch && path && item) {
-      dispatch(newStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueString: value }));
-    }
+  const handleChange = React.useCallback(
+    (event?: React.FormEvent): void => {
+      if (!event) return;
+      const value = (event.target as HTMLInputElement).value;
+      if (dispatch && path && item) {
+        dispatch(newStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueString: value }));
+      }
 
-    if (promptLoginMessage) {
-      promptLoginMessage();
-    }
-  };
-  //@ts-expect-error - debounce is not typed
-  const debouncedHandleChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void = debounce(handleChange, 250, false);
+      if (promptLoginMessage) {
+        promptLoginMessage();
+      }
+    },
+    [dispatch, path, item, onAnswerChange, promptLoginMessage]
+  );
+  const [debouncedHandleChange] = React.useMemo(() => debounce(handleChange, 250), [handleChange]);
   const onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     event.persist();
     debouncedHandleChange(event);

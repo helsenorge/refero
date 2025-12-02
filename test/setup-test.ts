@@ -4,6 +4,11 @@ import { vi } from 'vitest';
 
 import './__mocks__/matchMedia';
 import './__mocks__/IntersectionObserver';
+
+// Mock debounce to execute immediately in tests
+vi.mock('@helsenorge/designsystem-react/utils/debounce', () => ({
+  debounce: (fn: (...args: unknown[]) => unknown): [(...args: unknown[]) => unknown, () => void] => [fn, (): void => {}],
+}));
 // import './__mocks__/ResizeObserver';
 // import './__mocks__/useLayoutEvent';
 // import './__mocks__/useSize';
@@ -20,6 +25,7 @@ self.IS_REACT_ACT_ENVIRONMENT = true;
 window.IS_REACT_ACT_ENVIRONMENT = true;
 // @ts-expect-error global is not defined
 this.IS_REACT_ACT_ENVIRONMENT = true;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).__REFERO_DEBUG = { enableWhen: true };
 Object.defineProperty(window.URL, 'createObjectURL', {
   writable: true,
@@ -57,6 +63,7 @@ Object.defineProperty(window, 'matchMedia', {
 });
 vi.mock('@/workers/fhir-path.worker.ts', async importOriginal => {
   // Get the original module's exports if needed (optional)
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   const original = await importOriginal<typeof import('@/workers/fhir-path.worker.ts')>();
 
   // Create a fake class that we can spy on
