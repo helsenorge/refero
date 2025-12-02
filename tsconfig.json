@@ -1,10 +1,4 @@
 {
-  "extends": "./tsconfig.build.json",
-  "compilerOptions": {
-    "types": ["vite/client", "vitest/globals", "vitest/jsdom"],
-    "typeRoots": ["./node_modules/@types"],
-    "baseUrl": "."
-  },
-  "include": ["src", "test", "preview"],
-  "exclude": ["**/__mocks__/*", "**/__data__/*"]
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

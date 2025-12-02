@@ -1,11 +1,11 @@
 import '../../util/__tests__/defineFetch';
-import { Questionnaire } from 'fhir/r4';
+import type { ReferoProps } from '@/types/referoProps';
+import type { Questionnaire } from 'fhir/r4';
 
 import standard from './__data__/customActionButtons/standard';
 import stepView from './__data__/customActionButtons/stepview';
-import { act, renderRefero, screen, waitFor } from '../../../test/test-utils';
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 
-import { ReferoProps } from '@/types/referoProps';
 
 describe('render custom actionbuttons', async () => {
   describe('standard', () => {
@@ -83,13 +83,11 @@ async function createWrapper(
   renderCustomActionButtons?: Partial<ReferoProps>['renderCustomActionButtons'],
   onSubmit: ReferoProps['onSubmit'] = vi.fn()
 ) {
-  return await act(async () => {
-    return await renderRefero({
-      questionnaire,
-      props: {
-        renderCustomActionButtons,
-        onSubmit,
-      },
-    });
+  return await renderRefero({
+    questionnaire,
+    props: {
+      renderCustomActionButtons,
+      onSubmit,
+    },
   });
 }

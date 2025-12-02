@@ -1,7 +1,9 @@
 import '../../util/__tests__/defineFetch';
 // vi.unmock('@/workers/fhir-path.worker.ts');
 import { clickByLabelText } from '@test/selectors';
-import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from 'fhir/r4';
+import { vi } from 'vitest';
+
+import type { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
 import { renderRefero, screen, userEvent, waitFor } from '../../../test/test-utils';
 import ItemType from '../../constants/itemType';
@@ -83,10 +85,10 @@ describe('Copy value from item', () => {
   });
   describe('should copy DATE and TIME values', () => {
     beforeEach(() => {
-      process.env.TZ = 'Europe/Oslo';
+      vi.stubEnv('TZ', 'Europe/Oslo');
     });
     afterEach(() => {
-      delete process.env.TZ;
+      vi.unstubAllEnvs();
     });
     it('should copy DATE value', async () => {
       const sender = createSenderItem(ItemType.DATE);

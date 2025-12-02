@@ -1,9 +1,12 @@
 import React from 'react';
 
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
+import { debounce } from '@helsenorge/designsystem-react/utils/debounce';
 
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
@@ -11,7 +14,6 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 import { newStringValueAsync } from '@/actions/newValue';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
@@ -40,20 +42,36 @@ export const String = (props: Props): JSX.Element | null => {
   const answer = useGetAnswer(linkId, path);
   const value = getStringValue(answer);
   useResetFormField(idWithLinkIdAndItemIndex, value);
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
-    const value = event.target.value;
-    if (dispatch && path && item) {
-      const newState = await dispatch(newStringValueAsync(path, value, item));
-      onAnswerChange(newState, item, { valueString: value });
-    }
 
-    if (promptLoginMessage) {
-      promptLoginMessage();
-    }
-  };
+  const [localValue, setLocalValue] = React.useState(value ?? '');
+
+  React.useEffect(() => {
+    setLocalValue(value ?? '');
+  }, [value]);
+
+  const handleChange = React.useCallback(
+    async (event?: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+      if (!event) return;
+      const value = event.target.value;
+      if (dispatch && path && item) {
+        const newState = await dispatch(newStringValueAsync(path, value, item));
+        onAnswerChange(newState, item, { valueString: value });
+      }
+
+      if (promptLoginMessage) {
+        promptLoginMessage();
+      }
+    },
+    [dispatch, path, item, onAnswerChange, promptLoginMessage]
+  );
+
+  const [debouncedHandleChange] = React.useMemo(() => debounce(handleChange, 250), [handleChange]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    handleChange(event);
+    const newValue = event.target.value;
+    setLocalValue(newValue);
+    event.persist();
+    debouncedHandleChange(event);
   };
 
   const maxCharacters = getMaxLength(item);
@@ -108,11 +126,11 @@ export const String = (props: Props): JSX.Element | null => {
         <Input
           {...rest}
           aria-describedby={`${getId(id)}-string-formfieldtag`}
-          value={value ?? ''}
+          value={localValue}
           readOnly={item?.readOnly}
           onChange={(e): void => {
-            handleInputChange(e);
             onChange(e);
+            handleInputChange(e);
           }}
           type="text"
           width={width}

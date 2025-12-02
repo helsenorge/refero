@@ -1,23 +1,24 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
 
-import { ValueSet, Coding } from 'fhir/r4';
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
 
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { ValueSet, Coding } from 'fhir/r4';
 import type { InputProps } from 'react-autosuggest';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+import { debounce } from '@helsenorge/designsystem-react/utils/debounce';
 
-import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
-import { debounce } from '@helsenorge/core-utils/debounce';
+import Autosuggest, { type Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
@@ -119,7 +120,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     }
   };
 
-  const onSuggestionsFetchRequested = ({ value }: { value: string }): void => {
+  const onSuggestionsFetchRequested = ({ value }: { value: string } = { value: '' }): void => {
     if (value.length < (autoSuggestProps?.minSearchCharacters || 0)) {
       setSuggestions([]);
 
@@ -148,12 +149,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     setHasLoadError(hasLoadError && !newValue);
   };
 
-  const debouncedOnSuggestionsFetchRequested: ({ value }: { value: string }) => void = debounce(
-    //@ts-expect-error - value is not a number
-    onSuggestionsFetchRequested,
-    autoSuggestProps?.typingSearchDelay || 500,
-    false
-  );
+  const [debouncedOnSuggestionsFetchRequested] = debounce(onSuggestionsFetchRequested, autoSuggestProps?.typingSearchDelay || 500);
 
   const onSuggestionSelected = (_event: FormEvent<HTMLInputElement>, { suggestion }: { suggestion: Suggestion }): void => {
     setLastSearchValue(suggestion.label);
