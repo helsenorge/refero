@@ -1,3 +1,8 @@
+## 22.0.0-beta02
+
+- dompurify upgraded to 3.3.0
+- react upgraded to 19.2.1
+
 ## 22.0.0-beta01
 
 - Beta release for testing Refero with Helsenorge packages v.37.x.x and 13.x.x
