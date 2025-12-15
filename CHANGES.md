@@ -1,3 +1,7 @@
+## 21.4.3
+
+- Bugfix: Radiobutton-view triggered validation before form was submitted
+
 ## 22.0.0-beta02
 
 - dompurify upgraded to 3.3.0

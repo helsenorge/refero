@@ -57,7 +57,7 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: S
   }
 
   return (
-    <div ref={stepContainerRef}>
+    <div ref={stepContainerRef} tabIndex={-1}>
       <RenderForm
         isAuthorized={isAuthorized}
         isStepView={true}
