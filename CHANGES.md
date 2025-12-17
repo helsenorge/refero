@@ -1,12 +1,10 @@
-## 22.0.0-beta02
+## 22.0.0
 
+- peerDependencies updated to helsenorge packages v.37.x.x and 13.x.x. Also added react 19.x.x as possible peerDependency
 - dompurify upgraded to 3.3.0
 - react upgraded to 19.2.1
-
-## 22.0.0-beta01
-
-- Beta release for testing Refero with Helsenorge packages v.37.x.x and 13.x.x
-- add debounce to string inputs to improve performance on large forms
+- Helsenorge packages v.37.x.x and 13.x.x
+- Add debounce to string inputs to improve performance on large forms
 
 ## 21.4.2
 
