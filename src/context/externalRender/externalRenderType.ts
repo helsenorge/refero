@@ -5,6 +5,7 @@ import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 import { IActionRequester } from '@/util/actionRequester';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { Resources } from '@/util/resources';
+import { FocusHandler } from '@/types/referoProps';
 
 export type ExternalRenderType = {
   onRequestHelpElement?: (
@@ -41,4 +42,5 @@ export type ExternalRenderType = {
     actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
   ) => void;
+  focusHandler?: FocusHandler;
 };

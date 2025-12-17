@@ -1,6 +1,7 @@
-## 21.4.3
+## 21.5.0
 
 - Bugfix: Radiobutton-view triggered validation before form was submitted
+- New prop: focusHandler. It allows consumers to manage focus logic on initialization and when navigating between steps in step-view.
 
 ## 22.0.0-beta02
 

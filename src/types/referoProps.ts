@@ -15,6 +15,8 @@ import { TextMessage } from './text-message';
 import { PresentationButtonsType } from '@/constants/presentationButtonsType';
 import { DefaultValues } from '@/validation/defaultFormValues';
 
+export type FocusHandler = (focusedElement: HTMLElement) => void;
+
 export interface RenderCustomButtonsArgs {
   /**
    * The full set of props passed into the Refero component instance.
@@ -333,4 +335,9 @@ export interface ReferoProps {
    * If this prop is defined, the returned JSX element will be displayed instead of the default buttons.
    */
   renderCustomActionButtons?: (args: RenderCustomButtonsArgs) => JSX.Element;
+
+  /**
+   * A callback function that allows consumers to manage focus logic on initialization and when navigating between steps in step-view.
+   */
+  focusHandler?: FocusHandler;
 }

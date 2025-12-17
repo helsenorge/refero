@@ -11,6 +11,7 @@ import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 import { IActionRequester } from '@/util/actionRequester';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { Resources } from '@/util/resources';
+import { FocusHandler } from '@/types/referoProps';
 
 type ExternalRenderProviderProps = {
   children: ReactNode;
@@ -48,6 +49,7 @@ type ExternalRenderProviderProps = {
     actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
   ) => void;
+  focusHandler?: FocusHandler;
 };
 export const ExternalRenderProvider = ({
   children,
@@ -63,6 +65,7 @@ export const ExternalRenderProvider = ({
   autoSuggestProps,
   validateScriptInjection,
   onChange,
+  focusHandler,
 }: ExternalRenderProviderProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const isExternalUpdate = useAppSelector(state => state.refero.form.FormData.isExternalUpdate);
@@ -92,6 +95,7 @@ export const ExternalRenderProvider = ({
       autoSuggestProps,
       validateScriptInjection,
       globalOnChange: handleOnChange,
+      focusHandler,
     }),
     [
       onRequestHelpElement,
@@ -106,6 +110,7 @@ export const ExternalRenderProvider = ({
       autoSuggestProps,
       validateScriptInjection,
       handleOnChange,
+      focusHandler,
     ]
   );
 
