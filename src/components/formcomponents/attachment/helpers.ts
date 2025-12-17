@@ -1,4 +1,4 @@
-import { Attachment, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { Attachment, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 export const getAttachmentsFromAnswer = (answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): Attachment[] => {
   if (Array.isArray(answer)) {

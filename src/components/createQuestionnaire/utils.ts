@@ -1,4 +1,4 @@
-import { ComponentType } from 'react';
+import type { ComponentType } from 'react';
 
 import Group from '@components/formcomponents/group/group';
 import Attachment from '@formcomponents/attachment/attachment';
@@ -14,13 +14,19 @@ import OpenChoice from '@formcomponents/open-choice/open-choice';
 import Quantity from '@formcomponents/quantity/quantity';
 import StringComponent from '@formcomponents/string/string';
 import Text from '@formcomponents/text/text';
-import { QuestionnaireResponseItem, QuestionnaireItem } from 'fhir/r4';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { FormData } from '@/reducers/form';
+import type { QuestionnaireResponseItem, QuestionnaireItem } from 'fhir/r4';
+
 import ItemType from '@/constants/itemType';
-import { FormData } from '@/reducers/form';
 import { isRepeat } from '@/util';
-import { createIdSuffix, getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
+import {
+  createIdSuffix,
+  getItemWithIdFromResponseItemArray,
+  getRootQuestionnaireResponseItemFromData,
+  type Path,
+} from '@/util/refero-core';
 
 export const getResponseItems = (
   item?: QuestionnaireItem,

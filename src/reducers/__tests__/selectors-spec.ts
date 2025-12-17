@@ -1,12 +1,12 @@
 // questionnaireRequiredState.test.ts
 import { configureStore } from '@reduxjs/toolkit';
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { describe, it, expect } from 'vitest';
+
+import type { Resources } from '@/util/resources';
+import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import rootReducer from '..';
 import { areAllInputItemsOptional, areAllInputItemsRequired, hasExactlyOneInputItem, RequiredLevelSelector } from '../selectors';
-
-import { Resources } from '@/util/resources';
 
 describe('hasExactlyOneInputItem', () => {
   it('returns false for undefined questionnaire', () => {

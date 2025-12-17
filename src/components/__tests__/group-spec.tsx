@@ -1,13 +1,12 @@
 import '../../util/__tests__/defineFetch';
-import { QuestionnaireItem, Extension, Questionnaire } from 'fhir/r4';
+import type { IItemType } from '../../constants/itemType';
+import type { ReferoProps } from '@/types/referoProps';
+import type { QuestionnaireItem, Extension, Questionnaire } from 'fhir/r4';
 
 import { getResources } from '../../../preview/resources/referoResources';
 import { act, renderRefero } from '../../../test/test-utils';
-import { IItemType } from '../../constants/itemType';
 import questionnaire from '../__tests__/__data__/group';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
-
-import { ReferoProps } from '@/types/referoProps';
 
 const resources = { ...getResources('') };
 

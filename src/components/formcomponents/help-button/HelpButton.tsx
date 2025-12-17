@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 interface Props {
   item: QuestionnaireItem | undefined;
   padding?: boolean;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const HelpButton = ({ item, padding, ariaLabeledBy, children, callback }: Props): JSX.Element | null => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const handleToggle = (): void => {
     setIsOpen(!isOpen);
     callback(!isOpen);

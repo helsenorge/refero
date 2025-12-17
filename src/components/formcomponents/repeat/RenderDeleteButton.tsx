@@ -1,13 +1,13 @@
 import { memo, useEffect, useState } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import DeleteButton from './DeleteButton';
 
 import { useAppSelector } from '@/reducers';
 import { getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { isGroupAndDescendantsHasAnswer } from '@/util/fhirpathHelper';
-import { Path, shouldRenderDeleteButton } from '@/util/refero-core';
+import { type Path, shouldRenderDeleteButton } from '@/util/refero-core';
 
 type Props = {
   className?: string;

@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 
-import { Attachment, QuestionnaireItem } from 'fhir/r4';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { type FieldError, type FieldValues, useFormContext } from 'react-hook-form';
+
+import type { Attachment, QuestionnaireItem } from 'fhir/r4';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
@@ -29,6 +30,7 @@ export const ReadOnly = ({ pdf, id, idWithLinkIdAndItemIndex, item, value, pdfVa
     if (idWithLinkIdAndItemIndex && shouldValidateReadOnly(item)) {
       setValue(idWithLinkIdAndItemIndex, value);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   if (pdf) {

@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import ItemControlConstants from '@/constants/itemcontrol';
 import { useAppSelector } from '@/reducers';

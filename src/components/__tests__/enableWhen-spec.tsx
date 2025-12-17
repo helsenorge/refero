@@ -1,5 +1,5 @@
 import '../../util/__tests__/defineFetch';
-import { Questionnaire } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 
 import { q as questionnaireWithEnableWhen, prr, q2, q3 } from './__data__/enableWhen';
 import { selectCheckboxOption } from '../../../test/selectors';

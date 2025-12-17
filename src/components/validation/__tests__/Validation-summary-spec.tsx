@@ -1,11 +1,12 @@
 import { submitForm } from '@test/selectors';
 import { renderRefero, screen, waitFor } from '@test/test-utils.tsx';
-import { Questionnaire } from 'fhir/r4';
+
+import type { ReferoProps } from '@/types/referoProps';
+import type { Questionnaire } from 'fhir/r4';
 
 import { q } from './__data__/';
 import { getResources } from '../../../../preview/resources/referoResources';
 
-import { ReferoProps } from '@/types/referoProps';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
 describe('Validation-summary', () => {

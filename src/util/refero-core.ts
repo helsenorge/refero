@@ -1,4 +1,6 @@
-import {
+import type { FormData, FormDefinition } from '../reducers/form';
+import { QuestionnaireEnableOperator } from '../types/fhirEnums';
+import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   QuestionnaireItem,
@@ -11,12 +13,9 @@ import {
   Questionnaire,
 } from 'fhir/r4';
 
-import { QuestionnaireEnableOperator } from '../types/fhirEnums';
-
 import { getMinOccursExtensionValue } from './extension';
 import { isOfTypeQuestionnaireResponseItem } from './typeguards';
 import ItemType from '../constants/itemType';
-import { FormData, FormDefinition } from '../reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
 
 import { isRepeat } from '.';

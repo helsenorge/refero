@@ -1,8 +1,8 @@
 import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
-import { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { vi } from 'vitest';
 
-import { ReferoProps } from '../../../../types/referoProps';
+import type { ReferoProps } from '../../../../types/referoProps';
+import type { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
 
 import { checkboxView as q } from './__data__/index';
 import { typeExtraField } from './utils';

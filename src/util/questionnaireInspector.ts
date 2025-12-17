@@ -1,6 +1,6 @@
-import { QuestionnaireItem, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { QuestionnaireItem, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId, ItemAndPath } from './refero-core';
+import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId, type ItemAndPath } from './refero-core';
 
 export interface QuestionnaireItemPair {
   QuestionnaireItem: QuestionnaireItem;

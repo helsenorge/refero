@@ -1,9 +1,10 @@
-import { QuestionnaireItem } from 'fhir/r4';
 import { createSelector } from 'reselect';
+
+import type { GlobalState } from '@/reducers';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
-import { GlobalState } from '@/reducers';
 import { findQuestionnaireItem, questionnaireSelector } from '@/reducers/selectors';
 import { getCodingTextTableValues } from '@/util/extension';
 

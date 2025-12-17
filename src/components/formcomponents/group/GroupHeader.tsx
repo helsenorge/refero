@@ -1,6 +1,7 @@
-import { Dispatch } from 'react';
+import type { Dispatch } from 'react';
 
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type { Resources } from '@/util/resources';
+import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import { getHeaderText } from './helpers';
 import RenderHelpButton from '../help-button/RenderHelpButton';
@@ -11,7 +12,6 @@ import { useExternalRenderContext } from '@/context/externalRender/useExternalRe
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getId, getText } from '@/util';
-import { Resources } from '@/util/resources';
 
 type GroupHeaderProps = {
   item?: QuestionnaireItem;

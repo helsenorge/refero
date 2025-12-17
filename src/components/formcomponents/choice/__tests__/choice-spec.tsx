@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireItemAnswerOption, Extension } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption, Extension } from 'fhir/r4';
 
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { renderRefero, screen } from '../../../../../test/test-utils';

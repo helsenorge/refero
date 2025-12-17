@@ -1,4 +1,4 @@
-import { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
+import type { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
 
 import codeSystems from './codingsystems';
 

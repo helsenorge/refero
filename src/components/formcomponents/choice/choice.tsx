@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -11,8 +12,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 
 import { newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import itemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
+import itemControlConstants, { type ItemControlValue } from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';

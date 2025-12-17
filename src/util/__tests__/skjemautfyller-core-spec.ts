@@ -1,4 +1,4 @@
-import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItem } from 'fhir/r4';
 
 import { dataModel } from './__data__/testDataModel';
 import { pathify } from '../../reducers/__tests__/utils';
@@ -10,7 +10,7 @@ import {
   getResponseItemWithPath,
   enableWhenMatchesAnswer,
   createPathForItem,
-  Path,
+  type Path,
 } from '../refero-core';
 
 describe('getQuestionnaireResponseItemFromData', () => {

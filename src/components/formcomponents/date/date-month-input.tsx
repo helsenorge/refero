@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 
-import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldError, type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -12,7 +14,6 @@ import { getId, isReadOnly } from '../../../util';
 import styles2 from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
@@ -83,6 +84,7 @@ export const DateYearMonthInput = ({
   useEffect(() => {
     setValue(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
     setValue(`${idWithLinkIdAndItemIndex}-yearmonth-month`, month);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getCombinedFieldError = (): FieldError | undefined => {

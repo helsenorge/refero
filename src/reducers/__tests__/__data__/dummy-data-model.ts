@@ -1,6 +1,5 @@
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-
-import { GlobalState } from '../..';
+import type { GlobalState } from '../..';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 const dataModel: GlobalState = {
   refero: {

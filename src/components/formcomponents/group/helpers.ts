@@ -1,11 +1,11 @@
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type { Path } from '@/util/refero-core';
+import type { RenderContext } from '@/util/renderContext';
+import type { Resources } from '@/util/resources';
+import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import { RenderContextType } from '@/constants/renderContextType';
 import { getText, renderPrefix } from '@/util';
 import { getGroupItemControl } from '@/util/group-item-control';
-import { Path } from '@/util/refero-core';
-import { RenderContext } from '@/util/renderContext';
-import { Resources } from '@/util/resources';
 
 export const getColumns = (item?: QuestionnaireItem): string[] => {
   const seenColumns: { [key: string]: number } = {};

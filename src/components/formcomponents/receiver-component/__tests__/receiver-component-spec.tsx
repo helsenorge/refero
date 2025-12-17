@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { renderRefero, screen } from '@test/test-utils.tsx';
-import { Questionnaire } from 'fhir/r4';
 import { vi } from 'vitest';
 
-import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
+import { EnhetType, type OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
+import type { Questionnaire } from 'fhir/r4';
 
 import { q } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';

@@ -1,5 +1,7 @@
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -10,7 +12,6 @@ import { getPDFValueForDate, validateYearDigits, validateYearMax, validateYearMi
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';

@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { queryHelpers, userEvent, screen } from '@test/test-utils';
-import {
+
+import type { IActionRequester } from '../../util/actionRequester';
+import type { IQuestionnaireInspector } from '../../util/questionnaireInspector';
+import type {
   Coding,
   Extension,
   Questionnaire,
@@ -12,8 +15,6 @@ import {
 
 import { Extensions } from '../../constants/extensions';
 import valueSet from '../../constants/valuesets';
-import { IActionRequester } from '../../util/actionRequester';
-import { IQuestionnaireInspector } from '../../util/questionnaireInspector';
 
 export async function inputAnswer(linkId: string, answer: number | string, element: HTMLElement): Promise<void> {
   const input = findItem(linkId, element);

@@ -1,6 +1,6 @@
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import SafeText from '../referoLabel/SafeText';
 import RenderHelpButton from './help-button/RenderHelpButton';

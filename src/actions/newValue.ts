@@ -1,8 +1,8 @@
-import { createAction, PayloadAction } from '@reduxjs/toolkit';
-import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { createAction, type PayloadAction } from '@reduxjs/toolkit';
 
-import { AppDispatch, GlobalState } from '../reducers';
-import { Path } from '../util/refero-core';
+import type { AppDispatch, GlobalState } from '../reducers';
+import type { Path } from '../util/refero-core';
+import type { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 export type NEW_VALUE = 'refero/NEW_VALUE';
 export const NEW_VALUE: NEW_VALUE = 'refero/NEW_VALUE';

@@ -1,10 +1,14 @@
-import { QuestionnaireItem } from 'fhir/r4';
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { TextMessage } from '@/types/text-message';
+import type { Resources } from '@/util/resources';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
-import FileUpload, { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import FileUpload, { type MimeTypes, type UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 import {
   validateNumberOfFiles,
@@ -24,14 +28,11 @@ import {
 import { useAttachmentSync } from './useAttachmentSync';
 import { ReadOnly } from '../read-only/readOnly';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import { VALID_FILE_TYPES } from '@/constants';
-import { TextMessage } from '@/types/text-message';
 import { getId, isReadOnly } from '@/util';
-import { Resources } from '@/util/resources';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;

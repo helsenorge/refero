@@ -1,5 +1,5 @@
 import '../../util/__tests__/defineFetch';
-import { Questionnaire, Extension } from 'fhir/r4';
+import type { Questionnaire, Extension } from 'fhir/r4';
 
 import questionnaire from './__data__/common/';
 import { renderRefero, waitFor } from '../../../test/test-utils';

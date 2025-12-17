@@ -2,9 +2,8 @@ import type { IActionRequester } from '../../util/actionRequester';
 import type { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
-import { screen, userEvent, renderRefero, waitFor } from '../../../test/test-utils';
-
 import '../../util/__tests__/defineFetch';
+import { screen, userEvent, renderRefero, waitFor } from '../../../test/test-utils';
 import { OPEN_CHOICE_ID } from '../../constants/index';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import questionnaireWithNestedItems from './__data__/onChange/nestedItems';

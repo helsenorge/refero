@@ -1,7 +1,13 @@
-import { Quantity, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type {
+  Quantity,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer,
+} from 'fhir/r4';
 
-import ItemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
-import { TABLE_CODES_VALUES, TableCodes } from '@/constants/tableTypes';
+import ItemControlConstants, { type ItemControlValue } from '@/constants/itemcontrol';
+import { type TABLE_CODES_VALUES, TableCodes } from '@/constants/tableTypes';
 
 export function isString(value: unknown): value is string {
   return typeof value === 'string';

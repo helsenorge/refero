@@ -1,9 +1,9 @@
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { runCalculatorsAction, runEnableWhenAction } from '@/actions/thunks';
-import { GlobalState, useAppDispatch } from '@/reducers';
-import { ActionRequester, IActionRequester } from '@/util/actionRequester';
-import { IQuestionnaireInspector, QuestionniareInspector } from '@/util/questionnaireInspector';
+import { type GlobalState, useAppDispatch } from '@/reducers';
+import { ActionRequester, type IActionRequester } from '@/util/actionRequester';
+import { type IQuestionnaireInspector, QuestionniareInspector } from '@/util/questionnaireInspector';
 
 const useOnAnswerChange = (
   onChange?: (

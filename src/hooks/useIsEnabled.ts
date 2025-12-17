@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
-import { QuestionnaireItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { useAppSelector } from '@/reducers';
 import { getResponseItemsSelector } from '@/reducers/selectors';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
-import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, Path } from '@/util/refero-core';
+import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, type Path } from '@/util/refero-core';
 
 export function isEnableWhenEnabled(
   enableWhen: QuestionnaireItemEnableWhen[],

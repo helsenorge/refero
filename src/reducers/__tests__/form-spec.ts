@@ -3,9 +3,11 @@
 import '../../util/__tests__/defineFetch';
 import { fail } from 'assert';
 
-import { PayloadAction } from '@reduxjs/toolkit';
 import { renderReferoWithStore, screen, userEvent, waitFor } from '@test/test-utils';
-import { Questionnaire, QuestionnaireResponseItem } from 'fhir/r4';
+
+import type { Form } from '../form';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { Questionnaire, QuestionnaireResponseItem } from 'fhir/r4';
 
 import dataModel from './__data__/dummy-data-model';
 import { reduce } from './utils';
@@ -20,7 +22,7 @@ import {
   newCodingValueAction,
   addRepeatItemAction,
   deleteRepeatItemAction,
-  NewValuePayload,
+  type NewValuePayload,
   newAttachmentAction,
 } from '../../actions/newValue';
 import {
@@ -30,7 +32,6 @@ import {
   getQuestionnaireResponseItemWithLinkid,
   getItemWithIdFromResponseItemArray,
 } from '../../util/refero-core';
-import { Form } from '../form';
 
 describe('new value action', () => {
   it('should update string value', async () => {

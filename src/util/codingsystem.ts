@@ -1,4 +1,4 @@
-import { QuestionnaireItem, Coding } from 'fhir/r4';
+import type { QuestionnaireItem, Coding } from 'fhir/r4';
 
 export function getCodes(item?: QuestionnaireItem, system?: string): Coding[] | undefined {
   if (!item || !item.code || item.code.length === 0) {

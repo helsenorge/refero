@@ -1,4 +1,8 @@
-import {
+import { v4 as uuid } from 'uuid';
+
+import type { Resources } from './resources';
+import type { Options } from '../types/formTypes/radioGroupOptions';
+import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   Reference,
@@ -11,19 +15,15 @@ import {
   ValueSetComposeIncludeConcept,
   ValueSetComposeInclude,
 } from 'fhir/r4';
-import { v4 as uuid } from 'uuid';
-
-import { Options } from '../types/formTypes/radioGroupOptions';
 
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
-import { Resources } from './resources';
 import { isItemControlValue } from './typeguards';
 
 import { isReadOnly, isRequired } from './index';
 
 import { Extensions } from '@/constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '@/constants/index';
-import itemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
+import itemControlConstants, { type ItemControlValue } from '@/constants/itemcontrol';
 import ItemType from '@/constants/itemType';
 
 export function hasCanonicalValueSet(item?: QuestionnaireItem): boolean {

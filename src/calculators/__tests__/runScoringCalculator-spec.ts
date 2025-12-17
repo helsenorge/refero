@@ -1,14 +1,15 @@
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { describe, expect, vi, beforeEach } from 'vitest';
+
+import type { ActionRequester } from '@/util/actionRequester';
+import type { ScoringCalculator } from '@/util/scoringCalculator';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { questionnaireHasScoring, runScoringCalculator, updateQuestionnaireResponseWithScore } from '../runScoringCalculator';
 
 import ItemType from '@/constants/itemType';
-import { ActionRequester } from '@/util/actionRequester';
 import * as extensionUtil from '@/util/extension';
 import * as valueUtil from '@/util/index';
 import * as referoCore from '@/util/refero-core';
-import { ScoringCalculator } from '@/util/scoringCalculator';
 
 describe('runScoringCalculator', () => {
   let questionnaire: Questionnaire;

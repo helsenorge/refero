@@ -1,4 +1,5 @@
-import {
+import type { RunEnableWhenInput, RunEnableWhenResult } from './types';
+import type {
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
@@ -6,14 +7,12 @@ import {
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
 
-import { RunEnableWhenInput, RunEnableWhenResult } from './types';
-
-import { ClearAction, deleteRepeatItemAction, resetAnswerValueAction } from '@/actions/newValue';
+import { type ClearAction, deleteRepeatItemAction, resetAnswerValueAction } from '@/actions/newValue';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { isRepeat } from '@/util';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '@/util/extension';
-import { copyPath, enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, Path } from '@/util/refero-core';
+import { copyPath, enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, type Path } from '@/util/refero-core';
 import { calculateEnableWhen } from '@/workers/fhirpath-rpc';
 export async function startEnableWhenCalculation({
   questionnaire,
