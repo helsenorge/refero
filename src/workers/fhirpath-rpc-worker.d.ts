@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import type { AnswerPad } from '../util/FhirPathExtensions';
 import type { Extension, Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type { Path } from 'fhirpath';
-
-import { AnswerPad } from '../util/FhirPathExtensions';
 
 /**
  * Method names supported by the worker.

@@ -1,11 +1,11 @@
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { getColumns } from './helpers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 import GenerateQuestionnaireComponents, {
-  QuestionnaireComponentItemProps,
+  type QuestionnaireComponentItemProps,
 } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { RenderContextType } from '@/constants/renderContextType';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';

@@ -1,8 +1,8 @@
-import { Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
-import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { type Matcher, renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import { vi } from 'vitest';
 
-import { ReferoProps } from '../../../../types/referoProps';
+import type { ReferoProps } from '../../../../types/referoProps';
+import type { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { q, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';

@@ -1,10 +1,11 @@
 import { fail } from 'assert';
 
-import { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import * as uuid from 'uuid';
-import { Assertion, Mocked, vi } from 'vitest';
+import { type Assertion, type Mocked, vi } from 'vitest';
 
-import { Form } from '../form';
+import type { Form } from '../form';
+import type { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+
 import state from './__data__/newValueAction';
 import {
   getResponseItem,
@@ -27,7 +28,7 @@ import {
   enterOpenChoiceText,
   removeOpenChoiceText,
 } from './utils';
-import { getDefinitionItems, getQuestionnaireDefinitionItem, Path } from '../../util/refero-core';
+import { getDefinitionItems, getQuestionnaireDefinitionItem, type Path } from '../../util/refero-core';
 
 vi.mock('uuid');
 

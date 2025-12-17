@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { AppDispatch } from '@/reducers';
+import type { ActionRequester } from '@/util/actionRequester';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import { AnswerValuesItemPayload, newAnswerValuesAction } from '@/actions/newValue';
+import { type AnswerValuesItemPayload, newAnswerValuesAction } from '@/actions/newValue';
 import { isEnableWhenEnabled } from '@/hooks/useIsEnabled';
-import { AppDispatch } from '@/reducers';
-import { ActionRequester } from '@/util/actionRequester';
-import { AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
+import { type AnswerPad, FhirPathExtensions } from '@/util/FhirPathExtensions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
 import { postTaskToFhirPathWorker } from '@/workers/fhirpath-rpc';

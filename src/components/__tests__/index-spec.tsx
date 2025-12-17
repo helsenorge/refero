@@ -1,7 +1,8 @@
 import React from 'react';
 
 import userEvent from '@testing-library/user-event';
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+
+import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import '../../util/__tests__/defineFetch';
 import RenderingOptionsData from './__data__/renderingOptions';

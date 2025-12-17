@@ -1,10 +1,10 @@
-import { QuestionnaireItem } from 'fhir/r4';
+import type { Resources } from '@/util/resources';
+import type { QuestionnaireItem } from 'fhir/r4';
 
-import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import type { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import constants from '@/constants';
 import { getMaxSizeExtensionValue, getValidationTextExtension } from '@/util/extension';
-import { Resources } from '@/util/resources';
 
 export function convertMBToBytes(mb: number): number {
   if (typeof mb !== 'number' || isNaN(mb)) {

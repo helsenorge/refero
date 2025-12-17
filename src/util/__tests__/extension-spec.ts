@@ -1,4 +1,4 @@
-import { QuestionnaireItem, Extension } from 'fhir/r4';
+import type { QuestionnaireItem, Extension } from 'fhir/r4';
 
 import { Extensions } from '../../constants/extensions';
 import { getExtension, getCopyExtension } from '../extension';

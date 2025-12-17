@@ -1,8 +1,8 @@
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { useAppSelector } from '@/reducers';
 import { getResponseItemWithPathSelector } from '@/reducers/selectors';
-import { getAnswerFromResponseItem, Path } from '@/util/refero-core';
+import { getAnswerFromResponseItem, type Path } from '@/util/refero-core';
 
 export const useGetAnswer = (
   _linkId?: string,

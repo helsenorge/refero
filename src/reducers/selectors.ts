@@ -1,17 +1,17 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
-import { FormFieldTagLevel } from '@helsenorge/designsystem-react/components/FormFieldTag';
+import type { GlobalState } from '.';
+import type { Resources } from '@/util/resources';
+import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
-import { Form, FormData, FormDefinition, getFormDefinition } from './form';
+import type { FormFieldTagLevel } from '@helsenorge/designsystem-react/components/FormFieldTag';
 
-import { GlobalState } from '.';
+import { type Form, type FormData, type FormDefinition, getFormDefinition } from './form';
 
 import ItemControlConstants from '@/constants/itemcontrol';
 import { isReadOnly, isRequired } from '@/util';
 import { getItemControlValue } from '@/util/choice';
-import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
+import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, type Path } from '@/util/refero-core';
 
 export const questionnaireSelector = createSelector(
   [(state: GlobalState): FormDefinition | undefined | null => state?.refero?.form.FormDefinition],

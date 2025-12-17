@@ -1,5 +1,7 @@
-import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -12,7 +14,6 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import styles from './quantity.module.css';
 
 import { newQuantityValueAsync } from '@/actions/newValue';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import {
   createMaxDecimalPlacesValidator,

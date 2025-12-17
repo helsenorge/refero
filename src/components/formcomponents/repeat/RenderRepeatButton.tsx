@@ -1,14 +1,14 @@
 import { memo } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import type { Resources } from '@/util/resources';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import RepeatButton from './RepeatButton';
 
 import { useAppSelector } from '@/reducers';
 import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
 import { shouldRenderRepeatButton } from '@/util';
-import { descendantsHasPrimitiveAnswer, Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
+import { descendantsHasPrimitiveAnswer, type Path } from '@/util/refero-core';
 
 const RenderRepeatButton = memo(function RenderRepeatButton({
   item,

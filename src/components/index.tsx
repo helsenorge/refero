@@ -3,6 +3,8 @@ import React from 'react';
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import type { ReferoProps } from '@/types/referoProps';
+
 import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
 import RenderForm from './renderForm';
 import StepView from './stepView';
@@ -12,13 +14,11 @@ import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvid
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
-import { ReferoProps } from '@/types/referoProps';
 import { getPresentationButtonsExtension } from '@/util/extension';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
-import { createIntitialFormValues, DefaultValues } from '@/validation/defaultFormValues';
-import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useSetFocus } from '@/hooks/useSetFocus';
+import { createIntitialFormValues, type DefaultValues } from '@/validation/defaultFormValues';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
   const {

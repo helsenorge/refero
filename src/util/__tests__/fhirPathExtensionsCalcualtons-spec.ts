@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, vi, Mock } from 'vitest';
+import { describe, test, expect, beforeEach, vi, type Mock } from 'vitest';
 
 import type {
   Questionnaire,

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldError, type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -15,7 +17,6 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 import dateStyles from './date.module.css';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import SafeText from '@/components/referoLabel/SafeText';
 import { getErrorMessage, required } from '@/components/validation/rules';
@@ -71,6 +72,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
   useEffect(() => {
     setValue(`${idWithLinkIdAndItemIndex}-hours`, hours);
     setValue(`${idWithLinkIdAndItemIndex}-minutes`, minutes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dispatchNewTime = (newTime: string): void => {

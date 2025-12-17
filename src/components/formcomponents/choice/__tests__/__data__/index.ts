@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { Questionnaire } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 
 const checkboxView: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/checkbox-view.json').toString());
 const dropdownView: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/dropdown-view.json').toString());

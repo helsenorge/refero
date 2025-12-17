@@ -1,5 +1,6 @@
 import { format, isValid } from 'date-fns';
-import {
+
+import type {
   Coding,
   Extension,
   Quantity,

@@ -1,6 +1,6 @@
 import itemType from '../../constants/itemType';
 import {
-  Path,
+  type Path,
   createIdSuffix,
   descendantsHasPrimitiveAnswer,
   findFirstGuidInString,

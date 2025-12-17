@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { waitFor, userEvent, renderRefero, screen } from '@test/test-utils.tsx';
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { vi } from 'vitest';
+
+import type { ReferoProps } from '@/types/referoProps';
+import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
 import { q } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
@@ -9,8 +14,6 @@ import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import { Extensions } from '../../../../constants/extensions';
 import valueSet from '../../../../constants/valuesets';
-
-import { ReferoProps } from '@/types/referoProps';
 
 vi.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
@@ -126,9 +129,8 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         _errorCallback: (error: string) => void
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
@@ -158,9 +160,8 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         _errorCallback: (error: string) => void
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
@@ -185,9 +186,8 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         _errorCallback: (error: string) => void
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
@@ -225,9 +225,8 @@ describe('autosuggest-view', () => {
           _searchString: string,
           _item: QuestionnaireItem,
           successCallback: (valueSet: ValueSet) => void,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
           _errorCallback: (error: string) => void
-          // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         ) => {
           successCallback(successReturnValueSet);
         };
@@ -245,9 +244,8 @@ describe('autosuggest-view', () => {
           _searchString: string,
           _item: QuestionnaireItem,
           successCallback: (valueSet: ValueSet) => void,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
           _errorCallback: (error: string) => void
-          // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         ) => {
           successCallback(successReturnValueSet);
         };
@@ -271,9 +269,8 @@ describe('autosuggest-view', () => {
           _searchString: string,
           _item: QuestionnaireItem,
           successCallback: (valueSet: ValueSet) => void,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
           _errorCallback: (error: string) => void
-          // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
         ) => {
           successCallback(successReturnValueSet);
         };
@@ -315,9 +312,8 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       _errorCallback: (error: string) => void
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback(successReturnValueSet);
     };
@@ -332,9 +328,8 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       _errorCallback: (error: string) => void
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback({
         resourceType: 'ValueSet',
@@ -361,9 +356,8 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       _errorCallback: (error: string) => void
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback({
         resourceType: 'ValueSet',
@@ -393,9 +387,8 @@ describe('autosuggest-view', () => {
         _searchString: string,
         _item: QuestionnaireItem,
         successCallback: (valueSet: ValueSet) => void,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         _errorCallback: (error: string) => void
-        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       ) => {
         successCallback(successReturnValueSet);
       };
@@ -422,7 +415,6 @@ describe('autosuggest-view', () => {
       _item: QuestionnaireItem,
       _successCallback: (valueSet: ValueSet) => void,
       errorCallback: (error: string) => void
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       errorCallback('feil');
     };
@@ -465,9 +457,8 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       _errorCallback: (error: string) => void
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback(successReturnValueSet);
     };
@@ -512,9 +503,8 @@ describe('autosuggest-view', () => {
       _searchString: string,
       _item: QuestionnaireItem,
       successCallback: (valueSet: ValueSet) => void,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       _errorCallback: (error: string) => void
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       successCallback(successReturnValueSet);
     };
@@ -527,7 +517,7 @@ describe('autosuggest-view', () => {
     });
   });
 });
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
   return await renderRefero({ questionnaire, props: { ...props, resources } });
 };

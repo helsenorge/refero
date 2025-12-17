@@ -1,7 +1,8 @@
 import { useContext } from 'react';
 
+import type { AttachmentType } from './AttachmentContextTypes';
+
 import { AttachmentContext } from './AttachmentContext';
-import { AttachmentType } from './AttachmentContextTypes';
 
 export const useAttachmentContext = (): AttachmentType => {
   const context = useContext(AttachmentContext);

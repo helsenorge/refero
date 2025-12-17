@@ -1,10 +1,10 @@
 import { renderRefero, userEvent } from '@test/test-utils';
 import { screen, waitFor } from '@testing-library/react';
-import { Questionnaire } from 'fhir/r4';
+
+import type { ReferoProps } from '@/types/referoProps';
+import type { Questionnaire } from 'fhir/r4';
 
 import { q } from './__data__/';
-
-import { ReferoProps } from '@/types/referoProps';
 
 describe('StandardTable', () => {
   it('should render', async () => {

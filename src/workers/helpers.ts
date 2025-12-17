@@ -1,6 +1,6 @@
+import type { ClearAction } from '@/actions/newValue';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import { ClearAction } from '@/actions/newValue';
 import { runEnableWhenNew } from '@/calculators/runEnableWhen_new';
 import { FhirPathExtensions, type AnswerPad } from '@/util/FhirPathExtensions';
 

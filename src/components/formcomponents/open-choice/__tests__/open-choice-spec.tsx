@@ -1,5 +1,6 @@
 import { renderRefero, screen } from '@test/test-utils.tsx';
-import {
+
+import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer,

@@ -1,4 +1,4 @@
-import { Coding } from 'fhir/r4';
+import type { Coding } from 'fhir/r4';
 const questionnaire_enable_operator_NotEquals: Coding = {
   code: '!=',
   display: 'Not Equals',

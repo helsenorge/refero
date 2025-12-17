@@ -1,8 +1,9 @@
 import { memo } from 'react';
 
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import SafeText from '@/components/referoLabel/SafeText';
 import itemControlConstants from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';

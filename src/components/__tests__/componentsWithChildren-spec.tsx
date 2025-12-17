@@ -1,10 +1,10 @@
 import '../../util/__tests__/defineFetch';
 
-import { Questionnaire, QuestionnaireItem, Extension } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireItem, Extension } from 'fhir/r4';
 
-import { act, renderRefero, screen } from '../../../test/test-utils';
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 import itemControlConstants from '../../constants/itemcontrol';
-import itemType, { IItemType } from '../../constants/itemType';
+import itemType, { type IItemType } from '../../constants/itemType';
 import { Valueset } from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createItemControlExtension } from '../__tests__/utils';
 
@@ -243,7 +243,7 @@ function createItem(
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(q: Questionnaire) {
-  return await act(async () => {
+  return await waitFor(async () => {
     return await renderRefero({ questionnaire: q });
   });
 }

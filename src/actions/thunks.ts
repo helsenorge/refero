@@ -1,12 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Questionnaire } from 'fhir/r4';
+
+import type { AppDispatch, RootState } from '@/reducers';
+import type { Questionnaire } from 'fhir/r4';
 
 import { resetAnswerValueAsync } from './newValue';
 
 import { startEnableWhenCalculation } from '@/calculators/runEnableWhen_new';
 import { runFhirPathQrUpdater } from '@/calculators/runFhirPathUpdater';
 import { runScoringCalculator } from '@/calculators/runScoringCalculator';
-import { AppDispatch, RootState } from '@/reducers';
 import { ActionRequester } from '@/util/actionRequester';
 import { debounce } from '@/util/debounce';
 import { ScoringCalculator } from '@/util/scoringCalculator';

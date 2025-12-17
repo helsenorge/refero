@@ -1,5 +1,5 @@
 import '../../util/__tests__/defineFetch';
-import { Questionnaire } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 
 import GroupGridModel from './__data__/group-grid';
 import { act, renderRefero, screen } from '../../../test/test-utils';

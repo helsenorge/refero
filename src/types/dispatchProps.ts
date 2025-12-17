@@ -1,5 +1,5 @@
-import { AppDispatch } from '../reducers';
-import { Path } from '../util/refero-core';
+import type { AppDispatch } from '../reducers';
+import type { Path } from '../util/refero-core';
 
 export interface DispatchProps {
   dispatch: AppDispatch;

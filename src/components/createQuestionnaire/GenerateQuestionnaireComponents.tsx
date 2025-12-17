@@ -1,13 +1,13 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import { Resource, QuestionnaireItem } from 'fhir/r4';
+import type { Path } from '@/util/refero-core';
+import type { Resource, QuestionnaireItem } from 'fhir/r4';
 
 import ItemRenderer from './ItemRenderer';
 
 import { useAppSelector } from '@/reducers';
 import { languageSelector, questionnaireSelector } from '@/reducers/selectors';
 import { getNavigatorExtension } from '@/util/extension';
-import { Path } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
 
 export type QuestionnaireComponentItemProps = {
@@ -39,12 +39,11 @@ export type QuestionnaireItemsProps = {
 const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.Element | null => {
   const { items, path, pdf = false, renderContext, headerTag } = props;
 
-  const renderContextValue = useMemo(() => renderContext || new RenderContext(), [renderContext]);
+  const renderContextValue = React.useMemo(() => renderContext || new RenderContext(), [renderContext]);
   const language = useAppSelector(languageSelector);
   const questionnaire = useAppSelector(questionnaireSelector);
-  const containedResources = useMemo(() => questionnaire?.contained, [questionnaire]);
-  const isNavigatorEnabled = useMemo(() => !!getNavigatorExtension(questionnaire), [questionnaire]);
-
+  const containedResources = React.useMemo(() => questionnaire?.contained, [questionnaire]);
+  const isNavigatorEnabled = React.useMemo(() => !!getNavigatorExtension(questionnaire), [questionnaire]);
   if (!items) {
     return null;
   }

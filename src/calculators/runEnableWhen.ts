@@ -1,7 +1,7 @@
-import { QuestionnaireItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { NewValuePayload } from '@/actions/newValue';
+import type { QuestionnaireItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { NewValuePayload } from '@/actions/newValue';
-import { Form, FormData, FormDefinition, nullAnswerValue } from '@/reducers/form';
+import { type Form, type FormData, type FormDefinition, nullAnswerValue } from '@/reducers/form';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '@/util/extension';
@@ -13,7 +13,7 @@ import {
   getQuestionnaireResponseItemWithLinkid,
   getResponseItemAndPathWithLinkId,
   getResponseItems,
-  Path,
+  type Path,
 } from '@/util/refero-core';
 
 interface QrItemsToClear {

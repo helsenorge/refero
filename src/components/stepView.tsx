@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { UseFormReturn } from 'react-hook-form';
-
-import { ReferoProps } from '../types/referoProps';
+import type { ReferoProps } from '../types/referoProps';
+import type { Resources } from '../util/resources';
+import type { DefaultValues } from '@/validation/defaultFormValues';
+import type { UseFormReturn } from 'react-hook-form';
 
 import RenderForm from './renderForm';
 import { getFormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
-import { Resources } from '../util/resources';
 import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnaireComponents';
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
@@ -15,7 +15,6 @@ import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
 import { useSetFocus } from '@/hooks/useSetFocus';
 import { useAppSelector } from '@/reducers';
 import { createPathForItem } from '@/util/refero-core';
-import { DefaultValues } from '@/validation/defaultFormValues';
 
 interface StepViewProps {
   isAuthorized: boolean;

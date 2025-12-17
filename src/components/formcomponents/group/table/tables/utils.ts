@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { format, isAfter, isBefore, isValid, parse } from 'date-fns';
-import {
+
+import type { QuestionnaireItemWithAnswers } from './interface';
+import type {
   Attachment,
   Coding,
   Quantity,
@@ -14,17 +16,16 @@ import {
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { DATEFORMATS } from './constants';
-import { QuestionnaireItemWithAnswers } from './interface';
 
 import { OPEN_CHOICE_SYSTEM } from '@/constants';
-import codeSystems, { CodeSystems } from '@/constants/codingsystems';
+import codeSystems, { type CodeSystems } from '@/constants/codingsystems';
 import { TIME_SEPARATOR } from '@/constants/dateTimeConstants';
-import ItemType, { IItemType } from '@/constants/itemType';
+import ItemType, { type IItemType } from '@/constants/itemType';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { getQuestionnaireItemCodeValue } from '@/util/codingsystem';
 import { getCalculatedExpressionExtension, getCopyExtension } from '@/util/extension';
 import {
-  Path,
+  type Path,
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemsWithLinkId,
   getResponseItemAndPathWithLinkId,

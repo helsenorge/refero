@@ -1,8 +1,8 @@
 import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { vi } from 'vitest';
 
-import { ReferoProps } from '../../../../types/referoProps';
+import type { ReferoProps } from '../../../../types/referoProps';
+import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import { q } from './__data__/';
 import { getResources } from '../../../../../preview/resources/referoResources';

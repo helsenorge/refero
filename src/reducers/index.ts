@@ -1,7 +1,7 @@
-import { configureStore, combineReducers, ThunkDispatch, UnknownAction, ThunkAction } from '@reduxjs/toolkit';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { configureStore, combineReducers, type ThunkDispatch, type UnknownAction, type ThunkAction } from '@reduxjs/toolkit';
+import { type TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
-import formReducer, { Form } from './form';
+import formReducer, { type Form } from './form';
 
 export interface ReferoState {
   form: Form;

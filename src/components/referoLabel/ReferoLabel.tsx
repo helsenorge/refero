@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import type { Resources } from '@/util/resources';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag';
-import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
+import Label, { type LabelText } from '@helsenorge/designsystem-react/components/Label';
 
 import SafeText from './SafeText';
 import SubLabel from './sublabel';
@@ -17,7 +18,6 @@ import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { RequiredLevelSelector } from '@/reducers/selectors';
 import { getId, getLabelText, getSublabelText } from '@/util';
-import { Resources } from '@/util/resources';
 
 type Props = {
   item?: QuestionnaireItem;

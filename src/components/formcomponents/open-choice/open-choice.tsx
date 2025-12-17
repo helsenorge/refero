@@ -1,6 +1,7 @@
-import { FocusEvent, useCallback, useMemo } from 'react';
+import { type FocusEvent, useCallback, useMemo } from 'react';
 
-import { QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -10,7 +11,6 @@ import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 
 import { removeCodingValueAsync, newCodingValueAsync, newCodingStringValueAsync, removeCodingStringValueAsync } from '@/actions/newValue';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemControlConstants from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';

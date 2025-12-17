@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
+import type { ITableH2Row } from './interface';
+import type { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
-import { Table as HnTable, SortDirection, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
+import { Table as HnTable, type SortDirection, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
 
-import { ITableH2Row } from './interface';
 import TableHeadHn2 from './TableHeadHn2';
 import { getHeaderColumns, getTableHN2bodyObject, getIndexToSortBy } from './utils';
 import { transformCodingToSortDirection } from '../utils';

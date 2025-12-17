@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
-import {
+import { createSlice, current, type PayloadAction } from '@reduxjs/toolkit';
+
+import type { GlobalState } from '@/reducers/index';
+import type {
   Questionnaire,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -14,35 +16,34 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { getResponseItemWithPath, getQuestionnaireDefinitionItem, getQuestionnaireDefinitionItemWithLinkid } from '../util/refero-core';
 
-import { SetFormDefinitionAction, setSkjemaDefinitionAction } from '@/actions/form';
+import { type SetFormDefinitionAction, setSkjemaDefinitionAction } from '@/actions/form';
 import { generateQuestionnaireResponse } from '@/actions/generateQuestionnaireResponse';
 import {
   addRepeatItemAction,
   newCodingStringValueAction,
   newValue,
-  NewValuePayload,
+  type NewValuePayload,
   removeCodingStringValueAction,
   removeCodingValueAction,
   removeAttachmentAction,
-  DeleteRepeatItemPayload,
-  RepeatItemPayload,
+  type DeleteRepeatItemPayload,
+  type RepeatItemPayload,
   deleteRepeatItemAction,
-  RemoveAttachmentPayload,
-  CodingStringPayload,
-  AnswerValueItemPayload,
-  RemoveCodingStringPayload,
-  RemoveCodingValuePayload,
+  type RemoveAttachmentPayload,
+  type CodingStringPayload,
+  type AnswerValueItemPayload,
+  type RemoveCodingStringPayload,
+  type RemoveCodingValuePayload,
   newAnswerValueAction,
   newAnswerValuesAction,
-  AnswerValuesItemPayload,
-  ResetAnswerValuePayload,
+  type AnswerValuesItemPayload,
+  type ResetAnswerValuePayload,
   resetAnswerValueAction,
 } from '@/actions/newValue';
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
 // import { runEnableWhen } from '@/calculators/runEnableWhen';
 import { pruneEmptyAnswers, resetAnswerValuePure, nullAnswerValue as nullAnswerValue_pure } from '@/calculators/runEnableWhen_new';
 import itemType from '@/constants/itemType';
-import { GlobalState } from '@/reducers/index';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '@/util/extension';
 import { isStringEmpty } from '@/util/index';

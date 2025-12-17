@@ -1,5 +1,6 @@
-import { QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
-import { Mock, vi } from 'vitest';
+import { type Mock, vi } from 'vitest';
+
+import type { QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import { extractValuesFromAnswer, getPrimitiveValueFromItemType, getQuestionnaireResponseItemAnswer, isConditionEnabled } from '../utils';
 import * as questionnaireFunctions from '../utils';

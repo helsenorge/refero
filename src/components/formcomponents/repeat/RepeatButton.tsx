@@ -1,4 +1,5 @@
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Path } from '../../../util/refero-core';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 import Icon from '@helsenorge/designsystem-react/components/Icon';
@@ -7,7 +8,6 @@ import PlusLarge from '@helsenorge/designsystem-react/components/Icons/PlusLarge
 import { addRepeatItemAsync } from '../../../actions/newValue';
 import { useAppDispatch } from '../../../reducers';
 import { getRepeatsTextExtension } from '../../../util/extension';
-import { Path } from '../../../util/refero-core';
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';

@@ -1,5 +1,6 @@
+import type { Resources } from '../resources';
+
 import { scriptInjectionValidation } from '..';
-import { Resources } from '../resources';
 
 describe('utils-index', () => {
   describe('scriptInjectionValidation', () => {

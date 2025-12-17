@@ -1,4 +1,6 @@
-import React from 'react';
+import type React from 'react';
+
+import type { IStandardTableColumn } from './interface';
 
 import {
   HeaderCategory,
@@ -8,8 +10,6 @@ import {
   TableHeadCell,
   TableRow,
 } from '@helsenorge/designsystem-react/components/Table';
-
-import { IStandardTableColumn } from './interface';
 
 type Props = {
   headerRow: IStandardTableColumn[];

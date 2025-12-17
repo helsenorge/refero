@@ -2,7 +2,7 @@
 /// <reference lib="webworker" />
 export {};
 
-import {
+import type {
   DescendantsHasAnswerParams,
   DescendantsHasAnswerResult,
   EvaluateExtensionParams,
@@ -29,6 +29,7 @@ import {
   RunEnableWhenInput,
   RunEnableWhenResult,
 } from './fhirpath-rpc-worker';
+
 import { runCalculators, runEnableWhen } from './helpers';
 import {
   evaluateFhirpathExpressionToGetDate,

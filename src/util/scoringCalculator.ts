@@ -1,4 +1,4 @@
-import {
+import type {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
@@ -135,7 +135,6 @@ export class ScoringCalculator {
     const tempAnswerPad: AnswerPad = answerPad;
     const keys = this.sectionScoreCache.keys();
 
-     
     while (true) {
       const result = keys.next();
       if (result.done) break;

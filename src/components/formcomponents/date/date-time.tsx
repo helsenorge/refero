@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 
 import { isValid } from 'date-fns';
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldError, type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
 
 import { DateFormat, DateTimeUnit, defaultMaxDate, defaultMinDate, TimeUnit } from '../../../types/dateTypes';
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -35,7 +36,6 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 import dateStyles from './date.module.css';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import SafeText from '@/components/referoLabel/SafeText';
 import { getErrorMessage, required } from '@/components/validation/rules';
@@ -103,6 +103,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     if (isValid(dateAnswerValueParsed)) {
       setDateValue(dateAnswerValueParsed);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateAnswerValue]);
 
   function getCombinedFieldError(dateField: FieldValues, hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {

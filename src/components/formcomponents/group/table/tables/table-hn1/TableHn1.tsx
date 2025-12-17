@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import { Table as HnTable, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
 
-import { ITableH1, TABLE_HN1_TABLE_TYPES } from './interface';
+import { type ITableH1, TABLE_HN1_TABLE_TYPES } from './interface';
 import { getTableHN1bodyObject } from './utils';
 
 interface Props {

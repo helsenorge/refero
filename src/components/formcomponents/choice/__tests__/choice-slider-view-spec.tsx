@@ -1,8 +1,8 @@
 import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
-import { Questionnaire } from 'fhir/r4';
 import { vi } from 'vitest';
 
-import { ReferoProps } from '../../../../types/referoProps';
+import type { ReferoProps } from '../../../../types/referoProps';
+import type { Questionnaire } from 'fhir/r4';
 
 import { convertToEmoji, getCodePoint, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../sliderUtils';
 import { sliderView as q, sliderViewValueSet as q2 } from './__data__/index';

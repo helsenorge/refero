@@ -1,4 +1,4 @@
-import { QuestionnaireItem, Coding } from 'fhir/r4';
+import type { QuestionnaireItem, Coding } from 'fhir/r4';
 
 import { getItemControlExtensionValue } from './extension';
 import itemControlConstants from '../constants/itemcontrol';

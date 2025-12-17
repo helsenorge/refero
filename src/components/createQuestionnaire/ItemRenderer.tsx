@@ -1,19 +1,20 @@
 import { memo } from 'react';
 
-import { QuestionnaireItem, Resource } from 'fhir/r4';
 import { createSelector } from 'reselect';
+
+import type { FormData } from '@/reducers/form';
+import type { RenderContext } from '@/util/renderContext';
+import type { QuestionnaireItem, Resource } from 'fhir/r4';
 
 import { RenderResponseItems } from './RenderResponseItems';
 import { getComponentForItem } from './utils';
 
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useAppSelector } from '@/reducers';
-import { FormData } from '@/reducers/form';
 import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
 import { isHelpItem } from '@/util/help';
 import { isHiddenItem } from '@/util/index';
-import { createPathForItem, Path } from '@/util/refero-core';
-import { RenderContext } from '@/util/renderContext';
+import { createPathForItem, type Path } from '@/util/refero-core';
 
 type ItemRendererProps = {
   item: QuestionnaireItem;

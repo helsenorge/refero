@@ -1,8 +1,9 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { AppDispatch } from '@/reducers';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import type { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { getItemControlValue } from './choice';
-import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './refero-core';
+import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, type Path } from './refero-core';
 
 import {
   newIntegerValueAction,
@@ -17,15 +18,14 @@ import {
   newStringValueAction,
   removeCodingValueAction,
   removeCodingStringValueAction,
-  NewValuePayload,
+  type NewValuePayload,
   newAnswerValueAction,
   resetAnswerValueAction,
-  ResetAnswerValuePayload,
-  DeleteRepeatItemPayload,
+  type ResetAnswerValuePayload,
+  type DeleteRepeatItemPayload,
   deleteRepeatItemAction,
 } from '@/actions/newValue';
 import itemControlConstants from '@/constants/itemcontrol';
-import { AppDispatch } from '@/reducers';
 
 export interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;

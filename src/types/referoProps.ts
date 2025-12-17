@@ -1,19 +1,24 @@
-import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
-import { UseFormProps, UseFormReturn } from 'react-hook-form';
-import { Store } from 'redux';
+import type { AutoSuggestProps } from './autoSuggestProps';
+import type { OrgenhetHierarki } from './orgenhetHierarki';
+import type { IActionRequester } from '../util/actionRequester';
+import type { IQuestionnaireInspector } from '../util/questionnaireInspector';
+import type { Resources } from '../util/resources';
+import type { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
+import type { TextMessage } from './text-message';
+import type { PresentationButtonsType } from '@/constants/presentationButtonsType';
+import type { DefaultValues } from '@/validation/defaultFormValues';
+import type {
+  QuestionnaireResponse,
+  Attachment,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  ValueSet,
+} from 'fhir/r4';
+import type { UseFormProps, UseFormReturn } from 'react-hook-form';
+import type { Store } from 'redux';
 
-import { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
-
-import { AutoSuggestProps } from './autoSuggestProps';
-import { OrgenhetHierarki } from './orgenhetHierarki';
-import { IActionRequester } from '../util/actionRequester';
-import { IQuestionnaireInspector } from '../util/questionnaireInspector';
-import { Resources } from '../util/resources';
-import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
-import { TextMessage } from './text-message';
-
-import { PresentationButtonsType } from '@/constants/presentationButtonsType';
-import { DefaultValues } from '@/validation/defaultFormValues';
+import type { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 export type FocusHandler = (focusedElement: HTMLElement) => void;
 
