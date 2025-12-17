@@ -1,13 +1,13 @@
-import { Questionnaire } from 'fhir/r4';
 import '../../util/__tests__/defineFetch';
 import { vi } from 'vitest';
 
-import { ReferoProps } from '../../types/referoProps';
+import type { ReferoProps } from '../../types/referoProps';
+import type { Questionnaire } from 'fhir/r4';
 
 import StepViewQuestionnaire from './__data__/stepview';
 import { getResources } from '../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, selectCheckboxOption, submitForm, typeByLabelText } from '../../../test/selectors';
-import { Matcher, renderRefero, screen, userEvent } from '../../../test/test-utils';
+import { type Matcher, renderRefero, screen, userEvent } from '../../../test/test-utils';
 
 const resources = {
   ...getResources(''),
@@ -21,7 +21,7 @@ const resources = {
 const onSubmitMock = vi.fn();
 const onStepChangeMock = vi.fn();
 
-const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}): ReturnType<typeof renderRefero> => {
   return renderRefero({
     questionnaire,
     props: { ...props, resources, saveButtonDisabled: false, onSubmit: onSubmitMock, onStepChange: onStepChangeMock },

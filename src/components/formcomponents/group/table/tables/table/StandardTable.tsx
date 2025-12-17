@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
+import type { IStandardTable } from './interface';
+import type { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import {
   Table as HnTable,
   ModeType,
-  SortDirection,
+  type SortDirection,
   TableBody,
   TableCell,
   TableHeadCell,
@@ -16,7 +17,6 @@ import { StandardTableHeader } from './StandardTableHeader';
 import { getDisplayToSortBy, getStandardTableObject } from './utils';
 import { containedResourceSelector } from '../../tableSelector';
 import { transformCodingToSortDirection } from '../utils';
-import { IStandardTable } from './interface';
 
 import { useAppSelector } from '@/reducers';
 
@@ -29,14 +29,14 @@ interface Props {
 export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): React.JSX.Element | null => {
   const displayToSortBy = getDisplayToSortBy(tableCodesCoding);
   const resource = useAppSelector(containedResourceSelector);
-  const [tableData, setTableData] = useState<IStandardTable>({
+  const [tableData, setTableData] = React.useState<IStandardTable>({
     rows: [],
     headerRow: [],
     id: '',
   });
-  const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
+  const [sortDir, setSortDir] = React.useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchTableData = async (): Promise<void> => {
       const table = await getStandardTableObject(items, questionnaireResponse, resource, sortDir, displayToSortBy);
       setTableData(table);
@@ -44,7 +44,7 @@ export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }
     fetchTableData();
   }, [items, questionnaireResponse, resource, sortDir, displayToSortBy]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setSortDir(transformCodingToSortDirection(tableCodesCoding));
   }, [tableCodesCoding]);
 

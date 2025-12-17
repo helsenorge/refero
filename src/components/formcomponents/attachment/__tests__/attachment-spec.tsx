@@ -1,11 +1,12 @@
-import { userEvent, Matcher, renderRefero, screen, waitFor } from '@test/test-utils.tsx';
-import { Questionnaire } from 'fhir/r4';
+import { userEvent, type Matcher, renderRefero, screen, waitFor } from '@test/test-utils.tsx';
 import { vi } from 'vitest';
+
+import type { ReferoProps } from '@/types/referoProps';
+import type { Questionnaire } from 'fhir/r4';
 
 import { q } from './__data__/';
 import { getResources } from '../../../../../preview/resources/referoResources';
 
-import { ReferoProps } from '@/types/referoProps';
 import { MimeType } from '@/util/attachmentHelper';
 
 export const expectNotToFindByText = (text: Matcher): void => {

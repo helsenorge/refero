@@ -1,8 +1,8 @@
-import React from 'react';
+import type React from 'react';
+
+import type { Column } from './utils';
 
 import { TableCell } from '@helsenorge/designsystem-react/components/Table';
-
-import { Column } from './utils';
 
 interface Props {
   value?: string;

@@ -1,4 +1,4 @@
-import { ReferoProps } from '@/types/referoProps';
+import type { ReferoProps } from '@/types/referoProps';
 
 export type AttachmentType = {
   attachmentErrorMessage?: ReferoProps['attachmentErrorMessage'];

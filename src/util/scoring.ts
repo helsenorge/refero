@@ -1,5 +1,6 @@
-import { QuestionnaireItem, Coding } from 'fhir/r4';
 import * as uuid from 'uuid';
+
+import type { QuestionnaireItem, Coding } from 'fhir/r4';
 
 import { Extensions } from '../constants/extensions';
 import ItemType from '../constants/itemType';

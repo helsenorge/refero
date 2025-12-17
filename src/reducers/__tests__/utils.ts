@@ -1,9 +1,17 @@
 import '@/util/__tests__/defineFetch';
-import { Action } from '@reduxjs/toolkit';
-import { Coding, QuestionnaireItem, QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Quantity, Attachment } from 'fhir/r4';
+import type { Form } from '../form';
+import type { Action } from '@reduxjs/toolkit';
+import type {
+  Coding,
+  QuestionnaireItem,
+  QuestionnaireResponseItem,
+  Questionnaire,
+  QuestionnaireResponse,
+  Quantity,
+  Attachment,
+} from 'fhir/r4';
 
-import { store as reduxStore, GlobalState } from '..';
-import { Form } from '../form';
+import { store as reduxStore, type GlobalState } from '..';
 
 import {
   newCodingValueAction,
@@ -22,7 +30,7 @@ import {
   removeCodingStringValueAction,
   newAttachmentAction,
 } from '@/actions/newValue';
-import { Path, getResponseItemWithPath } from '@/util/refero-core';
+import { type Path, getResponseItemWithPath } from '@/util/refero-core';
 
 export function pathify(...linkIds: string[]): Path[] {
   return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) }));

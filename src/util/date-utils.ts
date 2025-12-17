@@ -12,13 +12,13 @@ import {
   parseISO,
   parse,
 } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { DateFormat, DatePickerFormat, DateTimeUnit, TimeUnit, TimeValues } from '../types/dateTypes';
+import type { Resources } from './resources';
+import { DateFormat, DatePickerFormat, DateTimeUnit, TimeUnit, type TimeValues } from '../types/dateTypes';
+import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { safeParseJSON } from './date-fns-utils';
 import { getExtension, getValidationTextExtension } from './extension';
-import { Resources } from './resources';
 
 import '@helsenorge/datepicker/components/DatePicker/';
 

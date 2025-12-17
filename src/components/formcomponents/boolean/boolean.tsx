@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag';
@@ -14,7 +16,6 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 import { newBooleanValueAsync } from '@/actions/newValue';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { getErrorMessage, required } from '@/components/validation/rules';
@@ -52,7 +53,7 @@ const Boolean = (props: Props): JSX.Element | null => {
 
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const answer = useGetAnswer(linkId, path);
   const getValue = (): boolean => {
     if (answer && Array.isArray(answer)) {

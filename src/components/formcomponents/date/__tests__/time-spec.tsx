@@ -1,9 +1,10 @@
+/* eslint-disable testing-library/no-node-access */
 import { renderRefero, userEvent } from '@test/test-utils.tsx';
-import { Matcher, screen, waitFor } from '@testing-library/react';
-import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { type Matcher, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { ReferoProps } from '../../../../types/referoProps';
+import type { ReferoProps } from '../../../../types/referoProps';
+import type { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { q, qMinMax, qMinMaxCustomError } from './__data__/time';
 import { getResources } from '../../../../../preview/resources/referoResources';
@@ -34,10 +35,10 @@ const getHoursInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLEl
 
 describe('Time', () => {
   beforeEach(() => {
-    process.env.TZ = 'Europe/Oslo';
+    vi.stubEnv('TZ', 'Europe/Oslo');
   });
   afterEach(() => {
-    delete process.env.TZ;
+    vi.unstubAllEnvs();
   });
   describe('Render', () => {
     it('Should render as text if props.pdf', async () => {

@@ -1,4 +1,4 @@
-import { Extension } from 'fhir/r4';
+import type { Extension } from 'fhir/r4';
 
 export interface Options {
   id?: string;

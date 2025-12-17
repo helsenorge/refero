@@ -1,7 +1,6 @@
 // sorting.ts
-import { QuestionnaireItem } from 'fhir/r4';
-
 import type { Column } from './utils';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 

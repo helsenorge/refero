@@ -1,7 +1,8 @@
 import { useContext } from 'react';
 
+import type { ExternalRenderType } from './externalRenderType';
+
 import { ExternalRenderContext } from './externalRenderContext';
-import { ExternalRenderType } from './externalRenderType';
 
 export const useExternalRenderContext = (): ExternalRenderType => {
   const context = useContext(ExternalRenderContext);

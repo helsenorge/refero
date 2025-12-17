@@ -1,7 +1,7 @@
 import { isAfter, isBefore, isSameDay, isSameHour, parseISO } from 'date-fns';
-import { QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { QuestionnaireEnableOperator } from '../types/fhirEnums';
+import type { QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { safeParseJSON } from './date-fns-utils';
 

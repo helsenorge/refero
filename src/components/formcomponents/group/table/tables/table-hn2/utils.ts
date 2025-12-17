@@ -1,9 +1,9 @@
-import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
+import type { HeaderColumn, ITableH2Column, ITableH2Row } from './interface';
+import type { QuestionnaireItemWithAnswers } from '../interface';
+import type { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
-import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
+import type { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
-import { HeaderColumn, ITableH2Column, ITableH2Row } from './interface';
-import { QuestionnaireItemWithAnswers } from '../interface';
 import {
   findCodeBySystem,
   findIndexByCode,

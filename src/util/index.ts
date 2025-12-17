@@ -1,6 +1,8 @@
-import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { marked } from 'marked';
 import * as uuid from 'uuid';
+
+import type { Resources } from '@/util/resources';
+import type { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 
@@ -23,7 +25,6 @@ import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
 
 import { VALIDATE_READONLY_CODE } from '@/constants/codes';
-import { Resources } from '@/util/resources';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');

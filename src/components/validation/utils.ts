@@ -1,9 +1,9 @@
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import { FieldError, FieldErrors, FieldErrorsImpl, FieldValues, Merge } from 'react-hook-form';
+import type { FormData } from '@/reducers/form';
+import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type { FieldError, FieldErrors, FieldErrorsImpl, FieldValues, Merge } from 'react-hook-form';
 
 import { decodeString } from '../createQuestionnaire/utils';
 
-import { FormData } from '@/reducers/form';
 import { getText, isReadOnly, shouldValidateReadOnly } from '@/util';
 import { findFirstGuidInString, getQuestionnaireDefinitionItem } from '@/util/refero-core';
 

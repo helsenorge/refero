@@ -1,4 +1,7 @@
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { Options } from '@/types/formTypes/radioGroupOptions';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -9,7 +12,6 @@ import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
@@ -17,7 +19,6 @@ import { useExternalRenderContext } from '@/context/externalRender/useExternalRe
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
-import { Options } from '@/types/formTypes/radioGroupOptions';
 import { shouldShowExtraChoice } from '@/util/choice';
 import { getId, isReadOnly } from '@/util/index';
 

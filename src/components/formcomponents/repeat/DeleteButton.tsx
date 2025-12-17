@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import type { Path } from '../../../util/refero-core';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 import Icon from '@helsenorge/designsystem-react/components/Icon';
@@ -8,7 +9,6 @@ import TrashCan from '@helsenorge/designsystem-react/components/Icons/TrashCan';
 import Modal from '@helsenorge/designsystem-react/components/Modal';
 
 import { deleteRepeatItemAsync } from '../../../actions/newValue';
-import { Path } from '../../../util/refero-core';
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';

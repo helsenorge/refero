@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+
 import AsPdf from './AsPdf';
 import ContextTypeGrid from './ContextTypeGrid';
 import ContextTypeGridRow from './ContextTypeGridRow';
@@ -7,7 +9,6 @@ import DefaultGroup from './DefaultGroup';
 import { getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
 import TableContainer from './table/TableContainer';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { RenderContextType } from '@/constants/renderContextType';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';

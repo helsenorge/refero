@@ -1,8 +1,8 @@
 import { fail } from 'assert';
 
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Form } from '../form';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
-import { Form } from '../form';
 import repeatableBooleanDataModel from './__data__/repeatableBoolean';
 import { pathify, getResponseItem, clickRepeat } from './utils';
 import { getDefinitionItems } from '../../util/refero-core';

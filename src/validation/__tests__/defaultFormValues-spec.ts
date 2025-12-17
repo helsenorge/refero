@@ -1,6 +1,8 @@
 import { submitForm } from '@test/selectors';
 import { renderRefero, screen, waitFor } from '@test/test-utils';
-import { Questionnaire } from 'fhir/r4';
+
+import type { ReferoProps } from '@/types/referoProps';
+import type { Questionnaire } from 'fhir/r4';
 
 import {
   qString,
@@ -42,8 +44,6 @@ import {
 import { getResources } from '../../../preview/resources/referoResources';
 import { createIntitialFormValues } from '../defaultFormValues';
 
-import { ReferoProps } from '@/types/referoProps';
-
 const resources = {
   ...getResources(''),
   formRequiredErrorMessage: 'Du må fylle ut dette feltet',
@@ -67,7 +67,7 @@ describe('Default form values', () => {
       createWrapper(qDecimal);
       await submitForm();
       await waitFor(() => {
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
@@ -81,7 +81,7 @@ describe('Default form values', () => {
     it('empty fields should cause a validation error on submit', async () => {
       createWrapper(qInteger);
       await submitForm();
-      expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+      expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
       expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
     });
   });
@@ -101,7 +101,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qDateDay);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
@@ -114,7 +114,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qDateYear);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.year_field_required)).toHaveLength(2);
       });
     });
@@ -127,7 +127,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qDateMonth);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.yearmonth_field_required)).toHaveLength(3);
       });
     });
@@ -140,7 +140,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qDateTime);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(4);
       });
     });
@@ -153,7 +153,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qTime);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(3);
       });
     });
@@ -168,7 +168,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qChoiceRadio);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
@@ -181,7 +181,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qChoiceCheckbox);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
@@ -194,7 +194,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qChoiceDropdown);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
@@ -207,7 +207,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qChoiceSlider);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
@@ -222,7 +222,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qOpenChoiceRadio);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
@@ -235,7 +235,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qOpenChoiceCheckbox);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
@@ -248,7 +248,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         createWrapper(qChoiceDropdown);
         await submitForm();
-        expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+        expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
         expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
       });
     });
@@ -262,7 +262,7 @@ describe('Default form values', () => {
     it('empty fields should cause a validation error on submit', async () => {
       createWrapper(qString);
       await submitForm();
-      expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+      expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
       expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
     });
   });
@@ -275,7 +275,7 @@ describe('Default form values', () => {
     it('empty fields should cause a validation error on submit', async () => {
       createWrapper(qBoolean);
       await submitForm();
-      expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+      expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
       expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
     });
   });
@@ -283,7 +283,7 @@ describe('Default form values', () => {
     it('empty fields should cause a validation error on submit', async () => {
       createWrapper(qAttachment);
       await submitForm();
-      expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+      expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
       expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
     });
   });
@@ -296,7 +296,7 @@ describe('Default form values', () => {
     it('empty fields should cause a validation error on submit', async () => {
       createWrapper(qQuantity);
       await submitForm();
-      expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+      expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
       expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
     });
   });
@@ -309,7 +309,7 @@ describe('Default form values', () => {
     it('empty fields should cause a validation error on submit', async () => {
       createWrapper(qText);
       await submitForm();
-      expect(screen.queryByTestId(/validation-summary/)).toBeInTheDocument();
+      expect(screen.getByTestId(/validation-summary/)).toBeInTheDocument();
       expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
     });
   });

@@ -1,4 +1,6 @@
-import { Dispatch } from 'react';
+import type { Dispatch } from 'react';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
@@ -9,7 +11,6 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 import styles from './group.module.css';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';

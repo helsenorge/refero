@@ -8,7 +8,7 @@ import {
   isAfter as isAfterDF,
   startOfDay as startOfDayDF,
   isSameMonth as isSameMonthDF,
-  FormatOptions,
+  type FormatOptions,
 } from 'date-fns';
 import { nb } from 'date-fns/locale';
 

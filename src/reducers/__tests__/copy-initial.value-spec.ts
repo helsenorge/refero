@@ -1,8 +1,8 @@
 import { fail } from 'assert';
 
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Form } from '../form';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
-import { Form } from '../form';
 import dataModel from './__data__/nestedInitialValues';
 import { pathify, clickRepeat } from './utils';
 import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';

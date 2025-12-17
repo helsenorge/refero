@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import { TableBody, Table as HnTable, SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
@@ -23,8 +23,8 @@ const GTable = ({ questionnaireResponse, item }: Props): React.JSX.Element | nul
 
   const { sortKey: defaultKey, sortDir: defaultDir } = getDefaultSortFromGTableItem(item, columns);
 
-  const [sortKey, setSortKey] = useState<string | undefined>(defaultKey);
-  const [sortDir, setSortDir] = useState<SortDirection>(defaultDir ?? SortDirection.asc);
+  const [sortKey, setSortKey] = React.useState<string | undefined>(defaultKey);
+  const [sortDir, setSortDir] = React.useState<SortDirection>(defaultDir ?? SortDirection.asc);
 
   if (columns.length === 0) return null;
 

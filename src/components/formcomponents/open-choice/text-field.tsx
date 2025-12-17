@@ -1,6 +1,8 @@
-import React from 'react';
+import type React from 'react';
 
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -10,7 +12,6 @@ import { isReadOnly, getId, getStringValue } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';

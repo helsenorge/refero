@@ -1,4 +1,4 @@
-import { FormEvent, KeyboardEvent, MouseEvent } from 'react';
+import type { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 

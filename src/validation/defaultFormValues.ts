@@ -1,6 +1,6 @@
-import { Attachment, QuestionnaireItem, QuestionnaireItemInitial, Reference } from 'fhir/r4';
+import type { Attachment, QuestionnaireItem, QuestionnaireItemInitial, Reference } from 'fhir/r4';
 
-import ItemType, { IItemType } from '../constants/itemType';
+import ItemType, { type IItemType } from '../constants/itemType';
 
 import { encodeString } from '@/components/createQuestionnaire/utils';
 import itemControlConstants from '@/constants/itemcontrol';

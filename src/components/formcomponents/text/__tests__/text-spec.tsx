@@ -1,14 +1,14 @@
 import '@/util/__tests__/defineFetch';
 
-import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
 
-import { ReferoProps } from '../../../../types/referoProps';
+import type { ReferoProps } from '../../../../types/referoProps';
+import type { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { qinline, q, qScriptInjection, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
-import { Matcher, renderRefero, screen, userEvent, waitFor } from '../../../../../test/test-utils';
+import { type Matcher, renderRefero, screen, userEvent, waitFor } from '../../../../../test/test-utils';
 import { Extensions } from '../../../../constants/extensions';
 
 vi.mock('@helsenorge/core-utils/debounce', () => ({

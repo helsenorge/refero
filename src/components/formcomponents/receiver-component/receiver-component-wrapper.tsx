@@ -1,4 +1,4 @@
-import ReceiverComponent, { ReceiverComponentProps } from './receiver-component';
+import ReceiverComponent, { type ReceiverComponentProps } from './receiver-component';
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { getId } from '@/util';

@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 
-import { Attachment, QuestionnaireItem } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
+
+import type { Path } from '@/util/refero-core';
+import type { Attachment, QuestionnaireItem } from 'fhir/r4';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
@@ -9,7 +11,6 @@ import { getAttachmentsFromAnswer } from './helpers';
 
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { getId } from '@/util';
-import { Path } from '@/util/refero-core';
 
 type UseAttachmentSyncParams = {
   onUpload: (files: UploadFile[]) => void;
@@ -113,6 +114,7 @@ export const useAttachmentSync = ({
         setRejectedFiles([]);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answer]);
 
   return {

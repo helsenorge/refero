@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+
+import type { AttachmentType } from './AttachmentContextTypes';
 
 import { AttachmentContext } from './AttachmentContext';
-import { AttachmentType } from './AttachmentContextTypes';
 
 export type AttachmentProviderProps = AttachmentType & {
   children: ReactNode;

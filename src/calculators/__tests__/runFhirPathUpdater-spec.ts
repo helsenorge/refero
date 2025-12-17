@@ -1,12 +1,13 @@
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+import type { AppDispatch } from '@/reducers';
+import type { ActionRequester } from '@/util/actionRequester';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { runFhirPathQrUpdater } from '../runFhirPathUpdater';
 
 import { newAnswerValuesAction } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
-import { AppDispatch } from '@/reducers';
-import { ActionRequester } from '@/util/actionRequester';
 
 vi.unmock('@/workers/worker-factory');
 

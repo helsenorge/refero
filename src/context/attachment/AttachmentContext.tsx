@@ -1,5 +1,5 @@
 import { createContext } from 'react';
 
-import { AttachmentType } from './AttachmentContextTypes';
+import type { AttachmentType } from './AttachmentContextTypes';
 
 export const AttachmentContext = createContext<AttachmentType | undefined>(undefined);

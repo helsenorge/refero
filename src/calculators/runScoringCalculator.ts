@@ -1,12 +1,12 @@
-import { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { ActionRequester } from '@/util/actionRequester';
+import type { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
+import type { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import { newValue, NewValuePayload } from '@/actions/newValue';
+import { newValue, type NewValuePayload } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
 import { getDecimalValue } from '@/util';
-import { ActionRequester } from '@/util/actionRequester';
 import { getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
-import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
 
 export const runScoringCalculator = async (
   questionnaire?: Questionnaire | null,

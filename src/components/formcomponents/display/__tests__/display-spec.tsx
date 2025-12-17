@@ -1,11 +1,12 @@
 import '../../../../util/__tests__/defineFetch';
 import { renderRefero, screen, waitFor } from '@test/test-utils.tsx';
-import { Questionnaire } from 'fhir/r4';
+
+import type { ReferoProps } from '@/types/referoProps';
+import type { Questionnaire } from 'fhir/r4';
 
 import { q, qHighlight } from './__data__/';
 import { getResources } from '../../../../../preview/resources/referoResources';
 
-import { ReferoProps } from '@/types/referoProps';
 const resources = { ...getResources('') };
 describe('Display', () => {
   describe('Markdown', () => {

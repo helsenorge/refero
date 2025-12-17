@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import type { AnyRpcResponse, Methods } from './fhirpath-rpc-worker';
 import type { QuestionnaireItem, Extension, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import type { Path } from 'fhirpath';
 
-import { AnyRpcResponse, Methods } from './fhirpath-rpc-worker';
 import { runCalculators } from './helpers';
 import { WorkaroundWorkerRpc } from './WorkaroundWorkerRpc';
 

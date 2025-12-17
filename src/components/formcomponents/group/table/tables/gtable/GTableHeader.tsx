@@ -1,9 +1,9 @@
 // GTableHeader.tsx
-import React from 'react';
+import type React from 'react';
 
 import type { Column } from './utils';
 
-import { HeaderCategory, SortDirection, TableHead, TableHeadCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
+import { HeaderCategory, type SortDirection, TableHead, TableHeadCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
 
 type Props = {
   columns: Column[];

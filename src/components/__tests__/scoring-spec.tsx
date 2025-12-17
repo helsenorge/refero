@@ -3,7 +3,8 @@ import '../../util/__tests__/defineFetch';
 import { performance } from 'perf_hooks';
 
 import userEvent from '@testing-library/user-event';
-import { Questionnaire } from 'fhir/r4';
+
+import type { Questionnaire } from 'fhir/r4';
 
 import { encodeString } from '../createQuestionnaire/utils';
 import ChoiceCheckBoxDataModel from './__data__/scoring/choice-check-box';

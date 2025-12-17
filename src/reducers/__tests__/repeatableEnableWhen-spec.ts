@@ -1,9 +1,10 @@
 import { fail } from 'assert';
 
 import { renderReferoWithStore, screen, userEvent, waitFor } from '@test/test-utils';
-import { Questionnaire } from 'fhir/r4';
 
-import { Form } from '../form';
+import type { Form } from '../form';
+import type { Questionnaire } from 'fhir/r4';
+
 import enableWhenDataModel from './__data__/repeatableEnableWhen';
 import { getResponseItem, pathify } from './utils';
 

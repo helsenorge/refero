@@ -1,8 +1,8 @@
 import '../../../../util/__tests__/defineFetch';
 import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
-import { Questionnaire } from 'fhir/r4';
 
-import { ReferoProps } from '../../../../types/referoProps';
+import type { ReferoProps } from '../../../../types/referoProps';
+import type { Questionnaire } from 'fhir/r4';
 
 import { repeatQ, q, repeatQ2 } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';

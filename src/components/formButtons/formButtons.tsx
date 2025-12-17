@@ -1,8 +1,7 @@
-import { FormEvent, KeyboardEvent, MouseEvent } from 'react';
-
-import { QuestionnaireResponse } from 'fhir/r4';
+import type { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import { ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../types/formTypes/formButton';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
 import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';

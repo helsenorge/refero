@@ -1,16 +1,16 @@
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
+import type { AutoSuggestProps } from '@/types/autoSuggestProps';
+import type { OrgenhetHierarki } from '@/types/orgenhetHierarki';
+import type { IActionRequester } from '@/util/actionRequester';
+import type { IQuestionnaireInspector } from '@/util/questionnaireInspector';
+import type { Resources } from '@/util/resources';
+import type { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
 import { ExternalRenderContext } from './externalRenderContext';
 
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { actions } from '@/reducers/form';
-import { AutoSuggestProps } from '@/types/autoSuggestProps';
-import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
-import { IActionRequester } from '@/util/actionRequester';
-import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
-import { Resources } from '@/util/resources';
 
 type ExternalRenderProviderProps = {
   children: ReactNode;

@@ -1,18 +1,16 @@
-import React, { useMemo, memo } from 'react';
+import React, { useMemo } from 'react';
 
-import { Resource, QuestionnaireItem } from 'fhir/r4';
+import type { RenderContext } from '@/util/renderContext';
+import type { Resource, QuestionnaireItem } from 'fhir/r4';
 
-import GenerateQuestionnaireComponents, { QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
+import GenerateQuestionnaireComponents, { type QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
 import { createIdFormComponentIds } from './utils';
 
 import constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants';
 import ItemType from '@/constants/itemType';
 import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
 import { getChildHeaderTag } from '@/util';
-import { createPathForItem, Path } from '@/util/refero-core';
-import { RenderContext } from '@/util/renderContext';
-
-
+import { createPathForItem, type Path } from '@/util/refero-core';
 
 type ResponseItemProps = {
   linkId: string;
@@ -29,7 +27,7 @@ type ResponseItemProps = {
   isNavigatorBlindzoneInitiatedRef: React.MutableRefObject<boolean>;
 };
 
-const ResponseItem = memo(function ResponseItem({
+const ResponseItem = React.memo(function ResponseItem({
   linkId,
   index,
   item,

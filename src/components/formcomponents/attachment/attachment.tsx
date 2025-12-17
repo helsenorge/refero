@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { Attachment } from 'fhir/r4';
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import type { TextMessage } from '@/types/text-message';
+import type { Attachment } from 'fhir/r4';
 
-import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import type { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import AttachmentHtml from './attachmenthtml';
 
 import { newAttachmentAsync, removeAttachmentAsync } from '@/actions/newValue';
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useAttachmentContext } from '@/context/attachment/useAttachmentContext';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
-import { TextMessage } from '@/types/text-message';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue } from '@/util/extension';
 import { isRequired, getId, isRepeat } from '@/util/index';
 
@@ -21,11 +21,11 @@ export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
 };
 
-export const AttachmentComponent = (props: Props): JSX.Element | null => {
+export const AttachmentComponent = (props: Props): React.JSX.Element | null => {
   const { path, id, idWithLinkIdAndItemIndex, linkId, children } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
-  const [customErrorMessage, setCustomErrorMessage] = useState<TextMessage | undefined>(undefined);
+  const [customErrorMessage, setCustomErrorMessage] = React.useState<TextMessage | undefined>(undefined);
   const {
     onOpenAttachment,
     onRequestAttachmentLink,

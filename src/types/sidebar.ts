@@ -1,4 +1,4 @@
-import { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 export interface SidebarItem {
   item: QuestionnaireItem;

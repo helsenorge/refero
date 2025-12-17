@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire, Bundle } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire, Bundle } from 'fhir/r4';
 
 import { createQuestionnaireResponseAnswers } from '../util/createQuestionnaireResponseAnswer';
 import { getCalculatedExpressionExtension, getCopyExtension, getMinOccursExtensionValue } from '../util/extension';

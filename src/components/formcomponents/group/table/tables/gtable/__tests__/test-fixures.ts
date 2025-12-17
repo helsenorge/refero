@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 // test-utils/fhir-fixtures.ts
 
-import {
+import type { IItemType } from '@/constants/itemType';
+import type {
   Coding,
   Extension,
   Quantity,
@@ -14,7 +15,6 @@ import {
 
 import { TableOrderingColum, TableOrderingFunctions } from '@/constants/codingsystems';
 import { COPY_EXPRESSION_URL, ITEMCONTROL_URL } from '@/constants/extensions';
-import { IItemType } from '@/constants/itemType';
 import { QUESTIONNAIRE_ITEM_CONTROL_SYSTEM } from '@/constants/valuesets';
 
 /** Defaults (override in your tests if you have project-wide constants) */

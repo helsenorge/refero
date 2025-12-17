@@ -1,4 +1,4 @@
-import { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
+import type { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
 
 export const MimeType = {
   PlainText: 'text/plain' as MimeTypes,

@@ -1,18 +1,20 @@
-import React, { Dispatch } from 'react';
+import type React from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import type { RenderContext } from '@/util/renderContext';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import GroupHeader from './GroupHeader';
 
-import GenerateQuestionnaireComponents, { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import GenerateQuestionnaireComponents, {
+  type QuestionnaireComponentItemProps,
+} from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
-import { RenderContext } from '@/util/renderContext';
 
 type ContextTypeGridRowProps = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
-  setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
+  setIsHelpVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
 const ContextTypeGridRow = ({ isHelpVisible, setIsHelpVisible, ...rest }: ContextTypeGridRowProps): JSX.Element => {
   const { renderContext, headerTag, linkId } = rest;

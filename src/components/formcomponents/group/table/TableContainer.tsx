@@ -1,4 +1,6 @@
-import React, { Dispatch } from 'react';
+import type React from 'react';
+
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 import GroupHeader from '../GroupHeader';
 import GTable from './tables/gtable';
@@ -6,7 +8,6 @@ import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
 
-import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { TableCodes } from '@/constants/tableTypes';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
@@ -15,7 +16,7 @@ import { getCodingTextTableValues } from '@/util/extension';
 
 type Props = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
-  setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
+  setIsHelpVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const TableContainer = ({ linkId, isHelpVisible, setIsHelpVisible, headerTag }: Props): JSX.Element | null => {

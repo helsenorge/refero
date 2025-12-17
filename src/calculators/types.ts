@@ -1,6 +1,5 @@
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-
-import { ClearAction } from '@/actions/newValue';
+import type { ClearAction } from '@/actions/newValue';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 export type RunEnableWhenInput = {
   questionnaire: Questionnaire | null | undefined;

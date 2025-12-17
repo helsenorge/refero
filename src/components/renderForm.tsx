@@ -1,23 +1,23 @@
 import React from 'react';
 
-import { FieldValues, SubmitHandler, useFormContext, UseFormReturn } from 'react-hook-form';
+import { type FieldValues, type SubmitHandler, useFormContext, type UseFormReturn } from 'react-hook-form';
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
+import type { ReferoProps } from '@/types/referoProps';
+import type { Resources } from '@/util/resources';
+import type { DefaultValues } from '@/validation/defaultFormValues';
 
 import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import ValidationSummary from '@helsenorge/designsystem-react/components/Validation';
-import { ValidationErrors } from '@helsenorge/designsystem-react/components/Validation/types';
+import type { ValidationErrors } from '@helsenorge/designsystem-react/components/Validation/types';
 
 import FormButtons from './formButtons/formButtons';
 
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { RequiredLevelSelector } from '@/reducers/selectors';
-import { ReferoProps } from '@/types/referoProps';
 import { getPresentationButtonsExtension } from '@/util/extension';
-import { Resources } from '@/util/resources';
-import { DefaultValues } from '@/validation/defaultFormValues';
 
 interface RenderFormProps {
   isAuthorized: boolean;
