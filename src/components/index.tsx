@@ -17,6 +17,8 @@ import { getPresentationButtonsExtension } from '@/util/extension';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues, DefaultValues } from '@/validation/defaultFormValues';
+import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
+import { useSetFocus } from '@/hooks/useSetFocus';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
   const {
@@ -50,8 +52,10 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const dispatch = useAppDispatch();
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const formData = useAppSelector(state => getFormData(state));
+  const { focusHandler } = useExternalRenderContext();
+  const formContainerRef = useSetFocus(focusHandler);
+
   const questionnaire = formDefinition?.Content;
-  // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item]);
   const methods = useForm<DefaultValues>({
     defaultValues: defualtVals,
@@ -60,13 +64,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     reValidateMode: 'onChange',
     criteriaMode: 'all',
     ...(useFormProps !== undefined && { ...useFormProps }),
-
-    // resolver: async (data, context, options) => {
-    //   // you can debug your validation schema here
-    //   console.log('resolver in data', data);
-    //   console.log('resolver validation result', await zodResolver(schema)(data, context, options));
-    //   return zodResolver(schema)(data, context, options);
-    // },
   });
   React.useEffect(() => {
     if (props.questionnaire) {
@@ -174,18 +171,20 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
                 methods={methods}
               />
             ) : (
-              <RenderForm
-                isAuthorized={authorized}
-                isStepView={false}
-                referoProps={props}
-                resources={resources}
-                onSave={handleSave}
-                onSubmit={handleSubmit}
-                methods={methods}
-                onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
-              >
-                <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
-              </RenderForm>
+              <div ref={formContainerRef} tabIndex={-1}>
+                <RenderForm
+                  isAuthorized={authorized}
+                  isStepView={false}
+                  referoProps={props}
+                  resources={resources}
+                  onSave={handleSave}
+                  onSubmit={handleSubmit}
+                  methods={methods}
+                  onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
+                >
+                  <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
+                </RenderForm>
+              </div>
             )}
           </FormProvider>
         </AttachmentProvider>
