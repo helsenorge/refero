@@ -46,13 +46,13 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     uploadAttachment,
     useFormProps,
     attachmentMaxFileSizePerFile,
+    focusHandler,
   } = props;
 
   IE11HackToWorkAroundBug187484();
   const dispatch = useAppDispatch();
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const formData = useAppSelector(state => getFormData(state));
-  const { focusHandler } = useExternalRenderContext();
   const formContainerRef = useSetFocus(focusHandler);
 
   const questionnaire = formDefinition?.Content;
