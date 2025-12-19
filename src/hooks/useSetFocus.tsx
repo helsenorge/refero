@@ -1,5 +1,6 @@
-import { FocusHandler } from '@/types/referoProps';
 import { useEffect, useRef } from 'react';
+
+import type { FocusHandler } from '@/types/referoProps';
 
 export const useSetFocus = (focusHandler?: FocusHandler, isStepView?: boolean, stepIndex?: number): React.Ref<HTMLDivElement> => {
   const containerRef = useRef<HTMLDivElement>(null);

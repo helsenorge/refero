@@ -12,12 +12,12 @@ import StepView from './stepView';
 import { setSkjemaDefinitionAction } from '@/actions/form';
 import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
+import { useSetFocus } from '@/hooks/useSetFocus';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { getPresentationButtonsExtension } from '@/util/extension';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
-import { useSetFocus } from '@/hooks/useSetFocus';
 import { createIntitialFormValues, type DefaultValues } from '@/validation/defaultFormValues';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
