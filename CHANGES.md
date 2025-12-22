@@ -1,3 +1,8 @@
+## 22.1.0
+
+- Bugfix: Radiobutton-view triggered validation before form was submitted
+- New prop: focusHandler. It allows consumers to manage focus logic on initialization and when navigating between steps in step-view.
+
 ## 22.0.0
 
 - peerDependencies updated to helsenorge packages v.37.x.x and 13.x.x. Also added react 19.x.x as possible peerDependency

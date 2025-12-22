@@ -12,6 +12,7 @@ import StepView from './stepView';
 import { setSkjemaDefinitionAction } from '@/actions/form';
 import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
+import { useSetFocus } from '@/hooks/useSetFocus';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { getPresentationButtonsExtension } from '@/util/extension';
@@ -45,14 +46,16 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     uploadAttachment,
     useFormProps,
     attachmentMaxFileSizePerFile,
+    focusHandler,
   } = props;
 
   IE11HackToWorkAroundBug187484();
   const dispatch = useAppDispatch();
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const formData = useAppSelector(state => getFormData(state));
+  const formContainerRef = useSetFocus(focusHandler);
+
   const questionnaire = formDefinition?.Content;
-  // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item]);
   const methods = useForm<DefaultValues>({
     defaultValues: defualtVals,
@@ -61,13 +64,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     reValidateMode: 'onChange',
     criteriaMode: 'all',
     ...(useFormProps !== undefined && { ...useFormProps }),
-
-    // resolver: async (data, context, options) => {
-    //   // you can debug your validation schema here
-    //   console.log('resolver in data', data);
-    //   console.log('resolver validation result', await zodResolver(schema)(data, context, options));
-    //   return zodResolver(schema)(data, context, options);
-    // },
   });
   React.useEffect(() => {
     if (props.questionnaire) {
@@ -175,18 +171,20 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
                 methods={methods}
               />
             ) : (
-              <RenderForm
-                isAuthorized={authorized}
-                isStepView={false}
-                referoProps={props}
-                resources={resources}
-                onSave={handleSave}
-                onSubmit={handleSubmit}
-                methods={methods}
-                onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
-              >
-                <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
-              </RenderForm>
+              <div ref={formContainerRef} tabIndex={-1}>
+                <RenderForm
+                  isAuthorized={authorized}
+                  isStepView={false}
+                  referoProps={props}
+                  resources={resources}
+                  onSave={handleSave}
+                  onSubmit={handleSubmit}
+                  methods={methods}
+                  onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
+                >
+                  <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
+                </RenderForm>
+              </div>
             )}
           </FormProvider>
         </AttachmentProvider>
