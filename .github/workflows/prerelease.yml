@@ -34,5 +34,3 @@ jobs:
       - run: npm ci
       - run: npm run prepare
       - run: cd ./lib && npm publish --tag beta --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.PUBLISH_HELSENORGE_PACKAGES_TO_NPMJS}}
