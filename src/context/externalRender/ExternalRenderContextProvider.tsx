@@ -3,7 +3,7 @@ import { type ReactNode, useMemo } from 'react';
 import type { AutoSuggestProps } from '@/types/autoSuggestProps';
 import type { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 import type { IActionRequester } from '@/util/actionRequester';
-import type { FocusHandler } from '@/types/referoProps';
+import type { FormViewChange } from '@/types/referoProps';
 import type { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import type { Resources } from '@/util/resources';
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
@@ -49,7 +49,7 @@ type ExternalRenderProviderProps = {
     actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
   ) => void;
-  focusHandler?: FocusHandler;
+  onFormViewChange?: FormViewChange;
 };
 export const ExternalRenderProvider = ({
   children,
@@ -65,7 +65,7 @@ export const ExternalRenderProvider = ({
   autoSuggestProps,
   validateScriptInjection,
   onChange,
-  focusHandler,
+  onFormViewChange,
 }: ExternalRenderProviderProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const isExternalUpdate = useAppSelector(state => state.refero.form.FormData.isExternalUpdate);
@@ -95,7 +95,7 @@ export const ExternalRenderProvider = ({
       autoSuggestProps,
       validateScriptInjection,
       globalOnChange: handleOnChange,
-      focusHandler,
+      onFormViewChange,
     }),
     [
       onRequestHelpElement,
@@ -110,7 +110,7 @@ export const ExternalRenderProvider = ({
       autoSuggestProps,
       validateScriptInjection,
       handleOnChange,
-      focusHandler,
+      onFormViewChange,
     ]
   );
 

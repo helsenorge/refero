@@ -12,7 +12,7 @@ import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnair
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
-import { useSetFocus } from '@/hooks/useSetFocus';
+import { useFormViewChange } from '@/hooks/useSetFocus';
 import { useAppSelector } from '@/reducers';
 import { createPathForItem } from '@/util/refero-core';
 
@@ -28,9 +28,9 @@ interface StepViewProps {
 const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: StepViewProps): JSX.Element | null => {
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const [stepIndex, setStepIndex] = React.useState(0);
-  const { onStepChange, focusHandler } = useExternalRenderContext();
+  const { onStepChange, onFormViewChange } = useExternalRenderContext();
   const isEnabled = useCheckIfEnabled();
-  const stepContainerRef = useSetFocus(focusHandler, true, stepIndex);
+  const stepContainerRef = useFormViewChange(onFormViewChange, stepIndex);
   const topLevelElements = getTopLevelElements(formDefinition) || [];
   const visibleElements = topLevelElements.filter(topLevelElement => {
     return isEnabled(topLevelElement, createPathForItem(undefined, topLevelElement));

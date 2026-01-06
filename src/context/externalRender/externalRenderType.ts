@@ -4,7 +4,7 @@ import type { IActionRequester } from '@/util/actionRequester';
 import type { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import type { Resources } from '@/util/resources';
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
-import type { FocusHandler } from '@/types/referoProps';
+import type { FormViewChange } from '@/types/referoProps';
 
 export type ExternalRenderType = {
   onRequestHelpElement?: (
@@ -41,5 +41,5 @@ export type ExternalRenderType = {
     actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
   ) => void;
-  focusHandler?: FocusHandler;
+  onFormViewChange?: FormViewChange;
 };

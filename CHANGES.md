@@ -1,3 +1,9 @@
+## 22.2.0
+
+- Renamed prop focusHandler to onFormViewChange
+- onFormViewChange is an optional prop that is called when the form is initialized or if the view changes (example: step change)
+- Focus handling is removed from Refero but can be handled with onFormViewChange
+
 ## 22.1.0
 
 - Bugfix: Radiobutton-view triggered validation before form was submitted

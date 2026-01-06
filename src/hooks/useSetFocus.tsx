@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
-import type { FocusHandler } from '@/types/referoProps';
+import type { FormViewChange } from '@/types/referoProps';
 
-export const useSetFocus = (focusHandler?: FocusHandler, isStepView?: boolean, stepIndex?: number): React.Ref<HTMLDivElement> => {
+export const useFormViewChange = (onFormViewChange?: FormViewChange, stepIndex?: number): React.Ref<HTMLDivElement> => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -10,17 +10,8 @@ export const useSetFocus = (focusHandler?: FocusHandler, isStepView?: boolean, s
       return;
     }
 
-    //Focus handling in normal view
-    if (!isStepView && focusHandler && containerRef.current) {
-      focusHandler(containerRef.current);
-    }
-
-    //Focus handling in step-view
-    if (isStepView && focusHandler) {
-      focusHandler(containerRef.current);
-      //Default behavior in step-view. Setting focus on the first step is not desirable.
-    } else if (isStepView && stepIndex !== 0) {
-      containerRef.current?.focus();
+    if (onFormViewChange) {
+      onFormViewChange(containerRef.current);
     }
   }, [stepIndex]);
 
