@@ -2,10 +2,12 @@ import { type ReactNode, useMemo } from 'react';
 
 import type { AutoSuggestProps } from '@/types/autoSuggestProps';
 import type { OrgenhetHierarki } from '@/types/orgenhetHierarki';
-import type { IActionRequester } from '@/util/actionRequester';
 import type { FormViewChange } from '@/types/referoProps';
+import type { IActionRequester } from '@/util/actionRequester';
+
 import type { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import type { Resources } from '@/util/resources';
+
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
 import { ExternalRenderContext } from './externalRenderContext';
