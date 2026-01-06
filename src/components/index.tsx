@@ -12,7 +12,7 @@ import StepView from './stepView';
 import { setSkjemaDefinitionAction } from '@/actions/form';
 import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
-import { useSetFocus } from '@/hooks/useSetFocus';
+import { useFormViewChange } from '@/hooks/useSetFocus';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { getPresentationButtonsExtension } from '@/util/extension';
@@ -46,14 +46,14 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     uploadAttachment,
     useFormProps,
     attachmentMaxFileSizePerFile,
-    focusHandler,
+    onFormViewChange,
   } = props;
 
   IE11HackToWorkAroundBug187484();
   const dispatch = useAppDispatch();
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const formData = useAppSelector(state => getFormData(state));
-  const formContainerRef = useSetFocus(focusHandler);
+  const formContainerRef = useFormViewChange(onFormViewChange);
 
   const questionnaire = formDefinition?.Content;
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item]);

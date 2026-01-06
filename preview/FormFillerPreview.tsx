@@ -286,7 +286,7 @@ const FormFillerPreview = (): JSX.Element => {
                     return <HelpButton opening={opening} />;
                   }}
                   onFieldsNotCorrectlyFilledOut={() => {}}
-                  focusHandler={() => {}}
+                  onFormViewChange={() => {}}
 
                   // onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
                 />

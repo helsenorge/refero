@@ -20,7 +20,7 @@ import type { Store } from 'redux';
 
 import type { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
-export type FocusHandler = (focusedElement: HTMLElement) => void;
+export type FormViewChange = (refElement: HTMLElement) => void;
 
 export interface RenderCustomButtonsArgs {
   /**
@@ -342,7 +342,8 @@ export interface ReferoProps {
   renderCustomActionButtons?: (args: RenderCustomButtonsArgs) => JSX.Element;
 
   /**
-   * A callback function that allows consumers to manage focus logic on initialization and when navigating between steps in step-view.
+   * A callback function that is called when the form is initialized or if the form changes (example: step change).
+   * It accepts a ref of the element that wraps the form.
    */
-  focusHandler?: FocusHandler;
+  onFormViewChange?: FormViewChange;
 }
