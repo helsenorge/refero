@@ -343,7 +343,7 @@ export interface ReferoProps {
 
   /**
    * A callback function that is called when the form is initialized or if the form changes (example: step change).
-   * It accepts a ref of the element that wraps the form.
+   * It accepts a ref of the element that wraps the form, and the step index.
    */
   onFormViewChange?: FormViewChange;
 }

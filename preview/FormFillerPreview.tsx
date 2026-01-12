@@ -240,9 +240,8 @@ const FormFillerPreview = (): JSX.Element => {
     );
   };
 
-  const handleFocus = (refElement: HTMLElement, isStepView: boolean, isMicrowebStep: boolean, stepIndex: number | undefined): void => {
-    const shouldFocusInStepView = isStepView && stepIndex && stepIndex > 0;
-    const shouldFocus = isMicrowebStep || shouldFocusInStepView;
+  const handleFocus = (refElement: HTMLElement, isStepView: boolean, stepIndex: number | undefined): void => {
+    const shouldFocus = isStepView && stepIndex && stepIndex > 0;
     if (shouldFocus) {
       const focusableElements = 'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])';
       const firstFocusable = refElement.querySelector<HTMLElement>(focusableElements);
@@ -297,7 +296,7 @@ const FormFillerPreview = (): JSX.Element => {
                   }}
                   onFieldsNotCorrectlyFilledOut={() => {}}
                   onFormViewChange={(containerRef, stepIndex) => {
-                    handleFocus(containerRef, false, false, stepIndex);
+                    handleFocus(containerRef, false, stepIndex);
                   }}
                 />
               </div>
