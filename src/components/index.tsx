@@ -91,6 +91,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     autoSuggestProps,
     validateScriptInjection,
     onChange,
+    onFormViewChange,
   };
 
   const attachmentProviderProps = {

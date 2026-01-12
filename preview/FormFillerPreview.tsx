@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import {
   Attachment,
@@ -240,6 +240,16 @@ const FormFillerPreview = (): JSX.Element => {
     );
   };
 
+  const handleFocus = (refElement: HTMLElement, isStepView: boolean, isMicrowebStep: boolean, stepIndex: number | undefined): void => {
+    const shouldFocusInStepView = isStepView && stepIndex && stepIndex > 0;
+    const shouldFocus = isMicrowebStep || shouldFocusInStepView;
+    if (shouldFocus) {
+      const focusableElements = 'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])';
+      const firstFocusable = refElement.querySelector<HTMLElement>(focusableElements);
+      firstFocusable?.focus();
+    }
+  };
+
   if (!questionnaire || !questionnaireResponse) return <div>{'loading...'}</div>;
   return (
     <Provider store={store}>
@@ -286,9 +296,9 @@ const FormFillerPreview = (): JSX.Element => {
                     return <HelpButton opening={opening} />;
                   }}
                   onFieldsNotCorrectlyFilledOut={() => {}}
-                  onFormViewChange={() => {}}
-
-                  // onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
+                  onFormViewChange={(containerRef, stepIndex) => {
+                    handleFocus(containerRef, false, false, stepIndex);
+                  }}
                 />
               </div>
             ) : (

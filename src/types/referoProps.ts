@@ -20,7 +20,7 @@ import type { Store } from 'redux';
 
 import type { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
-export type FormViewChange = (refElement: HTMLElement) => void;
+export type FormViewChange = (refElement: HTMLElement, stepIndex?: number) => void;
 
 export interface RenderCustomButtonsArgs {
   /**

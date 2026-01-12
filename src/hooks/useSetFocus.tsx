@@ -11,7 +11,7 @@ export const useFormViewChange = (onFormViewChange?: FormViewChange, stepIndex?:
     }
 
     if (onFormViewChange) {
-      onFormViewChange(containerRef.current);
+      onFormViewChange(containerRef.current, stepIndex);
     }
   }, [stepIndex]);
 
