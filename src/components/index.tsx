@@ -12,7 +12,7 @@ import StepView from './stepView';
 import { setSkjemaDefinitionAction } from '@/actions/form';
 import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
-import { useFormViewChange } from '@/hooks/useSetFocus';
+import { useFormViewChange } from '@/hooks/useFormViewChange';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { getPresentationButtonsExtension } from '@/util/extension';

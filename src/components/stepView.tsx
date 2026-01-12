@@ -12,7 +12,7 @@ import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnair
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
-import { useFormViewChange } from '@/hooks/useSetFocus';
+import { useFormViewChange } from '@/hooks/useFormViewChange';
 import { useAppSelector } from '@/reducers';
 import { createPathForItem } from '@/util/refero-core';
 
