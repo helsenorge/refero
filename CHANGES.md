@@ -1,3 +1,9 @@
+## 22.2.1
+
+- Bugfix: Added onFormViewChange to externalRenderProps, to fix it being undefined
+- Added stepIndex as an optional prop in onFormViewChange callback
+- Added onFormViewChange in FormFillerPreview
+
 ## 22.2.0
 
 - Renamed prop focusHandler to onFormViewChange

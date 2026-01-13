@@ -11,8 +11,8 @@ import { getTopLevelElements } from '../util/getTopLevelElements';
 import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnaireComponents';
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
+import { useFormViewChange } from '@/hooks/useFormViewChange';
 import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
-import { useFormViewChange } from '@/hooks/useSetFocus';
 import { useAppSelector } from '@/reducers';
 import { createPathForItem } from '@/util/refero-core';
 

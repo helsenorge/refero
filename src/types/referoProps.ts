@@ -20,7 +20,7 @@ import type { Store } from 'redux';
 
 import type { MimeTypes, UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
-export type FormViewChange = (refElement: HTMLElement) => void;
+export type FormViewChange = (refElement: HTMLElement, stepIndex?: number) => void;
 
 export interface RenderCustomButtonsArgs {
   /**
@@ -343,7 +343,7 @@ export interface ReferoProps {
 
   /**
    * A callback function that is called when the form is initialized or if the form changes (example: step change).
-   * It accepts a ref of the element that wraps the form.
+   * It accepts a ref of the element that wraps the form, and the step index.
    */
   onFormViewChange?: FormViewChange;
 }
