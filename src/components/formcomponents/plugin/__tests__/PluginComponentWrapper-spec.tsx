@@ -1,10 +1,9 @@
-/* eslint-disable testing-library/no-container */
-/* eslint-disable react-refresh/only-export-components */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { screen, render, createPluginTestStore, PluginTestWrapper, defaultPluginTestResources } from '@test/test-utils';
+import { createPluginTestStore, PluginTestWrapper, defaultPluginTestResources } from '@test/test-utils';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
 import type { PluginComponentProps } from '@/types/componentPlugin';
+import type { Resources } from '@/util/resources';
 import type { QuestionnaireItem } from 'fhir/r4';
 
 import { PluginComponentWrapper } from '../PluginComponentWrapper';
@@ -12,6 +11,7 @@ import { PluginComponentWrapper } from '../PluginComponentWrapper';
 import { RenderContext } from '@/util/renderContext';
 
 // Mock plugin component for testing
+// eslint-disable-next-line react-refresh/only-export-components
 const MockPluginComponent = ({ item, id }: PluginComponentProps): JSX.Element => (
   <div data-testid="mock-plugin">
     <span data-testid="plugin-id">{id}</span>
@@ -41,14 +41,14 @@ describe('PluginComponentWrapper', () => {
     const store = createPluginTestStore(); // No item in store
 
     const { container } = render(<PluginComponentWrapper {...defaultProps} />, {
-      store,
-      wrapper: ({ children }) => (
-        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as any }}>
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
           {children}
         </PluginTestWrapper>
       ),
     });
 
+    // eslint-disable-next-line testing-library/no-node-access
     expect(container.firstChild).toBeNull();
   });
 
@@ -56,9 +56,8 @@ describe('PluginComponentWrapper', () => {
     const store = createPluginTestStore(testItem);
 
     render(<PluginComponentWrapper {...defaultProps} />, {
-      store,
-      wrapper: ({ children }) => (
-        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as any }}>
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
           {children}
         </PluginTestWrapper>
       ),
@@ -71,9 +70,8 @@ describe('PluginComponentWrapper', () => {
     const store = createPluginTestStore(testItem);
 
     render(<PluginComponentWrapper {...defaultProps} />, {
-      store,
-      wrapper: ({ children }) => (
-        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as any }}>
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
           {children}
         </PluginTestWrapper>
       ),
@@ -86,9 +84,8 @@ describe('PluginComponentWrapper', () => {
     const store = createPluginTestStore(testItem);
 
     render(<PluginComponentWrapper {...defaultProps} />, {
-      store,
-      wrapper: ({ children }) => (
-        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as any }}>
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
           {children}
         </PluginTestWrapper>
       ),
@@ -101,14 +98,14 @@ describe('PluginComponentWrapper', () => {
     const store = createPluginTestStore(testItem);
 
     const { container } = render(<PluginComponentWrapper {...defaultProps} />, {
-      store,
-      wrapper: ({ children }) => (
-        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as any }}>
+      wrapper: ({ children }: { children: React.ReactNode }) => (
+        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
           {children}
         </PluginTestWrapper>
       ),
     });
 
+    // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
     expect(container.querySelector('.page_refero__component_plugin')).toBeInTheDocument();
   });
 });

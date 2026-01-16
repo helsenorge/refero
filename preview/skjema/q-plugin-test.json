@@ -39,6 +39,113 @@
           "required": false
         },
         {
+          "linkId": "category-selection",
+          "type": "choice",
+          "text": "Velg Kategori",
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "pill-choice",
+                    "display": "Pill Choice"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "muskel",
+                "display": "Muskel og skjelettplager"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "sykemeldning",
+                "display": "Forleng sykemeldning"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "svangerskap",
+                "display": "svangerskapsplager"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "hud",
+                "display": "Hud og utslett"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "hodepine",
+                "display": "Hodepine"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "luftveis",
+                "display": "Luftveisplager"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "mage",
+                "display": "Mage og tarmproblemer"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "oppfolging",
+                "display": "Oppfølgning etter fastlegetime"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "legeerklaring",
+                "display": "Legeerklæring eller attest"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "allergi",
+                "display": "Allergi"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "psykisk",
+                "display": "Psykiske plager"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "annet",
+                "display": "Annet"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
           "linkId": "mood-selection",
           "type": "choice",
           "text": "How are you feeling today? (Select all that apply)",

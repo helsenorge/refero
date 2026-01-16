@@ -25,6 +25,7 @@ import { store as reduxStore } from '../src/reducers';
 import { CustomSliderPlugin } from './external-components/CustomSliderPlugin';
 import HelpButton from './external-components/HelpButton';
 import { ImageChoicePlugin } from './external-components/ImageChoicePlugin';
+import { PillChoicePlugin } from './external-components/PillChoicePlugin';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/q.json';
@@ -47,6 +48,11 @@ const componentPlugins: ComponentPlugin[] = [
     itemType: 'choice',
     itemControlCode: 'check-box',
     component: ImageChoicePlugin,
+  },
+  {
+    itemType: 'choice',
+    itemControlCode: 'pill-choice',
+    component: PillChoicePlugin,
   },
 ];
 

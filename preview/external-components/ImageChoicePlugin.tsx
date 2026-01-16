@@ -4,6 +4,8 @@ import type { PluginComponentProps } from '../../src/types/componentPlugin';
 import type { Coding } from 'fhir/r4';
 
 import Icon, { type SvgIcon } from '@helsenorge/designsystem-react/components/Icon';
+import AlertSignStroke from '@helsenorge/designsystem-react/components/Icons/AlertSignStroke';
+import BrokenHeart from '@helsenorge/designsystem-react/components/Icons/BrokenHeart';
 import Check from '@helsenorge/designsystem-react/components/Icons/Check';
 import EmoticonHappy from '@helsenorge/designsystem-react/components/Icons/EmoticonHappy';
 import Female from '@helsenorge/designsystem-react/components/Icons/Female';
@@ -12,7 +14,6 @@ import Heart from '@helsenorge/designsystem-react/components/Icons/Heart';
 import HeartHands from '@helsenorge/designsystem-react/components/Icons/HeartHands';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 import MaleDoctor from '@helsenorge/designsystem-react/components/Icons/MaleDoctor';
-import Minus from '@helsenorge/designsystem-react/components/Icons/Minus';
 import Person from '@helsenorge/designsystem-react/components/Icons/Person';
 
 /**
@@ -33,8 +34,8 @@ const ICON_MAP: Record<string, SvgIcon> = {
   'very-satisfied': HeartHands,
   satisfied: Heart,
   neutral: Person,
-  dissatisfied: Minus,
-  'very-dissatisfied': Minus,
+  dissatisfied: BrokenHeart,
+  'very-dissatisfied': AlertSignStroke,
   // Fallback
   default: EmoticonHappy,
 };
