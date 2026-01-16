@@ -1,7 +1,8 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 
 import { createSelector } from 'reselect';
 
+import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import type { FormData } from '@/reducers/form';
 import type { RenderContext } from '@/util/renderContext';
 import type { QuestionnaireItem, Resource } from 'fhir/r4';
@@ -9,9 +10,12 @@ import type { QuestionnaireItem, Resource } from 'fhir/r4';
 import { RenderResponseItems } from './RenderResponseItems';
 import { getComponentForItem } from './utils';
 
+import { PluginComponentWrapper } from '@/components/formcomponents/plugin/PluginComponentWrapper';
+import { useComponentPluginRegistry } from '@/context/componentPlugin';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useAppSelector } from '@/reducers';
 import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
+import { resolvePluginComponent } from '@/util/componentPluginResolver';
 import { isHelpItem } from '@/util/help';
 import { isHiddenItem } from '@/util/index';
 import { createPathForItem, type Path } from '@/util/refero-core';
@@ -42,12 +46,30 @@ const ItemRenderer = memo(function ItemRenderer({
 }: ItemRendererProps) {
   const isEnabled = useIsEnabled(item, createPathForItem(path, item, 0));
   const responseItems = useAppSelector(state => responseItemsSelector(state, item.linkId, path));
+  const pluginRegistry = useComponentPluginRegistry();
+
+  // Check for plugin component first
+  const pluginResolution = resolvePluginComponent(item, pluginRegistry);
+
+  // Create a memoized wrapper component for the plugin if one was found
+  const PluginWrapperComponent = useMemo(() => {
+    const pluginComponent = pluginResolution?.component;
+    if (!pluginComponent) return null;
+
+    // Create a component that wraps the plugin with PluginComponentWrapper
+    const WrapperComponent = (props: QuestionnaireComponentItemProps): JSX.Element | null => {
+      return <PluginComponentWrapper {...props} PluginComponent={pluginComponent} />;
+    };
+    WrapperComponent.displayName = `PluginWrapper(${pluginResolution.matchedCode})`;
+    return WrapperComponent;
+  }, [pluginResolution]);
 
   if (isHelpItem(item) || isHiddenItem(item)) {
     return null;
   }
 
-  const ItemComponent = getComponentForItem(item.type);
+  // Use plugin component if available, otherwise fall back to built-in component
+  const ItemComponent = PluginWrapperComponent ?? getComponentForItem(item.type);
   if (!ItemComponent) {
     return null;
   }

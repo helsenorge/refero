@@ -1,24 +1,27 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { ReactElement, ReactNode } from 'react';
+import React, { type ReactElement, type ReactNode } from 'react';
 
-import { configureStore, Store } from '@reduxjs/toolkit';
-import { render, RenderOptions } from '@testing-library/react';
+import { configureStore, type Store } from '@reduxjs/toolkit';
+import { render, type RenderOptions } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Questionnaire } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Provider } from 'react-redux';
+
+import type { ReferoProps } from '../src/types/referoProps';
+import type { Resources } from '../src/util/resources';
+import type { ComponentPlugin } from '@/types/componentPlugin';
+import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { getResources } from '../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../src/actions/generateQuestionnaireResponse';
 import ReferoContainer from '../src/components';
-import rootReducer, { GlobalState } from '../src/reducers';
-import { ReferoProps } from '../src/types/referoProps';
-import { Resources } from '../src/util/resources';
-import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
+import rootReducer, { type GlobalState } from '../src/reducers';
+import { createIntitialFormValues, type DefaultValues } from '../src/validation/defaultFormValues';
 
 import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
+import { ComponentPluginProvider } from '@/context/componentPlugin';
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
 
 export const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
@@ -32,6 +35,36 @@ export const FormWrapper = ({ children, defaultValues }: { children: React.React
 export const ExternalRenderProviderWrapper = ({ children, props }: { children: React.ReactNode; props?: Partial<ReferoProps> }) => {
   return <ExternalRenderProvider {...props}>{children}</ExternalRenderProvider>;
 };
+
+/**
+ * Wrapper for plugin-related tests that includes ComponentPluginProvider
+ */
+export const PluginTestWrapper = ({
+  children,
+  defaultValues = {},
+  store,
+  referoProps,
+  plugins,
+}: {
+  children: React.ReactNode;
+  defaultValues?: any;
+  store: Store;
+  referoProps?: Partial<ReferoProps>;
+  plugins?: ComponentPlugin[];
+}): JSX.Element => {
+  return (
+    <Provider store={store}>
+      <ExternalRenderProviderWrapper props={referoProps}>
+        <AttachmentProvider {...referoProps}>
+          <ComponentPluginProvider plugins={plugins}>
+            <FormWrapper defaultValues={defaultValues}>{children}</FormWrapper>
+          </ComponentPluginProvider>
+        </AttachmentProvider>
+      </ExternalRenderProviderWrapper>
+    </Provider>
+  );
+};
+
 const AllTheProviders = ({
   children,
   defaultValues = {},
@@ -129,6 +162,61 @@ const renderWithReduxAndHookFormMock = (
     </Provider>
   );
   return { ...render(ui, { wrapper: Wrapper, ...renderOptions }), store };
+};
+
+/**
+ * Creates a store for plugin testing with a single questionnaire item
+ */
+export const createPluginTestStore = (questionnaireItem?: QuestionnaireItem, answerValue?: QuestionnaireResponseItemAnswer[]): Store => {
+  const questionnaire: Questionnaire = {
+    resourceType: 'Questionnaire',
+    status: 'active',
+    item: questionnaireItem ? [questionnaireItem] : [],
+  };
+
+  const questionnaireResponse: QuestionnaireResponse = {
+    resourceType: 'QuestionnaireResponse',
+    status: 'in-progress',
+    item: questionnaireItem
+      ? [
+          {
+            linkId: questionnaireItem.linkId,
+            answer: answerValue ?? [],
+          },
+        ]
+      : [],
+  };
+
+  return configureStore({
+    reducer: rootReducer,
+    preloadedState: {
+      refero: {
+        form: {
+          Language: 'en',
+          FormDefinition: { Content: questionnaire },
+          FormData: { Content: questionnaireResponse },
+        },
+      },
+    },
+  });
+};
+
+/**
+ * Default resources for plugin testing
+ */
+export const defaultPluginTestResources: Partial<Resources> = {
+  ikkeBesvart: 'Not answered',
+  formCancel: 'Cancel',
+  formSend: 'Send',
+  repeatButtonText: 'Add',
+  confirmDeleteButtonText: 'Delete',
+  confirmDeleteCancelButtonText: 'Cancel',
+  confirmDeleteHeading: 'Delete?',
+  confirmDeleteDescription: 'Are you sure?',
+  validationNotAllowed: 'Not allowed',
+  errorAfterMaxDate: 'After max date',
+  errorBeforeMinDate: 'Before min date',
+  oppgiVerdi: 'Enter value',
 };
 
 interface InputProps {

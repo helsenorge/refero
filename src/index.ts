@@ -40,6 +40,7 @@ export * from './types/queryStrings';
 export * from './types/referoProps';
 export * from './types/sidebar';
 export * from './types/text-message';
+export * from './types/componentPlugin';
 export * from './util/resources';
 
 //Constants

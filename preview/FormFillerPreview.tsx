@@ -1,6 +1,11 @@
 import { useState } from 'react';
 
-import {
+import { Provider } from 'react-redux';
+
+import type { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
+import type { ComponentPlugin } from '@/types/componentPlugin';
+import type { IQuestionnaireInspector } from '@/util/questionnaireInspector';
+import type {
   Attachment,
   Bundle,
   Questionnaire,
@@ -10,15 +15,16 @@ import {
   QuestionnaireResponseItemAnswer,
   ValueSet,
 } from 'fhir/r4';
-import { Provider } from 'react-redux';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
-import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import type { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import { store as reduxStore } from '../src/reducers';
+import { CustomSliderPlugin } from './external-components/CustomSliderPlugin';
 import HelpButton from './external-components/HelpButton';
+import { ImageChoicePlugin } from './external-components/ImageChoicePlugin';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/q.json';
@@ -26,11 +32,23 @@ import ReferoContainer from '../src/components/index';
 import qr from './skjema/responses/qr.json';
 import valueSet from '../src/constants/valuesets';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
-import { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 
-import { getId, setSkjemaDefinitionAction, TextMessage } from '@/index';
+import { getId, setSkjemaDefinitionAction, type TextMessage } from '@/index';
 import { MimeType } from '@/util/attachmentHelper';
-import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
+
+// Define component plugins
+const componentPlugins: ComponentPlugin[] = [
+  {
+    itemType: 'integer',
+    itemControlCode: 'slider',
+    component: CustomSliderPlugin,
+  },
+  {
+    itemType: 'choice',
+    itemControlCode: 'check-box',
+    component: ImageChoicePlugin,
+  },
+];
 
 const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
@@ -298,6 +316,7 @@ const FormFillerPreview = (): JSX.Element => {
                   onFormViewChange={(containerRef, stepIndex) => {
                     handleFocus(containerRef, false, stepIndex);
                   }}
+                  componentPlugins={componentPlugins}
                 />
               </div>
             ) : (

@@ -11,6 +11,7 @@ import StepView from './stepView';
 
 import { setSkjemaDefinitionAction } from '@/actions/form';
 import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
+import { ComponentPluginProvider } from '@/context/componentPlugin';
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
 import { useFormViewChange } from '@/hooks/useFormViewChange';
 import { useAppDispatch, useAppSelector } from '@/reducers';
@@ -47,6 +48,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     useFormProps,
     attachmentMaxFileSizePerFile,
     onFormViewChange,
+    componentPlugins,
   } = props;
 
   IE11HackToWorkAroundBug187484();
@@ -146,9 +148,11 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     return (
       <ExternalRenderProvider {...externalRenderProps}>
         <AttachmentProvider {...attachmentProviderProps}>
-          <FormProvider {...methods}>
-            <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={true} />
-          </FormProvider>
+          <ComponentPluginProvider plugins={componentPlugins}>
+            <FormProvider {...methods}>
+              <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={true} />
+            </FormProvider>
+          </ComponentPluginProvider>
         </AttachmentProvider>
       </ExternalRenderProvider>
     );
@@ -161,33 +165,35 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
       <div className="page_refero__messageboxes" />
       <ExternalRenderProvider {...externalRenderProps}>
         <AttachmentProvider {...attachmentProviderProps}>
-          <FormProvider {...methods}>
-            {isStepView ? (
-              <StepView
-                isAuthorized={authorized}
-                referoProps={props}
-                resources={resources}
-                onSave={handleSave}
-                onSubmit={handleSubmit}
-                methods={methods}
-              />
-            ) : (
-              <div ref={formContainerRef} tabIndex={-1}>
-                <RenderForm
+          <ComponentPluginProvider plugins={componentPlugins}>
+            <FormProvider {...methods}>
+              {isStepView ? (
+                <StepView
                   isAuthorized={authorized}
-                  isStepView={false}
                   referoProps={props}
                   resources={resources}
                   onSave={handleSave}
                   onSubmit={handleSubmit}
                   methods={methods}
-                  onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
-                >
-                  <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
-                </RenderForm>
-              </div>
-            )}
-          </FormProvider>
+                />
+              ) : (
+                <div ref={formContainerRef} tabIndex={-1}>
+                  <RenderForm
+                    isAuthorized={authorized}
+                    isStepView={false}
+                    referoProps={props}
+                    resources={resources}
+                    onSave={handleSave}
+                    onSubmit={handleSubmit}
+                    methods={methods}
+                    onFieldsNotCorrectlyFilledOut={onFieldsNotCorrectlyFilledOut}
+                  >
+                    <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
+                  </RenderForm>
+                </div>
+              )}
+            </FormProvider>
+          </ComponentPluginProvider>
         </AttachmentProvider>
       </ExternalRenderProvider>
     </div>

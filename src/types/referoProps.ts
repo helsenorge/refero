@@ -1,4 +1,5 @@
 import type { AutoSuggestProps } from './autoSuggestProps';
+import type { ComponentPlugin } from './componentPlugin';
 import type { OrgenhetHierarki } from './orgenhetHierarki';
 import type { IActionRequester } from '../util/actionRequester';
 import type { IQuestionnaireInspector } from '../util/questionnaireInspector';
@@ -346,4 +347,23 @@ export interface ReferoProps {
    * It accepts a ref of the element that wraps the form, and the step index.
    */
   onFormViewChange?: FormViewChange;
+
+  /**
+   * An array of component plugins for custom rendering of form components.
+   * Each plugin maps an item type + itemControl code combination to a custom React component.
+   * This allows consuming applications to inject custom components without modifying refero.
+   *
+   * @example
+   * ```tsx
+   * const plugins: ComponentPlugin[] = [
+   *   {
+   *     itemType: 'integer',
+   *     itemControlCode: 'slider',
+   *     component: MyCustomSlider,
+   *   },
+   * ];
+   * <ReferoContainer componentPlugins={plugins} ... />
+   * ```
+   */
+  componentPlugins?: ComponentPlugin[];
 }

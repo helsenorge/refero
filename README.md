@@ -126,6 +126,7 @@ const App = () => {
 | useFormProps                  |          | UseFormProps               |         | Additional options passed to `react-hook-form`'s `useForm` hook.                                                                                                                        |
 | renderCustomActionButtons     |          | callback                   |         | A callback function that allows consumers to render their own custom buttons.                                                                                                           |
 | onFormViewChange              |          | callback                   |         | A callback function that is called when the form is initialized or if the form changes (example: step change). It accepts a ref of the element that wraps the form, and the step index. |
+| componentPlugins              |          | ComponentPlugin[]          | []      | Array of plugin definitions for custom component rendering. See [Component Plugins](#component-plugins) section.                                                                        |
 
 ### `questionnaire: Questionnaire`
 
@@ -306,6 +307,211 @@ the current index will be updated to. This can be used to make progress indicato
 
 A callback function that is called when the form is initialized or if the form changes (example: step change). It accepts a ref of the
 element that wraps the form.
+
+# Component Plugins
+
+Refero supports a plugin system that allows you to provide custom React components for specific questionnaire item types and itemControl
+codes. This enables you to replace built-in components with custom implementations tailored to your application's needs.
+
+## Overview
+
+The plugin system works by:
+
+1. Registering plugins that define which item type + itemControl code combination they handle
+2. When rendering a questionnaire item, Refero checks if a plugin is registered for that combination
+3. If found, the plugin component is rendered instead of the built-in component
+4. The plugin receives standardized props including the item, current answer, and a callback to update values
+
+## Basic Usage
+
+```tsx
+import { Refero, ComponentPlugin, PluginComponentProps } from '@helsenorge/refero';
+
+// Create a custom component
+const CustomSlider = ({ item, answer, onValueChange, error, readOnly }: PluginComponentProps) => {
+  const currentValue = answer?.valueInteger ?? 0;
+
+  return (
+    <div>
+      <input
+        type="range"
+        min={0}
+        max={100}
+        value={currentValue}
+        disabled={readOnly}
+        onChange={e => onValueChange({ valueInteger: parseInt(e.target.value, 10) })}
+      />
+      <span>{currentValue}</span>
+      {error && <span className="error">{error.message}</span>}
+    </div>
+  );
+};
+
+// Define the plugin
+const sliderPlugin: ComponentPlugin = {
+  itemType: 'integer', // FHIR item type
+  itemControlCode: 'slider', // itemControl extension code
+  component: CustomSlider,
+};
+
+// Use with Refero
+<Refero
+  questionnaire={questionnaire}
+  questionnaireResponse={questionnaireResponse}
+  componentPlugins={[sliderPlugin]}
+  // ... other props
+/>;
+```
+
+## Plugin Props
+
+The `componentPlugins` prop accepts an array of `ComponentPlugin` objects:
+
+```ts
+interface ComponentPlugin {
+  /** Item type this plugin applies to (e.g., 'integer', 'string', 'choice') */
+  itemType: string;
+  /** ItemControl code that triggers this plugin (e.g., 'slider', 'spinner') */
+  itemControlCode: string;
+  /** The React component to render */
+  component: React.ComponentType<PluginComponentProps>;
+}
+```
+
+## PluginComponentProps Interface
+
+Plugin components receive these standardized props:
+
+```ts
+interface PluginComponentProps {
+  /** The FHIR QuestionnaireItem definition */
+  item: QuestionnaireItem;
+  /** Current answer value(s) for this item */
+  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined;
+  /** Callback to update the answer value */
+  onValueChange: (value: QuestionnaireResponseItemAnswer) => void;
+  /** Optional callback to clear the answer */
+  onValueClear?: () => void;
+  /** Form validation error, if any */
+  error?: FieldError;
+  /** Localization resources */
+  resources?: Resources;
+  /** Whether rendering for PDF output */
+  pdf?: boolean;
+  /** Whether the field is read-only */
+  readOnly?: boolean;
+  /** Unique identifier for the field */
+  id: string;
+  /** Path to this item in the questionnaire response */
+  path: Path[];
+  /** Index of this item (for repeated items) */
+  index: number;
+  /** Children elements (for nested items) */
+  children?: React.ReactNode;
+}
+```
+
+## Answer Value Types
+
+When calling `onValueChange`, provide the appropriate answer type based on your item:
+
+```ts
+// For integer items
+onValueChange({ valueInteger: 42 });
+
+// For decimal items
+onValueChange({ valueDecimal: 3.14 });
+
+// For string items
+onValueChange({ valueString: 'Hello' });
+
+// For boolean items
+onValueChange({ valueBoolean: true });
+
+// For date items
+onValueChange({ valueDate: '2024-01-15' });
+
+// For dateTime items
+onValueChange({ valueDateTime: '2024-01-15T10:30:00' });
+
+// For time items
+onValueChange({ valueTime: '10:30:00' });
+
+// For coding/choice items
+onValueChange({ valueCoding: { system: 'http://example.org', code: 'abc', display: 'ABC' } });
+
+// For quantity items
+onValueChange({ valueQuantity: { value: 70, unit: 'kg', system: 'http://unitsofmeasure.org', code: 'kg' } });
+```
+
+## Helper Functions
+
+Refero exports a helper function for creating plugin registry keys:
+
+```ts
+import { createPluginKey } from '@helsenorge/refero';
+
+// Creates key in format "itemType:itemControlCode"
+const key = createPluginKey('integer', 'slider'); // Returns "integer:slider"
+```
+
+## Matching Logic
+
+Plugins are matched based on both:
+
+1. **Item type** - The FHIR questionnaire item type (e.g., `integer`, `string`, `choice`)
+2. **ItemControl code** - The code from the item's `itemControl` extension
+
+The itemControl extension is typically found at:
+
+```json
+{
+  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+  "valueCodeableConcept": {
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/questionnaire-item-control",
+        "code": "slider"
+      }
+    ]
+  }
+}
+```
+
+## Limitations
+
+- Plugins only match when **both** item type AND itemControl code match
+- Items without an itemControl extension will always use built-in components
+- The plugin wrapper handles labels, repeat/delete buttons, and validation display
+- Plugin components should focus on the input control itself
+
+## Multiple Plugins Example
+
+```tsx
+const plugins: ComponentPlugin[] = [
+  {
+    itemType: 'integer',
+    itemControlCode: 'slider',
+    component: CustomSlider,
+  },
+  {
+    itemType: 'integer',
+    itemControlCode: 'spinner',
+    component: CustomSpinner,
+  },
+  {
+    itemType: 'string',
+    itemControlCode: 'text-area',
+    component: CustomTextArea,
+  },
+];
+
+<Refero
+  questionnaire={questionnaire}
+  componentPlugins={plugins}
+  // ... other props
+/>;
+```
 
 # Scoring Functionality
 
