@@ -11,7 +11,7 @@ import AutosuggestView from '../choice-common/autosuggest-view';
 import { ReadOnly } from '../read-only/readOnly';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 
-import { newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
+import { newCodingValueAsync, removeCodingValueAsync, toggleCodingValueAsync } from '@/actions/newValue';
 import itemControlConstants, { type ItemControlValue } from '@/constants/itemcontrol';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -134,11 +134,8 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       if (code && onAnswerChange && path && item) {
         const coding = getAnswerValueCoding(code);
         const responseAnswer = { valueCoding: coding };
-        if (answerContainsCode(code)) {
-          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
-        } else {
-          dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange(newState, item, responseAnswer));
-        }
+        const isSelected = answerContainsCode(code);
+        dispatch(toggleCodingValueAsync(path, coding, item, isSelected)).then(newState => onAnswerChange(newState, item, responseAnswer));
         promptLoginMessage?.();
       }
     },

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { type FieldValues, useFormContext } from 'react-hook-form';
 
@@ -47,7 +47,7 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): JSX.
   // Get item from Redux
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
-  // Get external render context
+  // Get external render context - same pattern as Integer, Choice, etc.
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
@@ -64,16 +64,11 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): JSX.
   useResetFormField(idWithLinkIdAndItemIndex, answer);
 
   // Create the value change handler for the plugin
+  // Uses async actions + onAnswerChange - same pattern as Integer, Choice, etc.
   const handleValueChange = useMemo(() => {
     if (!item) return (): void => {};
     return createPluginValueChangeHandler(dispatch, path, item, onAnswerChange, promptLoginMessage, answer);
   }, [dispatch, path, item, onAnswerChange, promptLoginMessage, answer]);
-
-  // Handle clearing the value
-  const handleValueClear = useCallback(() => {
-    // For now, clearing is not implemented - plugins can handle this themselves
-    // This could be extended to call appropriate remove actions
-  }, []);
 
   const errorMessage = getErrorMessage(item, error);
   const readOnly = isReadOnly(item);
@@ -84,7 +79,6 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): JSX.
       item: item!,
       answer,
       onValueChange: handleValueChange,
-      onValueClear: handleValueClear,
       error,
       resources,
       pdf,
@@ -94,7 +88,7 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): JSX.
       index,
       children,
     }),
-    [item, answer, handleValueChange, handleValueClear, error, resources, pdf, readOnly, id, path, index, children]
+    [item, answer, handleValueChange, error, resources, pdf, readOnly, id, path, index, children]
   );
 
   // Guard: item must exist

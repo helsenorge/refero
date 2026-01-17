@@ -458,6 +458,17 @@ export function hasBooleanAnswer(answer?: QuestionnaireResponseItemAnswer | Ques
 export function hasCodingAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
   return !!getCodingAnswer(answer) && !isObjEmpty(getCodingAnswer(answer));
 }
+
+/**
+ * Extracts all coding codes from an answer or array of answers.
+ * Useful for checking if a specific code is selected in multi-select scenarios.
+ */
+export function getCodingCodes(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string[] {
+  if (!answer) return [];
+  const answers = Array.isArray(answer) ? answer : [answer];
+  return answers.map(a => a.valueCoding?.code).filter((code): code is string => !!code);
+}
+
 export function hasQuantityAnswer(answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
   return getQuantityAnswer(answer) !== null && !isObjEmpty(getQuantityAnswer(answer));
 }
