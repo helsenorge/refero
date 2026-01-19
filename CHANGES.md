@@ -1,3 +1,15 @@
+## 22.2.1-beta01
+
+- **New Feature: ItemControl Component Plugin System** - Allows consuming applications to register custom React components for specific item
+  type + itemControl code combinations
+  - New `componentPlugins` prop on `ReferoContainer` for registering custom components
+  - New `PluginComponentProps` interface providing a stable API for plugin components
+  - Supports all FHIR answer value types (string, integer, decimal, boolean, coding, date, time, quantity, etc.)
+  - Automatic toggle behavior for multi-select choice items (`repeats: true`)
+  - New utility functions: `createPluginKey`, `createPluginRegistry`, `resolvePluginComponent`
+  - New `createPluginValueChangeHandler` for easy value updates from plugin components
+- Added example plugin components: `PillChoicePlugin`, `ImageChoicePlugin`, `CustomSliderPlugin`
+
 ## 22.2.1
 
 - Bugfix: Added onFormViewChange to externalRenderProps, to fix it being undefined
