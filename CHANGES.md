@@ -5,7 +5,7 @@
   - New `componentPlugins` prop on `ReferoContainer` for registering custom components
   - New `PluginComponentProps` interface providing a stable API for plugin components
   - Supports all FHIR answer value types (string, integer, decimal, boolean, coding, date, time, quantity, etc.)
-  - Automatic toggle behavior for multi-select choice items (`repeats: true`)
+  - Built-in toggle behavior for checkbox-style multi-select choice components
   - New utility functions: `createPluginKey`, `createPluginRegistry`, `resolvePluginComponent`
   - New `createPluginValueChangeHandler` for easy value updates from plugin components
 - Added example plugin components: `PillChoicePlugin`, `ImageChoicePlugin`, `CustomSliderPlugin`
