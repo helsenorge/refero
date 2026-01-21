@@ -1,3 +1,8 @@
+## 22.3.0-beta02
+
+- Export validation utilities for plugins: `required`, `minValue`, `maxValue`, `getErrorMessage`, `shouldValidate`
+- Re-export `useFormContext` from react-hook-form (ensures plugins use same instance as refero)
+
 ## 22.3.0-beta01
 
 - **New Feature: ItemControl Component Plugin System** - Allows consuming applications to register custom React components for specific item

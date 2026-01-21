@@ -3,6 +3,13 @@ export { default as Refero } from './components/index';
 export { default } from './components/index';
 export { ReferoLabel } from './components/referoLabel/ReferoLabel';
 
+//Validation
+export * from './components/validation/rules';
+export { shouldValidate } from './components/validation/utils';
+
+// Re-export react-hook-form hooks for plugins to use (ensures same instance)
+export { useFormContext, type FieldError, type FieldValues, type RegisterOptions } from 'react-hook-form';
+
 //State
 ////Actions
 export * from './actions/form';
