@@ -1,3 +1,5 @@
+import type React from 'react';
+
 import { v4 as uuid } from 'uuid';
 
 import type { Resources } from './resources';
@@ -129,14 +131,14 @@ export function getDisplay(options?: Options[], value?: string): string | undefi
 export function renderOptions(
   item: QuestionnaireItem,
   containedResources: Resource[] | undefined,
-  renderRadio: (o: Array<Options> | undefined) => JSX.Element,
-  renderCheckbox: (o: Array<Options> | undefined) => JSX.Element,
-  renderDropdown: (o: Array<Options> | undefined) => JSX.Element,
-  renderSlider: () => JSX.Element,
+  renderRadio: (o: Array<Options> | undefined) => React.JSX.Element,
+  renderCheckbox: (o: Array<Options> | undefined) => React.JSX.Element,
+  renderDropdown: (o: Array<Options> | undefined) => React.JSX.Element,
+  renderSlider: () => React.JSX.Element,
   resources: Resources | undefined,
-  renderAutosuggest: () => JSX.Element,
-  renderReceiverComponent?: () => JSX.Element
-): JSX.Element | null {
+  renderAutosuggest: () => React.JSX.Element,
+  renderReceiverComponent?: () => React.JSX.Element
+): React.JSX.Element | null {
   const itemControlValue = getItemControlValue(item);
   const options = getOptions(resources, item, containedResources);
   if (hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item)) {

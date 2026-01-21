@@ -18,7 +18,7 @@ type Props = {
   displayToSortBy?: string;
 };
 
-export const StandardTableHeader = ({ headerRow, setSortDir, sortDir, displayToSortBy }: Props): JSX.Element => {
+export const StandardTableHeader = ({ headerRow, setSortDir, sortDir, displayToSortBy }: Props): React.JSX.Element => {
   const handleSort = (): void => {
     setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
   };

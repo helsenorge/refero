@@ -11,7 +11,12 @@ type Props = {
   isStepView?: boolean;
 };
 
-export const PauseFormButton = ({ pauseButtonText, onPauseButtonClicked, pauseButtonDisabled, isStepView }: Props): JSX.Element | null => {
+export const PauseFormButton = ({
+  pauseButtonText,
+  onPauseButtonClicked,
+  pauseButtonDisabled,
+  isStepView,
+}: Props): React.JSX.Element | null => {
   const breakpoint = useBreakpoint();
 
   if (!onPauseButtonClicked) {

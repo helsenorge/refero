@@ -27,7 +27,7 @@ export type Props = QuestionnaireComponentItemProps & {
   pdfValue?: string | number;
 };
 
-const CheckboxView = (props: Props): JSX.Element | null => {
+const CheckboxView = (props: Props): React.JSX.Element | null => {
   const { options, linkId, id, handleChange, idWithLinkIdAndItemIndex, selected, path, children, index, pdf, pdfValue } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const { resources } = useExternalRenderContext();

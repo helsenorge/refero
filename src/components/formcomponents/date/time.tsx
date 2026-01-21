@@ -41,7 +41,7 @@ import {
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
+const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children }: Props): React.JSX.Element | null => {
   initialize();
 
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));

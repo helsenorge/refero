@@ -19,7 +19,7 @@ function SafeText<E extends React.ElementType = typeof __DEFAULT_ELEMENT__>({
   safeTextId,
   as,
   ...props
-}: SafeTextProps<E>): JSX.Element {
+}: SafeTextProps<E>): React.JSX.Element {
   const Component = as || __DEFAULT_ELEMENT__;
   const sanitizedText = useMemo(() => SanitizeText(text), [text]);
   return (

@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
 import { vi } from 'vitest';
 
 import type { ReferoProps } from '../../../../types/referoProps';
@@ -11,14 +12,60 @@ import type { Questionnaire } from 'fhir/r4';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { submitForm } from '../../../../../test/selectors';
 
-const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
+import { newIntegerValueAsync, newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
+import { maxValue, minValue, required } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
+
+const resources = {
+  ...getResources(''),
+  formRequiredErrorMessage: 'Du må fylle ut dette feltet',
+  oppgiGyldigVerdi: 'Verdien er ikke gyldig',
+};
 
 // Mock plugin component that renders a custom integer input
-// Uses controlled input with local state that syncs with Redux via onValueChange
-const MockIntegerPlugin = ({ item, answer, onValueChange, id, error }: PluginComponentProps): JSX.Element => {
+// Uses dispatch and onAnswerChange directly - same pattern as built-in components
+// Handles its own validation by registering with react-hook-form
+const MockIntegerPlugin = ({
+  item,
+  answer,
+  dispatch,
+  onAnswerChange,
+  id,
+  idWithLinkIdAndItemIndex,
+  path,
+  error,
+  pdf,
+  resources: pluginResources,
+  promptLoginMessage,
+}: PluginComponentProps): React.JSX.Element => {
+  const { register, unregister, setValue, formState } = useFormContext<FieldValues>();
+
   // Get initial value from answer prop
   const answerValue = Array.isArray(answer) ? answer[0]?.valueInteger : answer?.valueInteger;
   const [localValue, setLocalValue] = useState<string>(answerValue?.toString() ?? '');
+
+  // Register with react-hook-form for validation
+  useEffect(() => {
+    if (shouldValidate(item, pdf)) {
+      const validationRules: RegisterOptions<FieldValues, string> = {
+        required: required({ item, resources: pluginResources }),
+        min: minValue({ item, resources: pluginResources }),
+        max: maxValue({ item, resources: pluginResources }),
+        shouldUnregister: true,
+      };
+      register(idWithLinkIdAndItemIndex, validationRules);
+    }
+    return (): void => {
+      unregister(idWithLinkIdAndItemIndex);
+    };
+  }, [idWithLinkIdAndItemIndex, item, pdf, register, unregister, pluginResources]);
+
+  // Update form value when answer changes
+  useEffect(() => {
+    if (shouldValidate(item, pdf)) {
+      setValue(idWithLinkIdAndItemIndex, answerValue, { shouldValidate: formState.isSubmitted });
+    }
+  }, [answerValue, idWithLinkIdAndItemIndex, item, pdf, setValue, formState.isSubmitted]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const rawValue = e.target.value;
@@ -26,7 +73,12 @@ const MockIntegerPlugin = ({ item, answer, onValueChange, id, error }: PluginCom
 
     const value = parseInt(rawValue, 10);
     if (!isNaN(value)) {
-      onValueChange({ valueInteger: value });
+      // Dispatch action and call onAnswerChange - same pattern as built-in Integer component
+      dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: value }));
+    }
+
+    if (promptLoginMessage) {
+      promptLoginMessage();
     }
   };
 
@@ -45,13 +97,61 @@ const MockIntegerPlugin = ({ item, answer, onValueChange, id, error }: PluginCom
 };
 
 // Mock plugin component for choice/checkbox items
-// Uses checkbox inputs for proper toggle testing with react-testing-library
-const MockChoicePlugin = ({ item, answer, onValueChange }: PluginComponentProps): JSX.Element => {
+// Uses dispatch and onAnswerChange directly - same pattern as built-in components
+// Handles its own validation by registering with react-hook-form
+const MockChoicePlugin = ({
+  item,
+  answer,
+  dispatch,
+  onAnswerChange,
+  idWithLinkIdAndItemIndex,
+  path,
+  pdf,
+  resources: pluginResources,
+  promptLoginMessage,
+}: PluginComponentProps): React.JSX.Element => {
+  const { register, unregister, setValue, formState } = useFormContext<FieldValues>();
   const answers = Array.isArray(answer) ? answer : answer ? [answer] : [];
   const selectedCodes = answers.map(a => a.valueCoding?.code).filter(Boolean);
 
+  // Register with react-hook-form for validation
+  useEffect(() => {
+    if (shouldValidate(item, pdf)) {
+      const validationRules: RegisterOptions<FieldValues, string> = {
+        required: required({ item, resources: pluginResources }),
+        shouldUnregister: true,
+      };
+      register(idWithLinkIdAndItemIndex, validationRules);
+    }
+    return (): void => {
+      unregister(idWithLinkIdAndItemIndex);
+    };
+  }, [idWithLinkIdAndItemIndex, item, pdf, register, unregister, pluginResources]);
+
+  // Update form value when answer changes
+  useEffect(() => {
+    if (shouldValidate(item, pdf)) {
+      setValue(idWithLinkIdAndItemIndex, answer, { shouldValidate: formState.isSubmitted });
+    }
+  }, [answer, idWithLinkIdAndItemIndex, item, pdf, setValue, formState.isSubmitted]);
+
   const handleToggle = (code: string, display: string): void => {
-    onValueChange({ valueCoding: { code, display } });
+    const coding = { code, display };
+    const isSelected = selectedCodes.includes(code);
+
+    if (isSelected) {
+      // Remove the coding
+      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, { valueCoding: coding }));
+    } else {
+      // Add the coding (multipleAnswers = true for repeating choice)
+      dispatch(newCodingValueAsync(path, coding, item, item.repeats))?.then(newState =>
+        onAnswerChange(newState, item, { valueCoding: coding })
+      );
+    }
+
+    if (promptLoginMessage) {
+      promptLoginMessage();
+    }
   };
 
   return (
@@ -256,7 +356,7 @@ describe('Plugin Integration', () => {
   });
 
   describe('Plugin with validation', () => {
-    it('Should show validation error for required plugin field', async () => {
+    it('Should show validation error for required plugin field when submitting empty', async () => {
       const requiredQuestionnaire: Questionnaire = {
         ...integerQuestionnaire,
         item: integerQuestionnaire.item?.map(x => ({ ...x, required: true })),
@@ -268,8 +368,199 @@ describe('Plugin Integration', () => {
       await submitForm();
 
       await waitFor(() => {
-        // Form should show validation error (from ReferoLabel or form context)
-        expect(screen.getByTestId('mock-integer-plugin')).toBeInTheDocument();
+        // Form should show validation error message (there will be multiple - validation summary + field error + plugin error)
+        expect(screen.getAllByText(resources.formRequiredErrorMessage).length).toBeGreaterThan(0);
+      });
+    });
+
+    it('Should not show validation error for required plugin field when filled', async () => {
+      const requiredQuestionnaire: Questionnaire = {
+        ...integerQuestionnaire,
+        item: integerQuestionnaire.item?.map(x => ({ ...x, required: true })),
+      };
+
+      await createWrapper(requiredQuestionnaire, { componentPlugins: [integerPlugin] });
+
+      // Fill in the field
+      const input = screen.getByTestId(/plugin-input/i);
+      await userEvent.type(input, '5');
+
+      // Submit form
+      await submitForm();
+
+      // Should not show validation error (field is filled)
+      expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+    });
+
+    it('Should not call onSubmit when required plugin field is empty', async () => {
+      const onSubmit = vi.fn();
+      const requiredQuestionnaire: Questionnaire = {
+        ...integerQuestionnaire,
+        item: integerQuestionnaire.item?.map(x => ({ ...x, required: true })),
+      };
+
+      await createWrapper(requiredQuestionnaire, {
+        componentPlugins: [integerPlugin],
+        onSubmit,
+      });
+
+      // Submit without filling in the field
+      await submitForm();
+
+      // onSubmit should NOT be called since field is required but empty
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    it('Should call onSubmit when required plugin field is properly filled', async () => {
+      const onSubmit = vi.fn();
+      const requiredQuestionnaire: Questionnaire = {
+        ...integerQuestionnaire,
+        item: integerQuestionnaire.item?.map(x => ({ ...x, required: true })),
+      };
+
+      await createWrapper(requiredQuestionnaire, {
+        componentPlugins: [integerPlugin],
+        onSubmit,
+      });
+
+      // Fill in the field
+      const input = screen.getByTestId(/plugin-input/i);
+      await userEvent.type(input, '5');
+
+      // Submit form
+      await submitForm();
+
+      // onSubmit should be called since field is filled
+      await waitFor(() => {
+        expect(onSubmit).toHaveBeenCalled();
+      });
+    });
+
+    it('Should pass error prop to plugin component when validation fails', async () => {
+      const requiredQuestionnaire: Questionnaire = {
+        ...integerQuestionnaire,
+        item: integerQuestionnaire.item?.map(x => ({ ...x, required: true })),
+      };
+
+      await createWrapper(requiredQuestionnaire, { componentPlugins: [integerPlugin] });
+
+      // Submit without filling in the field
+      await submitForm();
+
+      await waitFor(() => {
+        // Plugin should receive error prop and display it
+        expect(screen.getByTestId('plugin-error')).toBeInTheDocument();
+      });
+    });
+
+    it('Should remove validation error when required plugin field is filled after submission', async () => {
+      const requiredQuestionnaire: Questionnaire = {
+        ...integerQuestionnaire,
+        item: integerQuestionnaire.item?.map(x => ({ ...x, required: true })),
+      };
+
+      await createWrapper(requiredQuestionnaire, { componentPlugins: [integerPlugin] });
+
+      // Submit without filling in the field
+      await submitForm();
+
+      // Error should be shown (there will be multiple - validation summary + field error)
+      await waitFor(() => {
+        expect(screen.getAllByText(resources.formRequiredErrorMessage).length).toBeGreaterThan(0);
+      });
+
+      // Fill in the field
+      const input = screen.getByTestId(/plugin-input/i);
+      await userEvent.type(input, '5');
+
+      // Error should be removed after filling
+      await waitFor(() => {
+        expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      });
+    });
+
+    it('Should show validation error for required choice plugin field when submitting empty', async () => {
+      const requiredChoiceQuestionnaire: Questionnaire = {
+        ...choiceQuestionnaire,
+        item: choiceQuestionnaire.item?.map(x => ({ ...x, required: true })),
+      };
+
+      await createWrapper(requiredChoiceQuestionnaire, { componentPlugins: [choicePlugin] });
+
+      // Submit without selecting any option
+      await submitForm();
+
+      await waitFor(() => {
+        // Form should show validation error message (there will be multiple - validation summary + field error)
+        expect(screen.getAllByText(resources.formRequiredErrorMessage).length).toBeGreaterThan(0);
+      });
+    });
+
+    it('Should not show validation error for required choice plugin field when option selected', async () => {
+      const requiredChoiceQuestionnaire: Questionnaire = {
+        ...choiceQuestionnaire,
+        item: choiceQuestionnaire.item?.map(x => ({ ...x, required: true })),
+      };
+
+      await createWrapper(requiredChoiceQuestionnaire, { componentPlugins: [choicePlugin] });
+
+      // Select an option
+      const checkbox1 = screen.getByTestId('plugin-checkbox-opt1');
+      await userEvent.click(checkbox1);
+
+      // Submit form
+      await submitForm();
+
+      // Should not show validation error (field has value)
+      expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+    });
+
+    it('Should validate min/max for integer plugin fields', async () => {
+      const minMaxQuestionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'test-integer',
+            type: 'integer',
+            text: 'Test Integer',
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                valueCodeableConcept: {
+                  coding: [
+                    {
+                      system: 'http://hl7.org/fhir/questionnaire-item-control',
+                      code: 'custom-spinner',
+                    },
+                  ],
+                },
+              },
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/minValue',
+                valueInteger: 5,
+              },
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/maxValue',
+                valueInteger: 10,
+              },
+            ],
+          },
+        ],
+      };
+
+      await createWrapper(minMaxQuestionnaire, { componentPlugins: [integerPlugin] });
+
+      // Enter a value below minimum
+      const input = screen.getByTestId(/plugin-input/i);
+      await userEvent.type(input, '2');
+
+      // Submit form
+      await submitForm();
+
+      // Should show validation error for min value
+      await waitFor(() => {
+        expect(screen.getAllByText(resources.oppgiGyldigVerdi!).length).toBeGreaterThan(0);
       });
     });
   });

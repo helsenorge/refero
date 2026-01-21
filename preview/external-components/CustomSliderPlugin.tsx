@@ -1,29 +1,91 @@
-import type React from 'react';
+import { useEffect, type FC } from 'react';
+
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
 
 import type { PluginComponentProps } from '../../src/types/componentPlugin';
 
-import { getMinOccursExtensionValue, getMaxOccursExtensionValue } from '../../src/util/extension';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+
+import { newIntegerValueAsync } from '../../src/actions/newValue';
+import { getErrorMessage, maxValue, minValue, required } from '../../src/components/validation/rules';
+import { shouldValidate } from '../../src/components/validation/utils';
+import { ReferoLabel } from '../../src/index';
+import { getMinValueExtensionValue, getMaxValueExtensionValue } from '../../src/util/extension';
 
 /**
  * Example custom slider plugin component.
  * This demonstrates how to create a plugin for integer fields with itemControl "slider".
  *
- * The plugin receives standardized props from PluginComponentWrapper and only needs to
- * focus on rendering the actual input control.
+ * The plugin handles its own:
+ * - Label rendering (using ReferoLabel from refero)
+ * - Validation registration with react-hook-form
+ * - Value changes using dispatch and onAnswerChange
+ * - Error display
  */
-export const CustomSliderPlugin: React.FC<PluginComponentProps> = ({ item, answer, onValueChange, error, readOnly, pdf, id }) => {
+export const CustomSliderPlugin: FC<PluginComponentProps> = ({
+  item,
+  answer,
+  dispatch,
+  onAnswerChange,
+  error,
+  readOnly,
+  pdf,
+  id,
+  idWithLinkIdAndItemIndex,
+  path,
+  resources,
+  promptLoginMessage,
+  children,
+}) => {
+  // Get form context for validation registration
+  const { register, unregister, setValue, formState } = useFormContext<FieldValues>();
+
   // Get the current value from the answer
   const currentValue = Array.isArray(answer) ? answer[0]?.valueInteger : answer?.valueInteger;
   const displayValue = currentValue ?? 0;
 
   // Get min/max from extensions or use defaults
-  const minValue = getMinOccursExtensionValue(item) ?? 0;
-  const maxValue = getMaxOccursExtensionValue(item) ?? 100;
+  const minVal = getMinValueExtensionValue(item) ?? 0;
+  const maxVal = getMaxValueExtensionValue(item) ?? 100;
 
+  // Register with react-hook-form using standard validation rules
+  useEffect(() => {
+    if (shouldValidate(item, pdf)) {
+      const validationRules: RegisterOptions<FieldValues, string> = {
+        required: required({ item, resources }),
+        min: minValue({ item, resources }),
+        max: maxValue({ item, resources }),
+        shouldUnregister: true,
+      };
+      register(idWithLinkIdAndItemIndex, validationRules);
+    }
+    return (): void => {
+      unregister(idWithLinkIdAndItemIndex);
+    };
+  }, [idWithLinkIdAndItemIndex, item, pdf, register, unregister, resources]);
+
+  // Update form value when answer changes to trigger re-validation
+  useEffect(() => {
+    if (shouldValidate(item, pdf)) {
+      setValue(idWithLinkIdAndItemIndex, currentValue, { shouldValidate: formState.isSubmitted });
+    }
+  }, [currentValue, idWithLinkIdAndItemIndex, item, pdf, setValue, formState.isSubmitted]);
+
+  // Handle value change - same pattern as built-in Integer component
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const newValue = parseInt(event.target.value, 10);
-    onValueChange({ valueInteger: newValue });
+
+    // Dispatch the action and call onAnswerChange with the result
+    dispatch(newIntegerValueAsync(path, newValue, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: newValue }));
+
+    // Prompt login if needed
+    if (promptLoginMessage) {
+      promptLoginMessage();
+    }
   };
+
+  // Get error message for display
+  const errorMessage = getErrorMessage(item, error);
 
   // Render read-only version for PDF or read-only mode
   if (pdf || readOnly) {
@@ -35,28 +97,39 @@ export const CustomSliderPlugin: React.FC<PluginComponentProps> = ({ item, answe
   }
 
   return (
-    <div className="custom-slider-plugin">
-      <div className="custom-slider-plugin__container">
-        <input
-          type="range"
-          id={id}
-          name={id}
-          min={minValue}
-          max={maxValue}
-          value={displayValue}
-          onChange={handleChange}
-          className="custom-slider-plugin__input"
-          aria-describedby={error ? `${id}-error` : undefined}
-          aria-invalid={!!error}
-        />
-        <span className="custom-slider-plugin__value-display">{displayValue}</span>
-      </div>
-      {error && (
-        <span id={`${id}-error`} className="custom-slider-plugin__error">
-          {error.message}
-        </span>
-      )}
-      <style>{`
+    <FormGroup error={errorMessage} onColor="ongrey">
+      {/* Use ReferoLabel for standard label styling, or create your own */}
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={id}
+        labelId={`${id}-label`}
+        testId={`${id}-label`}
+        formFieldTagId={`${id}-formfieldtag`}
+      />
+
+      <div className="custom-slider-plugin">
+        <div className="custom-slider-plugin__container">
+          <input
+            type="range"
+            id={id}
+            name={id}
+            min={minVal}
+            max={maxVal}
+            value={displayValue}
+            onChange={handleChange}
+            className="custom-slider-plugin__input"
+            aria-describedby={error ? `${id}-error` : undefined}
+            aria-invalid={!!error}
+          />
+          <span className="custom-slider-plugin__value-display">{displayValue}</span>
+        </div>
+        {error && (
+          <span id={`${id}-error`} className="custom-slider-plugin__error">
+            {error.message}
+          </span>
+        )}
+        <style>{`
         .custom-slider-plugin {
           padding: 8px 0;
         }
@@ -115,7 +188,10 @@ export const CustomSliderPlugin: React.FC<PluginComponentProps> = ({ item, answe
           padding: 8px 0;
         }
       `}</style>
-    </div>
+      </div>
+      {/* Render children (delete/repeat buttons and nested items) inside FormGroup */}
+      {children}
+    </FormGroup>
   );
 };
 

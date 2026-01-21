@@ -1,8 +1,11 @@
-import type React from 'react';
+import { useEffect, type FC } from 'react';
+
+import { type FieldError, type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
 
 import type { PluginComponentProps } from '../../src/types/componentPlugin';
 import type { Coding } from 'fhir/r4';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Icon, { type SvgIcon } from '@helsenorge/designsystem-react/components/Icon';
 import AlertSignStroke from '@helsenorge/designsystem-react/components/Icons/AlertSignStroke';
 import BrokenHeart from '@helsenorge/designsystem-react/components/Icons/BrokenHeart';
@@ -15,6 +18,11 @@ import HeartHands from '@helsenorge/designsystem-react/components/Icons/HeartHan
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 import MaleDoctor from '@helsenorge/designsystem-react/components/Icons/MaleDoctor';
 import Person from '@helsenorge/designsystem-react/components/Icons/Person';
+
+import { newCodingValueAsync, removeCodingValueAsync } from '../../src/actions/newValue';
+import { ReferoLabel } from '../../src/components/referoLabel/ReferoLabel';
+import { getErrorMessage, required } from '../../src/components/validation/rules';
+import { shouldValidate } from '../../src/components/validation/utils';
 
 /**
  * Example image choice plugin component using Helsenorge design system icons.
@@ -45,7 +53,27 @@ const getIconForCode = (code: string | undefined): SvgIcon => {
   return ICON_MAP[code] || ICON_MAP.default;
 };
 
-export const ImageChoicePlugin: React.FC<PluginComponentProps> = ({ item, answer, onValueChange, error, readOnly, pdf, id }) => {
+export const ImageChoicePlugin: FC<PluginComponentProps> = ({
+  item,
+  answer,
+  dispatch,
+  onAnswerChange,
+  readOnly,
+  pdf,
+  id,
+  idWithLinkIdAndItemIndex,
+  path,
+  resources,
+  promptLoginMessage,
+  children,
+}) => {
+  // Get form context for validation registration
+  const { register, unregister, setValue, formState } = useFormContext<FieldValues>();
+
+  // Get error state from form context
+  const error = formState.errors[idWithLinkIdAndItemIndex] as FieldError | undefined;
+  const errorMessage = getErrorMessage(item, error);
+
   // Get answer options from the item
   const answerOptions = item.answerOption || [];
 
@@ -56,68 +84,116 @@ export const ImageChoicePlugin: React.FC<PluginComponentProps> = ({ item, answer
       ? [answer.valueCoding]
       : [];
 
+  // Register with react-hook-form using standard validation rules
+  useEffect(() => {
+    if (shouldValidate(item, pdf)) {
+      const validationRules: RegisterOptions<FieldValues, string> = {
+        required: required({ item, resources }),
+        shouldUnregister: true,
+      };
+      register(idWithLinkIdAndItemIndex, validationRules);
+    }
+    return (): void => {
+      unregister(idWithLinkIdAndItemIndex);
+    };
+  }, [idWithLinkIdAndItemIndex, item, pdf, register, unregister, resources]);
+
+  // Update form value when answer changes to trigger re-validation
+  useEffect(() => {
+    if (shouldValidate(item, pdf)) {
+      setValue(idWithLinkIdAndItemIndex, answer, { shouldValidate: formState.isSubmitted });
+    }
+  }, [answer, idWithLinkIdAndItemIndex, item, pdf, setValue, formState.isSubmitted]);
+
   const isSelected = (coding: Coding): boolean => {
     return selectedCodings.some(selected => selected.code === coding.code && selected.system === coding.system);
   };
 
+  // Handle toggle - same pattern as built-in Choice component
   const handleToggle = (coding: Coding): void => {
     if (readOnly || pdf) return;
 
-    // For checkbox behavior, toggle the selection
-    // The wrapper will handle the appropriate action
-    onValueChange({ valueCoding: coding });
+    const alreadySelected = isSelected(coding);
+
+    if (alreadySelected) {
+      // Remove the coding
+      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, { valueCoding: coding }));
+    } else {
+      // Add the coding (multipleAnswers = true for repeating choice)
+      dispatch(newCodingValueAsync(path, coding, item, item.repeats))?.then(newState =>
+        onAnswerChange(newState, item, { valueCoding: coding })
+      );
+    }
+
+    if (promptLoginMessage) {
+      promptLoginMessage();
+    }
   };
 
   // Render read-only version for PDF
   if (pdf) {
     const selectedLabels = selectedCodings.map(c => c.display || c.code).join(', ');
     return (
-      <div className="image-choice-plugin image-choice-plugin--readonly">
-        <span>{selectedLabels || 'No selection'}</span>
-      </div>
+      <FormGroup error={errorMessage} errorWrapperClassName="image-choice-plugin">
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={id}
+          labelId={`${id}-label`}
+          testId={`${id}-label`}
+          formFieldTagId={`${id}-formfieldtag`}
+        />
+        <div className="image-choice-plugin image-choice-plugin--readonly">
+          <span>{selectedLabels || 'No selection'}</span>
+        </div>
+      </FormGroup>
     );
   }
 
   return (
-    <div className="image-choice-plugin" role="group" aria-labelledby={`${id}-label`}>
-      <div className="image-choice-plugin__grid">
-        {answerOptions.map((option, index) => {
-          const coding = option.valueCoding;
-          if (!coding) return null;
+    <FormGroup error={errorMessage} errorWrapperClassName="image-choice-plugin">
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={id}
+        labelId={`${id}-label`}
+        testId={`${id}-label`}
+        formFieldTagId={`${id}-formfieldtag`}
+      />
+      <div className="image-choice-plugin" role="group" aria-labelledby={`${id}-label`}>
+        <div className="image-choice-plugin__grid">
+          {answerOptions.map((option, index) => {
+            const coding = option.valueCoding;
+            if (!coding) return null;
 
-          const selected = isSelected(coding);
-          const IconComponent = getIconForCode(coding.code);
-          const optionId = `${id}-option-${index}`;
+            const selected = isSelected(coding);
+            const IconComponent = getIconForCode(coding.code);
+            const optionId = `${id}-option-${index}`;
 
-          return (
-            <button
-              key={optionId}
-              type="button"
-              className={`image-choice-plugin__option ${selected ? 'image-choice-plugin__option--selected' : ''} ${readOnly ? 'image-choice-plugin__option--disabled' : ''}`}
-              onClick={() => handleToggle(coding)}
-              disabled={readOnly}
-              aria-pressed={selected}
-              aria-label={coding.display || coding.code}
-            >
-              <div className="image-choice-plugin__icon-container">
-                <Icon svgIcon={IconComponent} size={48} color={selected ? '#2563eb' : '#6b7280'} />
-                {selected && (
-                  <div className="image-choice-plugin__checkmark">
-                    <Icon svgIcon={Check} size={16} color="#ffffff" />
-                  </div>
-                )}
-              </div>
-              <span className="image-choice-plugin__label">{coding.display || coding.code}</span>
-            </button>
-          );
-        })}
-      </div>
-      {error && (
-        <span id={`${id}-error`} className="image-choice-plugin__error" role="alert">
-          {error.message}
-        </span>
-      )}
-      <style>{`
+            return (
+              <button
+                key={optionId}
+                type="button"
+                className={`image-choice-plugin__option ${selected ? 'image-choice-plugin__option--selected' : ''} ${readOnly ? 'image-choice-plugin__option--disabled' : ''}`}
+                onClick={() => handleToggle(coding)}
+                disabled={readOnly}
+                aria-pressed={selected}
+                aria-label={coding.display || coding.code}
+              >
+                <div className="image-choice-plugin__icon-container">
+                  <Icon svgIcon={IconComponent} size={48} color={selected ? '#2563eb' : '#6b7280'} />
+                  {selected && (
+                    <div className="image-choice-plugin__checkmark">
+                      <Icon svgIcon={Check} size={16} color="#ffffff" />
+                    </div>
+                  )}
+                </div>
+                <span className="image-choice-plugin__label">{coding.display || coding.code}</span>
+              </button>
+            );
+          })}
+        </div>
+        <style>{`
         .image-choice-plugin {
           padding: 8px 0;
         }
@@ -196,7 +272,10 @@ export const ImageChoicePlugin: React.FC<PluginComponentProps> = ({ item, answer
           color: #374151;
         }
       `}</style>
-    </div>
+      </div>
+      {/* Render children (delete/repeat buttons and nested items) inside FormGroup */}
+      {children}
+    </FormGroup>
   );
 };
 

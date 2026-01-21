@@ -26,11 +26,11 @@ type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  renderOpenField: () => JSX.Element | undefined;
+  renderOpenField: () => React.JSX.Element | undefined;
   pdfValue?: string | number;
 };
 
-const CheckboxView = (props: Props): JSX.Element | null => {
+const CheckboxView = (props: Props): React.JSX.Element | null => {
   const { options, id, handleChange, index, renderOpenField, idWithLinkIdAndItemIndex, selected, linkId, children, path, pdf, pdfValue } =
     props;
   const { formState, getFieldState, register } = useFormContext<FieldValues>();

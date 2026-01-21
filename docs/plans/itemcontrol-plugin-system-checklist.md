@@ -1,142 +1,142 @@
-# ItemControl Plugin System - Task Checklist
+# ItemControl Plugin System - Implementation Status
 
-## Progress Tracker
+## Final Implementation
 
-| Status | Task    | Description                             |
-| ------ | ------- | --------------------------------------- |
-| ✅     | Task 1  | Define Plugin Types                     |
-| ✅     | Task 2  | Create Plugin Context                   |
-| ✅     | Task 3  | Create Plugin Component Wrapper         |
-| ✅     | Task 4  | Create Unified Value Change Handler     |
-| ✅     | Task 5  | Extend ReferoProps                      |
-| ✅     | Task 6  | Wire Plugin Provider into Refero        |
-| ✅     | Task 7  | Create Plugin Resolver Utility          |
-| ✅     | Task 8  | Refactor Plugin Tests to Use test-utils |
-| ✅     | Task 9  | Modify Component Resolution             |
-| ✅     | Task 10 | Export Plugin Types                     |
-| ✅     | Task 11 | Documentation                           |
-| ✅     | Task 12 | Create Example Plugin (Optional)        |
+| Component             | Status      | Notes                                                             |
+| --------------------- | ----------- | ----------------------------------------------------------------- |
+| Plugin Types          | ✅ Complete | `src/types/componentPlugin.ts`                                    |
+| Plugin Context        | ✅ Complete | `src/context/componentPlugin/`                                    |
+| Plugin Wrapper        | ✅ Complete | `src/components/formcomponents/plugin/PluginComponentWrapper.tsx` |
+| Plugin Resolver       | ✅ Complete | `src/util/componentPluginResolver.ts`                             |
+| ReferoProps Extension | ✅ Complete | Added `componentPlugins` prop                                     |
+| Component Resolution  | ✅ Complete | Modified `ItemRenderer.tsx`                                       |
+| Exports               | ✅ Complete | Types and ReferoLabel exported from index.ts                      |
+| Tests                 | ✅ Complete | 24 plugin tests passing                                           |
+| Example Plugins       | ✅ Complete | 3 examples in preview/external-components/                        |
+| Documentation         | ✅ Complete | This file and plan document                                       |
 
 ---
 
-## Task Details
+## Architecture Evolution
 
-### Task 1: Define Plugin Types
+### Original Design (Planned)
 
-- [x] Create `src/types/componentPlugin.ts`
-- [x] Define `PluginComponentProps` interface
-- [x] Define `ComponentPlugin` interface
-- [x] Define `ComponentPluginRegistry` type
-- [x] Create `createPluginKey` helper function
-- [x] Create tests
-- [x] Run linting
-- [x] Run build
+- Wrapper handles labels, validation, error display
+- Unified `onValueChange` callback abstracts dispatch
+- Plugins only implement the input UI
 
-### Task 2: Create Plugin Context
+### Final Design (Implemented)
 
-- [x] Create `src/context/componentPlugin/` folder
-- [x] Create `ComponentPluginContext.tsx`
-- [x] Create `ComponentPluginProvider.tsx`
-- [x] Create `useComponentPlugin.tsx` hook
-- [x] Create `index.ts` exports
-- [x] Create tests
-- [x] Run linting
-- [x] Run build
+- **Plugins have full control** over their UI
+- Plugins use `dispatch` + `onAnswerChange` directly (same as built-in components)
+- Plugins handle their own validation registration
+- Plugins render their own labels and errors
+- `children` prop contains delete/repeat buttons and nested items
+- `ReferoLabel` exported for optional use
 
-### Task 3: Create Plugin Component Wrapper
+### Rationale for Changes
 
-- [x] Create `src/components/formcomponents/plugin/PluginComponentWrapper.tsx`
-- [x] Implement item fetching from Redux
-- [x] Implement answer fetching via useGetAnswer
-- [x] Implement unified onValueChange callback
-- [x] Implement react-hook-form integration
-- [x] Render ReferoLabel, delete/repeat buttons
-- [x] Create tests
-- [x] Run linting
-- [x] Run build
+1. **Removed pluginValueHandler abstraction** - Added unnecessary complexity; plugins should follow same patterns as built-in components
+2. **Removed ReferoLabel from wrapper** - Plugins need full control over their UI, including labels
+3. **Plugins handle validation** - More flexible than wrapper handling it
+4. **Children passed as prop** - Allows plugins to render buttons inside their FormGroup
 
-### Task 4: Create Unified Value Change Handler
+---
 
-- [x] Create `src/util/pluginValueHandler.ts`
-- [x] Implement `dispatchAnswerValue` function
-- [x] Handle all value types (string, integer, decimal, coding, date, etc.)
-- [x] Create tests
-- [x] Run linting
-- [x] Run build
+## Key Files
 
-### Task 5: Extend ReferoProps
+### Types
 
-- [x] Modify `src/types/referoProps.ts`
-- [x] Add `componentPlugins?: ComponentPlugin[]` prop
-- [x] Run tests
-- [x] Run linting
-- [x] Run build
+- `src/types/componentPlugin.ts` - PluginComponentProps, ComponentPlugin, OnAnswerChange
 
-### Task 6: Wire Plugin Provider into Refero
+### Context
 
-- [x] Modify `src/components/index.tsx`
-- [x] Wrap form with `ComponentPluginProvider`
-- [x] Pass plugins from props to provider
-- [x] Run tests
-- [x] Run linting
-- [x] Run build
+- `src/context/componentPlugin/ComponentPluginContext.tsx`
+- `src/context/componentPlugin/ComponentPluginProvider.tsx`
+- `src/context/componentPlugin/useComponentPlugin.tsx`
 
-### Task 7: Create Plugin Resolver Utility
+### Wrapper
 
-- [x] Create `src/util/componentPluginResolver.ts`
-- [x] Implement `resolvePluginComponent` function
-- [x] Handle itemControl code lookup
-- [x] Return wrapped plugin or undefined
-- [x] Run tests
-- [x] Run linting
-- [x] Run build
+- `src/components/formcomponents/plugin/PluginComponentWrapper.tsx`
 
-### Task 8: Refactor Plugin Tests to Use test-utils
+### Resolution
 
-- [x] Add plugin testing helpers to `test/test-utils.tsx`
-- [x] Refactor `componentPlugin-context-spec.tsx` to use test-utils
-- [x] Refactor `PluginComponentWrapper-spec.tsx` to use test-utils
-- [x] Refactor `pluginValueHandler-spec.ts` to use test-utils (if applicable)
-- [x] Refactor `componentPluginResolver-spec.ts` to use test-utils (if applicable)
-- [x] Run tests
-- [x] Run linting
-- [x] Run build
+- `src/util/componentPluginResolver.ts`
 
-### Task 9: Modify Component Resolution
+### Tests
 
-- [x] Modify `src/components/createQuestionnaire/ItemRenderer.tsx`
-- [x] Add plugin registry hook
-- [x] Check for plugin before built-in component
-- [x] Run tests
-- [x] Run linting
-- [x] Run build
+- `src/components/formcomponents/plugin/__tests__/PluginComponentWrapper-spec.tsx`
+- `src/components/formcomponents/plugin/__tests__/plugin-integration-spec.tsx`
+- `src/context/componentPlugin/__tests__/componentPlugin-context-spec.tsx`
+- `src/util/__tests__/componentPluginResolver-spec.ts`
+- `src/types/__tests__/componentPlugin-spec.ts`
 
-### Task 10: Export Plugin Types
+### Examples
 
-- [x] Modify `src/index.ts`
-- [x] Export `PluginComponentProps`
-- [x] Export `ComponentPlugin`
-- [x] Export `ComponentPluginRegistry`
-- [x] Export `createPluginKey`
-- [x] Run tests
-- [x] Run linting
-- [x] Run build
+- `preview/external-components/CustomSliderPlugin.tsx` - Integer slider with validation
+- `preview/external-components/PillChoicePlugin.tsx` - Choice with pill buttons
+- `preview/external-components/ImageChoicePlugin.tsx` - Choice with icon cards
 
-### Task 11: Documentation
+---
 
-- [x] Document plugin props
-- [x] Document registration process
-- [x] Create example plugin code
-- [x] Document limitations
-- [x] Review documentation
-- [x] Run linting
-- [x] Run build
+## Exports from @helsenorge/refero
 
-### Task 12: Create Example Plugin (Optional)
+### Types
 
-- [x] Create custom slider plugin for integers in `preview/external-components/`
-- [x] Create test questionnaire with slider itemControl
-- [x] Register examples in preview app
-- [x] Run tests
-- [x] Run linting
-- [x] Run build
+```typescript
+export type { PluginComponentProps, ComponentPlugin, OnAnswerChange } from './types/componentPlugin';
+```
+
+### Components
+
+```typescript
+export { ReferoLabel } from './components/referoLabel/ReferoLabel';
+```
+
+### Actions
+
+```typescript
+export {
+  newIntegerValueAsync,
+  newStringValueAsync,
+  newDecimalValueAsync,
+  newCodingValueAsync,
+  removeCodingValueAsync,
+  newBooleanValueAsync,
+  newDateValueAsync,
+  newTimeValueAsync,
+  newDateTimeValueAsync,
+  newQuantityValueAsync,
+  newAttachmentAsync,
+  removeAttachmentAsync,
+} from './actions/newValue';
+```
+
+### Validation
+
+```typescript
+export { required, minValue, maxValue, minLength, maxLength, pattern, getErrorMessage } from './components/validation/rules';
+
+export { shouldValidate } from './components/validation/utils';
+```
+
+---
+
+## Deleted Files
+
+The following files were removed during refactoring:
+
+- `src/util/pluginValueHandler.ts` - Abstraction replaced by direct dispatch usage
+- `src/util/__tests__/pluginValueHandler-spec.ts` - Tests for removed file
+
+---
+
+## Test Coverage
+
+All 1207 tests pass, including 24 plugin-specific tests:
+
+- 5 tests in `PluginComponentWrapper-spec.tsx`
+- 19 tests in `plugin-integration-spec.tsx`
+- 8 tests in `componentPlugin-context-spec.tsx`
+- 17 tests in `componentPluginResolver-spec.ts`
+- 8 tests in `componentPlugin-spec.ts`

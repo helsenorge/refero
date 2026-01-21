@@ -18,7 +18,6 @@ import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
@@ -44,7 +43,7 @@ type ExtendedInputProps<T> = InputProps<T> & {
   'data-testid'?: string;
 };
 
-const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
+const AutosuggestView = (props: AutosuggestProps): React.JSX.Element | null => {
   const {
     linkId,
     id,
@@ -251,7 +250,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           onSuggestionsClearRequested={(): void => {
             // vis samme resultatsett neste gang feltet får fokus
           }}
-          renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
+          renderSuggestion={(suggestion: Suggestion): React.JSX.Element => <div>{suggestion.label}</div>}
           onSuggestionSelected={(e, data): void => {
             onSuggestionSelected(e, data);
           }}

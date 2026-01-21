@@ -3,7 +3,7 @@ import ReceiverComponent, { type ReceiverComponentProps } from './receiver-compo
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { getId } from '@/util';
 
-const ReceiverComponentWrapper = (props: ReceiverComponentProps): JSX.Element => {
+const ReceiverComponentWrapper = (props: ReceiverComponentProps): React.JSX.Element => {
   const { resources } = useExternalRenderContext();
   return (
     <div className="page_refero__component page_refero__receivercomponent" id={`${getId(props.id)}-wrapper`}>

@@ -2,61 +2,41 @@
 
 ## Overview
 
-Create a runtime plugin system where consuming apps pass a configuration mapping itemControl codes to custom React components, allowing
-component injection without bundling custom components inside refero.
+A runtime plugin system where consuming apps pass a configuration mapping itemControl codes to custom React components, allowing component
+injection without bundling custom components inside refero.
 
 ---
 
-## Architecture Notes
+## Architecture
 
-### Current Component Structure
-
-The rendering flow is:
+### Rendering Flow
 
 1. `GenerateQuestionnaireComponents` → iterates over items
-2. `ItemRenderer` → calls `getComponentForItem(item.type)` to get component (e.g., `Integer`, `String`)
-3. `RenderResponseItems` / `ResponseItem` → renders the component with props
-4. Type component (e.g., `Integer`) → handles all logic internally
+2. `ItemRenderer` → checks for plugin, then falls back to `getComponentForItem(item.type)`
+3. Plugin found → `PluginComponentWrapper` wraps the plugin component
+4. No plugin → Built-in component handles rendering
 
-### Key Observations
+### Key Concepts
 
-- **Item vs ItemControl**: `item.type` determines the base component (string, integer, choice, etc.). The `itemControl` extension determines
-  the **variant** (e.g., slider, dropdown, checkbox).
-- **ItemControl switching happens inside type components**: See `choice.tsx` which switches between `DropdownView`, `RadioView`,
-  `CheckboxView`, `SliderView` based on itemControl.
-- **Each type has its own action**: `newStringValueAsync`, `newIntegerValueAsync`, `newCodingValueAsync`, etc.
-- **Common boilerplate in every component**:
-  - Fetch `item` from Redux via `useAppSelector(findQuestionnaireItem)`
-  - Get `answer` via `useGetAnswer` hook
-  - React-hook-form integration (`register`, `useResetFormField`, validation rules)
-  - Render `ReferoLabel`, `RenderDeleteButton`, `RenderRepeatButton`
-  - Render nested `children`
+- **Item Type**: `item.type` determines the base component (string, integer, choice, etc.)
+- **ItemControl Code**: The `itemControl` extension determines the variant (e.g., slider, dropdown)
+- **Plugin Key**: Format is `"itemType:itemControlCode"` (e.g., `"integer:slider"`)
 
 ---
 
-## Tasks
+## Plugin Component Props
 
-### Task 1: Define Plugin Types
-
-**File:** `src/types/componentPlugin.ts` (new)
-
-Define TypeScript interfaces for the plugin system:
+Plugins receive `PluginComponentProps` - a comprehensive interface that gives plugins full control:
 
 ```typescript
-import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import type { FieldError } from 'react-hook-form';
-import type { Path } from '@/util/refero-core';
-import type { Resources } from '@/types/resources';
-
-/** Props passed to plugin components - simplified interface */
-export interface PluginComponentProps {
+interface PluginComponentProps {
   // Item & Answer
   item: QuestionnaireItem;
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined;
 
-  // Value change handler - unified interface
-  onValueChange: (value: QuestionnaireResponseItemAnswer) => void;
-  onValueClear?: () => void;
+  // Value changes - same pattern as built-in components
+  dispatch: AppDispatch;
+  onAnswerChange: OnAnswerChange;
 
   // Validation
   error?: FieldError;
@@ -68,186 +48,194 @@ export interface PluginComponentProps {
 
   // Identifiers
   id: string;
+  idWithLinkIdAndItemIndex: string; // For react-hook-form registration
   path: Path[];
   index: number;
 
-  // For custom rendering needs
+  // Children containing delete/repeat buttons and nested items
   children?: React.ReactNode;
+
+  // Optional login prompt
+  promptLoginMessage?: () => void;
 }
+```
 
-/** Single plugin registration */
-export interface ComponentPlugin {
-  /** Item type this plugin applies to (e.g., 'integer', 'string', 'choice') */
-  itemType: string;
-  /** ItemControl code that triggers this plugin (e.g., 'slider', 'spinner') */
-  itemControlCode: string;
-  /** The React component to render */
-  component: React.ComponentType<PluginComponentProps>;
+---
+
+## Plugin Responsibilities
+
+Plugins are **fully responsible** for:
+
+1. **Label rendering** - Use `ReferoLabel` from refero exports or create custom
+2. **Validation registration** - Register with react-hook-form using validation rules from refero
+3. **Value changes** - Use dispatch + onAnswerChange (same pattern as built-in components)
+4. **Error display** - Use FormGroup or custom error rendering
+5. **Rendering children** - Must render `children` prop (contains delete/repeat buttons and nested items)
+
+---
+
+## Wrapper Responsibilities
+
+The `PluginComponentWrapper` handles:
+
+1. Fetching item from Redux state
+2. Getting answer via useGetAnswer hook
+3. Providing dispatch and onAnswerChange
+4. Providing form error state
+5. Passing delete/repeat buttons and nested children as `children` prop
+6. ReadOnly/PDF mode fallback rendering
+
+---
+
+## Example Plugin Implementation
+
+```tsx
+import { useEffect, type FC } from 'react';
+import { type FieldError, type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+import type { PluginComponentProps } from '@helsenorge/refero';
+
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import { ReferoLabel, newIntegerValueAsync, getErrorMessage, required, minValue, maxValue } from '@helsenorge/refero';
+
+export const CustomSliderPlugin: FC<PluginComponentProps> = ({
+  item,
+  answer,
+  dispatch,
+  onAnswerChange,
+  error,
+  pdf,
+  id,
+  idWithLinkIdAndItemIndex,
+  path,
+  resources,
+  promptLoginMessage,
+  children,
+}) => {
+  const { register, unregister, setValue, formState } = useFormContext<FieldValues>();
+
+  // Get current value
+  const currentValue = Array.isArray(answer) ? answer[0]?.valueInteger : answer?.valueInteger;
+
+  // Register with react-hook-form for validation
+  useEffect(() => {
+    const validationRules: RegisterOptions<FieldValues, string> = {
+      required: required({ item, resources }),
+      min: minValue({ item, resources }),
+      max: maxValue({ item, resources }),
+      shouldUnregister: true,
+    };
+    register(idWithLinkIdAndItemIndex, validationRules);
+    return (): void => {
+      unregister(idWithLinkIdAndItemIndex);
+    };
+  }, [idWithLinkIdAndItemIndex, item, register, unregister, resources]);
+
+  // Update form value when answer changes
+  useEffect(() => {
+    setValue(idWithLinkIdAndItemIndex, currentValue, { shouldValidate: formState.isSubmitted });
+  }, [currentValue, idWithLinkIdAndItemIndex, setValue, formState.isSubmitted]);
+
+  // Handle value change - same pattern as built-in Integer component
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value)) {
+      dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: value }));
+    }
+    if (promptLoginMessage) {
+      promptLoginMessage();
+    }
+  };
+
+  const errorMessage = getErrorMessage(item, error);
+
+  return (
+    <FormGroup error={errorMessage} onColor="ongrey">
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={id}
+        labelId={`${id}-label`}
+        testId={`${id}-label`}
+        formFieldTagId={`${id}-formfieldtag`}
+      />
+
+      <input type="range" id={id} value={currentValue ?? 0} onChange={handleChange} />
+
+      {/* IMPORTANT: Render children - contains delete/repeat buttons and nested items */}
+      {children}
+    </FormGroup>
+  );
+};
+```
+
+---
+
+## Registering Plugins
+
+```tsx
+import { ReferoContainer, type ComponentPlugin } from '@helsenorge/refero';
+import { CustomSliderPlugin } from './CustomSliderPlugin';
+
+const plugins: ComponentPlugin[] = [
+  {
+    itemType: 'integer',
+    itemControlCode: 'slider',
+    component: CustomSliderPlugin,
+  },
+];
+
+function App() {
+  return (
+    <ReferoContainer
+      questionnaire={questionnaire}
+      componentPlugins={plugins}
+      // ... other props
+    />
+  );
 }
-
-/** Registry mapping "itemType:itemControlCode" to plugin */
-export type ComponentPluginRegistry = Map<string, ComponentPlugin>;
-
-/** Helper to create registry key */
-export const createPluginKey = (itemType: string, itemControlCode: string): string => `${itemType}:${itemControlCode}`;
 ```
 
 ---
 
-### Task 2: Create Plugin Context
+## Exports from Refero
 
-**Files:** `src/context/componentPlugin/` (new folder)
+Plugins can import these from `@helsenorge/refero`:
 
-Create React context to distribute the plugin registry:
+### Types
 
-- `ComponentPluginContext.tsx` - The context definition
-- `ComponentPluginProvider.tsx` - Provider component
-- `useComponentPlugin.tsx` - Hook to access registry
-- `index.ts` - Exports
+- `PluginComponentProps` - Props interface for plugins
+- `ComponentPlugin` - Plugin registration interface
+- `OnAnswerChange` - Type for onAnswerChange callback
 
----
+### Components
 
-### Task 3: Create Plugin Component Wrapper
+- `ReferoLabel` - Standard label component
 
-**File:** `src/components/formcomponents/plugin/PluginComponentWrapper.tsx` (new)
+### Actions (for dispatch)
 
-A wrapper that handles common functionality so plugins don't need to re-implement boilerplate:
+- `newIntegerValueAsync`
+- `newStringValueAsync`
+- `newDecimalValueAsync`
+- `newCodingValueAsync`
+- `removeCodingValueAsync`
+- `newBooleanValueAsync`
+- `newDateValueAsync`
+- `newTimeValueAsync`
+- `newDateTimeValueAsync`
+- `newQuantityValueAsync`
+- `newAttachmentAsync`
+- `removeAttachmentAsync`
 
-```typescript
-/**
- * PluginComponentWrapper responsibilities:
- * 1. Fetches item from Redux state
- * 2. Gets answer via useGetAnswer hook
- * 3. Provides unified onValueChange callback (dispatches correct action based on item type)
- * 4. Handles react-hook-form registration and validation
- * 5. Renders ReferoLabel
- * 6. Renders the plugin component with simplified props
- * 7. Renders delete/repeat buttons
- * 8. Renders nested children
- */
-```
+### Validation Rules
 
-This wrapper will:
-
-- Accept `QuestionnaireComponentItemProps` (same as built-in components)
-- Accept the plugin component as a prop
-- Handle all Redux/form integration internally
-- Pass `PluginComponentProps` to the actual plugin
-
----
-
-### Task 4: Create Unified Value Change Handler
-
-**File:** `src/util/pluginValueHandler.ts` (new)
-
-Create a unified interface for updating answer values:
-
-```typescript
-/**
- * Maps value types to appropriate dispatch actions:
- * - valueString → newStringValueAsync
- * - valueInteger → newIntegerValueAsync
- * - valueDecimal → newDecimalValueAsync
- * - valueCoding → newCodingValueAsync
- * - valueDate → newDateValueAsync
- * - etc.
- */
-export function dispatchAnswerValue(
-  dispatch: AppDispatch,
-  path: Path[],
-  item: QuestionnaireItem,
-  answer: QuestionnaireResponseItemAnswer
-): Promise<FormData>;
-```
-
----
-
-### Task 5: Extend ReferoProps
-
-**File:** `src/types/referoProps.ts` (modify)
-
-Add optional `componentPlugins?: ComponentPlugin[]` prop.
-
----
-
-### Task 6: Wire Plugin Provider into Refero
-
-**File:** `src/components/index.tsx` (modify)
-
-Wrap form with `ComponentPluginProvider`, passing the plugins from props.
-
----
-
-### Task 7: Create Plugin Resolver Utility
-
-**File:** `src/util/componentPluginResolver.ts` (new)
-
-```typescript
-/**
- * Resolves which component to use for a given item:
- * 1. Get item.type and itemControl codes from item
- * 2. For each itemControl code, check if registry has "itemType:itemControlCode"
- * 3. If found, return PluginComponentWrapper configured with that plugin
- * 4. If not found, return undefined (caller falls back to built-in)
- */
-export function resolvePluginComponent(
-  item: QuestionnaireItem,
-  registry: ComponentPluginRegistry
-): React.ComponentType<QuestionnaireComponentItemProps> | undefined;
-```
-
----
-
-### Task 8: Modify Component Resolution
-
-**File:** `src/components/createQuestionnaire/ItemRenderer.tsx` (modify)
-
-Update to check for plugins before falling back to built-in components:
-
-```typescript
-// Before:
-const ItemComponent = getComponentForItem(item.type);
-
-// After:
-const pluginRegistry = useComponentPluginRegistry();
-const ItemComponent = resolvePluginComponent(item, pluginRegistry) ?? getComponentForItem(item.type);
-```
-
----
-
-### Task 9: Export Plugin Types
-
-**File:** `src/index.ts` (modify)
-
-Export types for consuming apps:
-
-- `PluginComponentProps`
-- `ComponentPlugin`
-- `ComponentPluginRegistry`
-- `createPluginKey`
-
----
-
-### Task 10: Documentation
-
-Document how to create and register plugins:
-
-- What props plugins receive
-- How to register a plugin
-- Example plugin implementation
-- Limitations and considerations
-
----
-
-### Task 11: Create Example Plugin (Optional)
-
-**Files:** `preview/external-components/` (new plugins)
-
-Reference implementation showing:
-
-- A custom slider for integers
-- A custom date picker
-- How to register them in the preview app
+- `required`
+- `minValue`
+- `maxValue`
+- `minLength`
+- `maxLength`
+- `pattern`
+- `getErrorMessage`
+- `shouldValidate`
 
 ---
 
@@ -259,25 +247,62 @@ Reference implementation showing:
 
 This allows targeting specific combinations. A slider for integers might behave differently than a slider for decimals.
 
-### 2. Full Replacement (not composition)
+### 2. Full Control (not abstraction)
 
-**Decision:** Plugins fully replace the default rendering for that itemType + itemControlCode combination.
+**Decision:** Plugins receive dispatch and onAnswerChange directly, same as built-in components.
 
-Rationale: Composition adds complexity and most use cases want full control. The wrapper handles common elements (label, buttons), so
-plugins only implement the input itself.
+**Rationale:** Initially we tried to abstract value handling with a unified `onValueChange` callback, but this added unnecessary complexity.
+Plugins work better when they follow the same patterns as built-in components.
 
-### 3. Resolution Point
+### 3. Plugins Handle Their Own UI
+
+**Decision:** Plugins are responsible for labels, validation, and error display.
+
+**Rationale:** This gives plugins full customization control. They can use `ReferoLabel` for consistency or create completely custom UI.
+
+### 4. Children Must Be Rendered
+
+**Decision:** Delete/repeat buttons and nested items are passed as `children` prop.
+
+**Rationale:** This allows plugins to render these elements inside their FormGroup for proper styling and layout.
+
+### 5. Resolution Point
 
 **Decision:** Resolution happens in `ItemRenderer.tsx` before component selection.
 
 This is cleaner than modifying each type component individually.
 
-### 4. Props Interface
+---
 
-**Decision:** Plugins receive `PluginComponentProps` - a simplified, stable interface.
+## File Structure
 
-Plugins should NOT receive internal implementation details like `idWithLinkIdAndItemIndex` or need to call Redux directly. The wrapper
-handles that complexity.
+```
+src/
+├── types/
+│   └── componentPlugin.ts          # Plugin types and interfaces
+├── context/
+│   └── componentPlugin/
+│       ├── ComponentPluginContext.tsx
+│       ├── ComponentPluginProvider.tsx
+│       ├── useComponentPlugin.tsx
+│       └── index.ts
+├── components/
+│   └── formcomponents/
+│       └── plugin/
+│           ├── PluginComponentWrapper.tsx
+│           └── __tests__/
+│               ├── PluginComponentWrapper-spec.tsx
+│               └── plugin-integration-spec.tsx
+├── util/
+│   └── componentPluginResolver.ts
+└── index.ts                        # Exports plugin types and ReferoLabel
+
+preview/
+└── external-components/
+    ├── CustomSliderPlugin.tsx      # Example integer slider
+    ├── PillChoicePlugin.tsx        # Example choice with pills
+    └── ImageChoicePlugin.tsx       # Example choice with icons
+```
 
 ---
 

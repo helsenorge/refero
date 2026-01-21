@@ -26,11 +26,11 @@ type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  renderOpenField: () => JSX.Element | undefined;
+  renderOpenField: () => React.JSX.Element | undefined;
   pdfValue?: string | number;
 };
 
-const RadioView = (props: Props): JSX.Element | null => {
+const RadioView = (props: Props): React.JSX.Element | null => {
   const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, path, index, pdf, pdfValue, children } =
     props;
   const { resources } = useExternalRenderContext();

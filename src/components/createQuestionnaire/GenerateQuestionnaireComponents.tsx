@@ -17,7 +17,7 @@ export type QuestionnaireComponentItemProps = {
   pdf?: boolean;
   language?: string;
   includeSkipLink?: boolean;
-  blindzone?: JSX.Element | null;
+  blindzone?: React.JSX.Element | null;
   path: Path[];
   id: string;
   index: number;
@@ -36,7 +36,7 @@ export type QuestionnaireItemsProps = {
   containedResources?: Resource[];
 };
 
-const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.Element | null => {
+const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): React.JSX.Element | null => {
   const { items, path, pdf = false, renderContext, headerTag } = props;
 
   const renderContextValue = React.useMemo(() => renderContext || new RenderContext(), [renderContext]);

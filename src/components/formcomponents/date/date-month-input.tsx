@@ -44,7 +44,7 @@ export const DateYearMonthInput = ({
   onDateValueChange,
   children,
   path,
-}: DateMonthProps): JSX.Element | null => {
+}: DateMonthProps): React.JSX.Element | null => {
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
   const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();

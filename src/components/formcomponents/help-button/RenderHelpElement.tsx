@@ -14,7 +14,7 @@ type Props = {
   item?: QuestionnaireItem;
 };
 
-const RenderHelpElement = ({ isHelpVisible, item }: Props): JSX.Element | null => {
+const RenderHelpElement = ({ isHelpVisible, item }: Props): React.JSX.Element | null => {
   const { onRequestHelpElement } = useExternalRenderContext();
 
   if (!item) return null;

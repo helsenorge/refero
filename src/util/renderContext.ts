@@ -1,3 +1,5 @@
+import type React from 'react';
+
 import type { QuestionnaireItem } from 'fhir/r4';
 
 import { RenderContextType } from '../constants/renderContextType';
@@ -8,8 +10,8 @@ export class RenderContext {
   public Owner: string;
   public RenderChildren?: (
     children: QuestionnaireItem[],
-    renderItem: (item: QuestionnaireItem, renderContext: RenderContext) => JSX.Element | null
-  ) => JSX.Element[];
+    renderItem: (item: QuestionnaireItem, renderContext: RenderContext) => React.JSX.Element | null
+  ) => React.JSX.Element[];
 
   constructor(
     renderContextType: RenderContextType = RenderContextType.None,
@@ -17,8 +19,8 @@ export class RenderContext {
     columns: string[] = [],
     renderChildren?: (
       children: QuestionnaireItem[],
-      renderItem: (item: QuestionnaireItem, renderContext: RenderContext) => JSX.Element | null
-    ) => JSX.Element[]
+      renderItem: (item: QuestionnaireItem, renderContext: RenderContext) => React.JSX.Element | null
+    ) => React.JSX.Element[]
   ) {
     this.RenderContextType = renderContextType;
     this.Owner = owner;

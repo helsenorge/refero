@@ -31,7 +31,7 @@ export const RenderResponseItems = memo(function RenderResponseItems({
   pdf,
   isNavigatorEnabled,
   headerTag,
-}: RenderResponseItemsProps): JSX.Element[] | null {
+}: RenderResponseItemsProps): React.JSX.Element[] | null {
   const isNavigatorBlindzoneInitiatedRef = useRef(false);
 
   return responseItems

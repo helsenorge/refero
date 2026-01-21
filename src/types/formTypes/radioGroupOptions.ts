@@ -1,3 +1,5 @@
+import type React from 'react';
+
 import type { Extension } from 'fhir/r4';
 
 export interface Options {
@@ -6,7 +8,7 @@ export interface Options {
   label: string;
   ariaLabel?: string;
   disabled?: boolean;
-  content?: JSX.Element;
-  hjelpetrigger?: JSX.Element;
+  content?: React.JSX.Element;
+  hjelpetrigger?: React.JSX.Element;
   extensions?: Extension[];
 }

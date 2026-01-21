@@ -25,7 +25,7 @@ interface StepViewProps {
   methods: UseFormReturn<DefaultValues, unknown, DefaultValues>;
 }
 
-const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: StepViewProps): JSX.Element | null => {
+const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: StepViewProps): React.JSX.Element | null => {
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const [stepIndex, setStepIndex] = React.useState(0);
   const { onStepChange, onFormViewChange } = useExternalRenderContext();

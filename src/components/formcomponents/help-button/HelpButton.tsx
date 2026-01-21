@@ -9,7 +9,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const HelpButton = ({ item, padding, ariaLabeledBy, children, callback }: Props): JSX.Element | null => {
+const HelpButton = ({ item, padding, ariaLabeledBy, children, callback }: Props): React.JSX.Element | null => {
   const [isOpen, setIsOpen] = React.useState(false);
   const handleToggle = (): void => {
     setIsOpen(!isOpen);

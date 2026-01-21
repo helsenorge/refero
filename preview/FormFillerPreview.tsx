@@ -191,7 +191,7 @@ function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | nu
   return getNumberOfAttachments(questionnaireResponse) > 3;
 }
 
-const FormFillerPreview = (): JSX.Element => {
+const FormFillerPreview = (): React.JSX.Element => {
   const [lang, setLang] = useState<number>(0);
   const store = reduxStore();
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;

@@ -5,7 +5,7 @@ type Props = {
   children: ReactNode;
 };
 
-const AsPdf = ({ pdf, children }: Props): JSX.Element => {
+const AsPdf = ({ pdf, children }: Props): React.JSX.Element => {
   return <>{pdf ? <div>{children}</div> : children}</>;
 };
 export default AsPdf;

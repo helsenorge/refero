@@ -1,7 +1,14 @@
+import type { AppDispatch, GlobalState } from '@/reducers';
 import type { Path } from '@/util/refero-core';
 import type { Resources } from '@/util/resources';
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import type { FieldError } from 'react-hook-form';
+
+/**
+ * Type for the onAnswerChange callback that plugins receive.
+ * This is called after dispatching an action to notify about answer changes.
+ */
+export type OnAnswerChange = (state: GlobalState, item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer) => void;
 
 /**
  * Props passed to plugin components.
@@ -16,13 +23,23 @@ export interface PluginComponentProps {
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined;
 
   /**
-   * Callback to update the answer value.
-   * The wrapper will handle dispatching the correct action based on the value type.
+   * Redux dispatch function for dispatching actions.
+   * Use with actions from refero (e.g., newIntegerValueAsync, newCodingValueAsync).
+   *
+   * Example usage:
+   * ```tsx
+   * dispatch(newIntegerValueAsync(path, value, item))?.then(newState =>
+   *   onAnswerChange(newState, item, { valueInteger: value })
+   * );
+   * ```
    */
-  onValueChange: (value: QuestionnaireResponseItemAnswer) => void;
+  dispatch: AppDispatch;
 
-  /** Optional callback to clear the answer value */
-  onValueClear?: () => void;
+  /**
+   * Callback to notify about answer changes.
+   * Call this after dispatching an action to trigger calculators, enableWhen, etc.
+   */
+  onAnswerChange: OnAnswerChange;
 
   /** Form validation error, if any */
   error?: FieldError;
@@ -39,14 +56,29 @@ export interface PluginComponentProps {
   /** Unique identifier for the field */
   id: string;
 
+  /**
+   * Unique identifier for form registration with react-hook-form.
+   * Use this when calling register() for validation.
+   */
+  idWithLinkIdAndItemIndex: string;
+
   /** Path to this item in the questionnaire response */
   path: Path[];
 
   /** Index of this item (for repeated items) */
   index: number;
 
-  /** Children elements (for nested items) */
+  /**
+   * Children elements containing delete/repeat buttons and nested items.
+   * Plugins should render this inside their FormGroup or at the end of their component.
+   */
   children?: React.ReactNode;
+
+  /**
+   * Optional callback to prompt login message.
+   * Call this when the user interacts with the field.
+   */
+  promptLoginMessage?: () => void;
 }
 
 /**

@@ -2,6 +2,21 @@
 
 React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/questionnaire.html) object and renders it as a form.
 
+---
+
+**📖 Contents**
+
+| Section                                               | Description                            |
+| ----------------------------------------------------- | -------------------------------------- |
+| [Props](#props)                                       | Component properties and configuration |
+| [Callback API](#callback-api)                         | Event handlers and callbacks           |
+| [Component Plugins](#component-plugins)               | Custom component rendering system      |
+| [Scoring Functionality](#scoring-functionality)       | Questionnaire scoring features         |
+| [Mathematical Expressions](#mathematical-expressions) | FHIRPath calculations                  |
+| [Interface definitions](#interface-definitions)       | TypeScript types and interfaces        |
+
+---
+
 ## PeerDependencies
 
 - [react](https://www.npmjs.com/package/react)
@@ -102,7 +117,7 @@ const App = () => {
 | attachmentValidTypes          |          | string[]                   | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf                                                                           |
 | attachmentErrorMessage        |          | string                     | null    | Text shown when file-upload fails to validate                                                                                                                                           |
 | promptLoginMessage            |          | callback                   | null    | Callback when the form needs to notify the user about authentication                                                                                                                    |
-| loginButton                   | true     | JSX.Element                |         | JSX for when the form needs to render a login button                                                                                                                                    |
+| loginButton                   | true     | React.JSX.Element          |         | JSX for when the form needs to render a login button                                                                                                                                    |
 | authorized                    | true     | boolean                    |         | Whether or not the user is authorized/authenticated                                                                                                                                     |
 | pdf                           |          | boolean                    | false   | Renders the form without interactive elements                                                                                                                                           |
 | sticky                        |          | boolean                    | false   | Whether the actionbar (bar with buttons send/save) should be sticky                                                                                                                     |
@@ -232,10 +247,10 @@ callback is called with the following arguments:
 This callback is called when the form needs to notify the user about authentication. The callback could f.ex. show an alertbox to that
 effect.
 
-### `onRequestHelpButton: (item: QuestionniareItem, itemHelp: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => JSX.Element`
+### `onRequestHelpButton: (item: QuestionniareItem, itemHelp: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => React.JSX.Element`
 
-This callback is called when the form encounters an element with help. The callback should return a JSX.Element which is placed after the
-items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
+This callback is called when the form encounters an element with help. The callback should return a React.JSX.Element which is placed after
+the items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
 
 - `item: QuestionnaireItem` This is the item for which the help button is about to be rendered.
 - `helpItem: QuestionnaireItem` This is the item containing the raw help text.
@@ -243,10 +258,10 @@ items label. If this is not specified, a default implementation is provided. The
 - `helpText: string` The help text, either as plain text or html (in the case the help item had markdown)
 - `opening: boolean` This boolean indicates whether the help text is visible or not (open or closed)
 
-### `onRequestHelpElement: (item: QuestionnaireItem, itemHelp: QuestionniareItem, helpType: string, helpText: string, opening: boolean => JSX.Element`
+### `onRequestHelpElement: (item: QuestionnaireItem, itemHelp: QuestionniareItem, helpType: string, helpText: string, opening: boolean => React.JSX.Element`
 
-This callback is called when the form encounters an element with help. The callback could return a JSX.Element which would be placed after
-the items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
+This callback is called when the form encounters an element with help. The callback could return a React.JSX.Element which would be placed
+after the items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
 
 - `item: QuestionnaireItem` This is the item for which the help element is about to be rendered.
 - `helpItem: QuestionnaireItem` This is the item containing the raw help text.
@@ -320,37 +335,87 @@ The plugin system works by:
 1. Registering plugins that define which item type + itemControl code combination they handle
 2. When rendering a questionnaire item, Refero checks if a plugin is registered for that combination
 3. If found, the plugin component is rendered instead of the built-in component
-4. The plugin receives standardized props including the item, current answer, and a callback to update values
+4. Plugins have full control over their UI, including labels, validation, and error display
 
 ## Basic Usage
 
 ```tsx
-import { Refero, ComponentPlugin, PluginComponentProps } from '@helsenorge/refero';
+import { useEffect, type FC } from 'react';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+import {
+  Refero,
+  type ComponentPlugin,
+  type PluginComponentProps,
+  ReferoLabel,
+  newIntegerValueAsync,
+  required,
+  minValue,
+  maxValue,
+  getErrorMessage,
+} from '@helsenorge/refero';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 // Create a custom component
-const CustomSlider = ({ item, answer, onValueChange, error, readOnly }: PluginComponentProps) => {
-  const currentValue = answer?.valueInteger ?? 0;
+const CustomSlider: FC<PluginComponentProps> = ({
+  item,
+  answer,
+  dispatch,
+  onAnswerChange,
+  error,
+  readOnly,
+  id,
+  idWithLinkIdAndItemIndex,
+  path,
+  resources,
+  promptLoginMessage,
+  children,
+}) => {
+  const { register, unregister, setValue, formState } = useFormContext<FieldValues>();
+  const currentValue = Array.isArray(answer) ? answer[0]?.valueInteger : answer?.valueInteger;
+
+  // Register validation
+  useEffect(() => {
+    register(idWithLinkIdAndItemIndex, {
+      required: required({ item, resources }),
+      min: minValue({ item, resources }),
+      max: maxValue({ item, resources }),
+      shouldUnregister: true,
+    });
+    return () => unregister(idWithLinkIdAndItemIndex);
+  }, [idWithLinkIdAndItemIndex, item, register, unregister, resources]);
+
+  // Sync form value
+  useEffect(() => {
+    setValue(idWithLinkIdAndItemIndex, currentValue, { shouldValidate: formState.isSubmitted });
+  }, [currentValue, idWithLinkIdAndItemIndex, setValue, formState.isSubmitted]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: value }));
+    if (promptLoginMessage) promptLoginMessage();
+  };
 
   return (
-    <div>
-      <input
-        type="range"
-        min={0}
-        max={100}
-        value={currentValue}
-        disabled={readOnly}
-        onChange={e => onValueChange({ valueInteger: parseInt(e.target.value, 10) })}
+    <FormGroup error={getErrorMessage(item, error)} onColor="ongrey">
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={id}
+        labelId={`${id}-label`}
+        testId={`${id}-label`}
+        formFieldTagId={`${id}-formfieldtag`}
       />
-      <span>{currentValue}</span>
-      {error && <span className="error">{error.message}</span>}
-    </div>
+      <input type="range" id={id} min={0} max={100} value={currentValue ?? 0} disabled={readOnly} onChange={handleChange} />
+      <span>{currentValue ?? 0}</span>
+      {children}
+    </FormGroup>
   );
 };
 
 // Define the plugin
 const sliderPlugin: ComponentPlugin = {
-  itemType: 'integer', // FHIR item type
-  itemControlCode: 'slider', // itemControl extension code
+  itemType: 'integer',
+  itemControlCode: 'slider',
   component: CustomSlider,
 };
 
@@ -380,7 +445,7 @@ interface ComponentPlugin {
 
 ## PluginComponentProps Interface
 
-Plugin components receive these standardized props:
+Plugin components receive these props:
 
 ```ts
 interface PluginComponentProps {
@@ -388,10 +453,10 @@ interface PluginComponentProps {
   item: QuestionnaireItem;
   /** Current answer value(s) for this item */
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined;
-  /** Callback to update the answer value */
-  onValueChange: (value: QuestionnaireResponseItemAnswer) => void;
-  /** Optional callback to clear the answer */
-  onValueClear?: () => void;
+  /** Redux dispatch function for dispatching actions */
+  dispatch: AppDispatch;
+  /** Callback to notify about answer changes (triggers calculators, enableWhen, etc.) */
+  onAnswerChange: OnAnswerChange;
   /** Form validation error, if any */
   error?: FieldError;
   /** Localization resources */
@@ -402,57 +467,59 @@ interface PluginComponentProps {
   readOnly?: boolean;
   /** Unique identifier for the field */
   id: string;
+  /** Unique identifier for react-hook-form registration */
+  idWithLinkIdAndItemIndex: string;
   /** Path to this item in the questionnaire response */
   path: Path[];
   /** Index of this item (for repeated items) */
   index: number;
-  /** Children elements (for nested items) */
+  /** Children containing delete/repeat buttons and nested items - must be rendered */
   children?: React.ReactNode;
+  /** Optional callback to prompt login message */
+  promptLoginMessage?: () => void;
 }
 ```
 
-## Answer Value Types
+## Plugin Responsibilities
 
-When calling `onValueChange`, provide the appropriate answer type based on your item:
+Plugins are responsible for:
+
+1. **Label rendering** - Use `ReferoLabel` from refero or create custom labels
+2. **Validation** - Register with react-hook-form using validation rules from refero
+3. **Value changes** - Use `dispatch` with actions like `newIntegerValueAsync`, then call `onAnswerChange`
+4. **Error display** - Use `FormGroup` or custom error rendering
+5. **Rendering children** - Must render `children` prop (contains delete/repeat buttons and nested items)
+
+## Available Actions
+
+Use these with `dispatch` to update values:
 
 ```ts
-// For integer items
-onValueChange({ valueInteger: 42 });
+import {
+  newIntegerValueAsync,
+  newStringValueAsync,
+  newDecimalValueAsync,
+  newBooleanValueAsync,
+  newDateValueAsync,
+  newTimeValueAsync,
+  newDateTimeValueAsync,
+  newCodingValueAsync,
+  removeCodingValueAsync,
+  newQuantityValueAsync,
+} from '@helsenorge/refero';
 
-// For decimal items
-onValueChange({ valueDecimal: 3.14 });
+// Example: Update integer value
+dispatch(newIntegerValueAsync(path, 42, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: 42 }));
 
-// For string items
-onValueChange({ valueString: 'Hello' });
-
-// For boolean items
-onValueChange({ valueBoolean: true });
-
-// For date items
-onValueChange({ valueDate: '2024-01-15' });
-
-// For dateTime items
-onValueChange({ valueDateTime: '2024-01-15T10:30:00' });
-
-// For time items
-onValueChange({ valueTime: '10:30:00' });
-
-// For coding/choice items
-onValueChange({ valueCoding: { system: 'http://example.org', code: 'abc', display: 'ABC' } });
-
-// For quantity items
-onValueChange({ valueQuantity: { value: 70, unit: 'kg', system: 'http://unitsofmeasure.org', code: 'kg' } });
+// Example: Update coding value (for choice items)
+const coding = { system: 'http://example.org', code: 'abc', display: 'ABC' };
+dispatch(newCodingValueAsync(path, coding, item, item.repeats))?.then(newState => onAnswerChange(newState, item, { valueCoding: coding }));
 ```
 
-## Helper Functions
-
-Refero exports a helper function for creating plugin registry keys:
+## Available Validation Rules
 
 ```ts
-import { createPluginKey } from '@helsenorge/refero';
-
-// Creates key in format "itemType:itemControlCode"
-const key = createPluginKey('integer', 'slider'); // Returns "integer:slider"
+import { required, minValue, maxValue, minLength, maxLength, pattern, getErrorMessage, shouldValidate } from '@helsenorge/refero';
 ```
 
 ## Matching Logic
@@ -478,12 +545,13 @@ The itemControl extension is typically found at:
 }
 ```
 
-## Limitations
+## Notes
 
 - Plugins only match when **both** item type AND itemControl code match
 - Items without an itemControl extension will always use built-in components
-- The plugin wrapper handles labels, repeat/delete buttons, and validation display
-- Plugin components should focus on the input control itself
+- Plugins have full control over their UI - they handle labels, validation, and error display
+- The `children` prop **must** be rendered - it contains delete/repeat buttons and nested items
+- Use `ReferoLabel` from refero for consistent label styling, or create custom labels
 
 ## Multiple Plugins Example
 

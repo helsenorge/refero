@@ -21,7 +21,7 @@ import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues, type DefaultValues } from '@/validation/defaultFormValues';
 
-const Refero = (props: ReferoProps): JSX.Element | null => {
+const Refero = (props: ReferoProps): React.JSX.Element | null => {
   const {
     resources,
     authorized,

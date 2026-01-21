@@ -51,7 +51,7 @@ export const PluginTestWrapper = ({
   store: Store;
   referoProps?: Partial<ReferoProps>;
   plugins?: ComponentPlugin[];
-}): JSX.Element => {
+}): React.JSX.Element => {
   return (
     <Provider store={store}>
       <ExternalRenderProviderWrapper props={referoProps}>

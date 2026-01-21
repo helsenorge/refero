@@ -21,7 +21,7 @@ type DefaultGroup = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };
-const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: DefaultGroup): JSX.Element => {
+const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: DefaultGroup): React.JSX.Element => {
   const { headerTag, includeSkipLink, path, linkId, index, id } = rest;
   const { onRenderMarkdown, resources } = useExternalRenderContext();
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));

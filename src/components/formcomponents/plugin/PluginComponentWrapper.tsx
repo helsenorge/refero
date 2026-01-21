@@ -5,15 +5,10 @@ import { type FieldValues, useFormContext } from 'react-hook-form';
 import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import type { PluginComponentProps } from '@/types/componentPlugin';
 
-import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-
-import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
-import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { getErrorMessage } from '@/components/validation/rules';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
@@ -21,7 +16,6 @@ import { useResetFormField } from '@/hooks/useResetFormField';
 import { useAppDispatch, useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { isReadOnly, getId } from '@/util/index';
-import { createPluginValueChangeHandler } from '@/util/pluginValueHandler';
 
 export interface PluginComponentWrapperProps extends QuestionnaireComponentItemProps {
   /** The plugin component to render */
@@ -34,14 +28,16 @@ export interface PluginComponentWrapperProps extends QuestionnaireComponentItemP
  * Responsibilities:
  * 1. Fetches item from Redux state
  * 2. Gets answer via useGetAnswer hook
- * 3. Provides unified onValueChange callback
- * 4. Handles react-hook-form integration
- * 5. Renders ReferoLabel
- * 6. Renders the plugin component with simplified props
- * 7. Renders delete/repeat buttons
- * 8. Renders nested children
+ * 3. Provides dispatch and onAnswerChange for value changes
+ * 4. Provides form error state for validation
+ * 5. Renders the plugin component with all necessary props
+ * 6. Renders delete/repeat buttons
+ * 7. Renders nested children
+ *
+ * Note: Plugins are responsible for their own UI including labels and error display.
+ * Use ReferoLabel from refero exports if you want the standard label styling.
  */
-export const PluginComponentWrapper = (props: PluginComponentWrapperProps): JSX.Element | null => {
+export const PluginComponentWrapper = (props: PluginComponentWrapperProps): React.JSX.Element | null => {
   const { path, id, pdf, idWithLinkIdAndItemIndex, children, index, linkId, PluginComponent } = props;
 
   // Get item from Redux
@@ -51,7 +47,7 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): JSX.
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
-  // Get form context for validation
+  // Get form context for error state (plugins register their own fields for validation)
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -63,32 +59,42 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): JSX.
   // Reset form field when answer changes
   useResetFormField(idWithLinkIdAndItemIndex, answer);
 
-  // Create the value change handler for the plugin
-  // Uses async actions + onAnswerChange - same pattern as Integer, Choice, etc.
-  const handleValueChange = useMemo(() => {
-    if (!item) return (): void => {};
-    return createPluginValueChangeHandler(dispatch, path, item, onAnswerChange, promptLoginMessage, answer);
-  }, [dispatch, path, item, onAnswerChange, promptLoginMessage, answer]);
-
-  const errorMessage = getErrorMessage(item, error);
   const readOnly = isReadOnly(item);
 
-  // Plugin props - simplified interface
+  // Plugin props - provides everything plugins need to render and handle value changes
   const pluginProps: PluginComponentProps = useMemo(
     () => ({
       item: item!,
       answer,
-      onValueChange: handleValueChange,
+      dispatch,
+      onAnswerChange,
       error,
       resources,
       pdf,
       readOnly,
       id: getId(id),
+      idWithLinkIdAndItemIndex,
       path,
       index,
       children,
+      promptLoginMessage,
     }),
-    [item, answer, handleValueChange, error, resources, pdf, readOnly, id, path, index, children]
+    [
+      item,
+      answer,
+      dispatch,
+      onAnswerChange,
+      error,
+      resources,
+      pdf,
+      readOnly,
+      id,
+      idWithLinkIdAndItemIndex,
+      path,
+      index,
+      children,
+      promptLoginMessage,
+    ]
   );
 
   // Guard: item must exist
@@ -113,26 +119,22 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): JSX.
     );
   }
 
+  // Render delete/repeat buttons to pass as children to plugin
+  const repeatDeleteButtons = (
+    <>
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      <RenderRepeatButton path={path} item={item} index={index} />
+    </>
+  );
+
   return (
     <div className="page_refero__component page_refero__component_plugin">
-      <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
-        <ReferoLabel
-          item={item}
-          resources={resources}
-          htmlFor={getId(id)}
-          labelId={`${getId(id)}-plugin-label`}
-          testId={`${getId(id)}-plugin-label`}
-          formFieldTagId={`${getId(id)}-plugin-formfieldtag`}
-        />
-
-        {/* Render the plugin component */}
-        <PluginComponent {...pluginProps} />
-
-        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-        <RenderRepeatButton path={path} item={item} index={index} />
-      </FormGroup>
-
-      {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
+      {/* Render the plugin component - plugins handle their own label and error display */}
+      {/* Delete/repeat buttons and nested children are passed as children for plugins to render inside their FormGroup */}
+      <PluginComponent {...pluginProps}>
+        {repeatDeleteButtons}
+        {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
+      </PluginComponent>
     </div>
   );
 };

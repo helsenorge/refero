@@ -57,7 +57,7 @@ const ItemRenderer = memo(function ItemRenderer({
     if (!pluginComponent) return null;
 
     // Create a component that wraps the plugin with PluginComponentWrapper
-    const WrapperComponent = (props: QuestionnaireComponentItemProps): JSX.Element | null => {
+    const WrapperComponent = (props: QuestionnaireComponentItemProps): React.JSX.Element | null => {
       return <PluginComponentWrapper {...props} PluginComponent={pluginComponent} />;
     };
     WrapperComponent.displayName = `PluginWrapper(${pluginResolution.matchedCode})`;

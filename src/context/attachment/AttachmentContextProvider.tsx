@@ -17,7 +17,7 @@ export const AttachmentProvider = ({
   onRequestAttachmentLink,
   uploadAttachment,
   children,
-}: AttachmentProviderProps): JSX.Element => {
+}: AttachmentProviderProps): React.JSX.Element => {
   return (
     <AttachmentContext.Provider
       value={{

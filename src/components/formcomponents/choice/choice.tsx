@@ -32,7 +32,7 @@ import {
 
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
-export const Choice = (props: ChoiceProps): JSX.Element | null => {
+export const Choice = (props: ChoiceProps): React.JSX.Element | null => {
   const { containedResources, path, linkId, children } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
@@ -165,7 +165,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     [dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
   );
 
-  const renderComponentBasedOnType = (itemControlValue: ItemControlValue | undefined): JSX.Element | null => {
+  const renderComponentBasedOnType = (itemControlValue: ItemControlValue | undefined): React.JSX.Element | null => {
     const pdfValue = getPDFValue();
 
     if (!itemControlValue) return null;

@@ -8,7 +8,7 @@ interface Props {
   testId?: string;
 }
 
-const SubLabel = ({ subLabelText, id, testId }: Props): JSX.Element | null => {
+const SubLabel = ({ subLabelText, id, testId }: Props): React.JSX.Element | null => {
   return (
     <span
       data-testid={testId}

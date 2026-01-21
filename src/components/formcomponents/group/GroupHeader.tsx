@@ -21,7 +21,7 @@ type GroupHeaderProps = {
   isHelpVisible: boolean;
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };
-const GroupHeader = ({ item, resources, headerTag, isHelpVisible, setIsHelpVisible }: GroupHeaderProps): JSX.Element | null => {
+const GroupHeader = ({ item, resources, headerTag, isHelpVisible, setIsHelpVisible }: GroupHeaderProps): React.JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;

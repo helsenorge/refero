@@ -26,7 +26,7 @@ export type Props = QuestionnaireComponentItemProps & {
   pdfValue?: string | number;
 };
 
-const DropdownView = (props: Props): JSX.Element | null => {
+const DropdownView = (props: Props): React.JSX.Element | null => {
   const { options, linkId, id, handleChange, selected, idWithLinkIdAndItemIndex, path, index, pdf, pdfValue, children } = props;
   const { resources } = useExternalRenderContext();
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));

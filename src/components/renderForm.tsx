@@ -53,7 +53,7 @@ const RenderForm = ({
   isAuthorized,
   onFieldsNotCorrectlyFilledOut,
   setStepIndex,
-}: RenderFormProps): JSX.Element | null => {
+}: RenderFormProps): React.JSX.Element | null => {
   const formDefinition = useAppSelector(state => getFormDefinition(state));
   const { level, errorLevelResources } = useAppSelector(state => RequiredLevelSelector(state, undefined, resources));
 

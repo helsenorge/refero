@@ -12,7 +12,7 @@ import { RenderContext } from '@/util/renderContext';
 
 // Mock plugin component for testing
 // eslint-disable-next-line react-refresh/only-export-components
-const MockPluginComponent = ({ item, id }: PluginComponentProps): JSX.Element => (
+const MockPluginComponent = ({ item, id }: PluginComponentProps): React.JSX.Element => (
   <div data-testid="mock-plugin">
     <span data-testid="plugin-id">{id}</span>
     <span data-testid="plugin-linkid">{item?.linkId}</span>

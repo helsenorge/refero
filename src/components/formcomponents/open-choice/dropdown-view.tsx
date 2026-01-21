@@ -26,11 +26,11 @@ type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
-  renderOpenField: () => JSX.Element | undefined;
+  renderOpenField: () => React.JSX.Element | undefined;
   pdfValue?: string | number;
 };
 
-const DropdownView = (props: Props): JSX.Element | null => {
+const DropdownView = (props: Props): React.JSX.Element | null => {
   const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, children, path, index, pdf, pdfValue } =
     props;
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
