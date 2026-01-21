@@ -1,3 +1,15 @@
+## 23.0.0-beta02
+
+- **BREAKING: Plugin API refactored** - Plugins now use `dispatch` + `onAnswerChange` pattern (same as built-in components)
+  - Removed `onValueChange` callback in favor of direct Redux dispatch
+  - Plugins now handle their own UI: labels, validation, and error display
+  - Added `children` prop containing delete/repeat buttons and nested items
+  - Added `idWithLinkIdAndItemIndex` and `promptLoginMessage` to plugin props
+  - Removed `createPluginValueChangeHandler` utility (no longer needed)
+- Export `ReferoLabel` component for plugin use
+- Updated all example plugins with validation support
+- Changed `JSX.Element` to `React.JSX.Element` throughout codebase
+
 ## 22.2.1-beta01
 
 - **New Feature: ItemControl Component Plugin System** - Allows consuming applications to register custom React components for specific item
