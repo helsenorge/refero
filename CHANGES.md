@@ -1,26 +1,16 @@
-## 23.0.0-beta02
-
-- **BREAKING: Plugin API refactored** - Plugins now use `dispatch` + `onAnswerChange` pattern (same as built-in components)
-  - Removed `onValueChange` callback in favor of direct Redux dispatch
-  - Plugins now handle their own UI: labels, validation, and error display
-  - Added `children` prop containing delete/repeat buttons and nested items
-  - Added `idWithLinkIdAndItemIndex` and `promptLoginMessage` to plugin props
-  - Removed `createPluginValueChangeHandler` utility (no longer needed)
-- Export `ReferoLabel` component for plugin use
-- Updated all example plugins with validation support
-- Changed `JSX.Element` to `React.JSX.Element` throughout codebase
-
-## 22.2.1-beta01
+## 22.3.0-beta01
 
 - **New Feature: ItemControl Component Plugin System** - Allows consuming applications to register custom React components for specific item
   type + itemControl code combinations
   - New `componentPlugins` prop on `ReferoContainer` for registering custom components
   - New `PluginComponentProps` interface providing a stable API for plugin components
-  - Supports all FHIR answer value types (string, integer, decimal, boolean, coding, date, time, quantity, etc.)
-  - Built-in toggle behavior for checkbox-style multi-select choice components
+  - Plugins receive `dispatch` and `onAnswerChange` directly (same pattern as built-in components)
+  - Plugins handle their own UI: labels, validation, and error display
+  - `children` prop contains delete/repeat buttons and nested items
   - New utility functions: `createPluginKey`, `createPluginRegistry`, `resolvePluginComponent`
-  - New `createPluginValueChangeHandler` for easy value updates from plugin components
-- Added example plugin components: `PillChoicePlugin`, `ImageChoicePlugin`, `CustomSliderPlugin`
+- Export `ReferoLabel` component for plugin use
+- Added example plugin components: `CustomSliderPlugin`, `PillChoicePlugin`, `ImageChoicePlugin`
+- Changed `JSX.Element` to `React.JSX.Element` throughout codebase
 
 ## 22.2.1
 
