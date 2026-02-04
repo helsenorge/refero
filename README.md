@@ -490,7 +490,30 @@ Plugins are responsible for:
 4. **Error display** - Use `FormGroup` or custom error rendering
 5. **Rendering children** - Must render `children` prop (contains delete/repeat buttons and nested items)
 
-## Available Actions
+## Exports from Refero
+
+Plugins can import these from `@helsenorge/refero`:
+
+### Types
+
+```ts
+import type { PluginComponentProps, ComponentPlugin, OnAnswerChange } from '@helsenorge/refero';
+```
+
+- **`PluginComponentProps`** - Props interface for plugin components
+- **`ComponentPlugin`** - Plugin registration interface
+- **`OnAnswerChange`** - Type for the onAnswerChange callback:
+  `(state: GlobalState, item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer) => void`
+
+### Components
+
+```ts
+import { ReferoLabel } from '@helsenorge/refero';
+```
+
+- **`ReferoLabel`** - Standard label component used by built-in components
+
+### Actions
 
 Use these with `dispatch` to update values:
 
@@ -506,6 +529,8 @@ import {
   newCodingValueAsync,
   removeCodingValueAsync,
   newQuantityValueAsync,
+  newAttachmentAsync,
+  removeAttachmentAsync,
 } from '@helsenorge/refero';
 
 // Example: Update integer value
@@ -516,11 +541,20 @@ const coding = { system: 'http://example.org', code: 'abc', display: 'ABC' };
 dispatch(newCodingValueAsync(path, coding, item, item.repeats))?.then(newState => onAnswerChange(newState, item, { valueCoding: coding }));
 ```
 
-## Available Validation Rules
+### Validation Rules
 
 ```ts
 import { required, minValue, maxValue, minLength, maxLength, pattern, getErrorMessage, shouldValidate } from '@helsenorge/refero';
 ```
+
+- **`required`** - Validates required fields
+- **`minValue`** - Validates minimum value (for numeric types)
+- **`maxValue`** - Validates maximum value (for numeric types)
+- **`minLength`** - Validates minimum length (for string types)
+- **`maxLength`** - Validates maximum length (for string types)
+- **`pattern`** - Validates regex pattern
+- **`getErrorMessage`** - Retrieves localized error message from field error
+- **`shouldValidate`** - Determines if validation should be performed
 
 ## Matching Logic
 

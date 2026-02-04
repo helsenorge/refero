@@ -1,222 +1,83 @@
 {
   "resourceType": "Questionnaire",
-  "id": "plugin-test",
+  "id": "21e2486d-3d22-47f0-e765-986429b89a44",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "security": [
+      {
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
+        "code": "3",
+        "display": "Helsehjelp (Full)"
+      }
+    ],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ]
+  },
+  "language": "nb-NO",
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "url": "Questionnaire/21e2486d-3d22-47f0-e765-986429b89a44",
+  "version": "0.1",
+  "name": "Test_vis_representasjon",
+  "title": "Vis representasjonsforhold",
   "status": "draft",
-  "title": "Plugin Test Form",
-  "name": "PluginTestForm",
-  "description": "A test form demonstrating the component plugin system.",
+  "subjectType": ["Patient"],
+  "date": "2026-01-23T00:00:00+01:00",
+  "publisher": "NHN",
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
   "item": [
     {
-      "linkId": "section-plugins",
-      "type": "group",
-      "text": "Plugin Examples",
-      "item": [
+      "extension": [
         {
-          "linkId": "satisfaction-rating",
-          "type": "integer",
-          "text": "How satisfied are you with our service?",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/questionnaire-item-control",
-                    "code": "slider",
-                    "display": "Slider"
-                  }
-                ]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
-              "valueInteger": 0
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
-              "valueInteger": 10
-            }
-          ],
-          "required": false
-        },
-        {
-          "linkId": "category-selection",
-          "type": "choice",
-          "text": "Velg Kategori",
-          "repeats": true,
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/questionnaire-item-control",
-                    "code": "pill-choice",
-                    "display": "Pill Choice"
-                  }
-                ]
-              }
-            }
-          ],
-          "answerOption": [
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "muskel",
-                "display": "Muskel og skjelettplager"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "sykemeldning",
-                "display": "Forleng sykemeldning"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "svangerskap",
-                "display": "svangerskapsplager"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "hud",
-                "display": "Hud og utslett"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "hodepine",
-                "display": "Hodepine"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "luftveis",
-                "display": "Luftveisplager"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "mage",
-                "display": "Mage og tarmproblemer"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "oppfolging",
-                "display": "Oppfølgning etter fastlegetime"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "legeerklaring",
-                "display": "Legeerklæring eller attest"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "allergi",
-                "display": "Allergi"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "psykisk",
-                "display": "Psykiske plager"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/category",
-                "code": "annet",
-                "display": "Annet"
-              }
-            }
-          ],
-          "required": true
-        },
-        {
-          "linkId": "mood-selection",
-          "type": "choice",
-          "text": "How are you feeling today? (Select all that apply)",
-          "repeats": true,
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/questionnaire-item-control",
-                    "code": "check-box",
-                    "display": "Check Box"
-                  }
-                ]
-              }
-            }
-          ],
-          "answerOption": [
-            {
-              "valueCoding": {
-                "system": "http://example.org/mood",
-                "code": "very-satisfied",
-                "display": "Very Happy"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/mood",
-                "code": "satisfied",
-                "display": "Happy"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/mood",
-                "code": "neutral",
-                "display": "Neutral"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/mood",
-                "code": "dissatisfied",
-                "display": "Sad"
-              }
-            },
-            {
-              "valueCoding": {
-                "system": "http://example.org/mood",
-                "code": "very-dissatisfied",
-                "display": "Very Sad"
-              }
-            }
-          ],
-          "required": false
-        },
-        {
-          "linkId": "regular-integer",
-          "type": "integer",
-          "text": "Regular integer field (no plugin)",
-          "required": false
-        },
-        {
-          "linkId": "comments",
-          "type": "text",
-          "text": "Additional comments",
-          "required": false
+          "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+          "valueString": "iif(\n  %representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611').code = 'FO',\n  'Forelder',\n  iif(\n    %representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611').code = 'FU',\n    'Ordinær fullmakt',\n    iif(\n      %representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611').code = 'TD',\n      'Tildelt fullmakt',\n      ''\n    )\n  )\n)"
         }
-      ]
+      ],
+      "linkId": "94b2fce8-9889-4b27-ad67-fad8e6ab043e",
+      "text": "Representasjonsforhold",
+      "type": "string",
+      "required": false,
+      "readOnly": true
     }
   ]
 }
