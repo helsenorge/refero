@@ -1,3 +1,7 @@
+## 22.2.2
+
+- Added roles to NotificationPanel components
+
 ## 22.2.1
 
 - Bugfix: Added onFormViewChange to externalRenderProps, to fix it being undefined

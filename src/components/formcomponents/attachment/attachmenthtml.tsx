@@ -206,7 +206,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           validFileTypes={validFileTypes as MimeTypes[]}
         />
         {customErrorMessage && (
-          <NotificationPanel label={customErrorMessage.Title} variant="error">
+          <NotificationPanel label={customErrorMessage.Title} variant="error" role="alert">
             {customErrorMessage.Body}
           </NotificationPanel>
         )}
