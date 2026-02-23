@@ -210,7 +210,11 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
             {customErrorMessage.Body}
           </NotificationPanel>
         )}
-        {attachmentErrorMessage && <NotificationPanel variant="error">{attachmentErrorMessage}</NotificationPanel>}
+        {attachmentErrorMessage && (
+          <NotificationPanel variant="error" role="alert">
+            {attachmentErrorMessage}
+          </NotificationPanel>
+        )}
       </FormGroup>
     </div>
   );
