@@ -265,11 +265,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
         {noSuggestionsToShow && (
           <div className="page_refero__no-suggestions">{resources?.autosuggestNoSuggestions?.replace('{0}', inputValue)}</div>
         )}
-        {hasLoadError && (
-          <NotificationPanel variant="error" role="alert">
-            {resources?.autoSuggestLoadError}
-          </NotificationPanel>
-        )}
+        {hasLoadError && <NotificationPanel variant="error">{resources?.autoSuggestLoadError}</NotificationPanel>}
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
         <RenderRepeatButton path={path} item={item} index={index} />
       </FormGroup>

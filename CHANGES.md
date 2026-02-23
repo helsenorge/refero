@@ -1,3 +1,7 @@
+## 22.2.3
+
+- Edited roles in NotificationPanel components
+
 ## 22.2.2
 
 - Added roles to NotificationPanel components
