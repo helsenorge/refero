@@ -5,7 +5,7 @@ name: Release
 
 on:
   release:
-    types: [released]
+    types: [released, prereleased]
 
   workflow_dispatch:
 
@@ -44,5 +44,23 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org/
       - run: npm ci
-      - run: npm run build:lib
-      - run: cd ./lib && npm publish --provenance --access public
+
+      # Build for prerelease (beta)
+      - name: Build for beta
+        if: github.event.release.prerelease == true
+        run: npm run prepare
+
+      # Build for release (stable)
+      - name: Build for release
+        if: github.event.release.prerelease == false
+        run: npm run build:lib
+
+      # Publish beta version with beta tag
+      - name: Publish beta
+        if: github.event.release.prerelease == true
+        run: cd ./lib && npm publish --tag beta --provenance --access public
+
+      # Publish stable version with default (latest) tag
+      - name: Publish release
+        if: github.event.release.prerelease == false
+        run: cd ./lib && npm publish --provenance --access public

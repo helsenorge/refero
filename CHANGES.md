@@ -1,4 +1,4 @@
-## 22.3.0-beta02
+## 22.3.0-beta03
 
 - Export validation utilities for plugins: `required`, `minValue`, `maxValue`, `getErrorMessage`, `shouldValidate`
 - Re-export `useFormContext` from react-hook-form (ensures plugins use same instance as refero)
@@ -16,6 +16,14 @@
 - Export `ReferoLabel` component for plugin use
 - Added example plugin components: `CustomSliderPlugin`, `PillChoicePlugin`, `ImageChoicePlugin`
 - Changed `JSX.Element` to `React.JSX.Element` throughout codebase
+
+## 22.2.3
+
+- Edited roles in NotificationPanel components
+
+## 22.2.2
+
+- Added roles to NotificationPanel components
 
 ## 22.2.1
 
