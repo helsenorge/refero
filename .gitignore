@@ -11,3 +11,4 @@ vitest.config.ts.timestamp*
 bundle-stats.html
 html/
 *.tgz
+.claude
