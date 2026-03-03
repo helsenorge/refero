@@ -33,7 +33,7 @@ import { isReadOnly, getId, getStringValue, getMaxLength, getPDFStringValue } fr
 export type Props = QuestionnaireComponentItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 };
-export const Text = (props: Props): JSX.Element | null => {
+export const Text = (props: Props): React.JSX.Element | null => {
   const { id, pdf, idWithLinkIdAndItemIndex, path, shouldExpanderRenderChildrenWhenClosed, linkId, index, children } = props;
   const { promptLoginMessage, validateScriptInjection, globalOnChange, resources } = useExternalRenderContext();
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));

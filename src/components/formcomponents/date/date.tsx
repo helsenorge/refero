@@ -19,7 +19,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
 export type DateProps = QuestionnaireComponentItemProps;
 
-const DateComponent = (props: DateProps): JSX.Element | null => {
+const DateComponent = (props: DateProps): React.JSX.Element | null => {
   initialize();
 
   const { linkId, path, index, children } = props;

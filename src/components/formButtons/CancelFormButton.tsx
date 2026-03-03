@@ -5,7 +5,7 @@ type Props = {
   cancelButtonText: string;
 };
 
-export const CancelFormButton = ({ cancelButtonText, onCancelButtonClicked }: Props): JSX.Element | null => {
+export const CancelFormButton = ({ cancelButtonText, onCancelButtonClicked }: Props): React.JSX.Element | null => {
   return (
     <div>
       <Button variant="borderless" onClick={onCancelButtonClicked} testId="refero-cancel-button">

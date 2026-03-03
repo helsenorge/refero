@@ -21,7 +21,7 @@ type Props = {
   mustShowConfirm?: boolean;
 };
 
-const DeleteButton = ({ item, path, mustShowConfirm }: Props): JSX.Element => {
+const DeleteButton = ({ item, path, mustShowConfirm }: Props): React.JSX.Element => {
   const dispatch = useAppDispatch();
   const { globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);

@@ -27,3 +27,5 @@ export const setSkjemaDefinition = (
 ): PayloadAction<SetFormDefinitionAction> => {
   return setSkjemaDefinitionAction({ questionnaire, questionnaireResponse, language, syncQuestionnaireResponse });
 };
+
+export type UpdateQuestionnaireResponseMetaExtensionAction = QuestionnaireResponse['meta'];

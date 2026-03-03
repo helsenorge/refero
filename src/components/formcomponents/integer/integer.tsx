@@ -26,7 +26,7 @@ import { getMaxValueExtensionValue, getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 export type Props = QuestionnaireComponentItemProps;
-const Integer = (props: Props): JSX.Element | null => {
+const Integer = (props: Props): React.JSX.Element | null => {
   const { id, pdf, idWithLinkIdAndItemIndex, path, linkId, index, children } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 

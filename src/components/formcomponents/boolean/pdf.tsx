@@ -12,7 +12,7 @@ interface Props {
   children?: ReactNode;
 }
 
-const Pdf = ({ item, checked, children }: Props): JSX.Element => {
+const Pdf = ({ item, checked, children }: Props): React.JSX.Element => {
   const { onRenderMarkdown } = useExternalRenderContext();
   return (
     <div>

@@ -34,6 +34,9 @@ export const SDF_GENERATENARRATIVE_URL = 'http://ehelse.no/fhir/StructureDefinit
 export const SDF_GENERATE_PDF_URL = 'http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf' as const;
 export const DISCRETION_URL = 'http://ehelse.no/fhir/StructureDefinition/sdf-discretion' as const;
 export const VALIDATE_READONLY_URL = 'http://helsenorge.no/fhir/StructureDefinition/validate-readonly' as const;
+export const QUESTIONNAIRERESPONSE_UISTATE_URL = 'https://helsenorge.no/fhir/StructureDefinition/questionnaireresponse-uiState' as const;
+export const QUESTIONNAIRERESPONSE_UISTATE_STEP_INDEX_URL = 'pageStepIndex' as const;
+export const QUESTIONNAIRERESPONSE_UISTATE_UPDATED_AT_URL = 'updatedAt' as const;
 
 const extensionUrls = {
   DISCRETION_URL,
@@ -72,6 +75,9 @@ const extensionUrls = {
   ACCESSIBILITY_TO_RESPONSE_URL,
   PRESENTATIONBUTTONS_URL,
   VALIDATE_READONLY_URL,
+  QUESTIONNAIRERESPONSE_UISTATE_URL,
+  QUESTIONNAIRERESPONSE_UISTATE_STEP_INDEX_URL,
+  QUESTIONNAIRERESPONSE_UISTATE_UPDATED_AT_URL,
 };
 export type ReferoExtensionUrls = typeof extensionUrls;
 export { extensionUrls as Extensions };

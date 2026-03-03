@@ -19,7 +19,7 @@ type Props = QuestionnaireComponentItemProps & {
   setIsHelpVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const TableContainer = ({ linkId, isHelpVisible, setIsHelpVisible, headerTag }: Props): JSX.Element | null => {
+const TableContainer = ({ linkId, isHelpVisible, setIsHelpVisible, headerTag }: Props): React.JSX.Element | null => {
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const questionnaireResponse = useAppSelector(questionnaireResponseSelector);
 

@@ -32,7 +32,7 @@ type Props = {
   dateLabel?: string;
   attachmentLabel?: string;
   quantityUnitSubLabel?: string;
-  afterLabelChildren?: JSX.Element | null;
+  afterLabelChildren?: React.JSX.Element | null;
   children?: React.ReactNode;
   formFieldTagId: string;
 };
@@ -53,7 +53,7 @@ export const ReferoLabel = ({
   afterLabelChildren,
   children,
   formFieldTagId,
-}: Props): JSX.Element => {
+}: Props): React.JSX.Element => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const questionnaire = useAppSelector(state => getFormDefinition(state))?.Content;
 

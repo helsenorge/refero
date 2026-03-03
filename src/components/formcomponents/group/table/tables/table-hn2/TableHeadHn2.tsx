@@ -13,7 +13,7 @@ type Props = {
   sortable: boolean;
 };
 
-const TableHeadHn2 = ({ tableCodesCoding, sortDir, setSortDir, sortable }: Props): JSX.Element => {
+const TableHeadHn2 = ({ tableCodesCoding, sortDir, setSortDir, sortable }: Props): React.JSX.Element => {
   const tableHeader = getHeaderColumns(tableCodesCoding);
   const codeForColumnToSortBy = findCodeForColumnToSortBy(tableCodesCoding);
   const handleSort = (): void => {

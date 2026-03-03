@@ -2,7 +2,7 @@ import './styles/skjemautfyller.scss';
 
 import FormFillerPreview from './FormFillerPreview';
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   return (
     <div className="container">
       <FormFillerPreview />

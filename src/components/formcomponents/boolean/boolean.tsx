@@ -33,7 +33,7 @@ export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
 };
 
-const Boolean = (props: Props): JSX.Element | null => {
+const Boolean = (props: Props): React.JSX.Element | null => {
   const { path, pdf, id, index, idWithLinkIdAndItemIndex, linkId, children } = props;
 
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));

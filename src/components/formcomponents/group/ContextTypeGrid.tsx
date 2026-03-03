@@ -20,13 +20,13 @@ type Props = {
   item?: QuestionnaireItem;
   columns: string[];
 };
-const RenderHeaders = ({ item, columns }: Props): JSX.Element => {
+const RenderHeaders = ({ item, columns }: Props): React.JSX.Element => {
   const headers = columns.map((c, i) => <th key={`${item?.linkId}-${c}-${i}`}>{c}</th>);
   headers.unshift(<th key={`${item?.linkId}-X`}>{item?.text ? item.text : ''}</th>);
   return <>{headers}</>;
 };
 
-const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
+const ContextTypeGrid = (props: ContextTypeGridProps): React.JSX.Element => {
   const { item, index, path, id } = props;
   const columns = getColumns(item);
   const { resources } = useExternalRenderContext();

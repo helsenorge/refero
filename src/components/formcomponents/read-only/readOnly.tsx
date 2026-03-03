@@ -23,7 +23,17 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export const ReadOnly = ({ pdf, id, idWithLinkIdAndItemIndex, item, value, pdfValue, children, errors, textClass }: Props): JSX.Element => {
+export const ReadOnly = ({
+  pdf,
+  id,
+  idWithLinkIdAndItemIndex,
+  item,
+  value,
+  pdfValue,
+  children,
+  errors,
+  textClass,
+}: Props): React.JSX.Element => {
   const { setValue } = useFormContext<FieldValues>();
 
   useEffect(() => {

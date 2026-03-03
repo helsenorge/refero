@@ -42,7 +42,7 @@ const ReceiverComponent = ({
   pdf,
   pdfValue,
   children,
-}: ReceiverComponentProps): JSX.Element | null => {
+}: ReceiverComponentProps): React.JSX.Element | null => {
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<OrgenhetHierarki[]>([]);
   const [selectedPath, setSelectedPath] = React.useState<number[]>([]);
@@ -175,7 +175,7 @@ const ReceiverComponent = ({
     return '';
   };
 
-  const createSelect = (treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element => {
+  const createSelect = (treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): React.JSX.Element => {
     const fieldState = getFieldState(`${idWithLinkIdAndItemIndex}-${selectKey}`, formState);
     const { error } = fieldState;
 
@@ -255,7 +255,7 @@ const ReceiverComponent = ({
     );
   };
 
-  const renderSelects = (): JSX.Element => {
+  const renderSelects = (): React.JSX.Element => {
     const selectConfigs = [{ key: 'root', selectOptions: receiverTreeNodes }];
     selectedPath.forEach((_x, index) => {
       const searchPath = selectedPath.slice(0, index + 1);

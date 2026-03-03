@@ -124,7 +124,7 @@ export interface ReferoProps {
   /**
    * JSX element representing the login button displayed when `authorized` is `false`.
    */
-  loginButton: JSX.Element;
+  loginButton: React.JSX.Element;
 
   /**
    * Resource texts used in the form (labels, messages, placeholders, etc.).
@@ -235,7 +235,7 @@ export interface ReferoProps {
     helpType: string,
     helpText: string,
     opening: boolean
-  ) => JSX.Element;
+  ) => React.JSX.Element;
 
   /**
    * Callback to render a help element (e.g. tooltip or modal).
@@ -248,7 +248,7 @@ export interface ReferoProps {
     helpType: string,
     helpText: string,
     opening: boolean
-  ) => JSX.Element;
+  ) => React.JSX.Element;
 
   /**
    * Callback invoked when the user changes an answer.
@@ -339,7 +339,7 @@ export interface ReferoProps {
    * A callback function that allows consumers to render their own custom buttons, overriding the default FormButtons.
    * If this prop is defined, the returned JSX element will be displayed instead of the default buttons.
    */
-  renderCustomActionButtons?: (args: RenderCustomButtonsArgs) => JSX.Element;
+  renderCustomActionButtons?: (args: RenderCustomButtonsArgs) => React.JSX.Element;
 
   /**
    * A callback function that is called when the form is initialized or if the form changes (example: step change).

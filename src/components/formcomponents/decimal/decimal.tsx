@@ -36,7 +36,7 @@ import { isReadOnly, getId } from '@/util/index';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Decimal = (props: Props): JSX.Element | null => {
+const Decimal = (props: Props): React.JSX.Element | null => {
   const { id, linkId, pdf, children, idWithLinkIdAndItemIndex, path, index } = props;
   const { formState, getFieldState, register, getValues } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);

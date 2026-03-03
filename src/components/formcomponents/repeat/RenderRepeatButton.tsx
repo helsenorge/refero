@@ -19,7 +19,7 @@ const RenderRepeatButton = memo(function RenderRepeatButton({
   index?: number;
   path: Path[];
   resources?: Resources;
-}): JSX.Element | null {
+}): React.JSX.Element | null {
   const parentPath = path.slice(0, -1);
   const responseItems = useAppSelector(state => getFlatMapResponseItemsForItemSelector(state, item?.linkId, parentPath));
 

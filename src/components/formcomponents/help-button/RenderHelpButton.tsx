@@ -18,7 +18,7 @@ type Props = {
   padding?: boolean;
 };
 
-export const RenderHelpButton = ({ item, setIsHelpVisible, isHelpVisible, ariaLabeledBy, padding }: Props): JSX.Element | null => {
+export const RenderHelpButton = ({ item, setIsHelpVisible, isHelpVisible, ariaLabeledBy, padding }: Props): React.JSX.Element | null => {
   const { onRequestHelpButton } = useExternalRenderContext();
 
   if (!item) return null;

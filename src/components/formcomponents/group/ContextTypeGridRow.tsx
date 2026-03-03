@@ -16,14 +16,14 @@ type ContextTypeGridRowProps = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
   setIsHelpVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
-const ContextTypeGridRow = ({ isHelpVisible, setIsHelpVisible, ...rest }: ContextTypeGridRowProps): JSX.Element => {
+const ContextTypeGridRow = ({ isHelpVisible, setIsHelpVisible, ...rest }: ContextTypeGridRowProps): React.JSX.Element => {
   const { renderContext, headerTag, linkId } = rest;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const { resources } = useExternalRenderContext();
   const renderChildren = (
     childItems: QuestionnaireItem[],
-    itemRenderer: (item: QuestionnaireItem, renderContext: RenderContext) => JSX.Element | null
-  ): JSX.Element[] => {
+    itemRenderer: (item: QuestionnaireItem, renderContext: RenderContext) => React.JSX.Element | null
+  ): React.JSX.Element[] => {
     const renderedChildItems = [];
     let counter = 1;
     for (const column of renderContext.Columns) {

@@ -27,7 +27,7 @@ export type Props = QuestionnaireComponentItemProps & {
   pdfValue?: string | number;
 };
 
-const RadioView = (props: Props): JSX.Element => {
+const RadioView = (props: Props): React.JSX.Element => {
   const { options, id, handleChange, selected, linkId, path, index, idWithLinkIdAndItemIndex, pdf, pdfValue, children } = props;
   const { resources } = useExternalRenderContext();
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));

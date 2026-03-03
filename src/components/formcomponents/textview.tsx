@@ -18,7 +18,7 @@ interface Props {
   children?: ReactNode;
 }
 
-const TextView = ({ id, testId, item, value, textClass, children }: Props): JSX.Element | null => {
+const TextView = ({ id, testId, item, value, textClass, children }: Props): React.JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 

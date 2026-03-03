@@ -61,7 +61,7 @@ type UploadedFile = {
   id: string;
 };
 
-const AttachmentHtml = (props: Props): JSX.Element | null => {
+const AttachmentHtml = (props: Props): React.JSX.Element | null => {
   const {
     id,
     onUpload,

@@ -5,12 +5,12 @@ import userEvent from '@testing-library/user-event';
 import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import '../../util/__tests__/defineFetch';
+import ChoiceCopyFrom from './__data__/copyFrom/choice';
 import RenderingOptionsData from './__data__/renderingOptions';
 import { selectCheckboxOption } from '../../../test/selectors';
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 import itemcontrol from '../../constants/itemcontrol';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
-import ChoiceCopyFrom from './__data__/copyFrom/choice';
-import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 
 describe('Component renders help items', () => {
   it('help button should be visible and control the help element', async () => {
@@ -22,7 +22,7 @@ describe('Component renders help items', () => {
       helpType: string,
       helpText: string,
       opening: boolean
-    ): JSX.Element => {
+    ): React.JSX.Element => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
@@ -38,7 +38,7 @@ describe('Component renders help items', () => {
       helpType: string,
       helpText: string,
       opening: boolean
-    ): JSX.Element => {
+    ): React.JSX.Element => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
@@ -129,8 +129,20 @@ describe('Copying from ...', () => {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function createWrapper(
   questionnaire: Questionnaire,
-  helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
-  helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
+  helpButtonCb?: (
+    item: QuestionnaireItem,
+    helpItem: QuestionnaireItem,
+    helpType: string,
+    help: string,
+    opening: boolean
+  ) => React.JSX.Element,
+  helpElementCb?: (
+    item: QuestionnaireItem,
+    helpItem: QuestionnaireItem,
+    helpType: string,
+    help: string,
+    opening: boolean
+  ) => React.JSX.Element
 ) {
   return await waitFor(
     async () => await renderRefero({ questionnaire, props: { onRequestHelpButton: helpButtonCb, onRequestHelpElement: helpElementCb } })

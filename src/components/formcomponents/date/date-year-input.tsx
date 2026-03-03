@@ -25,7 +25,7 @@ type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
 };
 
-export const DateYearInput = (props: Props): JSX.Element | null => {
+export const DateYearInput = (props: Props): React.JSX.Element | null => {
   const { id, pdf, linkId, onDateValueChange, idWithLinkIdAndItemIndex, children, path } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
