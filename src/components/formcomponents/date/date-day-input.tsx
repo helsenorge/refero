@@ -38,7 +38,7 @@ export const DateDayInput = ({
   onDateValueChange,
   children,
   path,
-}: DateDayInputProps): JSX.Element | null => {
+}: DateDayInputProps): React.JSX.Element | null => {
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();

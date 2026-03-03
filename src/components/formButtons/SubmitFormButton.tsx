@@ -10,7 +10,7 @@ type Props = {
   submitButtonText: string;
 };
 
-export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSubmitButtonClicked }: Props): JSX.Element | null => {
+export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSubmitButtonClicked }: Props): React.JSX.Element | null => {
   const handleSubmit = (
     e?: KeyboardEvent<HTMLUListElement> | MouseEvent<HTMLElement, MouseEvent> | FormEvent<unknown> | null | undefined
   ): void => {

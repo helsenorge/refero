@@ -19,7 +19,7 @@ interface Props {
   disabled: boolean;
 }
 
-export const RepeatButton = ({ item, parentPath, responseItems, disabled }: Props): JSX.Element => {
+export const RepeatButton = ({ item, parentPath, responseItems, disabled }: Props): React.JSX.Element => {
   const dispatch = useAppDispatch();
   const { resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange();

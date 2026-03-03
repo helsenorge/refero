@@ -34,7 +34,7 @@ import {
 
 export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
-export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
+export const OpenChoice = (props: OpenChoiceProps): React.JSX.Element | null => {
   const { linkId, containedResources, path } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
@@ -223,7 +223,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     [dispatch, getAnswerValueCoding, interceptHandler, item, onAnswerChange, path, promptLoginMessage]
   );
 
-  const renderTextField = (): JSX.Element => {
+  const renderTextField = (): React.JSX.Element => {
     return <TextField {...props} handleStringChange={handleStringChangeEvent} handleChange={handleStringChange} />;
   };
 
@@ -238,7 +238,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     [item, itemControlValue]
   );
 
-  const renderComponentBasedOnType = (): JSX.Element | null => {
+  const renderComponentBasedOnType = (): React.JSX.Element | null => {
     if (!itemControlValue) {
       return null;
     }

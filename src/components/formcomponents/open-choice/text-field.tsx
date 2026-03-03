@@ -25,7 +25,7 @@ type Props = QuestionnaireComponentItemProps & {
   handleChange: (value: string) => void;
   pdfValue?: string | number;
 };
-const ExtraTextField = (props: Props): JSX.Element | null => {
+const ExtraTextField = (props: Props): React.JSX.Element | null => {
   const { id, pdf, handleStringChange, handleChange, children, idWithLinkIdAndItemIndex, linkId, path, pdfValue } = props;
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { validateScriptInjection, resources } = useExternalRenderContext();

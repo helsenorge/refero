@@ -49,7 +49,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, children, index }: Props): JSX.Element | null => {
+const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, children, index }: Props): React.JSX.Element | null => {
   initialize();
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();

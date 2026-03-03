@@ -102,7 +102,7 @@ const App = () => {
 | attachmentValidTypes          |          | string[]                   | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf                                                                           |
 | attachmentErrorMessage        |          | string                     | null    | Text shown when file-upload fails to validate                                                                                                                                           |
 | promptLoginMessage            |          | callback                   | null    | Callback when the form needs to notify the user about authentication                                                                                                                    |
-| loginButton                   | true     | JSX.Element                |         | JSX for when the form needs to render a login button                                                                                                                                    |
+| loginButton                   | true     | React.JSX.Element          |         | JSX for when the form needs to render a login button                                                                                                                                    |
 | authorized                    | true     | boolean                    |         | Whether or not the user is authorized/authenticated                                                                                                                                     |
 | pdf                           |          | boolean                    | false   | Renders the form without interactive elements                                                                                                                                           |
 | sticky                        |          | boolean                    | false   | Whether the actionbar (bar with buttons send/save) should be sticky                                                                                                                     |
@@ -231,10 +231,10 @@ callback is called with the following arguments:
 This callback is called when the form needs to notify the user about authentication. The callback could f.ex. show an alertbox to that
 effect.
 
-### `onRequestHelpButton: (item: QuestionniareItem, itemHelp: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => JSX.Element`
+### `onRequestHelpButton: (item: QuestionniareItem, itemHelp: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => React.JSX.Element`
 
-This callback is called when the form encounters an element with help. The callback should return a JSX.Element which is placed after the
-items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
+This callback is called when the form encounters an element with help. The callback should return a React.JSX.Element which is placed after
+the items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
 
 - `item: QuestionnaireItem` This is the item for which the help button is about to be rendered.
 - `helpItem: QuestionnaireItem` This is the item containing the raw help text.
@@ -242,10 +242,10 @@ items label. If this is not specified, a default implementation is provided. The
 - `helpText: string` The help text, either as plain text or html (in the case the help item had markdown)
 - `opening: boolean` This boolean indicates whether the help text is visible or not (open or closed)
 
-### `onRequestHelpElement: (item: QuestionnaireItem, itemHelp: QuestionniareItem, helpType: string, helpText: string, opening: boolean => JSX.Element`
+### `onRequestHelpElement: (item: QuestionnaireItem, itemHelp: QuestionniareItem, helpType: string, helpText: string, opening: boolean => React.JSX.Element`
 
-This callback is called when the form encounters an element with help. The callback could return a JSX.Element which would be placed after
-the items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
+This callback is called when the form encounters an element with help. The callback could return a React.JSX.Element which would be placed
+after the items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
 
 - `item: QuestionnaireItem` This is the item for which the help element is about to be rendered.
 - `helpItem: QuestionnaireItem` This is the item containing the raw help text.

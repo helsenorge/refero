@@ -42,7 +42,7 @@ enum SliderDisplayTypes {
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
-const SliderView = (props: SliderProps): JSX.Element | null => {
+const SliderView = (props: SliderProps): React.JSX.Element | null => {
   const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children, pdfValue, options } = props;
 
   const { resources } = useExternalRenderContext();

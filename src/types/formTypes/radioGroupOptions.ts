@@ -6,7 +6,7 @@ export interface Options {
   label: string;
   ariaLabel?: string;
   disabled?: boolean;
-  content?: JSX.Element;
-  hjelpetrigger?: JSX.Element;
+  content?: React.JSX.Element;
+  hjelpetrigger?: React.JSX.Element;
   extensions?: Extension[];
 }

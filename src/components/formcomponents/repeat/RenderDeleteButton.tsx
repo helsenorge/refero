@@ -16,7 +16,7 @@ type Props = {
   path?: Path[];
 };
 
-export const RenderDeleteButton = memo(function RenderDeleteButton({ className, item, path, index }: Props): JSX.Element | null {
+export const RenderDeleteButton = memo(function RenderDeleteButton({ className, item, path, index }: Props): React.JSX.Element | null {
   const [decendentAnswer, setDecendentAnswer] = useState<boolean>(false);
   const responseItem = useAppSelector(state => getResponseItemWithPathSelector(state, path));
   useEffect(() => {

@@ -1,3 +1,8 @@
+## 22.3.0
+
+- new feat: Update stepview functionality to sync with external step value on load and when it changes, and to clamp out-of-bounds values.
+  This allows for better integration with external state management and prevents crashes due to invalid step indices.
+
 ## 22.2.3
 
 - Edited roles in NotificationPanel components

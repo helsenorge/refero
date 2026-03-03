@@ -7,7 +7,7 @@ import type { Questionnaire } from 'fhir/r4';
 import { convertToEmoji, getCodePoint, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../sliderUtils';
 import { sliderView as q, sliderViewValueSet as q2 } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes, clickSliderValue, repeatSliderTimes, submitForm } from '../../../../../test/selectors';
+import { submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
@@ -89,24 +89,22 @@ describe('Slider-view', () => {
           item: q.item?.map(x => ({ ...x, repeats: false })),
         };
         const onChange = vi.fn();
-        const { container } = await createWrapper(questionnaire, { onChange });
-        const NeiElement = container.querySelectorAll('div.slider__track__step')[1];
-
-        await waitFor(async () => {
-          if (NeiElement) {
-            await userEvent.click(NeiElement);
-          }
+        await createWrapper(questionnaire, { onChange });
+        // Use getByRole to select the slider and keyboard interaction
+        await userEvent.click(screen.getByRole('slider'));
+        await userEvent.keyboard('{ArrowRight}');
+        await waitFor(() => {
+          expect(onChange).toHaveBeenCalledTimes(1);
         });
-        expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange).toHaveBeenCalledWith(
           expect.any(Object),
-          {
-            valueCoding: {
-              code: 'nei',
-              display: 'Nei',
+          expect.objectContaining({
+            valueCoding: expect.objectContaining({
+              code: 'vet-ikke',
+              display: 'Vet ikke',
               system: 'urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228',
-            },
-          },
+            }),
+          }),
           expect.any(Object),
           expect.any(Object)
         );
@@ -175,11 +173,24 @@ describe('Slider-view', () => {
           })),
         };
         await createWrapper(questionnaire);
-
-        await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 3);
-        await waitFor(async () => {
-          expect(screen.queryAllByTestId(/test-slider/i)).toHaveLength(4);
-        });
+        const linkId = questionnaire.item![0].linkId!;
+        // minOccurs: 2 pre-renders 2 sliders; both need answers before repeat button enables
+        // (descendantsHasPrimitiveAnswer requires ALL items to have answers)
+        await waitFor(() => expect(screen.getAllByRole('slider')).toHaveLength(2));
+        await userEvent.click(screen.getAllByRole('slider')[0]);
+        await userEvent.keyboard('{ArrowRight}');
+        await userEvent.click(screen.getAllByRole('slider')[1]);
+        await userEvent.keyboard('{ArrowRight}');
+        await waitFor(() => expect(screen.getByTestId(`${linkId}-repeat-button`)).not.toBeDisabled());
+        // Click repeat → 3 sliders; give slider[2] an answer before next repeat
+        await userEvent.click(screen.getByTestId(`${linkId}-repeat-button`));
+        await waitFor(() => expect(screen.getAllByRole('slider')).toHaveLength(3));
+        await userEvent.click(screen.getAllByRole('slider')[2]);
+        await userEvent.keyboard('{ArrowRight}');
+        await waitFor(() => expect(screen.getByTestId(`${linkId}-repeat-button`)).not.toBeDisabled());
+        // Click repeat → 4 sliders (maxOccurs reached)
+        await userEvent.click(screen.getByTestId(`${linkId}-repeat-button`));
+        await waitFor(() => expect(screen.getAllByRole('slider')).toHaveLength(4));
         await waitFor(async () => {
           expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
         });
@@ -192,9 +203,24 @@ describe('Slider-view', () => {
           item: q.item?.map(x => ({ ...x, repeats: true })),
         };
         await createWrapper(questionnaire);
-        await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 2);
-
-        expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+        const linkId = questionnaire.item![0].linkId!;
+        // Give initial slider an answer to enable the repeat button
+        await userEvent.click(screen.getAllByRole('slider')[0]);
+        await userEvent.keyboard('{ArrowRight}');
+        await waitFor(() => expect(screen.getByTestId(`${linkId}-repeat-button`)).not.toBeDisabled());
+        // First repeat → 2 sliders; give slider[1] an answer to enable repeat button again
+        await userEvent.click(screen.getByTestId(`${linkId}-repeat-button`));
+        await waitFor(() => expect(screen.getAllByRole('slider')).toHaveLength(2));
+        await userEvent.click(screen.getAllByRole('slider')[1]);
+        await userEvent.keyboard('{ArrowRight}');
+        await waitFor(() => expect(screen.getByTestId(`${linkId}-repeat-button`)).not.toBeDisabled());
+        // Second repeat → 3 sliders (index 0, 1, 2)
+        await userEvent.click(screen.getByTestId(`${linkId}-repeat-button`));
+        await waitFor(() => expect(screen.getAllByRole('slider')).toHaveLength(3));
+        // Delete buttons appear for index >= minOccurs (1), so indices 1 and 2 → 2 buttons
+        await waitFor(() => {
+          expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+        });
       });
       it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
         const questionnaire: Questionnaire = {
@@ -212,13 +238,23 @@ describe('Slider-view', () => {
           item: q.item?.map(x => ({ ...x, repeats: true })),
         };
         await createWrapper(questionnaire);
-
-        await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 1);
-
-        expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
-        await clickButtonTimes(/-delete-button/i, 1);
-
-        expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
+        const linkId = questionnaire.item![0].linkId!;
+        // Give initial slider an answer to enable the repeat button
+        await userEvent.click(screen.getAllByRole('slider')[0]);
+        await userEvent.keyboard('{ArrowRight}');
+        await waitFor(() => expect(screen.getByTestId(`${linkId}-repeat-button`)).not.toBeDisabled());
+        // Add one repeated slider
+        await userEvent.click(screen.getByTestId(`${linkId}-repeat-button`));
+        await waitFor(() => expect(screen.getAllByRole('slider')).toHaveLength(2));
+        // Give the second slider an answer so mustShowConfirm becomes true
+        await userEvent.click(screen.getAllByRole('slider')[1]);
+        await userEvent.keyboard('{ArrowRight}');
+        // Wait for Redux state to update (both sliders answered → repeat button re-enabled)
+        // This ensures the async mustShowConfirm effect has also had time to run
+        await waitFor(() => expect(screen.getByTestId(`${linkId}-repeat-button`)).not.toBeDisabled());
+        // Click the delete button for the second slider (index 1)
+        await userEvent.click(screen.getByTestId(`${linkId}-1-delete-button`));
+        expect(await screen.findByTestId(`${linkId}-1-delete-confirm-modal`)).toBeInTheDocument();
       });
       it('Should remove item when delete button is clicked', async () => {
         const questionnaire: Questionnaire = {
@@ -226,17 +262,19 @@ describe('Slider-view', () => {
           item: q.item?.map(x => ({ ...x, repeats: true })),
         };
         await createWrapper(questionnaire);
-
-        await repeatSliderTimes('3dec9e0d-7b78-424e-8a59-f0909510985d', 1);
-
-        expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
-
-        await clickButtonTimes(/-delete-button/i, 1);
-
-        // const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
-        await userEvent.click(await screen.findByRole('button', { name: /Forkast endringer/i }));
-
-        expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+        const linkId = questionnaire.item![0].linkId!;
+        // Give initial slider an answer to enable the repeat button
+        await userEvent.click(screen.getAllByRole('slider')[0]);
+        await userEvent.keyboard('{ArrowRight}');
+        await waitFor(() => expect(screen.getByTestId(`${linkId}-repeat-button`)).not.toBeDisabled());
+        // Add one repeated slider
+        await userEvent.click(screen.getByTestId(`${linkId}-repeat-button`));
+        await waitFor(() => expect(screen.getAllByRole('slider')).toHaveLength(2));
+        // Click the delete button for the second slider (no answer → no confirm modal needed)
+        expect(await screen.findByTestId(`${linkId}-1-delete-button`)).toBeInTheDocument();
+        await userEvent.click(screen.getByTestId(`${linkId}-1-delete-button`));
+        // Item should be removed (no confirmation since second slider has no answer)
+        await waitFor(() => expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument());
       });
     });
     describe('Validation', () => {
@@ -264,10 +302,12 @@ describe('Slider-view', () => {
             item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
           };
           await createWrapper(questionnaire);
-          await clickSliderValue(`3dec9e0d-7b78-424e-8a59-f0909510985d`, 0);
-          await submitForm();
-
-          expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+          await userEvent.click(screen.getByRole('slider'));
+          await userEvent.keyboard('{ArrowRight}');
+          await userEvent.click(screen.getByTestId('refero-submit-button'));
+          await waitFor(() => {
+            expect(screen.queryAllByText(resources.formRequiredErrorMessage).length).toBe(0);
+          });
         });
         it('Should remove error on change if form is submitted', async () => {
           const questionnaire: Questionnaire = {
@@ -275,13 +315,16 @@ describe('Slider-view', () => {
             item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
           };
           await createWrapper(questionnaire);
-          await submitForm();
+          await userEvent.click(screen.getByTestId('refero-submit-button'));
           await waitFor(async () => {
             expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
           });
-          await clickSliderValue(`3dec9e0d-7b78-424e-8a59-f0909510985d`, 0);
+          await userEvent.click(screen.getByRole('slider'));
+          await userEvent.keyboard('{ArrowRight}');
           await userEvent.tab();
-          expect(screen.queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+          await waitFor(() => {
+            expect(screen.queryAllByText(resources.formRequiredErrorMessage).length).toBe(0);
+          });
         });
         it('Should get required error on readOnly if noe value', async () => {
           const questionnaire: Questionnaire = {

@@ -1,6 +1,10 @@
 import { useState } from 'react';
 
-import {
+import { Provider } from 'react-redux';
+
+import type { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
+import type { IQuestionnaireInspector } from '@/util/questionnaireInspector';
+import type {
   Attachment,
   Bundle,
   Questionnaire,
@@ -10,12 +14,11 @@ import {
   QuestionnaireResponseItemAnswer,
   ValueSet,
 } from 'fhir/r4';
-import { Provider } from 'react-redux';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
-import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import type { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import { store as reduxStore } from '../src/reducers';
 import HelpButton from './external-components/HelpButton';
@@ -26,11 +29,9 @@ import ReferoContainer from '../src/components/index';
 import qr from './skjema/responses/qr.json';
 import valueSet from '../src/constants/valuesets';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
-import { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 
-import { getId, setSkjemaDefinitionAction, TextMessage } from '@/index';
+import { getId, setSkjemaDefinitionAction, type TextMessage } from '@/index';
 import { MimeType } from '@/util/attachmentHelper';
-import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 
 const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
@@ -167,7 +168,7 @@ function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | nu
   return getNumberOfAttachments(questionnaireResponse) > 3;
 }
 
-const FormFillerPreview = (): JSX.Element => {
+const FormFillerPreview = (): React.JSX.Element => {
   const [lang, setLang] = useState<number>(0);
   const store = reduxStore();
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;

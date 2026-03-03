@@ -22,7 +22,7 @@ interface FormButtonsInterface {
   onPauseButtonClicked?: (questionnaireResponse?: QuestionnaireResponse) => void;
   isStepView?: boolean;
   isAuthorized?: boolean;
-  loginButton?: JSX.Element;
+  loginButton?: React.JSX.Element;
 }
 
 /*
@@ -41,7 +41,7 @@ const FormButtons = ({
   onPauseButtonClicked,
   isAuthorized,
   loginButton,
-}: FormButtonsInterface): JSX.Element => {
+}: FormButtonsInterface): React.JSX.Element => {
   const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
 
   return (
@@ -50,7 +50,7 @@ const FormButtons = ({
         <div className="page_refero__buttonwrapper page_refero__saveblock">{loginButton}</div>
       ) : (
         <div className={styles.formButtonInnerWrapper}>
-          {Object.values(buttonOrder).map((buttonType: ButtonType): JSX.Element | null => {
+          {Object.values(buttonOrder).map((buttonType: ButtonType): React.JSX.Element | null => {
             switch (buttonType) {
               case ButtonType.pauseButton:
                 return (

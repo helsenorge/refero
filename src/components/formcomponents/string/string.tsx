@@ -28,7 +28,7 @@ import { isReadOnly, getId, getStringValue, getPDFStringValue, getMaxLength } fr
 
 export type Props = QuestionnaireComponentItemProps;
 
-export const String = (props: Props): JSX.Element | null => {
+export const String = (props: Props): React.JSX.Element | null => {
   const { path, id, pdf, idWithLinkIdAndItemIndex, children, index, linkId } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 

@@ -53,7 +53,7 @@ const ResponseItem = React.memo(function ResponseItem({
   const idWithLinkIdAndItemIndex = createIdFormComponentIds(item, path, index);
   const id = `item_${idWithLinkIdAndItemIndex}`;
 
-  let blindzone: JSX.Element | null = null;
+  let blindzone: React.JSX.Element | null = null;
   let includeSkipLink = false;
   let newHeaderTag = headerTag;
 

@@ -15,7 +15,7 @@ import { renderPrefix, getText, getId } from '@/util/index';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element | null {
+const Display = memo(function Display({ id, pdf, linkId }: Props): React.JSX.Element | null {
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   const { onRenderMarkdown, resources } = useExternalRenderContext();
@@ -27,7 +27,7 @@ const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element |
       ? 'page_refero__component_highlight'
       : '';
 
-  let value: JSX.Element | undefined = undefined;
+  let value: React.JSX.Element | undefined = undefined;
   if (item) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;
     const text = getText(item, onRenderMarkdown, questionnaire, resources);

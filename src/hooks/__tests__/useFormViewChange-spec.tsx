@@ -4,8 +4,8 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../types/referoProps';
 import type { Questionnaire } from 'fhir/r4';
 
-import StepViewQuestionnaire from './__data__/stepview';
 import NormalFormViewQuestionnaire from './__data__/normalformview';
+import StepViewQuestionnaire from './__data__/stepview';
 import { submitForm } from '../../../test/selectors';
 import { renderRefero } from '../../../test/test-utils';
 

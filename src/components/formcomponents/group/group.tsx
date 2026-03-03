@@ -17,7 +17,7 @@ import { getCodingTextTableValues } from '@/util/extension';
 
 export type Props = QuestionnaireComponentItemProps;
 
-export const Group = (props: Props): JSX.Element | null => {
+export const Group = (props: Props): React.JSX.Element | null => {
   const { pdf, renderContext, path, linkId } = props;
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const responseItem = useAppSelector(state => getResponseItemWithPathSelector(state, path));
@@ -26,7 +26,7 @@ export const Group = (props: Props): JSX.Element | null => {
   const isLocalRenderContextTypeGrid = getLocalRenderContextType(item) === RenderContextType.Grid;
   const isRenderContextTypeGrid = renderContext.RenderContextType === RenderContextType.Grid;
   const isTableComponent = isTableCode(getCodingTextTableValues(item));
-  function renderContent(): JSX.Element | null {
+  function renderContent(): React.JSX.Element | null {
     if (isTableComponent) {
       return <TableContainer {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />;
     }
