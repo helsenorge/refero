@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { createSlice, current, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, current, type ActionCreatorWithPayload, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { GlobalState } from '@/reducers/index';
 import type {
@@ -146,7 +146,10 @@ const formSlice = createSlice({
   },
 });
 export default formSlice.reducer;
-export const actions = formSlice.actions;
+export const actions: {
+  setIsExternalUpdateAction: ActionCreatorWithPayload<boolean, string>;
+  updateQuestionnaireResponseMetaExtensions: ActionCreatorWithPayload<UpdateQuestionnaireResponseMetaExtensionAction, string>;
+} = formSlice.actions;
 
 export function getFormData(state: GlobalState): FormData | null {
   if (!state.refero?.form?.FormData) {
