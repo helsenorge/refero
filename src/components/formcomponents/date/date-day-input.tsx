@@ -24,8 +24,7 @@ import { useResetFormField } from '@/hooks/useResetFormField';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { DateFormat, defaultMaxDate, defaultMinDate } from '@/types/dateTypes';
-import { getPDFValueForDate, parseStringToDate, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
-import { getDateFnsLocale } from '@/util/date-utils';
+import { getDateFnsLocale, getPDFValueForDate, parseStringToDate, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
