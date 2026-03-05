@@ -20,10 +20,11 @@ import type { Resources } from './resources';
 import { DateFormat, DatePickerFormat, DateTimeUnit, TimeUnit, type TimeValues } from '../types/dateTypes';
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
+import LanguageLocales from '@helsenorge/core-utils/constants/languages';
+
 import { safeParseJSON } from './date-fns-utils';
 import { getExtension, getValidationTextExtension } from './extension';
 
-import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import '@helsenorge/datepicker/components/DatePicker/';
 
 import { Extensions } from '@/constants/extensions';
