@@ -46,10 +46,11 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { useResetFormField } from '@/hooks/useResetFormField';
 import { useAppSelector, useAppDispatch } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
+import { getDateFnsLocale } from '@/util/date-utils';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, children, index }: Props): React.JSX.Element | null => {
+const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, children, index, language }: Props): React.JSX.Element | null => {
   initialize();
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
@@ -279,6 +280,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
                 handleDateChange(newDate);
                 onChangeDate(e);
               }}
+              locale={getDateFnsLocale(language)}
             />
           </div>
 

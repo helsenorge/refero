@@ -160,7 +160,7 @@ export const getLinkIdFromResponseItems = createSelector([getFlatMapResponseItem
   return ids;
 });
 export const languageSelector = createSelector(
-  [(state: GlobalState): QuestionnaireResponse | null | undefined => state.refero.form.FormData?.Content],
+  [(state: GlobalState): Questionnaire | null | undefined => state.refero.form.FormDefinition.Content],
   formData => formData?.language
 );
 
