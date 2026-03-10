@@ -1,6 +1,6 @@
-## 22.4.1
+## 22.4.2
 
-- fix export types
+- Bugfix: Send locale object to DatePicker, to use language from from definition in DatePicker
 
 ## 22.4.0
 
