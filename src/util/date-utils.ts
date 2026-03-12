@@ -11,11 +11,16 @@ import {
   endOfDay,
   parseISO,
   parse,
+  Locale,
 } from 'date-fns';
+
+import { nb, nn, enGB, se } from 'date-fns/locale';
 
 import type { Resources } from './resources';
 import { DateFormat, DatePickerFormat, DateTimeUnit, TimeUnit, type TimeValues } from '../types/dateTypes';
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+
+import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
 import { safeParseJSON } from './date-fns-utils';
 import { getExtension, getValidationTextExtension } from './extension';
@@ -502,3 +507,18 @@ export const getPDFValueForTime = (
   }
   return `${'kl. '} ${hoursValue}:${minutesValue}`;
 };
+
+export function getDateFnsLocale(language?: string): Locale {
+  switch ((language || '').toLowerCase()) {
+    case LanguageLocales.NORWEGIAN.toLowerCase():
+      return nb;
+    case LanguageLocales.NORWEGIAN_NYNORSK.toLowerCase():
+      return nn;
+    case LanguageLocales.ENGLISH.toLowerCase():
+      return enGB;
+    case LanguageLocales.SAMI_NORTHERN.toLowerCase():
+      return se;
+    default:
+      return nb;
+  }
+}

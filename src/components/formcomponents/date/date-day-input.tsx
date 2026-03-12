@@ -24,7 +24,7 @@ import { useResetFormField } from '@/hooks/useResetFormField';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { DateFormat, defaultMaxDate, defaultMinDate } from '@/types/dateTypes';
-import { getPDFValueForDate, parseStringToDate, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
+import { getDateFnsLocale, getPDFValueForDate, parseStringToDate, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
@@ -38,6 +38,7 @@ export const DateDayInput = ({
   onDateValueChange,
   children,
   path,
+  language,
 }: DateDayInputProps): React.JSX.Element | null => {
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
@@ -165,6 +166,7 @@ export const DateDayInput = ({
           onChange(e);
         }}
         dateValue={isValid(dateValue) ? dateValue : undefined}
+        locale={getDateFnsLocale(language)}
       />
     </FormGroup>
   );

@@ -1,3 +1,11 @@
+## 22.4.3
+
+- upgrade minor versions of dependencies
+
+## 22.4.2
+
+- Bugfix: Send locale object to DatePicker, to use language from from definition in DatePicker
+
 ## 22.4.1
 
 - fix export types
