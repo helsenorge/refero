@@ -1,3 +1,7 @@
+## 22.4.4
+
+- Added missing dependency to @helsenorge/datepicker in package.json
+
 ## 22.4.3
 
 - upgrade minor versions of dependencies
