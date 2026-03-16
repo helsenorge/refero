@@ -7,7 +7,7 @@ import cssnano from 'cssnano';
 import copy from 'rollup-plugin-copy';
 import generatePackageJson from 'rollup-plugin-generate-package-json';
 import { visualizer } from 'rollup-plugin-visualizer';
-import { defineConfig, UserConfig } from 'vite';
+import { defineConfig, type UserConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -92,9 +92,11 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
       }),
       dts({
         tsconfigPath: path.resolve(__dirname, 'tsconfig.build.json'),
+        entryRoot: path.resolve(__dirname, 'src'),
         outDir: path.resolve(__dirname, 'lib/types'),
         include: ['src'],
-        exclude: ['__test__', '__mocks__', '__data__'],
+        exclude: ['**/__tests__/**', '**/__mocks__/**', '**/__data__/**'],
+        rollupTypes: false,
       }),
       react(),
       libInjectCss(),

@@ -1,24 +1,31 @@
 {
   "resourceType": "Questionnaire",
-  "id": "21e2486d-3d22-47f0-e765-986429b89a44",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "security": [
-      {
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618",
-        "code": "3",
-        "display": "Helsehjelp (Full)"
-      }
-    ],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
         "display": "Bokmål"
       }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
     ]
   },
-  "language": "nb-NO",
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
@@ -52,32 +59,95 @@
       }
     }
   ],
-  "url": "Questionnaire/21e2486d-3d22-47f0-e765-986429b89a44",
-  "version": "0.1",
-  "name": "Test_vis_representasjon",
-  "title": "Vis representasjonsforhold",
-  "status": "draft",
-  "subjectType": ["Patient"],
-  "date": "2026-01-23T00:00:00+01:00",
-  "publisher": "NHN",
-  "contact": [
-    {
-      "name": "http://www.nhn.no"
-    }
-  ],
+  "id": "ce4ab428-bc96-4d54-844d-bb81d734e775",
+  "url": "Questionnaire/ce4ab428-bc96-4d54-844d-bb81d734e775",
   "item": [
     {
-      "extension": [
+      "linkId": "8634a330-6adc-407a-899d-ad4427ac3ed5",
+      "type": "group",
+      "text": "asdadasd",
+      "item": [
         {
-          "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-          "valueString": "iif(\n  %representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611').code = 'FO',\n  'Forelder',\n  iif(\n    %representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611').code = 'FU',\n    'Ordinær fullmakt',\n    iif(\n      %representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611').code = 'TD',\n      'Tildelt fullmakt',\n      ''\n    )\n  )\n)"
+          "linkId": "f218c849-f34d-49e2-8019-1011699c4cec",
+          "type": "choice",
+          "text": "Slider",
+          "code": [
+            {
+              "code": "label",
+              "display": "Display value",
+              "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+            },
+            {
+              "code": "LabelLeft",
+              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+            },
+            {
+              "code": "LabelRight",
+              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+            }
+          ],
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "f2774d79-f7f1-464d-84b2-0876097af82f",
+                "code": "1",
+                "system": "urn:uuid:30d62dc7-a3a3-4037-8c9c-676e3aa6ac72",
+                "display": "1",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 1
+                  }
+                ]
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "13ae6963-3cfb-434e-8d12-6d6aedee698d",
+                "code": "2",
+                "system": "urn:uuid:30d62dc7-a3a3-4037-8c9c-676e3aa6ac72",
+                "display": "2",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 2
+                  }
+                ]
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "0d2a498d-f5a2-426a-8913-de9a8526a6a4",
+                "code": "3",
+                "system": "urn:uuid:30d62dc7-a3a3-4037-8c9c-676e3aa6ac72",
+                "display": "3",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 3
+                  }
+                ]
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "slider"
+                  }
+                ]
+              }
+            }
+          ],
+          "repeats": true
         }
       ],
-      "linkId": "94b2fce8-9889-4b27-ad67-fad8e6ab043e",
-      "text": "Representasjonsforhold",
-      "type": "string",
-      "required": false,
-      "readOnly": true
+      "required": false
     }
   ]
 }

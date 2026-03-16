@@ -1,56 +1,33 @@
 {
   "resourceType": "QuestionnaireResponse",
   "status": "in-progress",
+  "questionnaire": "Questionnaire/ce8a11ca-2c7e-468a-d1bc-8bba8577205c",
   "item": [
     {
-      "linkId": "section-plugins",
-      "text": "Plugin Examples",
-      "item": [
-        {
-          "linkId": "satisfaction-rating",
-          "text": "How satisfied are you with our service?",
-          "answer": [
-            {
-              "valueInteger": 41
-            }
-          ]
-        },
-        {
-          "linkId": "mood-selection",
-          "text": "How are you feeling today? (Select all that apply)",
-          "answer": [
-            {
-              "valueCoding": {
-                "code": "very-dissatisfied",
-                "display": "Very Sad",
-                "system": "http://example.org/mood"
-              }
-            },
-            {
-              "valueCoding": {
-                "code": "dissatisfied",
-                "display": "Sad",
-                "system": "http://example.org/mood"
-              }
-            },
-            {
-              "valueCoding": {
-                "code": "satisfied",
-                "display": "Happy",
-                "system": "http://example.org/mood"
-              }
-            }
-          ]
-        },
-        {
-          "linkId": "regular-integer",
-          "text": "Regular integer field (no plugin)"
-        },
-        {
-          "linkId": "comments",
-          "text": "Additional comments"
-        }
-      ]
+      "linkId": "a27505da-01fd-4fc9-8691-43e0d06ec3d5",
+      "text": "Steg 1",
+      "item": [{ "linkId": "8afd15f0-25e8-4d54-8f9a-3a359d34e3ff", "text": "Info text 1" }]
+    },
+    {
+      "linkId": "88e9f6eb-eda1-4eff-86dd-103f6e8d8bb7",
+      "text": "steg 2",
+      "item": [{ "linkId": "aa239622-ec74-4357-d22d-87daa16ce5e9", "text": "Info text 2" }]
+    },
+    {
+      "linkId": "d0ba52ce-6838-49d9-9500-d3155f430f4c",
+      "text": "steg 3",
+      "item": [{ "linkId": "e93880b3-1cd4-4e1b-99d6-1b361c2ffdf8", "text": "Info text 3" }]
     }
-  ]
+  ],
+  "meta": {
+    "extension": [
+      {
+        "url": "https://helsenorge.no/fhir/StructureDefinition/questionnaireresponse-uiState",
+        "extension": [
+          { "url": "pageStepIndex", "valueCode": "2" },
+          { "url": "updatedAt", "valueDateTime": "2026-03-03T08:24:24.147Z" }
+        ]
+      }
+    ]
+  }
 }

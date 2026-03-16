@@ -1,3 +1,12 @@
+## 22.4.2
+
+- Bugfix: Send locale object to DatePicker, to use language from from definition in DatePicker
+
+## 22.4.0
+
+- new feat: Update stepview functionality to sync with external step value on load and when it changes, and to clamp out-of-bounds values.
+  This allows for better integration with external state management and prevents crashes due to invalid step indices.
+
 ## 22.3.0-beta03
 
 - Export validation utilities for plugins: `required`, `minValue`, `maxValue`, `getErrorMessage`, `shouldValidate`

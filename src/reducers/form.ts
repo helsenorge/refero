@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { createSlice, current, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, current, type ActionCreatorWithPayload, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { GlobalState } from '@/reducers/index';
 import type {
@@ -16,7 +16,11 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { getResponseItemWithPath, getQuestionnaireDefinitionItem, getQuestionnaireDefinitionItemWithLinkid } from '../util/refero-core';
 
-import { type SetFormDefinitionAction, setSkjemaDefinitionAction } from '@/actions/form';
+import {
+  type SetFormDefinitionAction,
+  setSkjemaDefinitionAction,
+  type UpdateQuestionnaireResponseMetaExtensionAction,
+} from '@/actions/form';
 import { generateQuestionnaireResponse } from '@/actions/generateQuestionnaireResponse';
 import {
   addRepeatItemAction,
@@ -81,6 +85,28 @@ const formSlice = createSlice({
     setIsExternalUpdateAction(state, action: PayloadAction<boolean>) {
       state.FormData.isExternalUpdate = action.payload;
     },
+    updateQuestionnaireResponseMetaExtensions(state, action: PayloadAction<UpdateQuestionnaireResponseMetaExtensionAction>) {
+      if (!state.FormData.Content) {
+        return state;
+      }
+      if (!state.FormData.Content.meta) {
+        state.FormData.Content.meta = {};
+      }
+      if (!state.FormData.Content.meta.extension) {
+        state.FormData.Content.meta.extension = [];
+      }
+      if (!action.payload?.extension) {
+        return state;
+      }
+      for (const incoming of action.payload.extension) {
+        const existingIndex = state.FormData.Content.meta.extension.findIndex(ext => ext.url === incoming.url);
+        if (existingIndex >= 0) {
+          state.FormData.Content.meta.extension[existingIndex] = incoming;
+        } else {
+          state.FormData.Content.meta.extension.push(incoming);
+        }
+      }
+    },
   },
   extraReducers: builder => {
     builder
@@ -120,7 +146,10 @@ const formSlice = createSlice({
   },
 });
 export default formSlice.reducer;
-export const actions = formSlice.actions;
+export const actions: {
+  setIsExternalUpdateAction: ActionCreatorWithPayload<boolean, string>;
+  updateQuestionnaireResponseMetaExtensions: ActionCreatorWithPayload<UpdateQuestionnaireResponseMetaExtensionAction, string>;
+} = formSlice.actions;
 
 export function getFormData(state: GlobalState): FormData | null {
   if (!state.refero?.form?.FormData) {
