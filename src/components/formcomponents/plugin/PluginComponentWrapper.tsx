@@ -5,6 +5,7 @@ import { type FieldValues, useFormContext } from 'react-hook-form';
 import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import type { PluginComponentProps } from '@/types/componentPlugin';
 
+import { PluginErrorBoundary } from './PluginErrorBoundary';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -62,6 +63,8 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): Reac
   const readOnly = isReadOnly(item);
 
   // Plugin props - provides everything plugins need to render and handle value changes
+  // Note: children is excluded from memoization since JSX children are new objects every render.
+  // Children are passed via JSX (<PluginComponent>{...}</PluginComponent>) instead.
   const pluginProps: PluginComponentProps = useMemo(
     () => ({
       item: item!,
@@ -76,25 +79,9 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): Reac
       idWithLinkIdAndItemIndex,
       path,
       index,
-      children,
       promptLoginMessage,
     }),
-    [
-      item,
-      answer,
-      dispatch,
-      onAnswerChange,
-      error,
-      resources,
-      pdf,
-      readOnly,
-      id,
-      idWithLinkIdAndItemIndex,
-      path,
-      index,
-      children,
-      promptLoginMessage,
-    ]
+    [item, answer, dispatch, onAnswerChange, error, resources, pdf, readOnly, id, idWithLinkIdAndItemIndex, path, index, promptLoginMessage]
   );
 
   // Guard: item must exist
@@ -129,12 +116,12 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): Reac
 
   return (
     <div className="page_refero__component page_refero__component_plugin">
-      {/* Render the plugin component - plugins handle their own label and error display */}
-      {/* Delete/repeat buttons and nested children are passed as children for plugins to render inside their FormGroup */}
-      <PluginComponent {...pluginProps}>
-        {repeatDeleteButtons}
-        {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
-      </PluginComponent>
+      <PluginErrorBoundary pluginName={PluginComponent.displayName || PluginComponent.name}>
+        <PluginComponent {...pluginProps}>
+          {repeatDeleteButtons}
+          {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
+        </PluginComponent>
+      </PluginErrorBoundary>
     </div>
   );
 };

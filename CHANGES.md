@@ -1,18 +1,4 @@
-## 22.4.2
-
-- Bugfix: Send locale object to DatePicker, to use language from from definition in DatePicker
-
-## 22.4.0
-
-- new feat: Update stepview functionality to sync with external step value on load and when it changes, and to clamp out-of-bounds values.
-  This allows for better integration with external state management and prevents crashes due to invalid step indices.
-
-## 22.3.0-beta03
-
-- Export validation utilities for plugins: `required`, `minValue`, `maxValue`, `getErrorMessage`, `shouldValidate`
-- Re-export `useFormContext` from react-hook-form (ensures plugins use same instance as refero)
-
-## 22.3.0-beta01
+## 23.0.0-beta01
 
 - **New Feature: ItemControl Component Plugin System** - Allows consuming applications to register custom React components for specific item
   type + itemControl code combinations
@@ -22,9 +8,31 @@
   - Plugins handle their own UI: labels, validation, and error display
   - `children` prop contains delete/repeat buttons and nested items
   - New utility functions: `createPluginKey`, `createPluginRegistry`, `resolvePluginComponent`
+- **Plugin helpers and ergonomics**
+  - `usePluginValidation` hook — handles react-hook-form registration, validation rules (required/min/max), value syncing, and error state
+    in a single call
+  - `usePluginDispatch` hook — simplifies the dispatch + onAnswerChange boilerplate into one function call
+  - `normalizeAnswer` / `getFirstAnswer` utilities for handling the single/array/undefined answer type
+  - `PluginErrorBoundary` — catches plugin render errors and shows a fallback instead of crashing the form
+- **New exports for plugin authors**
+  - `ComponentPluginProvider`, `useComponentPlugin`, `useComponentPluginRegistry`
+  - `PluginComponentWrapper`, `PluginErrorBoundary`
+  - `IQuestionnaireInspector`, `QuestionnaireInspector`
+  - `usePluginValidation`, `usePluginDispatch`
+- **Performance fix**: `useOnAnswerChange` now returns a stable reference (wrapped in `useCallback`), preventing unnecessary rerenders
+  across all form components
 - Export `ReferoLabel` component for plugin use
+- Re-export `useFormContext` from react-hook-form (ensures plugins use same instance as refero)
 - Added example plugin components: `CustomSliderPlugin`, `PillChoicePlugin`, `ImageChoicePlugin`
-- Changed `JSX.Element` to `React.JSX.Element` throughout codebase
+
+## 22.4.2
+
+- Bugfix: Send locale object to DatePicker, to use language from from definition in DatePicker
+
+## 22.4.0
+
+- new feat: Update stepview functionality to sync with external step value on load and when it changes, and to clamp out-of-bounds values.
+  This allows for better integration with external state management and prevents crashes due to invalid step indices.
 
 ## 22.2.3
 
