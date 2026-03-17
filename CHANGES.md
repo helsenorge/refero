@@ -1,3 +1,8 @@
+## 23.0.0-beta03
+
+- **Bugfix**: `usePluginValidation` now returns a `refCallback` that connects the plugin's focusable element to react-hook-form, enabling
+  validation summary click-to-focus for plugin fields
+
 ## 23.0.0-beta02
 
 - **Protected built-in itemControl codes** — Standard codes (`radio-button`, `check-box`, `drop-down`, `slider`, `autocomplete`, etc.)

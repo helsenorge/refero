@@ -1,3 +1,5 @@
+import type React from 'react';
+
 import { createPluginTestStore, PluginTestWrapper, defaultPluginTestResources } from '@test/test-utils';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useFormContext, type FieldValues, type RegisterOptions } from 'react-hook-form';
@@ -20,7 +22,7 @@ const TestPluginField = ({
   value,
   rules,
 }: UsePluginValidationOptions): React.JSX.Element => {
-  const { error, errorMessage } = usePluginValidation({
+  const { error, errorMessage, refCallback } = usePluginValidation({
     item,
     idWithLinkIdAndItemIndex,
     pdf,
@@ -32,6 +34,7 @@ const TestPluginField = ({
 
   return (
     <div>
+      <input ref={refCallback} data-testid="plugin-input" />
       <span data-testid="has-error">{error ? 'yes' : 'no'}</span>
       <span data-testid="error-message">{errorMessage ?? ''}</span>
       <button data-testid="submit" onClick={handleSubmit(() => {})}>

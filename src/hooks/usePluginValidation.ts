@@ -1,11 +1,12 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
-import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { type FieldError, type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+
+import type { Resources } from '@/util/resources';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 import { getErrorMessage, required, minValue, maxValue } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
-import type { Resources } from '@/util/resources';
 
 export interface UsePluginValidationOptions {
   /** The questionnaire item definition */
@@ -30,6 +31,17 @@ export interface UsePluginValidationResult {
   error: FieldError | undefined;
   /** The resolved error message string (respects validationText extensions) */
   errorMessage: string | undefined;
+  /**
+   * Ref callback to attach to the focusable element.
+   * Required for validation summary click-to-focus to work.
+   *
+   * @example
+   * ```tsx
+   * const { refCallback, errorMessage } = usePluginValidation({ ... });
+   * return <input ref={refCallback} />;
+   * ```
+   */
+  refCallback: (element: HTMLElement | null) => void;
 }
 
 /**
@@ -90,18 +102,24 @@ export const usePluginValidation = ({
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
-  // Register with react-hook-form using validation rules derived from item extensions
+  // Store the ref callback returned by register() so we can forward it to the plugin's element
+  const registerRef = useRef<((el: HTMLElement | null) => void) | null>(null);
+
+  // Register field with react-hook-form
   useEffect(() => {
-    if (shouldValidate(item, pdf)) {
-      const baseRules: RegisterOptions<FieldValues, string> = {
-        required: required({ item, resources }),
-        min: minValue({ item, resources }),
-        max: maxValue({ item, resources }),
-        shouldUnregister: true,
-        ...rules,
-      };
-      register(idWithLinkIdAndItemIndex, baseRules);
-    }
+    if (!shouldValidate(item, pdf)) return;
+
+    const baseRules: RegisterOptions<FieldValues, string> = {
+      required: required({ item, resources }),
+      min: minValue({ item, resources }),
+      max: maxValue({ item, resources }),
+      shouldUnregister: true,
+      ...rules,
+    };
+
+    const { ref } = register(idWithLinkIdAndItemIndex, baseRules);
+    registerRef.current = ref;
+
     return (): void => {
       unregister(idWithLinkIdAndItemIndex);
     };
@@ -114,8 +132,15 @@ export const usePluginValidation = ({
     }
   }, [value, idWithLinkIdAndItemIndex, item, pdf, setValue, formState.isSubmitted]);
 
+  // Ref callback — forwards the plugin's DOM element to react-hook-form's ref
+  // so the validation summary can focus it when clicked
+  const refCallback = useCallback((element: HTMLElement | null) => {
+    registerRef.current?.(element);
+  }, []);
+
   return {
     error,
     errorMessage: getErrorMessage(item, error),
+    refCallback,
   };
 };
