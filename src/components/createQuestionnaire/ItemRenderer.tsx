@@ -48,21 +48,19 @@ const ItemRenderer = memo(function ItemRenderer({
   const responseItems = useAppSelector(state => responseItemsSelector(state, item.linkId, path));
   const pluginRegistry = useComponentPluginRegistry();
 
-  // Check for plugin component first
   const pluginResolution = resolvePluginComponent(item, pluginRegistry);
+  const pluginComponent = pluginResolution?.component;
+  const matchedCode = pluginResolution?.matchedCode;
 
-  // Create a memoized wrapper component for the plugin if one was found
   const PluginWrapperComponent = useMemo(() => {
-    const pluginComponent = pluginResolution?.component;
     if (!pluginComponent) return null;
 
-    // Create a component that wraps the plugin with PluginComponentWrapper
     const WrapperComponent = (props: QuestionnaireComponentItemProps): React.JSX.Element | null => {
       return <PluginComponentWrapper {...props} PluginComponent={pluginComponent} />;
     };
-    WrapperComponent.displayName = `PluginWrapper(${pluginResolution.matchedCode})`;
+    WrapperComponent.displayName = `PluginWrapper(${matchedCode})`;
     return WrapperComponent;
-  }, [pluginResolution]);
+  }, [pluginComponent, matchedCode]);
 
   if (isHelpItem(item) || isHiddenItem(item)) {
     return null;

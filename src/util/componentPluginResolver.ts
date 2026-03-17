@@ -1,7 +1,34 @@
 import type { QuestionnaireItem } from 'fhir/r4';
 
+import ItemControlConstants from '@/constants/itemcontrol';
 import { createPluginKey, type ComponentPluginRegistry, type PluginComponentProps } from '@/types/componentPlugin';
 import { getItemControlExtensionValue } from '@/util/extension';
+
+/**
+ * Set of built-in itemControl codes that are handled by Refero's core components.
+ * Plugins are NOT allowed to override these codes — they always resolve to built-in components.
+ */
+const PROTECTED_ITEM_CONTROL_CODES: ReadonlySet<string> = new Set([
+  ItemControlConstants.CHECKBOX,
+  ItemControlConstants.DROPDOWN,
+  ItemControlConstants.RADIOBUTTON,
+  ItemControlConstants.AUTOCOMPLETE,
+  ItemControlConstants.HELP,
+  ItemControlConstants.HELPLINK,
+  ItemControlConstants.INLINE,
+  ItemControlConstants.HIGHLIGHT,
+  ItemControlConstants.SIDEBAR,
+  ItemControlConstants.YEAR,
+  ItemControlConstants.YEARMONTH,
+  ItemControlConstants.RECEIVERCOMPONENT,
+  ItemControlConstants.DATARECEIVER,
+  ItemControlConstants.SLIDER,
+  ItemControlConstants.Group.VERTICAL_TABLE,
+  ItemControlConstants.Group.HORIZONTAL_TABLE,
+  ItemControlConstants.Group.GROUP_TABLE,
+  ItemControlConstants.Group.ANSWER_TABLE,
+  ItemControlConstants.Group.GRID,
+]);
 
 /**
  * Result of resolving a plugin for a questionnaire item
@@ -59,6 +86,11 @@ export function resolvePluginComponent(
   for (const coding of itemControlCodings) {
     const code = coding.code;
     if (!code) {
+      continue;
+    }
+
+    // Never allow plugins to override built-in itemControl codes
+    if (PROTECTED_ITEM_CONTROL_CODES.has(code)) {
       continue;
     }
 

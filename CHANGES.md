@@ -1,29 +1,29 @@
+## 23.0.0-beta02
+
+- **Protected built-in itemControl codes** — Standard codes (`radio-button`, `check-box`, `drop-down`, `slider`, `autocomplete`, etc.)
+  cannot be overridden by plugins and always resolve to Refero's core components
+- **Performance fix**: Plugin wrapper `useMemo` depends on stable component reference instead of resolution object, preventing plugin
+  remounts on every state change
+- Plugin helpers: `usePluginValidation`, `usePluginDispatch`, `normalizeAnswer`, `getFirstAnswer`
+- `PluginErrorBoundary` — catches plugin render errors and shows a fallback instead of crashing the form
+- New exports: `ReferoLabel`, re-exported `useFormContext` from react-hook-form
+
 ## 23.0.0-beta01
 
-- **New Feature: ItemControl Component Plugin System** - Allows consuming applications to register custom React components for specific item
-  type + itemControl code combinations
-  - New `componentPlugins` prop on `ReferoContainer` for registering custom components
-  - New `PluginComponentProps` interface providing a stable API for plugin components
+- **New Feature: ItemControl Component Plugin System** — Register custom React components for specific `itemType` + `itemControlCode`
+  combinations
+  - New `componentPlugins` prop on `ReferoContainer`
+  - `PluginComponentProps` interface providing a stable API for plugin components
   - Plugins receive `dispatch` and `onAnswerChange` directly (same pattern as built-in components)
   - Plugins handle their own UI: labels, validation, and error display
   - `children` prop contains delete/repeat buttons and nested items
-  - New utility functions: `createPluginKey`, `createPluginRegistry`, `resolvePluginComponent`
-- **Plugin helpers and ergonomics**
-  - `usePluginValidation` hook — handles react-hook-form registration, validation rules (required/min/max), value syncing, and error state
-    in a single call
-  - `usePluginDispatch` hook — simplifies the dispatch + onAnswerChange boilerplate into one function call
-  - `normalizeAnswer` / `getFirstAnswer` utilities for handling the single/array/undefined answer type
-  - `PluginErrorBoundary` — catches plugin render errors and shows a fallback instead of crashing the form
+  - Utility functions: `createPluginKey`, `createPluginRegistry`, `resolvePluginComponent`
 - **New exports for plugin authors**
   - `ComponentPluginProvider`, `useComponentPlugin`, `useComponentPluginRegistry`
   - `PluginComponentWrapper`, `PluginErrorBoundary`
   - `IQuestionnaireInspector`, `QuestionnaireInspector`
-  - `usePluginValidation`, `usePluginDispatch`
-- **Performance fix**: `useOnAnswerChange` now returns a stable reference (wrapped in `useCallback`), preventing unnecessary rerenders
-  across all form components
-- Export `ReferoLabel` component for plugin use
-- Re-export `useFormContext` from react-hook-form (ensures plugins use same instance as refero)
-- Added example plugin components: `CustomSliderPlugin`, `PillChoicePlugin`, `ImageChoicePlugin`
+- **Performance fix**: `useOnAnswerChange` wrapped in `useCallback` to return a stable reference, preventing unnecessary rerenders across
+  all form components
 
 ## 22.4.2
 

@@ -130,6 +130,88 @@ describe('componentPluginResolver', () => {
       expect(result.component).toBeUndefined();
       expect(result.matchedCode).toBeUndefined();
     });
+
+    describe('protected itemControl codes', () => {
+      const protectedCodes = [
+        'check-box',
+        'drop-down',
+        'radio-button',
+        'autocomplete',
+        'help',
+        'help-link',
+        'inline',
+        'highlight',
+        'sidebar',
+        'year',
+        'yearMonth',
+        'receiver-component',
+        'data-receiver',
+        'slider',
+        'table',
+        'htable',
+        'gtable',
+        'atable',
+        'grid',
+      ];
+
+      it.each(protectedCodes)('does not resolve a plugin for protected code "%s"', code => {
+        const item: QuestionnaireItem = {
+          linkId: 'test-item',
+          type: 'choice',
+          extension: [
+            {
+              url: ITEMCONTROL_URL,
+              valueCodeableConcept: {
+                coding: [{ system: 'http://hl7.org/fhir/questionnaire-item-control', code }],
+              },
+            },
+          ],
+        };
+        const registry = createPluginRegistry([{ itemType: 'choice', itemControlCode: code, component: MockPluginComponent }]);
+
+        const result = resolvePluginComponent(item, registry);
+
+        expect(result.component).toBeUndefined();
+        expect(result.matchedCode).toBeUndefined();
+      });
+
+      it('resolves a plugin for a custom (non-protected) code', () => {
+        const item = createItemWithItemControl('image-picker');
+        const registry = createPluginRegistry([{ itemType: 'string', itemControlCode: 'image-picker', component: MockPluginComponent }]);
+
+        const result = resolvePluginComponent(item, registry);
+
+        expect(result.component).toBe(MockPluginComponent);
+        expect(result.matchedCode).toBe('image-picker');
+      });
+
+      it('skips protected code but resolves second custom code on same item', () => {
+        const item: QuestionnaireItem = {
+          linkId: 'test-item',
+          type: 'choice',
+          extension: [
+            {
+              url: ITEMCONTROL_URL,
+              valueCodeableConcept: {
+                coding: [
+                  { system: 'http://hl7.org/fhir/questionnaire-item-control', code: 'check-box' },
+                  { system: 'http://hl7.org/fhir/questionnaire-item-control', code: 'my-custom' },
+                ],
+              },
+            },
+          ],
+        };
+        const registry = createPluginRegistry([
+          { itemType: 'choice', itemControlCode: 'check-box', component: MockPluginComponent },
+          { itemType: 'choice', itemControlCode: 'my-custom', component: MockPluginComponent },
+        ]);
+
+        const result = resolvePluginComponent(item, registry);
+
+        expect(result.component).toBe(MockPluginComponent);
+        expect(result.matchedCode).toBe('my-custom');
+      });
+    });
   });
 
   describe('hasPluginComponent', () => {
