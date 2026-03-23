@@ -1,3 +1,7 @@
+## 22.4.3
+
+- Fixed UU bug in HelpButton component: "Role with implied hidden content has keyboard focus"
+
 ## 22.4.2
 
 - Bugfix: Send locale object to DatePicker, to use language from from definition in DatePicker
