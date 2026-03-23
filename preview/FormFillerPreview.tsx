@@ -244,9 +244,15 @@ const FormFillerPreview = (): React.JSX.Element => {
   const handleFocus = (refElement: HTMLElement, isStepView: boolean, stepIndex: number | undefined): void => {
     const shouldFocus = isStepView && stepIndex && stepIndex > 0;
     if (shouldFocus) {
-      const focusableElements = 'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])';
-      const firstFocusable = refElement.querySelector<HTMLElement>(focusableElements);
-      firstFocusable?.focus();
+      const heading = refElement.querySelector<HTMLElement>('h1, h2, h3, h4, h5, h6');
+      if (heading) {
+        heading.setAttribute('tabindex', '-1');
+        heading.focus();
+      } else {
+        const focusableElements = 'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])';
+        const firstFocusable = refElement.querySelector<HTMLElement>(focusableElements);
+        firstFocusable?.focus();
+      }
     }
   };
 

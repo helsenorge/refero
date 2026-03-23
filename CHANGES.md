@@ -1,6 +1,8 @@
 ## 22.4.3
 
 - Fixed UU bug in HelpButton component: "Role with implied hidden content has keyboard focus"
+- Fixed UU bug in HelpElement component: "Hidden element has focusable content"
+- Fixed UU bug in TableHN2 where screen reader read irrelevant texts in cells
 
 ## 22.4.2
 
