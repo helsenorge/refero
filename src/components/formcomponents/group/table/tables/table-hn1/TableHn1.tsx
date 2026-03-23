@@ -2,7 +2,14 @@ import React, { useEffect } from 'react';
 
 import type { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
-import { Table as HnTable, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
+import {
+  Table as HnTable,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+} from '@helsenorge/designsystem-react/components/Table';
 
 import { type ITableH1, TABLE_HN1_TABLE_TYPES } from './interface';
 import { getTableHN1bodyObject } from './utils';
@@ -23,10 +30,24 @@ const TableHn1 = ({ items, questionnaireResponse }: Props): React.JSX.Element | 
   if (!answerValues || answerValues.length === 0) {
     return null;
   }
+
+  const headerRow =
+    answerValues.length > 0 && answerValues[0].columns.some(col => col.type === TABLE_HN1_TABLE_TYPES.HEADER) ? answerValues[0] : null;
+  const bodyRows = headerRow ? answerValues.slice(1) : answerValues;
+
   return (
-    <HnTable className="page_refero__table_hn1">
+    <HnTable>
+      {headerRow && (
+        <TableHead>
+          <TableRow>
+            {headerRow.columns.map(({ value, id }) => (
+              <TableHeadCell key={id}>{value ?? ''}</TableHeadCell>
+            ))}
+          </TableRow>
+        </TableHead>
+      )}
       <TableBody className="page_refero__table_hn1__body">
-        {answerValues?.map(item => (
+        {bodyRows?.map(item => (
           <TableRow key={item.id} className="page_refero__table_hn1__body__row">
             {item?.columns.map(({ value, id, type }) => (
               <React.Fragment key={id}>

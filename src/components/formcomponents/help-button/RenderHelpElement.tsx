@@ -30,8 +30,12 @@ const RenderHelpElement = ({ isHelpVisible, item }: Props): React.JSX.Element | 
 
   const className = `${styles.page_refero__helpComponent} ${isHelpVisible ? styles['page_refero__helpComponent--open'] : ''}`;
 
+  if (!isHelpVisible) {
+    return null;
+  }
+
   return (
-    <div aria-hidden={!isHelpVisible} aria-live="polite" className={className} data-testid={`${helpItem.linkId}-help-element`}>
+    <div aria-live="polite" className={className} data-testid={`${helpItem.linkId}-help-element`}>
       <SafeText as="div" text={getText(helpItem)} />
     </div>
   );

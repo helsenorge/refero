@@ -33,14 +33,14 @@ const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): Re
     <HnTable className="page_refero__table_hn2">
       <TableHeadHn2 sortable={sortIndex !== undefined} setSortDir={setSortDir} sortDir={sortDir} tableCodesCoding={tableCodesCoding} />
       <TableBody className='className="page_refero__table_hn2__body'>
-        {rows.map((item, index) => {
+        {rows.map(item => {
           return (
-            <TableRow key={item.id} className='className="page_refero__table_hn2__body__row'>
-              {item.columns.map(column => (
+            <TableRow key={item.id} className="page_refero__table_hn2__body__row">
+              {item.columns.map((column, columnIndex) => (
                 <TableCell
                   key={column.id}
-                  dataLabel={tableHeader[index]?.display ?? column.text}
-                  className='className="page_refero__table_hn2__body__cell'
+                  dataLabel={tableHeader[columnIndex]?.display ?? column.text}
+                  className="page_refero__table_hn2__body__cell"
                 >
                   {column.text}
                 </TableCell>
