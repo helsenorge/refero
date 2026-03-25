@@ -1,3 +1,5 @@
+import type React from 'react';
+
 import type { AutoSuggestProps } from '@/types/autoSuggestProps';
 import type { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 import type { FormViewChange } from '@/types/referoProps';

@@ -1,3 +1,5 @@
+import type React from 'react';
+
 type Props = {
   opening: boolean;
 };

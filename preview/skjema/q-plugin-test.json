@@ -1,0 +1,221 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "plugin-test",
+  "status": "draft",
+  "title": "Plugin Test Form",
+  "description": "A test form demonstrating the component plugin system.",
+  "item": [
+    {
+      "linkId": "section-plugins",
+      "type": "group",
+      "text": "Plugin Examples",
+      "item": [
+        {
+          "linkId": "satisfaction-rating",
+          "type": "integer",
+          "text": "How satisfied are you with our service?",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "slider",
+                    "display": "Slider"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 0
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "category-selection",
+          "type": "choice",
+          "text": "Velg Kategori",
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "pill-choice",
+                    "display": "Pill Choice"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "muskel",
+                "display": "Muskel og skjelettplager"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "sykemeldning",
+                "display": "Forleng sykemeldning"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "svangerskap",
+                "display": "svangerskapsplager"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "hud",
+                "display": "Hud og utslett"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "hodepine",
+                "display": "Hodepine"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "luftveis",
+                "display": "Luftveisplager"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "mage",
+                "display": "Mage og tarmproblemer"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "oppfolging",
+                "display": "Oppfølgning etter fastlegetime"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "legeerklaring",
+                "display": "Legeerklæring eller attest"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "allergi",
+                "display": "Allergi"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "psykisk",
+                "display": "Psykiske plager"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/category",
+                "code": "annet",
+                "display": "Annet"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "mood-selection",
+          "type": "choice",
+          "text": "How are you feeling today? (Select all that apply)",
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "check-box",
+                    "display": "Check Box"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "http://example.org/mood",
+                "code": "very-satisfied",
+                "display": "Very Happy"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/mood",
+                "code": "satisfied",
+                "display": "Happy"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/mood",
+                "code": "neutral",
+                "display": "Neutral"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/mood",
+                "code": "dissatisfied",
+                "display": "Sad"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://example.org/mood",
+                "code": "very-dissatisfied",
+                "display": "Very Sad"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "regular-integer",
+          "type": "integer",
+          "text": "Regular integer field (no plugin)",
+          "required": false
+        },
+        {
+          "linkId": "comments",
+          "type": "text",
+          "text": "Additional comments",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,3 +1,5 @@
+import type React from 'react';
+
 import type { QuestionnaireItem } from 'fhir/r4';
 
 import { RenderContextType } from '../constants/renderContextType';

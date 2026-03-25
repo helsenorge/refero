@@ -1,4 +1,5 @@
-import { type ReactNode, useMemo } from 'react';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import React, { type ReactNode, useMemo } from 'react';
 
 import type { AutoSuggestProps } from '@/types/autoSuggestProps';
 import type { OrgenhetHierarki } from '@/types/orgenhetHierarki';

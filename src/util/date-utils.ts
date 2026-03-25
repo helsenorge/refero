@@ -11,9 +11,8 @@ import {
   endOfDay,
   parseISO,
   parse,
-  Locale,
+  type Locale,
 } from 'date-fns';
-
 import { nb, nn, enGB, se } from 'date-fns/locale';
 
 import type { Resources } from './resources';
