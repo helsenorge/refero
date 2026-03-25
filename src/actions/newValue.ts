@@ -221,6 +221,32 @@ export function removeCodingValueAsync(itemPath: Array<Path>, value: Coding, ite
   };
 }
 
+/**
+ * Toggles a coding value - adds it if not present, removes it if already selected.
+ * Use this for checkbox-style multi-select behavior.
+ *
+ * @param itemPath - Path to the item in the questionnaire response
+ * @param coding - The coding value to toggle
+ * @param item - The questionnaire item definition
+ * @param isCurrentlySelected - Whether the coding is currently selected
+ * @returns Async thunk that returns the updated global state
+ */
+export function toggleCodingValueAsync(
+  itemPath: Array<Path>,
+  coding: Coding,
+  item: QuestionnaireItem | undefined,
+  isCurrentlySelected: boolean
+) {
+  return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
+    if (isCurrentlySelected) {
+      dispatch(removeCodingValueAction({ itemPath, valueCoding: coding, item }));
+    } else {
+      dispatch(newCodingValueAction({ itemPath, valueCoding: coding, item, multipleAnswers: true }));
+    }
+    return await Promise.resolve(getState());
+  };
+}
+
 export const newDecimalValueAction = createAction<DecimalValuePayload>(NEW_VALUE);
 /*
  * @deprecated this will be removed in a future version, use newDecimalValueAction instead

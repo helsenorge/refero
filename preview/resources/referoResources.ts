@@ -1,4 +1,4 @@
-import { Resources } from '../../src/util/resources.ts';
+import type { Resources } from '../../src/util/resources.ts';
 
 export const getResources = (language: string): Resources => {
   if (language === 'en-GB') {

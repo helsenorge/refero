@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Provider } from 'react-redux';
 
 import type { OrgenhetHierarki } from '../src/types/orgenhetHierarki';
+import type { ComponentPlugin } from '@/types/componentPlugin';
 import type { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import type {
   Attachment,
@@ -21,10 +22,13 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import type { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import { store as reduxStore } from '../src/reducers';
+import { CustomSliderPlugin } from './external-components/CustomSliderPlugin';
 import HelpButton from './external-components/HelpButton';
+import { ImageChoicePlugin } from './external-components/ImageChoicePlugin';
+import { PillChoicePlugin } from './external-components/PillChoicePlugin';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/q.json';
+import skjema from './skjema/q-plugin-test.json';
 import ReferoContainer from '../src/components/index';
 import qr from './skjema/responses/qr.json';
 import valueSet from '../src/constants/valuesets';
@@ -32,6 +36,25 @@ import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 
 import { getId, setSkjemaDefinitionAction, type TextMessage } from '@/index';
 import { MimeType } from '@/util/attachmentHelper';
+
+// Define component plugins
+const componentPlugins: ComponentPlugin[] = [
+  {
+    itemType: 'choice',
+    itemControlCode: 'slider',
+    component: CustomSliderPlugin,
+  },
+  {
+    itemType: 'choice',
+    itemControlCode: 'check-box',
+    component: ImageChoicePlugin,
+  },
+  {
+    itemType: 'choice',
+    itemControlCode: 'pill-choice',
+    component: PillChoicePlugin,
+  },
+];
 
 const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
@@ -305,6 +328,7 @@ const FormFillerPreview = (): React.JSX.Element => {
                   onFormViewChange={(containerRef, stepIndex) => {
                     handleFocus(containerRef, false, stepIndex);
                   }}
+                  componentPlugins={componentPlugins}
                 />
               </div>
             ) : (

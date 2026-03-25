@@ -1,6 +1,14 @@
 //Component
 export { default as Refero } from './components/index';
 export { default } from './components/index';
+export { ReferoLabel } from './components/referoLabel/ReferoLabel';
+
+//Validation
+export * from './components/validation/rules';
+export { shouldValidate } from './components/validation/utils';
+
+// Re-export react-hook-form hooks for plugins to use (ensures same instance)
+export { useFormContext, type FieldError, type FieldValues, type RegisterOptions } from 'react-hook-form';
 
 //State
 ////Actions
@@ -17,6 +25,8 @@ export * from './reducers/index';
 export { default as rootReducer } from './reducers/index';
 //Hooks
 export { useIsEnabled, isEnableWhenEnabled, useCheckIfEnabled } from './hooks/useIsEnabled';
+export { usePluginDispatch } from './hooks/usePluginDispatch';
+export { usePluginValidation, type UsePluginValidationOptions, type UsePluginValidationResult } from './hooks/usePluginValidation';
 
 //Utils
 export * from './util/index';
@@ -24,8 +34,10 @@ export * from './util/hacks';
 export * from './util/extension';
 export * from './util/codingsystem';
 export * from './util/actionRequester';
+export * from './util/questionnaireInspector';
 export * from './util/refero-core';
 export * from './util/getTopLevelElements';
+export * from './util/pluginUtils';
 
 //Types
 export * from './types/formTypes/formButton';
@@ -40,6 +52,9 @@ export * from './types/queryStrings';
 export * from './types/referoProps';
 export * from './types/sidebar';
 export * from './types/text-message';
+export * from './types/componentPlugin';
+export * from './context/componentPlugin';
+export * from './components/formcomponents/plugin';
 export * from './util/resources';
 
 //Constants
