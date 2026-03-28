@@ -194,8 +194,7 @@ const AttachmentHtml = (props: Props): React.JSX.Element | null => {
           inputId={getId(id)}
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
-          chooseFilesText={resources?.chooseFilesText}
-          deleteText={resources?.deleteAttachmentText}
+          resources={{ chooseFilesText: resources?.chooseFilesText, deleteText: resources?.deleteAttachmentText }}
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}
           onOpenFile={onOpen}

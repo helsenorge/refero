@@ -147,7 +147,7 @@ export const Text = (props: Props): React.JSX.Element | null => {
           testId={`test-text-${getId(id)}`}
           grow={true}
           maxCharacters={getMaxLength(item)}
-          maxText={resources?.maxCharactersText || ''}
+          resources={{ characters: resources?.maxCharactersText || '' }}
         />
 
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
