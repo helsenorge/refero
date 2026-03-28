@@ -13,6 +13,7 @@ export const useFormViewChange = (onFormViewChange?: FormViewChange, stepIndex?:
     if (onFormViewChange) {
       onFormViewChange(containerRef.current, stepIndex);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepIndex]);
 
   return containerRef;

@@ -9,9 +9,9 @@ import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 
-vi.mock('@helsenorge/core-utils/debounce', () => ({
+vi.mock('@helsenorge/designsystem-react/utils/debounce', () => ({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type, @typescript-eslint/explicit-function-return-type
-  debounce: (fn: Function) => fn,
+  debounce: (fn: Function) => [fn, () => {}],
 }));
 
 const getTestId = (questionnaire: Questionnaire): string => {

@@ -1,4 +1,4 @@
-import { Matcher, screen, userEvent, within } from './test-utils';
+import { type Matcher, screen, userEvent, within } from './test-utils';
 
 export async function selectCheckboxOption(id: Matcher): Promise<void> {
   expect(screen.getByLabelText(id)).toBeInTheDocument();

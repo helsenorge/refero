@@ -55,11 +55,12 @@ const ItemRenderer = memo(function ItemRenderer({
   const PluginWrapperComponent = useMemo(() => {
     if (!pluginComponent) return null;
 
-    const WrapperComponent = (props: QuestionnaireComponentItemProps): React.JSX.Element | null => {
-      return <PluginComponentWrapper {...props} PluginComponent={pluginComponent} />;
-    };
-    WrapperComponent.displayName = `PluginWrapper(${matchedCode})`;
-    return WrapperComponent;
+    return Object.assign(
+      (props: QuestionnaireComponentItemProps): React.JSX.Element | null => {
+        return <PluginComponentWrapper {...props} PluginComponent={pluginComponent} />;
+      },
+      { displayName: `PluginWrapper(${matchedCode})` }
+    );
   }, [pluginComponent, matchedCode]);
 
   if (isHelpItem(item) || isHiddenItem(item)) {
