@@ -21,7 +21,7 @@ export type ExternalRenderType = {
     helpItem: QuestionnaireItem,
     helpItemType: string,
     helpText: string,
-    isHelpVisible: boolean
+    opening: boolean
   ) => React.JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
   fetchValueSet?: (

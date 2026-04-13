@@ -23,7 +23,7 @@ const HelpButton = ({ item, padding, ariaLabeledBy, children, callback }: Props)
       data-testid={`${item.linkId}-help-button`}
       className={`page_refero__helpButton ${padding && 'padding'}`}
       role="button"
-      tabIndex={0}
+      tabIndex={-1}
       onClick={handleToggle}
       onKeyDown={(e): void => {
         if (e.key === 'Enter') {
