@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FormEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, type FormEvent, useRef, useState } from 'react';
 
 import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
 
@@ -76,9 +76,11 @@ const AutosuggestView = (props: AutosuggestProps): React.JSX.Element | null => {
   const [hasLoadError, setHasLoadError] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   useResetFormField(idWithLinkIdAndItemIndex, inputValue);
-  useEffect(() => {
+  const prevInitialInputValue = useRef(initialInputValue);
+  if (initialInputValue !== prevInitialInputValue.current) {
+    prevInitialInputValue.current = initialInputValue;
     if (initialInputValue) setInputValue(initialInputValue);
-  }, [initialInputValue]);
+  }
   const isOpenChoice = (): boolean => {
     return item?.type === ItemType.OPENCHOICE;
   };

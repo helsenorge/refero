@@ -9,9 +9,9 @@ import { getResources } from '../../../../../preview/resources/referoResources';
 
 import ItemType from '@/constants/itemType';
 
-vi.mock('@helsenorge/core-utils/debounce', () => ({
+vi.mock('@helsenorge/designsystem-react/utils/debounce', () => ({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-unsafe-function-type
-  debounce: (fn: Function) => fn,
+  debounce: (fn: Function) => [fn, () => {}],
 }));
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };

@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "23.1.2",
+  "version": "23.1.0",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
@@ -58,10 +58,10 @@
     "*.scss"
   ],
   "peerDependencies": {
-    "@helsenorge/autosuggest": "^37.0.0",
-    "@helsenorge/datepicker": "^13.0.0",
-    "@helsenorge/designsystem-react": "^13.0.0",
-    "@helsenorge/file-upload": "^37.0.0",
+    "@helsenorge/autosuggest": "^38.0.0",
+    "@helsenorge/datepicker": "^14.0.0",
+    "@helsenorge/designsystem-react": "^14.0.0",
+    "@helsenorge/file-upload": "^38.0.0",
     "dompurify": "3.3.2",
     "react": "18.3.1 || ^19.2.4",
     "react-dom": "18.3.1 || ^19.2.4",
@@ -69,17 +69,17 @@
     "redux": "^5.0.0"
   },
   "devDependencies": {
-    "@helsenorge/autosuggest": "^37.0.0",
-    "@helsenorge/datepicker": "^13.0.0",
-    "@helsenorge/designsystem-react": "^13.0.0",
-    "@helsenorge/file-upload": "^37.0.0",
+    "@helsenorge/autosuggest": "^38.0.0",
+    "@helsenorge/datepicker": "^14.0.0",
+    "@helsenorge/designsystem-react": "^14.0.0",
+    "@helsenorge/file-upload": "^38.0.0",
     "@reduxjs/toolkit": "^2.2.7",
     "@rollup/plugin-replace": "^6.0.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
-    "@helsenorge/eslint-config": "^37.0.0",
+    "@helsenorge/eslint-config": "^38.0.0",
     "@vitest/web-worker": "^4.0.0",
     "@types/fhir": "^0.0.41",
     "@types/node": "^24.0.0",
@@ -116,7 +116,7 @@
     "vitest": "^4.0.0"
   },
   "dependencies": {
-    "@helsenorge/core-utils": "^37.0.0",
+    "@helsenorge/core-utils": "^38.0.0",
     "date-fns": "^4.1.0",
     "fhirpath": "^4.0.0",
     "marked": "^17.0.0",

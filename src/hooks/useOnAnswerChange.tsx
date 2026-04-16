@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { runCalculatorsAction, runEnableWhenAction } from '@/actions/thunks';
@@ -15,20 +17,23 @@ const useOnAnswerChange = (
 ): ((state: GlobalState, item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer) => void) => {
   const dispatch = useAppDispatch();
 
-  return (state: GlobalState, item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer): void => {
-    const questionnaire = state.refero.form.FormDefinition.Content;
-    const questionnaireResponse = state.refero.form.FormData.Content;
-    if (questionnaire && questionnaireResponse) {
-      const actionRequester = new ActionRequester(questionnaire, questionnaireResponse);
-      dispatch(runCalculatorsAction());
-      dispatch(runEnableWhenAction());
-      const questionnaireInspector = new QuestionniareInspector(questionnaire, questionnaireResponse);
-      if (onChange && answer && item) {
-        onChange(item, answer, actionRequester, questionnaireInspector);
-      }
+  return useCallback(
+    (state: GlobalState, item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer): void => {
+      const questionnaire = state.refero.form.FormDefinition.Content;
+      const questionnaireResponse = state.refero.form.FormData.Content;
+      if (questionnaire && questionnaireResponse) {
+        const actionRequester = new ActionRequester(questionnaire, questionnaireResponse);
+        dispatch(runCalculatorsAction());
+        dispatch(runEnableWhenAction());
+        const questionnaireInspector = new QuestionniareInspector(questionnaire, questionnaireResponse);
+        if (onChange && answer && item) {
+          onChange(item, answer, actionRequester, questionnaireInspector);
+        }
 
-      actionRequester.dispatchAllActions(dispatch);
-    }
-  };
+        actionRequester.dispatchAllActions(dispatch);
+      }
+    },
+    [dispatch, onChange]
+  );
 };
 export default useOnAnswerChange;

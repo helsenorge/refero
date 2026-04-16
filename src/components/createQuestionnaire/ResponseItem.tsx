@@ -24,7 +24,7 @@ type ResponseItemProps = {
   pdf?: boolean;
   isNavigatorEnabled: boolean;
   headerTag?: number;
-  isNavigatorBlindzoneInitiatedRef: React.MutableRefObject<boolean>;
+  isFirstItem: boolean;
 };
 
 const ResponseItem = React.memo(function ResponseItem({
@@ -39,7 +39,7 @@ const ResponseItem = React.memo(function ResponseItem({
   pdf,
   isNavigatorEnabled,
   headerTag,
-  isNavigatorBlindzoneInitiatedRef,
+  isFirstItem,
 }: ResponseItemProps) {
   const checkIfEnabled = useCheckIfEnabled();
 
@@ -65,8 +65,7 @@ const ResponseItem = React.memo(function ResponseItem({
     }
   }
 
-  if (isNavigatorEnabled && !isNavigatorBlindzoneInitiatedRef.current) {
-    isNavigatorBlindzoneInitiatedRef.current = true;
+  if (isNavigatorEnabled && isFirstItem) {
     blindzone = <section id={NAVIGATOR_BLINDZONE_ID} tabIndex={-1} />;
     includeSkipLink = item.type === ItemType.GROUP;
   }

@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react';
+import { memo } from 'react';
 
 import type { QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
 import type { Path } from '@/util/refero-core';
@@ -32,8 +32,6 @@ export const RenderResponseItems = memo(function RenderResponseItems({
   isNavigatorEnabled,
   headerTag,
 }: RenderResponseItemsProps): React.JSX.Element[] | null {
-  const isNavigatorBlindzoneInitiatedRef = useRef(false);
-
   return responseItems
     .map((linkId, index) => (
       <ResponseItem
@@ -49,7 +47,7 @@ export const RenderResponseItems = memo(function RenderResponseItems({
         pdf={pdf}
         isNavigatorEnabled={isNavigatorEnabled}
         headerTag={headerTag}
-        isNavigatorBlindzoneInitiatedRef={isNavigatorBlindzoneInitiatedRef}
+        isFirstItem={index === 0}
       />
     ))
     .filter(component => component !== null);

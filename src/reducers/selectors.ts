@@ -2,7 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 
 import type { GlobalState } from '.';
 import type { Resources } from '@/util/resources';
-import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import type { FormFieldTagLevel } from '@helsenorge/designsystem-react/components/FormFieldTag';
 

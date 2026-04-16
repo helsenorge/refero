@@ -1,3 +1,5 @@
+import type React from 'react';
+
 import type { Extension } from 'fhir/r4';
 
 export interface Options {

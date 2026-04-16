@@ -1,5 +1,7 @@
 import './styles/skjemautfyller.scss';
 
+import type React from 'react';
+
 import FormFillerPreview from './FormFillerPreview';
 
 function App(): React.JSX.Element {

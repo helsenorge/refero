@@ -2,6 +2,21 @@
 
 React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/questionnaire.html) object and renders it as a form.
 
+---
+
+**📖 Contents**
+
+| Section                                               | Description                            |
+| ----------------------------------------------------- | -------------------------------------- |
+| [Props](#props)                                       | Component properties and configuration |
+| [Callback API](#callback-api)                         | Event handlers and callbacks           |
+| [Component Plugins](#component-plugins)               | Custom component rendering system      |
+| [Scoring Functionality](#scoring-functionality)       | Questionnaire scoring features         |
+| [Mathematical Expressions](#mathematical-expressions) | FHIRPath calculations                  |
+| [Interface definitions](#interface-definitions)       | TypeScript types and interfaces        |
+
+---
+
 ## PeerDependencies
 
 - [react](https://www.npmjs.com/package/react)
@@ -126,6 +141,7 @@ const App = () => {
 | useFormProps                  |          | UseFormProps               |         | Additional options passed to `react-hook-form`'s `useForm` hook.                                                                                                                        |
 | renderCustomActionButtons     |          | callback                   |         | A callback function that allows consumers to render their own custom buttons.                                                                                                           |
 | onFormViewChange              |          | callback                   |         | A callback function that is called when the form is initialized or if the form changes (example: step change). It accepts a ref of the element that wraps the form, and the step index. |
+| componentPlugins              |          | ComponentPlugin[]          | []      | Array of plugin definitions for custom component rendering. See [Component Plugins](#component-plugins) section.                                                                        |
 
 ### `questionnaire: Questionnaire`
 
@@ -306,6 +322,298 @@ the current index will be updated to. This can be used to make progress indicato
 
 A callback function that is called when the form is initialized or if the form changes (example: step change). It accepts a ref of the
 element that wraps the form.
+
+# Component Plugins
+
+Refero supports a plugin system that allows you to provide custom React components for specific questionnaire item types and itemControl
+codes. This enables you to replace built-in components with custom implementations tailored to your application's needs.
+
+## Overview
+
+The plugin system works by:
+
+1. Registering plugins that define which item type + itemControl code combination they handle
+2. When rendering a questionnaire item, Refero checks if a plugin is registered for that combination
+3. If found, the plugin component is rendered instead of the built-in component
+4. Plugins have full control over their UI, including labels, validation, and error display
+
+## Basic Usage
+
+```tsx
+import { useEffect, type FC } from 'react';
+import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
+import {
+  Refero,
+  type ComponentPlugin,
+  type PluginComponentProps,
+  ReferoLabel,
+  newIntegerValueAsync,
+  required,
+  minValue,
+  maxValue,
+  getErrorMessage,
+} from '@helsenorge/refero';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+
+// Create a custom component
+const CustomSlider: FC<PluginComponentProps> = ({
+  item,
+  answer,
+  dispatch,
+  onAnswerChange,
+  error,
+  readOnly,
+  id,
+  idWithLinkIdAndItemIndex,
+  path,
+  resources,
+  promptLoginMessage,
+  children,
+}) => {
+  const { register, unregister, setValue, formState } = useFormContext<FieldValues>();
+  const currentValue = Array.isArray(answer) ? answer[0]?.valueInteger : answer?.valueInteger;
+
+  // Register validation
+  useEffect(() => {
+    register(idWithLinkIdAndItemIndex, {
+      required: required({ item, resources }),
+      min: minValue({ item, resources }),
+      max: maxValue({ item, resources }),
+      shouldUnregister: true,
+    });
+    return () => unregister(idWithLinkIdAndItemIndex);
+  }, [idWithLinkIdAndItemIndex, item, register, unregister, resources]);
+
+  // Sync form value
+  useEffect(() => {
+    setValue(idWithLinkIdAndItemIndex, currentValue, { shouldValidate: formState.isSubmitted });
+  }, [currentValue, idWithLinkIdAndItemIndex, setValue, formState.isSubmitted]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+    dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: value }));
+    if (promptLoginMessage) promptLoginMessage();
+  };
+
+  return (
+    <FormGroup error={getErrorMessage(item, error)} onColor="ongrey">
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={id}
+        labelId={`${id}-label`}
+        testId={`${id}-label`}
+        formFieldTagId={`${id}-formfieldtag`}
+      />
+      <input type="range" id={id} min={0} max={100} value={currentValue ?? 0} disabled={readOnly} onChange={handleChange} />
+      <span>{currentValue ?? 0}</span>
+      {children}
+    </FormGroup>
+  );
+};
+
+// Define the plugin
+const sliderPlugin: ComponentPlugin = {
+  itemType: 'integer',
+  itemControlCode: 'slider',
+  component: CustomSlider,
+};
+
+// Use with Refero
+<Refero
+  questionnaire={questionnaire}
+  questionnaireResponse={questionnaireResponse}
+  componentPlugins={[sliderPlugin]}
+  // ... other props
+/>;
+```
+
+## Plugin Props
+
+The `componentPlugins` prop accepts an array of `ComponentPlugin` objects:
+
+```ts
+interface ComponentPlugin {
+  /** Item type this plugin applies to (e.g., 'integer', 'string', 'choice') */
+  itemType: string;
+  /** ItemControl code that triggers this plugin (e.g., 'slider', 'spinner') */
+  itemControlCode: string;
+  /** The React component to render */
+  component: React.ComponentType<PluginComponentProps>;
+}
+```
+
+## PluginComponentProps Interface
+
+Plugin components receive these props:
+
+```ts
+interface PluginComponentProps {
+  /** The FHIR QuestionnaireItem definition */
+  item: QuestionnaireItem;
+  /** Current answer value(s) for this item */
+  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined;
+  /** Redux dispatch function for dispatching actions */
+  dispatch: AppDispatch;
+  /** Callback to notify about answer changes (triggers calculators, enableWhen, etc.) */
+  onAnswerChange: OnAnswerChange;
+  /** Form validation error, if any */
+  error?: FieldError;
+  /** Localization resources */
+  resources?: Resources;
+  /** Whether rendering for PDF output */
+  pdf?: boolean;
+  /** Whether the field is read-only */
+  readOnly?: boolean;
+  /** Unique identifier for the field */
+  id: string;
+  /** Unique identifier for react-hook-form registration */
+  idWithLinkIdAndItemIndex: string;
+  /** Path to this item in the questionnaire response */
+  path: Path[];
+  /** Index of this item (for repeated items) */
+  index: number;
+  /** Children containing delete/repeat buttons and nested items - must be rendered */
+  children?: React.ReactNode;
+  /** Optional callback to prompt login message */
+  promptLoginMessage?: () => void;
+}
+```
+
+## Plugin Responsibilities
+
+Plugins are responsible for:
+
+1. **Label rendering** - Use `ReferoLabel` from refero or create custom labels
+2. **Validation** - Register with react-hook-form using validation rules from refero
+3. **Value changes** - Use `dispatch` with actions like `newIntegerValueAsync`, then call `onAnswerChange`
+4. **Error display** - Use `FormGroup` or custom error rendering
+5. **Rendering children** - Must render `children` prop (contains delete/repeat buttons and nested items)
+
+## Exports from Refero
+
+Plugins can import these from `@helsenorge/refero`:
+
+### Types
+
+```ts
+import type { PluginComponentProps, ComponentPlugin, OnAnswerChange } from '@helsenorge/refero';
+```
+
+- **`PluginComponentProps`** - Props interface for plugin components
+- **`ComponentPlugin`** - Plugin registration interface
+- **`OnAnswerChange`** - Type for the onAnswerChange callback:
+  `(state: GlobalState, item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer) => void`
+
+### Components
+
+```ts
+import { ReferoLabel } from '@helsenorge/refero';
+```
+
+- **`ReferoLabel`** - Standard label component used by built-in components
+
+### Actions
+
+Use these with `dispatch` to update values:
+
+```ts
+import {
+  newIntegerValueAsync,
+  newStringValueAsync,
+  newDecimalValueAsync,
+  newBooleanValueAsync,
+  newDateValueAsync,
+  newTimeValueAsync,
+  newDateTimeValueAsync,
+  newCodingValueAsync,
+  removeCodingValueAsync,
+  newQuantityValueAsync,
+  newAttachmentAsync,
+  removeAttachmentAsync,
+} from '@helsenorge/refero';
+
+// Example: Update integer value
+dispatch(newIntegerValueAsync(path, 42, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: 42 }));
+
+// Example: Update coding value (for choice items)
+const coding = { system: 'http://example.org', code: 'abc', display: 'ABC' };
+dispatch(newCodingValueAsync(path, coding, item, item.repeats))?.then(newState => onAnswerChange(newState, item, { valueCoding: coding }));
+```
+
+### Validation Rules
+
+```ts
+import { required, minValue, maxValue, minLength, maxLength, pattern, getErrorMessage, shouldValidate } from '@helsenorge/refero';
+```
+
+- **`required`** - Validates required fields
+- **`minValue`** - Validates minimum value (for numeric types)
+- **`maxValue`** - Validates maximum value (for numeric types)
+- **`minLength`** - Validates minimum length (for string types)
+- **`maxLength`** - Validates maximum length (for string types)
+- **`pattern`** - Validates regex pattern
+- **`getErrorMessage`** - Retrieves localized error message from field error
+- **`shouldValidate`** - Determines if validation should be performed
+
+## Matching Logic
+
+Plugins are matched based on both:
+
+1. **Item type** - The FHIR questionnaire item type (e.g., `integer`, `string`, `choice`)
+2. **ItemControl code** - The code from the item's `itemControl` extension
+
+The itemControl extension is typically found at:
+
+```json
+{
+  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+  "valueCodeableConcept": {
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/questionnaire-item-control",
+        "code": "slider"
+      }
+    ]
+  }
+}
+```
+
+## Notes
+
+- Plugins only match when **both** item type AND itemControl code match
+- Items without an itemControl extension will always use built-in components
+- Plugins have full control over their UI - they handle labels, validation, and error display
+- The `children` prop **must** be rendered - it contains delete/repeat buttons and nested items
+- Use `ReferoLabel` from refero for consistent label styling, or create custom labels
+
+## Multiple Plugins Example
+
+```tsx
+const plugins: ComponentPlugin[] = [
+  {
+    itemType: 'integer',
+    itemControlCode: 'slider',
+    component: CustomSlider,
+  },
+  {
+    itemType: 'integer',
+    itemControlCode: 'spinner',
+    component: CustomSpinner,
+  },
+  {
+    itemType: 'string',
+    itemControlCode: 'text-area',
+    component: CustomTextArea,
+  },
+];
+
+<Refero
+  questionnaire={questionnaire}
+  componentPlugins={plugins}
+  // ... other props
+/>;
+```
 
 # Scoring Functionality
 

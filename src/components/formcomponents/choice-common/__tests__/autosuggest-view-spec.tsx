@@ -15,8 +15,8 @@ import { generateQuestionnaireResponse } from '../../../../actions/generateQuest
 import { Extensions } from '../../../../constants/extensions';
 import valueSet from '../../../../constants/valuesets';
 
-vi.mock('@helsenorge/core-utils/debounce', () => ({
-  debounce: (fn: Function) => fn,
+vi.mock('@helsenorge/designsystem-react/utils/debounce', () => ({
+  debounce: (fn: Function) => [fn, () => {}],
 }));
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', openChoiceOption: 'annet' };
 

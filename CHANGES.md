@@ -2,6 +2,32 @@
 
 - Bugfix: Added debounce to slider onChange to solve "maximum state update" error
 
+## 23.0.0
+
+- **New Feature: ItemControl Component Plugin System** — Register custom React components for specific `itemType` + `itemControlCode`
+  combinations
+  - New `componentPlugins` prop on `ReferoContainer`
+  - `PluginComponentProps` interface providing a stable API for plugin components
+  - Plugins receive `dispatch` and `onAnswerChange` directly (same pattern as built-in components)
+  - Plugins handle their own UI: labels, validation, and error display
+  - `children` prop contains delete/repeat buttons and nested items
+  - Utility functions: `createPluginKey`, `createPluginRegistry`, `resolvePluginComponent`
+- **New exports for plugin authors**
+  - `ComponentPluginProvider`, `useComponentPlugin`, `useComponentPluginRegistry`
+  - `PluginComponentWrapper`, `PluginErrorBoundary`
+  - `IQuestionnaireInspector`, `QuestionnaireInspector`
+- Plugin helpers: `usePluginValidation`, `usePluginDispatch`, `normalizeAnswer`, `getFirstAnswer`
+- `usePluginValidation` returns a `refCallback` that connects the plugin's focusable element to react-hook-form, enabling validation summary
+  click-to-focus for plugin fields
+- `PluginErrorBoundary` — catches plugin render errors and shows a fallback instead of crashing the form
+- New exports: `ReferoLabel`, re-exported `useFormContext` from react-hook-form
+- **Protected built-in itemControl codes** — Standard codes (`radio-button`, `check-box`, `drop-down`, `slider`, `autocomplete`, etc.)
+  cannot be overridden by plugins and always resolve to Refero's core components
+- **Performance fixes**:
+  - Plugin wrapper `useMemo` depends on stable component reference instead of resolution object, preventing plugin remounts on every state
+    change
+  - `useOnAnswerChange` wrapped in `useCallback` to return a stable reference, preventing unnecessary rerenders across all form components
+
 ## 22.4.4
 
 - Fixed accessibility bug in HelpButton component: "Role with implied hidden content has keyboard focus"

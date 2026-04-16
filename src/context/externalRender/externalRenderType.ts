@@ -1,3 +1,5 @@
+import type React from 'react';
+
 import type { AutoSuggestProps } from '@/types/autoSuggestProps';
 import type { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 import type { FormViewChange } from '@/types/referoProps';
@@ -19,7 +21,7 @@ export type ExternalRenderType = {
     helpItem: QuestionnaireItem,
     helpItemType: string,
     helpText: string,
-    isHelpVisible: boolean
+    opening: boolean
   ) => React.JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
   fetchValueSet?: (

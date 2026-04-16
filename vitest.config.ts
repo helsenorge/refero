@@ -9,7 +9,6 @@ export default defineConfig(configEnv =>
     viteConfig(configEnv),
     defineConfig({
       root: path.resolve(__dirname, '.'),
-
       test: {
         testTimeout: 30000,
         include: ['src/**/*-spec.ts', 'src/**/*-spec.tsx'],
@@ -31,7 +30,13 @@ export default defineConfig(configEnv =>
         },
         server: {
           deps: {
-            inline: ['@helsenorge/designsystem-react', '@helsenorge/datepicker'],
+            inline: [
+              '@helsenorge/designsystem-react',
+              '@helsenorge/datepicker',
+              '@helsenorge/core-utils',
+              '@helsenorge/file-upload',
+              '@helsenorge/autosuggest',
+            ],
           },
         },
       },

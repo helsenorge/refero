@@ -4,16 +4,14 @@ import { vi } from 'vitest';
 
 import './__mocks__/matchMedia';
 import './__mocks__/IntersectionObserver';
+import './__mocks__/ResizeObserver';
 
 // Mock debounce to execute immediately in tests
 vi.mock('@helsenorge/designsystem-react/utils/debounce', () => ({
   debounce: (fn: (...args: unknown[]) => unknown): [(...args: unknown[]) => unknown, () => void] => [fn, (): void => {}],
 }));
-// import './__mocks__/ResizeObserver';
-// import './__mocks__/useLayoutEvent';
-// import './__mocks__/useSize';
-// import './__mocks__/useHover';
-// import './__mocks__/usePseudoClasses';
+
+import '@helsenorge/designsystem-react/__mocks__/useSize';
 
 // @ts-expect-error global is not defined
 global.IS_REACT_ACT_ENVIRONMENT = true;
