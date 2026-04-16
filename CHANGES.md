@@ -1,3 +1,7 @@
+## 22.4.5
+
+- Bugfix: Added debounce to slider onChange to solve "maximum state update" error
+
 ## 22.4.4
 
 - Fixed accessibility bug in HelpButton component: "Role with implied hidden content has keyboard focus"
