@@ -1,4 +1,4 @@
-## 22.4.5
+## 23.1.2
 
 - Bugfix: Added debounce to slider onChange to solve "maximum state update" error
 
