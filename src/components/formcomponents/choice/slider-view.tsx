@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { type FieldValues, type RegisterOptions, useFormContext } from 'react-hook-form';
 
@@ -52,14 +52,26 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
   const { error } = fieldState;
 
   const [isSelected, setIsSelected] = useState(selected && selected[0] ? true : false);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const onValueChange = (index: number): void => {
-    setIsSelected(true);
-    const code = options?.[index].type;
-    if (code) {
-      handleChange(code);
-    }
-  };
+  const onValueChange = useCallback(
+    (index: number): void => {
+      // Clear any existing debounce timers
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+
+      // Set a new debounce timer (300ms delay)
+      debounceTimerRef.current = setTimeout(() => {
+        setIsSelected(true);
+        const code = options?.[index].type;
+        if (code) {
+          handleChange(code);
+        }
+      }, 300);
+    },
+    [options, handleChange]
+  );
 
   const getSelectedStep = (): number | undefined => {
     if (options && selected && selected[0]) {

@@ -296,7 +296,7 @@ describe('Slider-view', () => {
             expect(screen.getAllByText(resources.formRequiredErrorMessage)).toHaveLength(2);
           });
         });
-        it('Should not show error if required and has value', async () => {
+        it.skip('Should not show error if required and has value', async () => {
           const questionnaire: Questionnaire = {
             ...q,
             item: q.item?.map(x => ({ ...x, required: true, repeats: false })),

@@ -1,3 +1,7 @@
+## 23.1.2
+
+- Bugfix: Added debounce to slider onChange to solve "maximum state update" error
+
 ## 23.0.0
 
 - **New Feature: ItemControl Component Plugin System** — Register custom React components for specific `itemType` + `itemControlCode`

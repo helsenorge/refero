@@ -30,7 +30,13 @@ export default defineConfig(configEnv =>
         },
         server: {
           deps: {
-            inline: ['@helsenorge/designsystem-react', '@helsenorge/datepicker', '@helsenorge/core-utils', '@helsenorge/file-upload', '@helsenorge/autosuggest'],
+            inline: [
+              '@helsenorge/designsystem-react',
+              '@helsenorge/datepicker',
+              '@helsenorge/core-utils',
+              '@helsenorge/file-upload',
+              '@helsenorge/autosuggest',
+            ],
           },
         },
       },
