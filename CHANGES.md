@@ -1,3 +1,7 @@
+## 23.1.3
+
+- merge 23.1.2 into master
+
 ## 23.1.2
 
 - Bugfix: Added debounce to slider onChange to solve "maximum state update" error
