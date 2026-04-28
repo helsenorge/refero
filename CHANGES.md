@@ -1,3 +1,9 @@
+## 23.2.0
+
+- Sublabel now accepts text through an extension sdf-sublabel-text, which is used if the sdf-sublabel extension is not present. This allows
+  for a simple sublabel without markdown formatting, and also allows for screen readers to read the sublabel text without reading markdown
+  formatting.
+
 ## 23.1.3
 
 - merge 23.1.2 into master
