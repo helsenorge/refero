@@ -130,6 +130,13 @@ export const createSublabelExtension = ({ value, extension }: { extension?: Exte
     url: Extensions.SUBLABEL_URL,
   });
 };
+export const createSublabelTextExtension = ({ value, extension }: { extension?: Extension; value: string }): Extension => {
+  return createExtension({
+    ...(extension && { ...extension }),
+    valueString: value,
+    url: Extensions.SUBLABEL_TEXT_URL,
+  });
+};
 export const createMinValueExtension = ({ value, extension }: { extension?: Extension; value: number }): Extension => {
   return createExtension({
     ...(extension && { ...extension }),

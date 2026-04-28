@@ -24,6 +24,7 @@ export const GUIDANCE_ACTION_URL = 'http://helsenorge.no/fhir/StructureDefinitio
 export const PRESENTATION_BUTTONS_URL = 'http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons' as const;
 export const NAVIGATOR_URL = 'http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-navgiator-state' as const;
 export const SUBLABEL_URL = 'http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel' as const;
+export const SUBLABEL_TEXT_URL = 'http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel-text' as const;
 export const HYPERLINK_URL = 'http://helsenorge.no/fhir/StructureDefinition/sdf-hyperlink-target' as const;
 export const VALUESET_LABEL_URL = 'http://hl7.org/fhir/StructureDefinition/valueset-label' as const;
 export const MAX_SIZE_URL = 'http://hl7.org/fhir/StructureDefinition/maxSize' as const;
@@ -69,6 +70,7 @@ const extensionUrls = {
   PRESENTATION_BUTTONS_URL,
   NAVIGATOR_URL,
   SUBLABEL_URL,
+  SUBLABEL_TEXT_URL,
   HYPERLINK_URL,
   VALUESET_LABEL_URL,
   MAX_SIZE_URL,
