@@ -28,7 +28,7 @@ import { ImageChoicePlugin } from './external-components/ImageChoicePlugin';
 import { PillChoicePlugin } from './external-components/PillChoicePlugin';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/q-plugin-test.json';
+import skjema from './skjema/q.json';
 import ReferoContainer from '../src/components/index';
 import qr from './skjema/responses/qr.json';
 import valueSet from '../src/constants/valuesets';

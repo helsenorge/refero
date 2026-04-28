@@ -16,6 +16,7 @@ import {
   getSublabelExtensionValue,
   getHyperlinkExtensionValue,
   getCopyExtension,
+  getSublabelTextExtensionValue,
 } from './extension';
 import codeSystems from '../constants/codingsystems';
 import { Extensions } from '../constants/extensions';
@@ -108,7 +109,8 @@ export function getSublabelText(
 ): string {
   if (item) {
     const markdown = getSublabelExtensionValue(item) || '';
-    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab) : '';
+    const text = getSublabelTextExtensionValue(item) || '';
+    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab) : text;
   }
   return '';
 }

@@ -229,6 +229,13 @@ export function getSublabelExtensionValue(item?: QuestionnaireItem | Element): s
   }
   return markdownExtension.valueMarkdown;
 }
+export function getSublabelTextExtensionValue(item?: QuestionnaireItem | Element): string | undefined {
+  const sublabelTextExtension = getExtension(Extensions.SUBLABEL_TEXT_URL, item);
+  if (!sublabelTextExtension || !sublabelTextExtension.valueString) {
+    return undefined;
+  }
+  return sublabelTextExtension.valueString;
+}
 
 export function getQuestionnaireHiddenExtensionValue(item?: QuestionnaireItem): boolean | undefined {
   const questionnaireHiddenExtension = getExtension(Extensions.QUESTIONNAIRE_HIDDEN_URL, item);
