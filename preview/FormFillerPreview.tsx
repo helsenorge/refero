@@ -193,7 +193,7 @@ function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | nu
 
 const FormFillerPreview = (): React.JSX.Element => {
   const [lang, setLang] = useState<number>(0);
-  const store = reduxStore();
+  const [store] = useState(() => reduxStore());
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
   const mainQuestionnaire = getQuestionnaireFromBubndle(parsedQuestionnaire, 0);
 
@@ -305,13 +305,13 @@ const FormFillerPreview = (): React.JSX.Element => {
                   }}
                   onSubmit={handleSubmit}
                   authorized={true}
-                  resources={getResources('')}
+                  resources={getResources(lang === 1 ? 'en-GB' : '')}
                   sticky={true}
                   saveButtonDisabled={false}
                   loginButton={<button>{'Login'}</button>}
                   syncQuestionnaireResponse={false}
                   validateScriptInjection
-                  language={LanguageLocales.NORWEGIAN}
+                  language={lang === 1 ? LanguageLocales.ENGLISH : LanguageLocales.NORWEGIAN}
                   fetchValueSet={fetchValueSetFn}
                   fetchReceivers={fetchReceiversFn}
                   uploadAttachment={uploadAttachment}

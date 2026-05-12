@@ -1,158 +1,139 @@
 {
-  "title": "Skjema med markdown i extender",
-  "resourceType": "Questionnaire",
-  "language": "nb-NO",
-  "name": "Markdown_extender_display_item",
-  "status": "draft",
-  "publisher": "NHN",
-  "meta": {
-    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
-    "security": [
-      {
-        "code": "3",
-        "display": "Helsehjelp (Full)",
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
-      }
-    ]
-  },
-  "contact": [{ "name": "http://www.nhn.no" }],
-  "subjectType": ["Patient"],
-  "extension": [
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 2,
+  "entry": [
     {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
-        "code": "1"
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
-        "code": "1"
-      }
-    },
-    {
-      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
-      "valueCodeableConcept": {
-        "coding": [
+      "resource": {
+        "title": "TEST_Sprak_etter_validering",
+        "description": "TEST_Sprak_etter_validering",
+        "resourceType": "Questionnaire",
+        "language": "nb-NO",
+        "name": "TEST_Sprak_etter_validering",
+        "status": "draft",
+        "publisher": "NHN",
+        "meta": {
+          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+          "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+          "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+        },
+        "contact": [{ "name": "http://www.nhn.no" }],
+        "subjectType": ["Patient"],
+        "extension": [
           {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-help",
-            "display": "Hide help texts"
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
           },
           {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-sublabel",
-            "display": "Hide sublabel texts"
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+                  "code": "hide-help",
+                  "display": "Hide help texts"
+                },
+                {
+                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+                  "code": "hide-sublabel",
+                  "display": "Hide sublabel texts"
+                }
+              ]
+            }
+          }
+        ],
+        "id": "590d24f3-c061-42b8-8f08-2cb00ff5e2eb",
+        "url": "Questionnaire/590d24f3-c061-42b8-8f08-2cb00ff5e2eb",
+        "item": [
+          {
+            "linkId": "899e1c35-ada9-4540-d2c5-1abbba867efa",
+            "type": "group",
+            "text": "Test språk etter validering",
+            "item": [
+              {
+                "linkId": "48c24696-da9f-4844-9d44-e9de2aac354d",
+                "type": "string",
+                "text": "Norsk",
+                "extension": [
+                  { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Norsk" },
+                  { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel-text", "valueString": "Norsk" }
+                ],
+                "required": true
+              }
+            ],
+            "required": false
           }
         ]
       }
-    }
-  ],
-  "id": "2af89186-d865-4fa4-8d0b-c4438ae699f7",
-  "url": "Questionnaire/2af89186-d865-4fa4-8d0b-c4438ae699f7",
-  "version": "1.0.0",
-  "date": "2026-04-28T00:00:00+02:00",
-  "item": [
+    },
     {
-      "linkId": "9c80f38f-1fd5-44d3-bbe2-e1b602ddd91f",
-      "type": "group",
-      "text": "Gruppe med utvidet text",
-      "item": [
-        {
-          "linkId": "02ad05f6-1b9b-497e-85c5-ca085d05bc63",
-          "type": "text",
-          "text": "Utvidet text med markdown",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "inline"
-                  }
-                ]
-              }
-            }
-          ],
-          "item": [
-            {
-              "linkId": "a0e0e127-07c2-41f3-830e-258d3c1f84a8",
-              "type": "display",
-              "required": false,
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                    "valueMarkdown": "**Bold**\n\n*italic*\n\n***bold-italic***\n\n[link](https://vg.no)\n\n[***LINK***](https://vg.no)\n\n## h2\n\n### h3\n\n#### h4\n\n- bullet\n- list\n\n1. number\n2. list\n\n- **bullet**\n- **list**\n- **bold**\n\n- *bullet*\n- *list*\n- *italic*\n\n- ***bullet***\n- ***list***\n- ***bold***\n- ***italic***\n\n1. **number**\n2. **list**\n3. **bold**\n\n1. *number*\n2. *list*\n3. *bold*\n\n1. ***number***\n2. ***list***\n3. ***bold***\n4. ***italic***"
-                  }
-                ]
-              },
-              "text": "Bold\n\nitalic\n\nbold-italic\n\nlink\n\nLINK\n\nh2\n\nh3\n\nh4\n\nbullet\n\nlist\n\nnumber\n\nlist\n\nbullet\n\nlist\n\nbold\n\nbullet\n\nlist\n\nitalic\n\nbullet\n\nlist\n\nbold\n\nitalic\n\nnumber\n\nlist\n\nbold\n\nnumber\n\nlist\n\nbold\n\n\n\nnumber\n\nlist\n\nbold\n\nitalic"
-            }
-          ],
-          "required": false
+      "resource": {
+        "title": "TEST_Sprak_etter_validering",
+        "resourceType": "Questionnaire",
+        "language": "en-GB",
+        "name": "TEST_Sprak_etter_validering",
+        "status": "draft",
+        "meta": {
+          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+          "tag": [{ "system": "urn:ietf:bcp:47", "code": "en-GB", "display": "English" }],
+          "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
         },
-        {
-          "linkId": "6d7b60ac-4c0b-4380-8a60-73e3a49eae49",
-          "type": "text",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "inline"
-                  }
-                ]
-              }
-            }
-          ],
-          "item": [
-            {
-              "linkId": "c703d0e6-c6c9-43d2-842e-db74d575a0be",
-              "type": "display",
-              "required": false,
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                    "valueMarkdown": "## ***fsdfsfsfsdf***"
-                  }
-                ]
-              },
-              "text": "fsdfsfsfsdf"
-            }
-          ],
-          "required": false,
-          "_text": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                "valueMarkdown": "## **asdasdads**"
-              }
-            ]
+        "contact": [{ "name": "http://www.nhn.no" }],
+        "subjectType": ["Patient"],
+        "extension": [
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
           },
-          "text": "asdasdads"
-        },
-        {
-          "linkId": "c6d87674-2c9c-4efd-bfec-bea1827b2e6b",
-          "type": "string",
-          "text": "LABEL",
-          "extension": [
-            {
-              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel-text",
-              "valueString": "SUBLABEL"
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+                  "code": "hide-help",
+                  "display": "Hide help texts"
+                },
+                {
+                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+                  "code": "hide-sublabel",
+                  "display": "Hide sublabel texts"
+                }
+              ]
             }
-          ],
-          "required": false
-        }
-      ],
-      "required": false
+          }
+        ],
+        "id": "6ecfb6bd-eaff-4a02-d3cc-9ba27527154f",
+        "url": "Questionnaire/6ecfb6bd-eaff-4a02-d3cc-9ba27527154f",
+        "item": [
+          {
+            "linkId": "899e1c35-ada9-4540-d2c5-1abbba867efa",
+            "type": "group",
+            "text": "Test language after validation",
+            "item": [
+              {
+                "linkId": "48c24696-da9f-4844-9d44-e9de2aac354d",
+                "type": "string",
+                "text": "English",
+                "extension": [
+                  { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "English" },
+                  { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel-text", "valueString": "English" }
+                ],
+                "required": true
+              }
+            ],
+            "required": false
+          }
+        ]
+      }
     }
   ]
 }

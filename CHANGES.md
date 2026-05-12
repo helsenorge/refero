@@ -1,3 +1,7 @@
+## 23.2.1
+
+- Bugfix: Re-trigger validation when resources/language changes so that error messages in the ValidationSummary update to the new language
+
 ## 23.2.0
 
 - Sublabel now accepts text through an extension sdf-sublabel-text, which is used if the sdf-sublabel extension is not present. This allows
