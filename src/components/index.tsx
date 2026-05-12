@@ -80,6 +80,12 @@ const Refero = (props: ReferoProps): React.JSX.Element | null => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.language, props.syncQuestionnaireResponse]);
+
+  React.useEffect(() => {
+    if (Object.keys(methods.formState.errors).length > 0) {
+      methods.trigger();
+    }
+  }, [resources, methods]);
   const externalRenderProps = {
     onRequestHelpElement,
     onRequestHelpButton,
