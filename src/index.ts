@@ -2,6 +2,7 @@
 export { default as Refero } from './components/index';
 export { default } from './components/index';
 export { ReferoLabel } from './components/referoLabel/ReferoLabel';
+export { ReadOnly } from './components/formcomponents/read-only/readOnly';
 
 //Validation
 export * from './components/validation/rules';
