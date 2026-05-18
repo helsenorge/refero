@@ -1,7 +1,7 @@
 import type { AppDispatch, GlobalState } from '@/reducers';
 import type { Path } from '@/util/refero-core';
 import type { Resources } from '@/util/resources';
-import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource } from 'fhir/r4';
 import type { FieldError } from 'react-hook-form';
 
 /**
@@ -79,6 +79,11 @@ export interface PluginComponentProps {
    * Call this when the user interacts with the field.
    */
   promptLoginMessage?: () => void;
+  /**
+   * Contained resources for this item.
+   * These are additional FHIR resources that are included within the item.
+   */
+  containedResources?: Resource[];
 }
 
 /**
