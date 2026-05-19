@@ -39,6 +39,22 @@ export * from './util/questionnaireInspector';
 export * from './util/refero-core';
 export * from './util/getTopLevelElements';
 export * from './util/pluginUtils';
+export {
+  hasCanonicalValueSet,
+  hasOptions,
+  getOptions,
+  getSystem,
+  getSystemForItem,
+  getDisplay,
+  renderOptions,
+  isAboveDropdownThreshold,
+  getItemControlValue,
+  isAllowedValue,
+  validateInput,
+  getIndexOfAnswer,
+  shouldShowExtraChoice,
+  getContainedOptions,
+} from './util/choice';
 
 //Types
 export * from './types/formTypes/formButton';
