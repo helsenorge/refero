@@ -39,7 +39,7 @@ export interface PluginComponentWrapperProps extends QuestionnaireComponentItemP
  * Use ReferoLabel from refero exports if you want the standard label styling.
  */
 export const PluginComponentWrapper = (props: PluginComponentWrapperProps): React.JSX.Element | null => {
-  const { path, id, pdf, idWithLinkIdAndItemIndex, children, index, linkId, PluginComponent } = props;
+  const { path, id, pdf, idWithLinkIdAndItemIndex, children, index, linkId, containedResources, PluginComponent } = props;
 
   // Get item from Redux
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
@@ -80,8 +80,24 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): Reac
       path,
       index,
       promptLoginMessage,
+      containedResources,
     }),
-    [item, answer, dispatch, onAnswerChange, error, resources, pdf, readOnly, id, idWithLinkIdAndItemIndex, path, index, promptLoginMessage]
+    [
+      item,
+      answer,
+      dispatch,
+      onAnswerChange,
+      error,
+      resources,
+      pdf,
+      readOnly,
+      id,
+      idWithLinkIdAndItemIndex,
+      path,
+      index,
+      promptLoginMessage,
+      containedResources,
+    ]
   );
 
   // Guard: item must exist
