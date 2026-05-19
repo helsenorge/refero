@@ -26,7 +26,7 @@ export * from './reducers/index';
 export { default as rootReducer } from './reducers/index';
 //Hooks
 export { useIsEnabled, isEnableWhenEnabled, useCheckIfEnabled } from './hooks/useIsEnabled';
-export { usePluginDispatch } from './hooks/usePluginDispatch';
+export { usePluginDispatch, type PluginAsyncThunk } from './hooks/usePluginDispatch';
 export { usePluginValidation, type UsePluginValidationOptions, type UsePluginValidationResult } from './hooks/usePluginValidation';
 
 //Utils

@@ -7,7 +7,7 @@ import { describe, it, expect, vi } from 'vitest';
 import type { Resources } from '@/util/resources';
 import type { QuestionnaireItem } from 'fhir/r4';
 
-import { usePluginDispatch } from '../usePluginDispatch';
+import { usePluginDispatch, type PluginAsyncThunk } from '../usePluginDispatch';
 
 const testItem: QuestionnaireItem = {
   linkId: 'test-item',
@@ -19,11 +19,11 @@ const testItem: QuestionnaireItem = {
  * Test component that uses usePluginDispatch and exposes it via a button click.
  */
 // eslint-disable-next-line react-refresh/only-export-components
-const TestDispatchComponent = ({ action, item }: { action: ReturnType<typeof vi.fn>; item: QuestionnaireItem }): React.JSX.Element => {
+const TestDispatchComponent = ({ thunk, item }: { thunk: PluginAsyncThunk; item: QuestionnaireItem }): React.JSX.Element => {
   const pluginDispatch = usePluginDispatch();
 
   const handleClick = (): void => {
-    pluginDispatch(action, [{ linkId: item.linkId, index: 0 }], 42, item, { valueInteger: 42 });
+    pluginDispatch(thunk, item, { valueInteger: 42 });
   };
 
   return (
@@ -34,13 +34,13 @@ const TestDispatchComponent = ({ action, item }: { action: ReturnType<typeof vi.
 };
 
 describe('usePluginDispatch', () => {
-  it('calls the action with correct arguments when dispatched', async () => {
+  it('dispatches the provided thunk', async () => {
     const mockNewState = { refero: { form: { FormDefinition: { Content: null }, FormData: { Content: null }, Language: 'en' } } };
-    const mockThunk = vi.fn().mockReturnValue(() => Promise.resolve(mockNewState));
+    const mockThunk = vi.fn().mockResolvedValue(mockNewState) as unknown as PluginAsyncThunk;
 
     const store = createPluginTestStore(testItem);
 
-    render(<TestDispatchComponent action={mockThunk} item={testItem} />, {
+    render(<TestDispatchComponent thunk={mockThunk} item={testItem} />, {
       wrapper: ({ children }: { children: React.ReactNode }) => (
         <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
           {children}
@@ -51,49 +51,21 @@ describe('usePluginDispatch', () => {
     fireEvent.click(screen.getByTestId('dispatch-btn'));
 
     await waitFor(() => {
-      expect(mockThunk).toHaveBeenCalledWith(
-        [{ linkId: 'test-item', index: 0 }],
-        42,
-        testItem,
-        undefined // multipleAnswers
-      );
+      expect(mockThunk).toHaveBeenCalled();
     });
   });
 
-  it('dispatches the thunk returned by the action', async () => {
-    const innerThunk = vi.fn().mockResolvedValue({
-      refero: { form: { FormDefinition: { Content: null }, FormData: { Content: null }, Language: 'en' } },
-    });
-    const mockAction = vi.fn().mockReturnValue(innerThunk);
-
-    const store = createPluginTestStore(testItem);
-
-    render(<TestDispatchComponent action={mockAction} item={testItem} />, {
-      wrapper: ({ children }: { children: React.ReactNode }) => (
-        <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
-          {children}
-        </PluginTestWrapper>
-      ),
-    });
-
-    fireEvent.click(screen.getByTestId('dispatch-btn'));
-
-    await waitFor(() => {
-      expect(innerThunk).toHaveBeenCalled();
-    });
-  });
-
-  it('passes multipleAnswers parameter when provided', async () => {
+  it('works without an answer payload (e.g. removeCodingStringValueAsync)', async () => {
     const mockNewState = { refero: { form: { FormDefinition: { Content: null }, FormData: { Content: null }, Language: 'en' } } };
-    const mockAction = vi.fn().mockReturnValue(() => Promise.resolve(mockNewState));
+    const mockThunk = vi.fn().mockResolvedValue(mockNewState) as unknown as PluginAsyncThunk;
 
-    const TestMultipleAnswers = (): React.JSX.Element => {
+    const NoAnswerComponent = (): React.JSX.Element => {
       const pluginDispatch = usePluginDispatch();
       const handleClick = (): void => {
-        pluginDispatch(mockAction, [{ linkId: testItem.linkId, index: 0 }], 42, testItem, { valueInteger: 42 }, true);
+        pluginDispatch(mockThunk, testItem);
       };
       return (
-        <button data-testid="dispatch-multi-btn" onClick={handleClick}>
+        <button data-testid="dispatch-no-answer-btn" onClick={handleClick}>
           {'Dispatch'}
         </button>
       );
@@ -101,7 +73,7 @@ describe('usePluginDispatch', () => {
 
     const store = createPluginTestStore(testItem);
 
-    render(<TestMultipleAnswers />, {
+    render(<NoAnswerComponent />, {
       wrapper: ({ children }: { children: React.ReactNode }) => (
         <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
           {children}
@@ -109,15 +81,10 @@ describe('usePluginDispatch', () => {
       ),
     });
 
-    fireEvent.click(screen.getByTestId('dispatch-multi-btn'));
+    fireEvent.click(screen.getByTestId('dispatch-no-answer-btn'));
 
     await waitFor(() => {
-      expect(mockAction).toHaveBeenCalledWith(
-        [{ linkId: 'test-item', index: 0 }],
-        42,
-        testItem,
-        true // multipleAnswers
-      );
+      expect(mockThunk).toHaveBeenCalled();
     });
   });
 
@@ -138,11 +105,11 @@ describe('usePluginDispatch', () => {
         },
       },
     };
-    const mockAction = vi.fn().mockReturnValue(() => Promise.resolve(mockNewState));
+    const mockThunk = vi.fn().mockResolvedValue(mockNewState) as unknown as PluginAsyncThunk;
 
     const store = createPluginTestStore(testItem);
 
-    render(<TestDispatchComponent action={mockAction} item={testItem} />, {
+    render(<TestDispatchComponent thunk={mockThunk} item={testItem} />, {
       wrapper: ({ children }: { children: React.ReactNode }) => (
         <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources, onChange }}>
           {children}

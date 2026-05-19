@@ -1,5 +1,9 @@
-## 23.4.0
+## 24.0.0
 
+- **Breaking**: `usePluginDispatch` now accepts a pre-built async thunk instead of `(action, path, value, item, answer, multipleAnswers?)`.
+  Plugin authors call the action themselves and hand the result to `pluginDispatch`, which makes the hook work with every async action —
+  including `removeCodingStringValueAsync`, `removeCodingValueAsync`, `removeAttachmentAsync`, `toggleCodingValueAsync`,
+  `addRepeatItemAsync`, `deleteRepeatItemAsync`, and `resetAnswerValueAsync`. New `PluginAsyncThunk` type is exported.
 - Export `OPEN_CHOICE_ID` and `OPEN_CHOICE_SYSTEM` constants for use in external plugin components
 
 ## 23.3.1
