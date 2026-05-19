@@ -84,3 +84,5 @@ export { default as CodingSystemConstants } from './constants/codingsystems';
 export * as ExtensionConstants from './constants/extensions';
 
 export { default as ItemControl } from './constants/itemcontrol';
+
+export { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from './constants/index';
