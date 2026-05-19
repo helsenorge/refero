@@ -1,3 +1,7 @@
+## 23.4.0
+
+- Export `OPEN_CHOICE_ID` and `OPEN_CHOICE_SYSTEM` constants for use in external plugin components
+
 ## 23.3.1
 
 - Fix: Add contained resources as prop to plugin component
