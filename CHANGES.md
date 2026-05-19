@@ -1,3 +1,7 @@
+## 23.3.1
+
+- Fix: Add contained resources as prop to plugin component
+
 ## 23.3.0
 
 - Export `ReadOnly` component for use in external plugin components
