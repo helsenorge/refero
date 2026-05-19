@@ -1,58 +1,42 @@
 import { useCallback } from 'react';
 
-import type { Path } from '@/util/refero-core';
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import useOnAnswerChange from './useOnAnswerChange';
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
-import { type GlobalState, useAppDispatch } from '@/reducers';
+import { type AppDispatch, type GlobalState, useAppDispatch } from '@/reducers';
 
-type AsyncThunkAction = (
-  path: Path[],
-  value: unknown,
-  item: QuestionnaireItem,
-  multipleAnswers?: boolean
-) => (dispatch: unknown) => Promise<GlobalState>;
+export type PluginAsyncThunk = (dispatch: AppDispatch, getState: () => GlobalState) => Promise<GlobalState>;
 
 /**
  * Hook that simplifies the dispatch + onAnswerChange pattern for plugin authors.
  *
- * Instead of:
- * ```tsx
- * dispatch(newIntegerValueAsync(path, value, item))?.then(newState =>
- *   onAnswerChange(newState, item, { valueInteger: value })
- * );
- * ```
+ * The plugin author builds the thunk by calling any of Refero's async actions
+ * (`newIntegerValueAsync`, `removeCodingStringValueAsync`, `toggleCodingValueAsync`,
+ * `addRepeatItemAsync`, etc.), then hands it to `pluginDispatch` together with the
+ * `item` and the answer payload to broadcast through `onChange`.
  *
- * Plugin authors can write:
  * ```tsx
  * const pluginDispatch = usePluginDispatch();
- * pluginDispatch(newIntegerValueAsync, path, value, item, { valueInteger: value });
+ *
+ * pluginDispatch(newIntegerValueAsync(path, value, item), item, { valueInteger: value });
+ * pluginDispatch(removeCodingStringValueAsync(path, item), item);
+ * pluginDispatch(toggleCodingValueAsync(path, coding, item, isSelected), item, { valueCoding: coding });
  * ```
  */
 export const usePluginDispatch = (): ((
-  action: AsyncThunkAction,
-  path: Path[],
-  value: unknown,
+  thunk: PluginAsyncThunk,
   item: QuestionnaireItem,
-  answer: QuestionnaireResponseItemAnswer,
-  multipleAnswers?: boolean
+  answer?: QuestionnaireResponseItemAnswer
 ) => void) => {
   const dispatch = useAppDispatch();
   const { globalOnChange } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
   return useCallback(
-    (
-      action: AsyncThunkAction,
-      path: Path[],
-      value: unknown,
-      item: QuestionnaireItem,
-      answer: QuestionnaireResponseItemAnswer,
-      multipleAnswers?: boolean
-    ): void => {
-      dispatch(action(path, value, item, multipleAnswers))?.then((newState: GlobalState) => onAnswerChange(newState, item, answer));
+    (thunk: PluginAsyncThunk, item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer): void => {
+      dispatch(thunk)?.then((newState: GlobalState) => onAnswerChange(newState, item, answer));
     },
     [dispatch, onAnswerChange]
   );
