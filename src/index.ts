@@ -2,6 +2,7 @@
 export { default as Refero } from './components/index';
 export { default } from './components/index';
 export { ReferoLabel } from './components/referoLabel/ReferoLabel';
+export { ReadOnly } from './components/formcomponents/read-only/readOnly';
 
 //Validation
 export * from './components/validation/rules';
@@ -38,6 +39,22 @@ export * from './util/questionnaireInspector';
 export * from './util/refero-core';
 export * from './util/getTopLevelElements';
 export * from './util/pluginUtils';
+export {
+  hasCanonicalValueSet,
+  hasOptions,
+  getOptions,
+  getSystem,
+  getSystemForItem,
+  getDisplay,
+  renderOptions,
+  isAboveDropdownThreshold,
+  getItemControlValue,
+  isAllowedValue,
+  validateInput,
+  getIndexOfAnswer,
+  shouldShowExtraChoice,
+  getContainedOptions,
+} from './util/choice';
 
 //Types
 export * from './types/formTypes/formButton';

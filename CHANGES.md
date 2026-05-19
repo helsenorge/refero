@@ -1,3 +1,7 @@
+## 23.3.0
+
+- Export `ReadOnly` component for use in external plugin components
+
 ## 23.2.1
 
 - Bugfix: Re-trigger validation when resources/language changes so that error messages in the ValidationSummary update to the new language
