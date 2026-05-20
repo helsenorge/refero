@@ -6,7 +6,6 @@ import type { QuestionnaireComponentItemProps } from '@/components/createQuestio
 import type { PluginComponentProps } from '@/types/componentPlugin';
 
 import { PluginErrorBoundary } from './PluginErrorBoundary';
-import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
@@ -103,23 +102,6 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): Reac
   // Guard: item must exist
   if (!item) {
     return null;
-  }
-
-  // PDF or ReadOnly mode - render simplified view
-  if (pdf || readOnly) {
-    return (
-      <ReadOnly
-        pdf={pdf}
-        id={id}
-        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
-        item={item}
-        value={answer}
-        pdfValue={resources?.ikkeBesvart || ''}
-        errors={error}
-      >
-        {children}
-      </ReadOnly>
-    );
   }
 
   // Render delete/repeat buttons to pass as children to plugin
