@@ -1,3 +1,8 @@
+## 24.0.1
+
+- Fix: Plugin component now receives `readOnly` and `pdf` props and renders its own readonly/pdf view. Previously the wrapper
+  short-circuited to `ReadOnly` before the item answer was resolved, so plugins never saw those props.
+
 ## 24.0.0
 
 - **Breaking**: `usePluginDispatch` now accepts a pre-built async thunk instead of `(action, path, value, item, answer, multipleAnswers?)`.
