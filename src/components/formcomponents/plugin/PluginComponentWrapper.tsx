@@ -44,7 +44,7 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): Reac
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
 
   // Get external render context - same pattern as Integer, Choice, etc.
-  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const { promptLoginMessage, globalOnChange, resources, validateScriptInjection } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
   // Get form context for error state (plugins register their own fields for validation)
@@ -80,6 +80,7 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): Reac
       index,
       promptLoginMessage,
       containedResources,
+      validateScriptInjection: !!validateScriptInjection,
     }),
     [
       item,
@@ -96,6 +97,7 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): Reac
       index,
       promptLoginMessage,
       containedResources,
+      validateScriptInjection,
     ]
   );
 
