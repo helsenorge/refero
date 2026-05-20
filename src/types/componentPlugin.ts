@@ -84,6 +84,12 @@ export interface PluginComponentProps {
    * These are additional FHIR resources that are included within the item.
    */
   containedResources?: Resource[];
+
+  /**
+   * Whether to validate text inputs for script injection (XSS).
+   * Derived from the form consumer's configuration.
+   */
+  validateScriptInjection?: boolean;
 }
 
 /**

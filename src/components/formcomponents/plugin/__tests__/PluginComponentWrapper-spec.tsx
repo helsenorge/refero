@@ -117,27 +117,25 @@ describe('PluginComponentWrapper', () => {
   });
 
   describe('PDF mode', () => {
-    it('renders ReadOnly component when pdf is true', () => {
+    it('renders plugin with pdf prop set to true when pdf is true', () => {
       const pdfProps = { ...defaultProps, pdf: true };
       const { container } = renderWrapper(pdfProps);
 
-      // Should NOT render the plugin
-      expect(screen.queryByTestId('mock-plugin')).not.toBeInTheDocument();
-      // Should NOT have the plugin wrapper class
+      expect(screen.getByTestId('mock-plugin')).toBeInTheDocument();
+      expect(screen.getByTestId('plugin-pdf')).toHaveTextContent('true');
       // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-      expect(container.querySelector('.page_refero__component_plugin')).not.toBeInTheDocument();
+      expect(container.querySelector('.page_refero__component_plugin')).toBeInTheDocument();
     });
   });
 
   describe('ReadOnly mode', () => {
-    it('renders ReadOnly component when item is readOnly', () => {
+    it('renders plugin with readOnly prop set to true when item is readOnly', () => {
       const { container } = renderWrapper(defaultProps, readOnlyItem);
 
-      // Should NOT render the plugin
-      expect(screen.queryByTestId('mock-plugin')).not.toBeInTheDocument();
-      // Should NOT have the plugin wrapper class
+      expect(screen.getByTestId('mock-plugin')).toBeInTheDocument();
+      expect(screen.getByTestId('plugin-readonly')).toHaveTextContent('true');
       // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-      expect(container.querySelector('.page_refero__component_plugin')).not.toBeInTheDocument();
+      expect(container.querySelector('.page_refero__component_plugin')).toBeInTheDocument();
     });
   });
 
