@@ -1,3 +1,8 @@
+## 24.0.2
+
+- Fix: `usePluginValidation` no longer triggers premature validation when a plugin component mounts in step-view after a previous step has
+  been submitted. The hook now skips `shouldValidate` on the initial mount, preventing false error states on step navigation.
+
 ## 24.0.1
 
 - Fix: Plugin component now receives `readOnly` and `pdf` props and renders its own readonly/pdf view. Previously the wrapper
