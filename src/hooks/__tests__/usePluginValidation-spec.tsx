@@ -321,4 +321,97 @@ describe('usePluginValidation', () => {
       expect(screen.getByTestId('has-error')).toHaveTextContent('yes');
     });
   });
+
+  it('does not validate on initial mount when isSubmitted is already true (step-view scenario)', async () => {
+    const store = createPluginTestStore(requiredItem);
+
+    // First render a field and submit to set isSubmitted = true
+    const { unmount } = render(
+      <TestPluginField
+        item={requiredItem}
+        idWithLinkIdAndItemIndex="step1-field-0"
+        value={42}
+        resources={defaultPluginTestResources as Resources}
+      />,
+      {
+        wrapper: ({ children }: { children: React.ReactNode }) => (
+          <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
+            {children}
+          </PluginTestWrapper>
+        ),
+      }
+    );
+
+    // Submit the form — this sets formState.isSubmitted = true
+    fireEvent.click(screen.getByTestId('submit'));
+    await waitFor(() => {
+      expect(screen.getByTestId('has-error')).toHaveTextContent('no');
+    });
+
+    // Unmount first field (simulates navigating away from step 1)
+    unmount();
+
+    // Mount a new required field with no value (simulates step 2 mounting)
+    render(
+      <TestPluginField
+        item={requiredItem}
+        idWithLinkIdAndItemIndex="step2-field-0"
+        value={undefined}
+        resources={defaultPluginTestResources as Resources}
+      />,
+      {
+        wrapper: ({ children }: { children: React.ReactNode }) => (
+          <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
+            {children}
+          </PluginTestWrapper>
+        ),
+      }
+    );
+
+    // The field should NOT show an error immediately on mount
+    await waitFor(() => {
+      expect(screen.getByTestId('has-error')).toHaveTextContent('no');
+    });
+  });
+
+  it('re-validates on value change after submission in step-view', async () => {
+    const store = createPluginTestStore(requiredItem);
+
+    // Render field, submit to set isSubmitted = true, then rerender with new value
+    const { rerender } = render(
+      <TestPluginField
+        item={requiredItem}
+        idWithLinkIdAndItemIndex="test-item-0"
+        value={42}
+        resources={defaultPluginTestResources as Resources}
+      />,
+      {
+        wrapper: ({ children }: { children: React.ReactNode }) => (
+          <PluginTestWrapper store={store} referoProps={{ resources: defaultPluginTestResources as Resources }}>
+            {children}
+          </PluginTestWrapper>
+        ),
+      }
+    );
+
+    // Submit — passes because value is 42
+    fireEvent.click(screen.getByTestId('submit'));
+    await waitFor(() => {
+      expect(screen.getByTestId('has-error')).toHaveTextContent('no');
+    });
+
+    // Change value to undefined — should trigger re-validation since isSubmitted and not initial mount
+    rerender(
+      <TestPluginField
+        item={requiredItem}
+        idWithLinkIdAndItemIndex="test-item-0"
+        value={undefined}
+        resources={defaultPluginTestResources as Resources}
+      />
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('has-error')).toHaveTextContent('yes');
+    });
+  });
 });
