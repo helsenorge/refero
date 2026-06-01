@@ -159,20 +159,24 @@ function getMarkdownValue(
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
   const renderer = new marked.Renderer();
 
-  renderer.link = ({ href, title, text }): string => {
-    const ariaLabel = getAriaLabelTextForLink(href, text, linkOpensInNewTabText);
+  renderer.link = function ({ href, title, tokens }): string {
+    const renderedText = this.parser.parseInline(tokens);
+    const plainText = renderedText.replace(/<[^>]*>/g, '');
+    const ariaLabel = getAriaLabelTextForLink(href, plainText, linkOpensInNewTabText);
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
-    } target="_blank" rel="noopener noreferrer" class="external" aria-label="${ariaLabel}">${text}</a>`;
+    } target="_blank" rel="noopener noreferrer" class="external" aria-label="${ariaLabel}">${renderedText}</a>`;
     return urlString;
   };
 
   const rendererSameWindow = new marked.Renderer();
-  rendererSameWindow.link = ({ href, title, text }): string => {
-    const ariaLabel = getAriaLabelTextForLink(href, text, linkOpensInNewTabText);
+  rendererSameWindow.link = function ({ href, title, tokens }): string {
+    const renderedText = this.parser.parseInline(tokens);
+    const plainText = renderedText.replace(/<[^>]*>/g, '');
+    const ariaLabel = getAriaLabelTextForLink(href, plainText, linkOpensInNewTabText);
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href
-    )}" rel="noopener noreferrer" aria-label="${ariaLabel}">${text}</a>`;
+    )}" rel="noopener noreferrer" aria-label="${ariaLabel}">${renderedText}</a>`;
     return urlString;
   };
 

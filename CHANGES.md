@@ -1,3 +1,8 @@
+## 24.1.2
+
+- Export SafeText Component
+- Fix markdown rendering of links
+
 ## 24.0.2
 
 - Fix: `usePluginValidation` no longer triggers premature validation when a plugin component mounts in step-view after a previous step has
