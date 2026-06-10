@@ -4,13 +4,12 @@ import { type FieldValues, type RegisterOptions, useFormContext } from 'react-ho
 
 import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import type { Options } from '@/types/formTypes/radioGroupOptions';
-import type { QuestionnaireItem } from 'fhir/r4';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import { Slider, type SliderStep } from '@helsenorge/designsystem-react/components/Slider';
+import { Slider } from '@helsenorge/designsystem-react/components/Slider';
 
 import styles from '../common-styles.module.css';
-import { convertToEmoji } from './sliderUtils';
+import { getCodes, getLeftRightLabels, mapToSliderStep, SliderDisplayTypes } from './sliderUtils';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -19,14 +18,11 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, isInteger, maxValue, minValue, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 import codeSystems from '@/constants/codingsystems';
-import { Extensions } from '@/constants/extensions';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useAppSelector } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { getId, isReadOnly } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
-import { getExtensionFromExtensions } from '@/util/extension';
-import { isString } from '@/util/typeguards';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
@@ -34,13 +30,6 @@ export type SliderProps = QuestionnaireComponentItemProps & {
   pdfValue?: string | number;
   options?: Options[];
 };
-enum SliderDisplayTypes {
-  Label = 'label',
-  OrdinalValue = 'ordnialValue',
-  default = '',
-}
-
-type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView = (props: SliderProps): React.JSX.Element | null => {
   const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children, pdfValue, options } = props;
@@ -154,40 +143,5 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
     </div>
   );
 };
-
-function mapToSliderStep(option: Options, displayType: SliderDisplayTypes): SliderStep {
-  return {
-    label: getStepLabel(option, displayType),
-    emojiUniCode: getStepEmoji(option),
-  };
-}
-
-function getCodes(options?: Options[]): string[] {
-  return options?.map(option => option.type).filter(isString) || [];
-}
-
-function getLeftRightLabels(item?: QuestionnaireItem): LeftRightLabels | undefined {
-  if (!item) return undefined;
-
-  const displayLabels = getCodingSystemCodes(item, codeSystems.SliderLabels);
-
-  return {
-    leftLabel: displayLabels?.find(x => x.code === 'LabelLeft')?.display || '',
-    rightLabel: displayLabels?.find(x => x.code === 'LabelRight')?.display || '',
-  };
-}
-
-function getStepLabel(option: Options, displayType: SliderDisplayTypes): number | string | undefined {
-  if (displayType === SliderDisplayTypes.OrdinalValue)
-    return getExtensionFromExtensions(Extensions.ORDINAL_VALUE_URL, option.extensions)?.valueDecimal;
-  return option.label;
-}
-
-function getStepEmoji(option: Options): string | undefined {
-  const emojiLabel = getExtensionFromExtensions(Extensions.VALUESET_LABEL_URL, option.extensions)?.valueString?.trim();
-  if (!emojiLabel) return undefined;
-
-  return convertToEmoji(emojiLabel);
-}
 
 export default SliderView;

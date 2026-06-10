@@ -4,11 +4,11 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire } from 'fhir/r4';
 
-import { convertToEmoji, getCodePoint, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../sliderUtils';
 import { sliderView as q, sliderViewValueSet as q2 } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
+import { convertToEmoji, getCodePoint, getStepLabel, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../sliderUtils';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -410,6 +410,31 @@ describe('Slider-view', () => {
   };
   runSliderTests(q);
   runSliderTests(q2);
+
+  // Both the correct and the misspelled ordinalValue display type codes must resolve to the ordinal value
+  describe('getStepLabel ordinalValue display type', () => {
+    const option = {
+      type: 'ja',
+      label: 'Ja',
+      extensions: [
+        {
+          url: Extensions.ORDINAL_VALUE_URL,
+          valueDecimal: 1.1,
+        },
+      ],
+    };
+
+    test("returns the ordinal value for 'ordinalValue'", () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect(getStepLabel(option, 'ordinalValue' as any)).toBe(1.1);
+    });
+
+    test("returns the ordinal value for the misspelled 'ordnialValue'", () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect(getStepLabel(option, 'ordnialValue' as any)).toBe(1.1);
+    });
+  });
+
   // Tests for getCodePoint function
   describe('getCodePoint', () => {
     test('decimal input', () => {

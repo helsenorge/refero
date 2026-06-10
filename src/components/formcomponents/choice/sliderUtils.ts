@@ -1,3 +1,66 @@
+import type { Options } from '@/types/formTypes/radioGroupOptions';
+import type { QuestionnaireItem } from 'fhir/r4';
+
+import type { SliderStep } from '@helsenorge/designsystem-react/components/Slider';
+
+import codeSystems from '@/constants/codingsystems';
+import { Extensions } from '@/constants/extensions';
+import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
+import { getExtensionFromExtensions } from '@/util/extension';
+import { isString } from '@/util/typeguards';
+
+type LeftRightLabels = { leftLabel: string; rightLabel: string };
+
+const ordinalValueDisplayTypes = ['ordinalValue', 'ordnialValue'] as const;
+
+export enum SliderDisplayTypes {
+  Label = 'label',
+  OrdinalValue = 'ordinalValue',
+  default = '',
+}
+
+export function isOrdinalValueDisplayType(displayType: unknown): boolean {
+  return ordinalValueDisplayTypes.includes(displayType as (typeof ordinalValueDisplayTypes)[number]);
+}
+
+export function getStepLabel(
+  option: Options,
+  displayType: SliderDisplayTypes | ({ displayType: 'ordinalValue' } & SliderDisplayTypes)
+): number | string | undefined {
+  if (isOrdinalValueDisplayType(displayType))
+    return getExtensionFromExtensions(Extensions.ORDINAL_VALUE_URL, option.extensions)?.valueDecimal;
+  return option.label;
+}
+
+export function getStepEmoji(option: Options): string | undefined {
+  const emojiLabel = getExtensionFromExtensions(Extensions.VALUESET_LABEL_URL, option.extensions)?.valueString?.trim();
+  if (!emojiLabel) return undefined;
+
+  return convertToEmoji(emojiLabel);
+}
+
+export function mapToSliderStep(option: Options, displayType: SliderDisplayTypes): SliderStep {
+  return {
+    label: getStepLabel(option, displayType),
+    emojiUniCode: getStepEmoji(option),
+  };
+}
+
+export function getCodes(options?: Options[]): string[] {
+  return options?.map(option => option.type).filter(isString) || [];
+}
+
+export function getLeftRightLabels(item?: QuestionnaireItem): LeftRightLabels | undefined {
+  if (!item) return undefined;
+
+  const displayLabels = getCodingSystemCodes(item, codeSystems.SliderLabels);
+
+  return {
+    leftLabel: displayLabels?.find(x => x.code === 'LabelLeft')?.display || '',
+    rightLabel: displayLabels?.find(x => x.code === 'LabelRight')?.display || '',
+  };
+}
+
 export const isValidDecimal = (str: string): boolean => /^\d+$/.test(str);
 
 export const isValidHex = (str: string): boolean => /^(0x)?[0-9A-Fa-f]{1,6}$/.test(str);
