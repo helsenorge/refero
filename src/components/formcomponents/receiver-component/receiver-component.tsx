@@ -231,7 +231,7 @@ const ReceiverComponent = ({
         />
         <Select
           {...rest}
-          aria-describedby={`${getId(id)}-receiver-${selectKey}-formfieldtag`}
+          aria-describedby={`${getId(id)}-label`}
           key={`${selectKey}-${level}`}
           onChange={(e): void => {
             handleSelectChange(e);

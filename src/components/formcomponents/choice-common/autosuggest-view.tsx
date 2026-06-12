@@ -232,7 +232,7 @@ const AutosuggestView = (props: AutosuggestProps): React.JSX.Element | null => {
           inputProps={
             {
               ...rest,
-              'aria-describedby': `${getId(id)}-autosuggest-formfieldtag`,
+              'aria-describedby': `${getId(id)}-autosuggest-label`,
               id: getId(id),
               'data-testid': `test-autosuggest-${getId(id)}`,
               width,

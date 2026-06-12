@@ -89,7 +89,7 @@ const DropdownView = (props: Props): React.JSX.Element | null => {
 
         <Select
           {...rest}
-          aria-describedby={`${getId(id)}-dropdown-formfieldtag`}
+          aria-describedby={`${getId(id)}-open-choice-label`}
           width={getWith(options)}
           selectId={getId(id)}
           className="page_refero__input"
