@@ -74,7 +74,7 @@ const RadioView = (props: Props): React.JSX.Element => {
         {options?.map((option: Options, index: number) => (
           <RadioButton
             {...rest}
-            aria-describedby={`${getId(id)}-radio-formfieldtag`}
+            aria-describedby={`${getId(id)}-choice-label`}
             onChange={(e): void => {
               handleChange(option.type);
               onChange(e);

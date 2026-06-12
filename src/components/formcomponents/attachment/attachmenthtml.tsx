@@ -188,7 +188,7 @@ const AttachmentHtml = (props: Props): React.JSX.Element | null => {
           attachmentLabel={resources?.supportedFileFormats}
         />
         <FileUpload
-          aria-describedby={`${getId(id)}-attachment-formfieldtag`}
+          aria-describedby={`${getId(id)}-attachment-label`}
           {...register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined)}
           wrapperTestId={`${getId(id)}-attachment`}
           inputId={getId(id)}

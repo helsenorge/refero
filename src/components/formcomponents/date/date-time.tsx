@@ -268,7 +268,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
           <div>
             <DatePicker
               {...restDate}
-              aria-describedby={`${getId(id)}-date-time-formfieldtag`}
+              aria-describedby={`${getId(id)}-label`}
               inputId={`${getId(id)}-datepicker`}
               testId={`test-datetime-${getId(id)}`}
               autoComplete=""

@@ -120,7 +120,7 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
         />
         <Slider
           {...rest}
-          aria-describedby={`${getId(id)}-slider-formfieldtag`}
+          aria-describedby={`${getId(id)}-slider-choice-label`}
           id={getId(id)}
           labelLeft={leftRightLabels?.leftLabel}
           labelRight={leftRightLabels?.rightLabel}

@@ -175,7 +175,7 @@ export const DateYearMonthInput = ({
       <div className={styles.yearMonthWrapper}>
         <Input
           {...restYear}
-          aria-describedby={`${getId(id)}-month-formfieldtag`}
+          aria-describedby={`${getId(id)}-label`}
           type="number"
           inputId={`${getId(id)}-input`}
           testId={`test-yearmonth-${getId(id)}`}

@@ -125,7 +125,7 @@ export const String = (props: Props): React.JSX.Element | null => {
         />
         <Input
           {...rest}
-          aria-describedby={`${getId(id)}-string-formfieldtag`}
+          aria-describedby={`${getId(id)}-string-label`}
           value={localValue}
           readOnly={item?.readOnly}
           onChange={(e): void => {

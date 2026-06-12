@@ -248,7 +248,7 @@ const NotepadPlugin: FC<PluginComponentProps> = ({
           overflow: 'hidden',
           background: readOnly ? '#f9fafb' : '#fff',
         }}
-        aria-describedby={errorMessage ? `${id}-error` : undefined}
+        aria-describedby={`${id}-label`}
       />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>

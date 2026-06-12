@@ -135,7 +135,7 @@ export const Text = (props: Props): React.JSX.Element | null => {
 
         <Textarea
           {...rest}
-          aria-describedby={`${getId(id)}-text-formfieldtag`}
+          aria-describedby={`${getId(id)}-text-label`}
           onChange={(e): void => {
             onTextAreaChange(e);
             onChange(e);

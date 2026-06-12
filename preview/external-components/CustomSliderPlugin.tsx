@@ -119,7 +119,7 @@ export const CustomSliderPlugin: FC<PluginComponentProps> = ({
             value={displayValue}
             onChange={handleChange}
             className="custom-slider-plugin__input"
-            aria-describedby={error ? `${id}-error` : undefined}
+            aria-describedby={`${id}-label`}
             aria-invalid={!!error}
           />
           <span className="custom-slider-plugin__value-display">{displayValue}</span>

@@ -153,7 +153,7 @@ export const DateDayInput = ({
 
       <DatePicker
         {...rest}
-        aria-describedby={`${getId(id)}-date-formfieldtag`}
+        aria-describedby={`${getId(id)}-label`}
         inputId={`${getId(id)}-datepicker`}
         testId={`test-dateDay-${getId(id)}`}
         autoComplete=""
