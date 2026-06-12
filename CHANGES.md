@@ -1,3 +1,7 @@
+## 24.1.4
+
+- Fixed accessibility error by giving form components the correct id in aria-describedBy
+
 ## 24.1.3
 
 - Fix type in ordinalValue to accept both the typo and the correct spelling of "ordinalValue"
