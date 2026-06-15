@@ -114,7 +114,7 @@ export function createQuestionnaireResponseItem(item: QuestionnaireItem): Questi
   return responseItem;
 }
 export function evaluateCalculatedExpressions(
-  questionnaire: Questionnaire | Bundle<Questionnaire>,
+  questionnaire: Questionnaire | Bundle,
   response: QuestionnaireResponse,
   bundleIndex?: number
 ): QuestionnaireResponse {
@@ -183,7 +183,10 @@ export function evaluateCalculatedExpressions(
         }
       });
   }
-  const q = questionnaire.resourceType === 'Bundle' ? questionnaire?.entry?.[bundleIndex ?? 0].resource : questionnaire;
+  const q =
+    questionnaire.resourceType === 'Bundle'
+      ? (questionnaire?.entry?.[bundleIndex ?? 0].resource as Questionnaire | undefined)
+      : questionnaire;
   if (q && q?.item && response?.item) {
     traverseItems(q.item, response.item);
   }
