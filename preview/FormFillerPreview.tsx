@@ -56,12 +56,12 @@ const componentPlugins: ComponentPlugin[] = [
   },
 ];
 
-const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
+const getQuestionnaireFromBubndle = (bundle: Bundle | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
     return bundle;
   } else {
     return (
-      bundle?.entry?.[lang].resource ?? {
+      (bundle?.entry?.[lang].resource as Questionnaire | undefined) ?? {
         resourceType: 'Questionnaire',
         status: QuestionnaireStatusCodes.DRAFT,
       }
@@ -194,7 +194,7 @@ function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | nu
 const FormFillerPreview = (): React.JSX.Element => {
   const [lang, setLang] = useState<number>(0);
   const [store] = useState(() => reduxStore());
-  const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
+  const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle | Questionnaire;
   const mainQuestionnaire = getQuestionnaireFromBubndle(parsedQuestionnaire, 0);
 
   const parsedQuestionnaireResponse = JSON.parse(JSON.stringify(qr ?? {}, emptyPropertyReplacer)) as QuestionnaireResponse;
