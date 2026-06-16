@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "rootDir": "./src",
+    "noEmit": true
+  },
+  "include": ["src"],
+  "exclude": ["**/__mocks__/*", "**/__data__/*", "**/__tests__/*", "**/__node_modules__/*"]
+}
