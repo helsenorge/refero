@@ -11,7 +11,7 @@ import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
 import { postTaskToFhirPathWorker } from '@/workers/fhirpath-rpc';
 
 type InputParams = {
-  questionnaire: Questionnaire;
+  questionnaire: Questionnaire | null;
   questionnaireResponse: QuestionnaireResponse;
   dispatch: AppDispatch;
   actionRequester?: ActionRequester;

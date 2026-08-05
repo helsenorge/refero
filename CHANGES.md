@@ -1,3 +1,12 @@
+## 25.0.0
+
+- **Breaking**: Require Node.js 26 and npm 11 or newer
+- Upgrade Helsenorge core packages to v39 and design system packages to v15
+- Upgrade the build and test toolchain to Vite 8, TypeScript 6, and jsdom 29
+- Migrate the Vite configuration to native TypeScript path resolution and Rolldown-compatible settings
+- Upgrade fhirpath to v5.1 with ES module support and named imports
+- Fix type and package imports exposed by the upgraded toolchain
+
 ## 24.1.4
 
 - Fixed accessibility error by giving form components the correct id in aria-describedBy

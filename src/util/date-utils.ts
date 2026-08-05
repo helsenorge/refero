@@ -24,7 +24,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import { safeParseJSON } from './date-fns-utils';
 import { getExtension, getValidationTextExtension } from './extension';
 
-import '@helsenorge/datepicker/components/DatePicker/';
+import '@helsenorge/datepicker/components/DatePicker';
 
 import { Extensions } from '@/constants/extensions';
 

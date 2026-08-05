@@ -24,9 +24,7 @@
       "@formcomponents/*": ["./src/components/formcomponents/*"],
       "@constants/*": ["./src/constants/*"],
       "@test/*": ["./test/*"],
-      "@workers/*": ["./src/workers/*"],
-
-      "react": ["./node_modules/@types/react"]
+      "@workers/*": ["./src/workers/*"]
     }
   },
   "references": [{ "path": "./tsconfig.node.json" }]
