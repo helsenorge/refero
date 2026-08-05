@@ -6,12 +6,38 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 import type { QuestionnaireItem, Extension, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
+const MAX_COMPILED_EXPRESSION_CACHE_SIZE = 100;
+const FHIRPATH_OPTIONS = { preciseMath: true } as const;
+type CompiledExpression = ReturnType<typeof compile<typeof FHIRPATH_OPTIONS>>;
+
+const createCompiledExpression = (expression: string): CompiledExpression => compile(expression, fhirpath_r4_model, FHIRPATH_OPTIONS);
+const compiledExpressionCache = new Map<string, ReturnType<typeof createCompiledExpression>>();
+
+const getCompiledExpression = (expression: string): ReturnType<typeof createCompiledExpression> => {
+  const cachedExpression = compiledExpressionCache.get(expression);
+  if (cachedExpression) {
+    compiledExpressionCache.delete(expression);
+    compiledExpressionCache.set(expression, cachedExpression);
+    return cachedExpression;
+  }
+
+  const compiledExpression = createCompiledExpression(expression);
+  if (compiledExpressionCache.size >= MAX_COMPILED_EXPRESSION_CACHE_SIZE) {
+    const leastRecentlyUsedExpression = compiledExpressionCache.keys().next().value;
+    if (leastRecentlyUsedExpression !== undefined) {
+      compiledExpressionCache.delete(leastRecentlyUsedExpression);
+    }
+  }
+  compiledExpressionCache.set(expression, compiledExpression);
+  return compiledExpression;
+};
+
 export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireItem, fhirExpression?: string): Promise<Date | undefined> {
   if (!item || !fhirExpression) {
     return undefined;
   }
   const iCopy = structuredClone(item);
-  const result = await evaluate(iCopy, fhirExpression, undefined, fhirpath_r4_model);
+  const result = await evaluate(iCopy, fhirExpression, undefined, fhirpath_r4_model, FHIRPATH_OPTIONS);
 
   if (Array.isArray(result)) {
     return new Date(result[0]);
@@ -21,7 +47,7 @@ export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireIt
 }
 export async function getAnswerFromResponseItem(responseItem?: QuestionnaireResponseItem): Promise<any> {
   try {
-    return await evaluate(responseItem, 'answer');
+    return await evaluate(responseItem, 'answer', undefined, fhirpath_r4_model, FHIRPATH_OPTIONS);
   } catch (e) {
     console.log(e);
   }
@@ -32,11 +58,10 @@ export async function getResonseItem(linkId: string, response: QuestionnaireResp
     return undefined;
   }
   try {
-    const compiledExpression = compile(
-      `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`,
-      fhirpath_r4_model
+    const compiledExpression = getCompiledExpression(
+      'item.descendants().where(linkId=%linkId) | answer.item.descendants().where(linkId=%linkId)'
     );
-    return compiledExpression(response);
+    return compiledExpression(response, { linkId });
   } catch (e) {
     console.log(e);
     return undefined;
@@ -48,7 +73,13 @@ export const descendantsHasAnswer = (questionnaire?: QuestionnaireResponseItem[]
     return false; // Return false if the questionnaire is null, undefined, or has no items.
   }
   try {
-    const result = evaluate({ item: questionnaire }, 'item.descendants().where(answer.exists()).exists()');
+    const result = evaluate(
+      { item: questionnaire },
+      'item.descendants().where(answer.exists()).exists()',
+      undefined,
+      fhirpath_r4_model,
+      FHIRPATH_OPTIONS
+    );
     return Array.isArray(result) ? result[0] === true : false;
   } catch (e) {
     console.log(e);
@@ -60,7 +91,7 @@ export const hasDescendants = (questionnaire?: QuestionnaireResponseItem[] | nul
     return false; // Return false if the questionnaire is null, undefined, or has no items.
   }
   try {
-    const result = evaluate({ item: questionnaire }, 'item.descendants().exists()');
+    const result = evaluate({ item: questionnaire }, 'item.descendants().exists()', undefined, fhirpath_r4_model, FHIRPATH_OPTIONS);
     console.log(result);
     return Array.isArray(result) ? result[0] === true : false;
   } catch (e) {
@@ -79,7 +110,7 @@ export function evaluateFhirpathExpressionToGetString(
   const expression = useLegacyValueString ? qExt.valueString : qExt.valueExpression?.expression;
   try {
     if (expression) {
-      const compiledExpression = compile(expression, fhirpath_r4_model);
+      const compiledExpression = getCompiledExpression(expression);
 
       return compiledExpression(qCopy);
     } else {
@@ -91,7 +122,7 @@ export function evaluateFhirpathExpressionToGetString(
 }
 export async function evaluateFhirpathExpression(expression: string, context: any): Promise<any[]> {
   try {
-    const compiledExpression = compile(expression, fhirpath_r4_model);
+    const compiledExpression = getCompiledExpression(expression);
     return compiledExpression(context);
   } catch (error) {
     console.error(`Error evaluating FHIRPath expression "${expression}":`, error);
@@ -114,7 +145,7 @@ export function evaluateExtension(path: string | Path, questionnare?: Questionna
    * @param {object} model - The "model" data object specific to a domain, e.g. R4.
    *  For example, you could pass in the result of require("fhirpath/fhir-context/r4");
    */
-  return evaluate(qCopy, path, context, fhirpath_r4_model);
+  return evaluate(qCopy, path, context, fhirpath_r4_model, FHIRPATH_OPTIONS);
 }
 export const isGroupAndDescendantsHasAnswer = async (responseItem?: QuestionnaireResponseItem): Promise<boolean> => {
   if (!responseItem) {
@@ -126,7 +157,7 @@ export const isGroupAndDescendantsHasAnswer = async (responseItem?: Questionnair
       item: [responseItem],
     };
 
-    const result: any[] = await evaluate(resource, 'descendants().answer.exists()', undefined, fhirpath_r4_model);
+    const result: any[] = await evaluate(resource, 'descendants().answer.exists()', undefined, fhirpath_r4_model, FHIRPATH_OPTIONS);
 
     const hasAnswer = result[0] === true;
     return hasAnswer;
@@ -137,9 +168,8 @@ export const isGroupAndDescendantsHasAnswer = async (responseItem?: Questionnair
 };
 export async function getResponseItem(linkId: string, response: QuestionnaireResponse): Promise<any[] | undefined> {
   if (!linkId || !response) return undefined;
-  const compiled = compile(
-    `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`,
-    fhirpath_r4_model
+  const compiledExpression = getCompiledExpression(
+    'item.descendants().where(linkId=%linkId) | answer.item.descendants().where(linkId=%linkId)'
   );
-  return compiled(response);
+  return compiledExpression(response, { linkId });
 }
