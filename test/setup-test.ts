@@ -59,37 +59,6 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
-vi.mock('@/workers/fhir-path.worker.ts', async importOriginal => {
-  // Get the original module's exports if needed (optional)
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const original = await importOriginal<typeof import('@/workers/fhir-path.worker.ts')>();
-
-  // Create a fake class that we can spy on
-  const MockWorker = vi.fn(() => {
-    // Constructor logic if needed (usually not)
-  });
-
-  // Mock the methods on the prototype. This is what instances will inherit.
-  MockWorker.prototype.postMessage = vi.fn();
-  MockWorker.prototype.terminate = vi.fn();
-  MockWorker.prototype.addEventListener = vi.fn();
-  MockWorker.prototype.removeEventListener = vi.fn();
-  // Ensure onmessage/onerror are mock functions on the instance
-  Object.defineProperty(MockWorker.prototype, 'onmessage', {
-    get: vi.fn(() => vi.fn()),
-    set: vi.fn(),
-  });
-  Object.defineProperty(MockWorker.prototype, 'onerror', {
-    get: vi.fn(() => vi.fn()),
-    set: vi.fn(),
-  });
-
-  return {
-    ...original, // Spread original exports
-    default: MockWorker, // Override the default export with our mock class
-  };
-});
-
 afterEach(() => {
   vi.useRealTimers();
   vi.clearAllMocks();

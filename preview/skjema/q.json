@@ -1,139 +1,454 @@
 {
-  "resourceType": "Bundle",
-  "type": "searchset",
-  "total": 2,
-  "entry": [
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "be2cb59e-d91b-43db-878a-ce7464871d92",
+  "name": "Test_Visuelle_Komponenter_Alle",
+  "title": "Testskjema for visuelle komponenter",
+  "description": "Testskjema for visuelle komponenter.",
+  "version": "0.0.2",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+  },
+  "contact": [{ "name": "http://www.nhn.no" }],
+  "subjectType": ["Patient"],
+  "extension": [
     {
-      "resource": {
-        "title": "TEST_Sprak_etter_validering",
-        "description": "TEST_Sprak_etter_validering",
-        "resourceType": "Questionnaire",
-        "language": "nb-NO",
-        "name": "TEST_Sprak_etter_validering",
-        "status": "draft",
-        "publisher": "NHN",
-        "meta": {
-          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-          "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
-          "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
-        },
-        "contact": [{ "name": "http://www.nhn.no" }],
-        "subjectType": ["Patient"],
-        "extension": [
-          {
-            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
-          },
-          {
-            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
-          },
-          {
-            "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
-            "valueCodeableConcept": {
-              "coding": [
-                {
-                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-                  "code": "hide-help",
-                  "display": "Hide help texts"
-                },
-                {
-                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-                  "code": "hide-sublabel",
-                  "display": "Hide sublabel texts"
-                }
-              ]
-            }
-          }
-        ],
-        "id": "590d24f3-c061-42b8-8f08-2cb00ff5e2eb",
-        "url": "Questionnaire/590d24f3-c061-42b8-8f08-2cb00ff5e2eb",
-        "item": [
-          {
-            "linkId": "899e1c35-ada9-4540-d2c5-1abbba867efa",
-            "type": "group",
-            "text": "Test språk etter validering",
-            "item": [
-              {
-                "linkId": "48c24696-da9f-4844-9d44-e9de2aac354d",
-                "type": "string",
-                "text": "Norsk",
-                "extension": [
-                  { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Norsk" },
-                  { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel-text", "valueString": "Norsk" }
-                ],
-                "required": true
-              }
-            ],
-            "required": false
-          }
-        ]
-      }
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
     },
     {
-      "resource": {
-        "title": "TEST_Sprak_etter_validering",
-        "resourceType": "Questionnaire",
-        "language": "en-GB",
-        "name": "TEST_Sprak_etter_validering",
-        "status": "draft",
-        "meta": {
-          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-          "tag": [{ "system": "urn:ietf:bcp:47", "code": "en-GB", "display": "English" }],
-          "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
-        },
-        "contact": [{ "name": "http://www.nhn.no" }],
-        "subjectType": ["Patient"],
-        "extension": [
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
           {
-            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
-          },
-          {
-            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
-          },
-          {
-            "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
-            "valueCodeableConcept": {
-              "coding": [
-                {
-                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-                  "code": "hide-help",
-                  "display": "Hide help texts"
-                },
-                {
-                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-                  "code": "hide-sublabel",
-                  "display": "Hide sublabel texts"
-                }
-              ]
-            }
-          }
-        ],
-        "id": "6ecfb6bd-eaff-4a02-d3cc-9ba27527154f",
-        "url": "Questionnaire/6ecfb6bd-eaff-4a02-d3cc-9ba27527154f",
-        "item": [
-          {
-            "linkId": "899e1c35-ada9-4540-d2c5-1abbba867efa",
-            "type": "group",
-            "text": "Test language after validation",
-            "item": [
-              {
-                "linkId": "48c24696-da9f-4844-9d44-e9de2aac354d",
-                "type": "string",
-                "text": "English",
-                "extension": [
-                  { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "English" },
-                  { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel-text", "valueString": "English" }
-                ],
-                "required": true
-              }
-            ],
-            "required": false
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
           }
         ]
       }
+    }
+  ],
+  "date": "2026-06-12T00:00:00+02:00",
+  "url": "Questionnaire/be2cb59e-d91b-43db-878a-ce7464871d92",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1102",
+      "version": "1.0",
+      "name": "urn:oid:1102",
+      "title": "Ja / Nei / Vet ikke (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "concept": [
+              { "code": "1", "display": "Ja" },
+              { "code": "2", "display": "Nei" },
+              { "code": "3", "display": "Vet ikke" }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "b01de0dc-853e-4ead-8dfa-c8741bd7c008",
+      "type": "group",
+      "required": false,
+      "text": "Visuell komponenter",
+      "item": [
+        {
+          "linkId": "4d994353-406c-418f-8e62-219e0094302e",
+          "type": "choice",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "76da0093-7327-4132-8ab4-39073e693c73",
+                "code": "1",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "1"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "df0f4106-481c-402b-8791-1d6ae59e7fd0",
+                "code": "2",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "2"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "340ae99c-3f8e-4e75-80ad-6e368bf8c99f",
+                "code": "3",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "3"
+              }
+            }
+          ],
+          "text": " Visual checkboxes (cloud)",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "visual-checkbox-cloud" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "5f45e27d-6af2-47e9-8212-352c2eb01541",
+          "type": "choice",
+          "required": false,
+          "text": "Visual radio buttons (cloud)",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "visual-radio-cloud" }]
+              }
+            }
+          ],
+          "answerValueSet": "#1102"
+        },
+        {
+          "linkId": "2a16cd7d-1bf4-4f50-e716-d440ed57fd14",
+          "type": "choice",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "76da0093-7327-4132-8ab4-39073e693c73",
+                "code": "ja",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "ja"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-illustrations", "code": "EyeContact" }
+                }
+              ]
+            },
+            {
+              "valueCoding": {
+                "id": "df0f4106-481c-402b-8791-1d6ae59e7fd0",
+                "code": "nei",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "nei"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-illustrations", "code": "Stork" }
+                }
+              ]
+            },
+            {
+              "valueCoding": {
+                "id": "833184c1-7720-41fc-816d-bcaf993e78f0",
+                "code": "vet-ikke",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "vet ikke"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-illustrations", "code": "Stroller" }
+                }
+              ]
+            }
+          ],
+          "text": "Visual checkboxes",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "visual-checkbox-group" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "0c31dfbd-8046-4737-cdcb-e416b81f616b",
+          "type": "choice",
+          "required": false,
+          "text": "Visual radio buttons",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "visual-radio-group" }]
+              }
+            },
+            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-visual-variant", "valueCode": "line" }
+          ],
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "5b6bf4a3-4f33-49e7-8eb7-c9250a6a2291",
+                "code": "ja",
+                "system": "urn:uuid:991b4888-2aa7-4c5d-81a0-dcb0f564b072",
+                "display": "ja"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-icons", "code": "Brain" }
+                }
+              ]
+            },
+            {
+              "valueCoding": {
+                "id": "868d427a-a725-4631-b775-3fbb9bed3959",
+                "code": "nei",
+                "system": "urn:uuid:991b4888-2aa7-4c5d-81a0-dcb0f564b072",
+                "display": "nei"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-icons", "code": "Apple" }
+                }
+              ]
+            },
+            {
+              "valueCoding": {
+                "id": "7beaae76-d06b-4bfc-8237-1b2ac4e91691",
+                "code": "usikker",
+                "system": "urn:uuid:991b4888-2aa7-4c5d-81a0-dcb0f564b072",
+                "display": "usikker"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-icons", "code": "Atv" }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "a53f9a4a-bf3d-4e3e-b9a4-4f300bf0816f",
+          "type": "open-choice",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "76da0093-7327-4132-8ab4-39073e693c73",
+                "code": "1",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "1"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "df0f4106-481c-402b-8791-1d6ae59e7fd0",
+                "code": "2",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "2"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "40ad62a0-4cfa-49d1-83c9-018f83c05b58",
+                "code": "3",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "3"
+              }
+            }
+          ],
+          "text": "Visual checkboxes (cloud) open-choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "visual-checkbox-cloud" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "3e2c2595-0d74-493d-8927-e562772eb5de",
+          "type": "open-choice",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "76da0093-7327-4132-8ab4-39073e693c73",
+                "code": "1",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "1"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "df0f4106-481c-402b-8791-1d6ae59e7fd0",
+                "code": "2",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "2"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "95be7f14-3b89-4dfc-8065-75516485bfd4",
+                "code": "3",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "3"
+              }
+            }
+          ],
+          "text": "Visual radio buttons (cloud) open-choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "visual-radio-cloud" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "065f139b-11b5-4235-96a1-cd9e605a26a0",
+          "type": "open-choice",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "76da0093-7327-4132-8ab4-39073e693c73",
+                "code": "ja",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "ja"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-icons", "code": "Notepad" }
+                }
+              ]
+            },
+            {
+              "valueCoding": {
+                "id": "df0f4106-481c-402b-8791-1d6ae59e7fd0",
+                "code": "nei",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "nei"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-icons", "code": "Chest" }
+                }
+              ]
+            },
+            {
+              "valueCoding": {
+                "id": "dedaaf64-5d0a-4ff7-b86e-c9daa65bac7a",
+                "code": "vet-ikke",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "vet ikke"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-icons", "code": "Cigarette" }
+                }
+              ]
+            }
+          ],
+          "text": "Visual checkboxes open-choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "visual-checkbox-group" }]
+              }
+            },
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-open-choice-visual",
+              "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-icons" }
+            }
+          ]
+        },
+        {
+          "linkId": "3770e9a4-e34c-4038-9363-25ece65f5fe3",
+          "type": "open-choice",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "76da0093-7327-4132-8ab4-39073e693c73",
+                "code": "ja",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "ja"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-illustrations", "code": "ReadLetters" }
+                }
+              ]
+            },
+            {
+              "valueCoding": {
+                "id": "df0f4106-481c-402b-8791-1d6ae59e7fd0",
+                "code": "nei",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "nei"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-illustrations", "code": "Thinking" }
+                }
+              ]
+            },
+            {
+              "valueCoding": {
+                "id": "b3c87839-20e9-4c10-af2f-cf33641b94c9",
+                "code": "vet-ikke",
+                "system": "urn:uuid:34457e33-96e3-4fcf-ad37-f67af8daf43d",
+                "display": "vet ikke"
+              },
+              "extension": [
+                {
+                  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-answer-option-visual",
+                  "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-illustrations", "code": "Support2" }
+                }
+              ]
+            }
+          ],
+          "text": "Visual radio buttons open-choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "visual-radio-group" }]
+              }
+            },
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-open-choice-visual",
+              "valueCoding": { "system": "http://helsenorge.no/fhir/CodeSystem/designsystem-icons", "code": "CheckOutline" }
+            },
+            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-visual-variant", "valueCode": "line" }
+          ]
+        }
+      ]
     }
   ]
 }

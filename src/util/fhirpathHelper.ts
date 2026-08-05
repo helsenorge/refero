@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-console */
-import fhirpath, { type Context } from 'fhirpath';
+import { compile, evaluate, type Context, type Path } from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 import type { QuestionnaireItem, Extension, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
@@ -11,7 +11,7 @@ export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireIt
     return undefined;
   }
   const iCopy = structuredClone(item);
-  const result = await fhirpath.evaluate(iCopy, fhirExpression, undefined, fhirpath_r4_model);
+  const result = await evaluate(iCopy, fhirExpression, undefined, fhirpath_r4_model);
 
   if (Array.isArray(result)) {
     return new Date(result[0]);
@@ -21,7 +21,7 @@ export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireIt
 }
 export async function getAnswerFromResponseItem(responseItem?: QuestionnaireResponseItem): Promise<any> {
   try {
-    return await fhirpath.evaluate(responseItem, 'answer');
+    return await evaluate(responseItem, 'answer');
   } catch (e) {
     console.log(e);
   }
@@ -32,7 +32,7 @@ export async function getResonseItem(linkId: string, response: QuestionnaireResp
     return undefined;
   }
   try {
-    const compiledExpression = fhirpath.compile(
+    const compiledExpression = compile(
       `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`,
       fhirpath_r4_model
     );
@@ -48,7 +48,7 @@ export const descendantsHasAnswer = (questionnaire?: QuestionnaireResponseItem[]
     return false; // Return false if the questionnaire is null, undefined, or has no items.
   }
   try {
-    const result = fhirpath.evaluate({ item: questionnaire }, 'item.descendants().where(answer.exists()).exists()');
+    const result = evaluate({ item: questionnaire }, 'item.descendants().where(answer.exists()).exists()');
     return Array.isArray(result) ? result[0] === true : false;
   } catch (e) {
     console.log(e);
@@ -60,7 +60,7 @@ export const hasDescendants = (questionnaire?: QuestionnaireResponseItem[] | nul
     return false; // Return false if the questionnaire is null, undefined, or has no items.
   }
   try {
-    const result = fhirpath.evaluate({ item: questionnaire }, 'item.descendants().exists()');
+    const result = evaluate({ item: questionnaire }, 'item.descendants().exists()');
     console.log(result);
     return Array.isArray(result) ? result[0] === true : false;
   } catch (e) {
@@ -79,7 +79,7 @@ export function evaluateFhirpathExpressionToGetString(
   const expression = useLegacyValueString ? qExt.valueString : qExt.valueExpression?.expression;
   try {
     if (expression) {
-      const compiledExpression = fhirpath.compile(expression, fhirpath_r4_model);
+      const compiledExpression = compile(expression, fhirpath_r4_model);
 
       return compiledExpression(qCopy);
     } else {
@@ -91,14 +91,14 @@ export function evaluateFhirpathExpressionToGetString(
 }
 export async function evaluateFhirpathExpression(expression: string, context: any): Promise<any[]> {
   try {
-    const compiledExpression = fhirpath.compile(expression, fhirpath_r4_model);
+    const compiledExpression = compile(expression, fhirpath_r4_model);
     return compiledExpression(context);
   } catch (error) {
     console.error(`Error evaluating FHIRPath expression "${expression}":`, error);
     return [];
   }
 }
-export function evaluateExtension(path: string | fhirpath.Path, questionnare?: QuestionnaireResponse | null, context?: Context): unknown {
+export function evaluateExtension(path: string | Path, questionnare?: QuestionnaireResponse | null, context?: Context): unknown {
   const qCopy = structuredClone(questionnare);
   /**
    *  Evaluates the "path" FHIRPath expression on the given resource or part of the resource,
@@ -114,7 +114,7 @@ export function evaluateExtension(path: string | fhirpath.Path, questionnare?: Q
    * @param {object} model - The "model" data object specific to a domain, e.g. R4.
    *  For example, you could pass in the result of require("fhirpath/fhir-context/r4");
    */
-  return fhirpath.evaluate(qCopy, path, context, fhirpath_r4_model);
+  return evaluate(qCopy, path, context, fhirpath_r4_model);
 }
 export const isGroupAndDescendantsHasAnswer = async (responseItem?: QuestionnaireResponseItem): Promise<boolean> => {
   if (!responseItem) {
@@ -125,7 +125,8 @@ export const isGroupAndDescendantsHasAnswer = async (responseItem?: Questionnair
       resourceType: 'QuestionnaireResponse',
       item: [responseItem],
     };
-    const result: any[] = await fhirpath.evaluate(resource, 'descendants().answer.exists()', undefined, fhirpath_r4_model);
+
+    const result: any[] = await evaluate(resource, 'descendants().answer.exists()', undefined, fhirpath_r4_model);
 
     const hasAnswer = result[0] === true;
     return hasAnswer;
@@ -136,7 +137,7 @@ export const isGroupAndDescendantsHasAnswer = async (responseItem?: Questionnair
 };
 export async function getResponseItem(linkId: string, response: QuestionnaireResponse): Promise<any[] | undefined> {
   if (!linkId || !response) return undefined;
-  const compiled = fhirpath.compile(
+  const compiled = compile(
     `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`,
     fhirpath_r4_model
   );
