@@ -105,9 +105,9 @@ export const usePluginValidation = ({
   // Store the ref callback returned by register() so we can forward it to the plugin's element
   const registerRef = useRef<((el: HTMLElement | null) => void) | null>(null);
 
-  // Track whether the initial mount effect has run — prevents premature validation
-  // in step-view where isSubmitted is already true when a new step mounts.
-  const isInitialMount = useRef(true);
+  // Remember the last value we synced so we only force validation on a real value change,
+  // not merely because the form is already submitted when this field first mounts (step-view).
+  const previousValueRef = useRef<unknown>(value);
 
   // Register field with react-hook-form
   useEffect(() => {
@@ -129,16 +129,13 @@ export const usePluginValidation = ({
     };
   }, [idWithLinkIdAndItemIndex, item, pdf, register, unregister, resources, rules]);
 
-  // Sync value into form state to trigger re-validation after submission.
-  // On initial mount we only set the value without validating — this prevents
-  // premature validation in step-view where isSubmitted is already true.
+  // Sync value into form state. Only trigger validation when the value actually changed
+  // (user interaction) after a submit — never on mount/re-render of an untouched field.
   useEffect(() => {
     if (shouldValidate(item, pdf)) {
-      const shouldRevalidate = !isInitialMount.current && formState.isSubmitted;
-      setValue(idWithLinkIdAndItemIndex, value, { shouldValidate: shouldRevalidate });
-    }
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
+      const valueChanged = previousValueRef.current !== value;
+      previousValueRef.current = value;
+      setValue(idWithLinkIdAndItemIndex, value, { shouldValidate: valueChanged && formState.isSubmitted });
     }
   }, [value, idWithLinkIdAndItemIndex, item, pdf, setValue, formState.isSubmitted]);
 
