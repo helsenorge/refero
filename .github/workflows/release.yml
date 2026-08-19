@@ -62,7 +62,9 @@ jobs:
 
       # Pick the dist-tag for a stable release. A backport to an older major (e.g. a 24.x
       # hotfix published after 25.0.0) must not drag the "latest" tag backwards, so it goes
-      # out under a v<major> maintenance tag instead. Normal forward releases still get "latest".
+      # out under a v.<major> maintenance tag instead. Normal forward releases still get "latest".
+      # The tag must not parse as a SemVer range -- npm rejects "v24", "24.x" and "24" alike --
+      # hence the dot, which also matches this repo's v.24.1.6 tag style.
       - name: Determine dist-tag
         id: disttag
         if: github.event.release.prerelease == false
@@ -73,7 +75,7 @@ jobs:
           if [ "$VERSION" = "$(printf '%s\n%s\n' "$VERSION" "$LATEST" | sort -V | tail -n1)" ]; then
             TAG=latest
           else
-            TAG="v${VERSION%%.*}"
+            TAG="v.${VERSION%%.*}"
           fi
           echo "Publishing $VERSION under dist-tag '$TAG' (current latest: $LATEST)"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
