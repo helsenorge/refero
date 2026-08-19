@@ -1,3 +1,10 @@
+## 25.0.1
+
+- Fix: `usePluginValidation` no longer shows premature validation errors when a plugin field first appears on a new step after a previous
+  step was submitted. The hook now only triggers validation when the field's value actually changes, not on mount or re-render of an
+  untouched field, so navigating to a step with a required plugin field no longer flags it before interaction. This supersedes the
+  incomplete 24.0.2 fix, which only skipped the first mount and so did not survive a re-render.
+
 ## 25.0.0
 
 - **Breaking**: Require Node.js 26 and npm 11 or newer
