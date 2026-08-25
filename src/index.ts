@@ -40,6 +40,13 @@ export * from './util/questionnaireInspector';
 export * from './util/refero-core';
 export * from './util/getTopLevelElements';
 export * from './util/pluginUtils';
+export { setFhirPathErrorHandler, type FhirPathErrorHandler, type FhirPathEvaluationError } from './util/fhirpathErrors';
+export {
+  setFhirPathCalculationOptions,
+  getFhirPathCalculationOptions,
+  LEGACY_FHIRPATH_CALCULATION_OPTIONS,
+  type FhirPathCalculationOptions,
+} from './util/fhirPathOptions';
 export {
   hasCanonicalValueSet,
   hasOptions,
