@@ -1,3 +1,33 @@
+## 25.1.0
+
+- FHIRPath expressions can now use the `%questionnaire` and `%resource` context variables. `%questionnaire` is bound to the Questionnaire
+  and `%resource` to the QuestionnaireResponse being evaluated, so an expression can read the definition side of the form - `answerOption`,
+  `ordinalValue`, `item.code` - instead of only the answers. Expressions that do not use the variables are unaffected.
+- FHIRPath expressions that fail to compile or evaluate are no longer swallowed silently. The evaluation still resolves to an empty result,
+  so nothing breaks, but the failure is reported. Register `setFhirPathErrorHandler` to route the failures into your own logging, or leave
+  it unset to have them logged on the console. Expressions evaluated inside the fhirpath web worker always log on the console, since the
+  worker has its own module scope.
+- Compiled FHIRPath expressions are cached and reused instead of being recompiled on every evaluation.
+- Four calculation quirks can now be corrected, one at a time, through `setFhirPathCalculationOptions`. Every option defaults to the
+  behaviour refero has always had, so an application that sets nothing keeps its current answers to the letter, and corrected and legacy
+  forms can run side by side:
+  - `keepZeroValues` - a decimal expression that evaluates to 0 currently produces an answer with no value, so a legitimate zero cannot be
+    told apart from "not calculated".
+  - `omitNonNumericResults` - an integer expression that evaluates to something that is not a number currently produces 0, and a decimal one
+    produces NaN, so a mistyped expression looks like a real answer. With the option on, no answer is produced.
+  - `expressionPriority` - when an item carries both `cqf-expression` and `sdf-calculatedExpression`, the two code paths currently disagree
+    about which one wins. `'copy-first'` or `'calculated-first'` applies the same rule everywhere.
+  - `resolveExpressionChains` - expressions are currently evaluated in a fixed number of passes, so a calculated item that reads another
+    calculated item needs one form update per level. With the option on, expressions are re-evaluated until the response settles, bounded by
+    `maxChainIterations`; not settling is reported through the FHIRPath error handler instead of passing unnoticed.
+
+  The options can also be given per form update via `runFhirPathQrUpdater({ fhirPathOptions })` or per engine via
+  `new FhirPathExtensions(questionnaire, options)`.
+
+- Internal cleanup with no effect on calculated values: the FHIRPath helpers no longer write to the console on their own - the failures they
+  used to log now go through the FHIRPath error handler, and `hasDescendants` no longer logs its result on every call. `FhirPathExtensions`
+  no longer builds a throwaway section score item while indexing the questionnaire; it never carried an expression and was never used.
+
 ## 25.0.1
 
 - Fix: `usePluginValidation` no longer shows premature validation errors when a plugin field first appears on a new step after a previous

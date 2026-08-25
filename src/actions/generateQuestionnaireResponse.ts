@@ -118,6 +118,14 @@ export function evaluateCalculatedExpressions(
   response: QuestionnaireResponse,
   bundleIndex?: number
 ): QuestionnaireResponse {
+  const q =
+    questionnaire.resourceType === 'Bundle'
+      ? (questionnaire?.entry?.[bundleIndex ?? 0].resource as Questionnaire | undefined)
+      : questionnaire;
+  // Makes %questionnaire available to the expressions, the same way
+  // FhirPathExtensions does for the expressions that run while filling out.
+  const envVars = q ? { questionnaire: q } : undefined;
+
   function traverseItems(qItems: QuestionnaireItem[], qrItems: QuestionnaireResponseItem[]): void {
     qItems
       .filter(x => !!x)
@@ -128,7 +136,7 @@ export function evaluateCalculatedExpressions(
         }
         const expressionToEvaluate = getCopyExtension(qItem) ?? getCalculatedExpressionExtension(qItem);
         if (expressionToEvaluate && expressionToEvaluate.valueString) {
-          const result = evaluateFhirpathExpressionToGetString(expressionToEvaluate, response);
+          const result = evaluateFhirpathExpressionToGetString(expressionToEvaluate, response, true, envVars);
           if (result.length > 0) {
             const calculatedValue = result[0];
             const answer = qrItem.answer ? qrItem.answer[0] : {};
@@ -183,10 +191,6 @@ export function evaluateCalculatedExpressions(
         }
       });
   }
-  const q =
-    questionnaire.resourceType === 'Bundle'
-      ? (questionnaire?.entry?.[bundleIndex ?? 0].resource as Questionnaire | undefined)
-      : questionnaire;
   if (q && q?.item && response?.item) {
     traverseItems(q.item, response.item);
   }
