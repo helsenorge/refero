@@ -50,6 +50,12 @@ describe('Step-view', () => {
     expect(screen.queryByText('Gruppe 2')).not.toBeInTheDocument();
   });
 
+  it('Should not call onStepChange on initial render', () => {
+    createWrapper(StepViewQuestionnaire);
+
+    expect(onStepChangeMock).not.toHaveBeenCalled();
+  });
+
   it('Should call onStepChange if the step updates in step-view', async () => {
     createWrapper(StepViewQuestionnaire);
     await submitForm();
