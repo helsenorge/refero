@@ -42,6 +42,7 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods, onS
   );
   const isExternalUpdate = useAppSelector(state => state.refero.form.FormData.isExternalUpdate);
   const [stepIndex, setStepIndex] = React.useState(Number(storedStepValue) || 0);
+  const previousStepIndexRef = React.useRef<number | null>(null);
   const { onStepChange, onFormViewChange } = useExternalRenderContext();
   const isEnabled = useCheckIfEnabled();
   const stepContainerRef = useFormViewChange(onFormViewChange, stepIndex);
@@ -65,6 +66,14 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods, onS
     setStepIndex(prevIndex => (prevIndex > 0 ? prevIndex - 1 : prevIndex));
   };
 
+  //Only call onStepChange if the step actually changed
+  const handleOnStepChange = (): void => {
+    if (previousStepIndexRef.current !== null && previousStepIndexRef.current !== effectiveStepIndex && onStepChange) {
+      onStepChange(effectiveStepIndex);
+    }
+    previousStepIndexRef.current = effectiveStepIndex;
+  };
+
   React.useEffect(() => {
     if (isExternalUpdate && storedStepValue !== undefined) {
       const parsed = Number(storedStepValue);
@@ -75,9 +84,7 @@ const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods, onS
   }, [isExternalUpdate, storedStepValue]);
 
   React.useEffect(() => {
-    if (onStepChange) {
-      onStepChange(effectiveStepIndex);
-    }
+    handleOnStepChange();
     dispatch(
       actions.updateQuestionnaireResponseMetaExtensions({
         extension: [

@@ -1,3 +1,7 @@
+## 25.0.2
+
+- Fix: Made sure onStepChange is not called on initial render
+
 ## 25.0.1
 
 - Fix: `usePluginValidation` no longer shows premature validation errors when a plugin field first appears on a new step after a previous
