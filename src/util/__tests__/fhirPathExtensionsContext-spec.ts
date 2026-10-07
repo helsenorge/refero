@@ -107,6 +107,48 @@ describe('FhirPathExtensions with context variables', () => {
 
       expect(JSON.stringify(questionnaireCopy)).toEqual(JSON.stringify(questionnaire));
     });
+
+    describe('when an expression returns an object from the Questionnaire', () => {
+      const SELECTED_CODING = "%questionnaire.item.where(linkId='choice').answerOption.valueCoding.first()";
+      const questionnaireReturningCoding = (): Questionnaire =>
+        ({
+          ...structuredClone(questionnaire),
+          item: [
+            structuredClone(questionnaire.item![0]),
+            {
+              linkId: 'copied',
+              type: 'choice',
+              extension: [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: SELECTED_CODING }],
+            },
+          ],
+        }) as Questionnaire;
+      const deepFreeze = <T>(value: T): T => {
+        if (value && typeof value === 'object') {
+          Object.values(value).forEach(deepFreeze);
+          Object.freeze(value);
+        }
+        return value;
+      };
+
+      it('Should not attach anything to the Questionnaire', () => {
+        const q = questionnaireReturningCoding();
+
+        new FhirPathExtensions(q).calculateFhirScore(responseWithChoice('2'));
+
+        const coding = q.item![0].answerOption![0].valueCoding!;
+        expect(Object.getOwnPropertyNames(coding)).not.toContain('__path__');
+      });
+
+      it('Should evaluate against a frozen Questionnaire without reporting an error', () => {
+        const handler = vi.fn();
+        setFhirPathErrorHandler(handler);
+
+        const fhirScores = new FhirPathExtensions(deepFreeze(questionnaireReturningCoding())).calculateFhirScore(responseWithChoice('2'));
+
+        expect(handler).not.toHaveBeenCalled();
+        expect(fhirScores.copied).toEqual([{ valueCoding: expect.objectContaining({ code: '1' }) }]);
+      });
+    });
   });
 
   describe('%resource', () => {
@@ -194,6 +236,7 @@ describe('FhirPathExtensions with context variables', () => {
       expect(handler).toHaveBeenCalled();
       const [reported] = handler.mock.calls[0] as [FhirPathEvaluationError];
       expect(reported.expression).toBe("item.where(linkId='a'");
+      expect(reported.linkId).toBe('broken');
     });
   });
 });

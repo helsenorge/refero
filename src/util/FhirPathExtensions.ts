@@ -13,6 +13,7 @@ import type {
 import { getCalculatedExpressionExtension, getCopyExtension, getQuestionnaireUnitExtensionValue } from './extension';
 import { evaluateFhirpathExpressionToGetString, type FhirPathEnvVars } from './fhirpathHelper';
 import {
+  isNumericResult,
   resolveFhirPathCalculationOptions,
   type FhirPathCalculationOptions,
   type ResolvedFhirPathCalculationOptions,
@@ -50,6 +51,7 @@ export function fhirPathItemType(item: QuestionnaireItem): FhirPathItemType {
 }
 export class FhirPathExtensions {
   private questionnaire: Questionnaire;
+  private questionnaireForExpressions?: Questionnaire;
   private options: ResolvedFhirPathCalculationOptions;
   private fhirScoreCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
 
@@ -101,11 +103,12 @@ export class FhirPathExtensions {
    * only the answers. %resource is bound to the QuestionnaireResponse by
    * evaluateFhirpathExpressionToGetString.
    *
-   * The Questionnaire is passed by reference: fhirpath.js wraps values in
-   * ResourceNodes and does not mutate the data it is given.
+   * %questionnaire is a private copy: fhirpath.js attaches a __path__ property
+   * to objects it returns, which would mutate, or throw on, a frozen original.
    */
   private getEnvVars(): FhirPathEnvVars {
-    return { questionnaire: this.questionnaire };
+    this.questionnaireForExpressions ??= structuredClone(this.questionnaire);
+    return { questionnaire: this.questionnaireForExpressions };
   }
 
   /**
@@ -130,19 +133,8 @@ export class FhirPathExtensions {
     }
   }
 
-  /**
-   * True when the raw result of an expression is a number refero can turn into
-   * an answer. null, undefined, the empty string, NaN and Infinity are not.
-   */
-  private isNumericResult(value: unknown): boolean {
-    if (value === null || value === undefined || value === '') {
-      return false;
-    }
-    return Number.isFinite(Number(value));
-  }
-
   private toDecimalAnswer(qItem: QuestionnaireItem, value: string | number | undefined): QuestionnaireResponseItemAnswer | undefined {
-    if (this.options.omitNonNumericResults && !this.isNumericResult(value)) {
+    if (this.options.omitNonNumericResults && !isNumericResult(value)) {
       return undefined;
     }
     if (this.options.keepZeroValues) {
@@ -154,7 +146,7 @@ export class FhirPathExtensions {
   }
 
   private toIntegerAnswer(value: string | number): QuestionnaireResponseItemAnswer | undefined {
-    const isNumeric = this.isNumericResult(value);
+    const isNumeric = isNumericResult(value);
     if (this.options.omitNonNumericResults && !isNumeric) {
       return undefined;
     }
@@ -200,10 +192,17 @@ export class FhirPathExtensions {
     qItem: QuestionnaireItem,
     expressionExtension: Extension,
     response: QuestionnaireResponse
-  ): QuestionnaireResponseItemAnswer[] | null => {
+  ): QuestionnaireResponseItemAnswer[] | null => this.evaluateExpressionDetailed(qItem, expressionExtension, response).answers;
+
+  /** omitted is true when omitNonNumericResults dropped every result of the expression. */
+  private evaluateExpressionDetailed = (
+    qItem: QuestionnaireItem,
+    expressionExtension: Extension,
+    response: QuestionnaireResponse
+  ): { answers: QuestionnaireResponseItemAnswer[] | null; omitted: boolean } => {
     if (expressionExtension.valueString) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any[] = evaluateFhirpathExpressionToGetString(expressionExtension, response, true, this.getEnvVars());
+      const result: any[] = evaluateFhirpathExpressionToGetString(expressionExtension, response, true, this.getEnvVars(), qItem.linkId);
       const qrItem = getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
       const itemAnswer: QuestionnaireResponseItemAnswer[] = [];
       switch (qItem.type) {
@@ -266,17 +265,18 @@ export class FhirPathExtensions {
         ...(qrItem?.[0]?.answer?.[index]?.item && { item: qrItem?.[0]?.answer?.[index]?.item }),
       }));
       if (qrItemAnswer.length === 0) {
+        const omitted = result.length > 0 && (qItem.type === itemType.DECIMAL || qItem.type === itemType.INTEGER);
         if (!qrItem?.[0]?.answer) {
-          return null;
+          return { answers: null, omitted };
         }
         const fallback = qrItem[0].answer
           .map((y: QuestionnaireResponseItemAnswer) => (y.item ? ({ item: y.item } as QuestionnaireResponseItemAnswer) : undefined))
           .filter((a): a is QuestionnaireResponseItemAnswer => a !== undefined);
-        return fallback;
+        return { answers: fallback, omitted };
       }
-      return qrItemAnswer;
+      return { answers: qrItemAnswer, omitted: false };
     }
-    return null;
+    return { answers: null, omitted: false };
   };
 
   private evaluateCalculatedExpressions(qr: QuestionnaireResponse): QuestionnaireResponse {
@@ -294,14 +294,20 @@ export class FhirPathExtensions {
           let newQrItem: QuestionnaireResponseItem = { ...qrItem };
 
           const expressionExtension = this.getExpressionExtension(qItem, 'copy');
-          const newAnswer: QuestionnaireResponseItemAnswer[] | null = expressionExtension
-            ? this.evaluateExpression(qItem, expressionExtension, response)
-            : null;
+          const evaluated = expressionExtension ? this.evaluateExpressionDetailed(qItem, expressionExtension, response) : undefined;
+          const newAnswer = evaluated?.answers ?? null;
 
           const origAnswers = qrItem.answer ?? [];
           const finalAnswers: QuestionnaireResponseItemAnswer[] = [];
 
-          if (!newAnswer || newAnswer.length === 0) {
+          if (evaluated?.omitted) {
+            // The value is dropped so dependent expressions cannot read it; nested items are kept.
+            for (const orig of origAnswers) {
+              if (orig.item) {
+                finalAnswers.push({ item: qItem.item ? traverseItems(qItem.item, orig.item, response) : orig.item });
+              }
+            }
+          } else if (!newAnswer || newAnswer.length === 0) {
             for (const orig of origAnswers) {
               const a = { ...orig };
               if (a.item && qItem.item) {
@@ -326,6 +332,8 @@ export class FhirPathExtensions {
 
           if (finalAnswers.length > 0) {
             newQrItem = { ...newQrItem, answer: finalAnswers };
+          } else if (evaluated?.omitted) {
+            delete newQrItem.answer;
           }
 
           if (qrItem.item && qItem.item) {

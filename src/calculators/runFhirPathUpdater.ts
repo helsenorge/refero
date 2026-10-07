@@ -6,7 +6,7 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { type AnswerValuesItemPayload, newAnswerValuesAction } from '@/actions/newValue';
 import { isEnableWhenEnabled } from '@/hooks/useIsEnabled';
-import { resolveFhirPathCalculationOptions, type FhirPathCalculationOptions } from '@/util/fhirPathOptions';
+import { resolveFhirPathCalculationOptions } from '@/util/fhirPathOptions';
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
 import { postTaskToFhirPathWorker } from '@/workers/fhirpath-rpc';
@@ -17,7 +17,6 @@ type InputParams = {
   questionnaireResponse: QuestionnaireResponse;
   dispatch: AppDispatch;
   actionRequester?: ActionRequester;
-  fhirPathOptions?: FhirPathCalculationOptions;
 };
 
 export const runFhirPathQrUpdater = async ({
@@ -25,13 +24,12 @@ export const runFhirPathQrUpdater = async ({
   questionnaireResponse,
   dispatch,
   actionRequester,
-  fhirPathOptions,
 }: InputParams): Promise<void> => {
   if (!questionnaire || !questionnaireResponse) return;
   try {
     // Resolved here rather than inside the worker: the worker has its own
     // module scope and cannot see the options set on the main thread.
-    const options = resolveFhirPathCalculationOptions(fhirPathOptions);
+    const options = resolveFhirPathCalculationOptions();
     let fhirScores: AnswerPad;
     if (typeof window !== 'undefined' && window.Worker) {
       fhirScores = await postTaskToFhirPathWorker({ questionnaireResponse, questionnaire, options });

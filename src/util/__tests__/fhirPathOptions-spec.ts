@@ -26,6 +26,10 @@ describe('fhirPathOptions', () => {
     });
   });
 
+  it('Should not let the exported legacy defaults be changed', () => {
+    expect(Object.isFrozen(LEGACY_FHIRPATH_CALCULATION_OPTIONS)).toBe(true);
+  });
+
   it('Should only change what the application wide options name', () => {
     setFhirPathCalculationOptions({ keepZeroValues: true });
 

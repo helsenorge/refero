@@ -44,6 +44,9 @@ export function clearCompiledFhirPathExpressionCache(): void {
   compiledExpressionCache.clear();
 }
 
+// linkId is passed as %linkId so every lookup shares one cache entry and a linkId can never alter the expression.
+const RESPONSE_ITEMS_BY_LINK_ID = 'item.descendants().where(linkId=%linkId) | answer.item.descendants().where(linkId=%linkId)';
+
 export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireItem, fhirExpression?: string): Promise<Date | undefined> {
   if (!item || !fhirExpression) {
     return undefined;
@@ -69,12 +72,11 @@ export async function getResonseItem(linkId: string, response: QuestionnaireResp
   if (!linkId || !response) {
     return undefined;
   }
-  const expression = `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`;
   try {
-    const compiledExpression = getCompiledFhirPathExpression(expression);
-    return compiledExpression(response);
+    const compiledExpression = getCompiledFhirPathExpression(RESPONSE_ITEMS_BY_LINK_ID);
+    return compiledExpression(response, { linkId });
   } catch (e) {
-    reportFhirPathError({ source: 'getResonseItem', expression, linkId, error: e });
+    reportFhirPathError({ source: 'getResonseItem', expression: RESPONSE_ITEMS_BY_LINK_ID, linkId, error: e });
     return undefined;
   }
 }
@@ -116,7 +118,8 @@ export function evaluateFhirpathExpressionToGetString(
   fhirExtension: Extension,
   questionnare?: QuestionnaireResponse | null,
   useLegacyValueString: boolean = true,
-  envVars?: FhirPathEnvVars
+  envVars?: FhirPathEnvVars,
+  linkId?: string
 ): any {
   const qCopy = structuredClone(questionnare);
   const expression = useLegacyValueString ? fhirExtension.valueString : fhirExtension.valueExpression?.expression;
@@ -128,7 +131,7 @@ export function evaluateFhirpathExpressionToGetString(
 
     return compiledExpression(qCopy, { resource: qCopy, ...envVars });
   } catch (error) {
-    reportFhirPathError({ source: 'evaluateFhirpathExpressionToGetString', expression, error });
+    reportFhirPathError({ source: 'evaluateFhirpathExpressionToGetString', expression, linkId, error });
     return [];
   }
 }
@@ -180,8 +183,6 @@ export const isGroupAndDescendantsHasAnswer = async (responseItem?: Questionnair
 };
 export async function getResponseItem(linkId: string, response: QuestionnaireResponse): Promise<any[] | undefined> {
   if (!linkId || !response) return undefined;
-  const compiled = getCompiledFhirPathExpression(
-    `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`
-  );
-  return compiled(response);
+  const compiled = getCompiledFhirPathExpression(RESPONSE_ITEMS_BY_LINK_ID);
+  return compiled(response, { linkId });
 }

@@ -4,13 +4,15 @@
  * Refero has a handful of calculation quirks that are wrong by the letter of
  * the specification, but that questionnaires in production have been built
  * around. Every option therefore defaults to the behaviour refero has always
- * had, and the corrected behaviour is opt in, so both can run side by side
- * while forms are migrated one at a time.
+ * had, and the corrected behaviour is opt in.
  *
- * Options can be set in three places, each overriding the previous one:
- *   1. setFhirPathCalculationOptions() - application wide default
- *   2. runFhirPathQrUpdater({ fhirPathOptions }) - per form update
- *   3. new FhirPathExtensions(questionnaire, options) - per engine instance
+ * The options are set application wide with setFhirPathCalculationOptions()
+ * and apply to every form and every Refero instance on the page. Internally,
+ * FhirPathExtensions also accepts options per engine, overriding them.
+ *
+ * The initial QuestionnaireResponse honours expressionPriority and
+ * omitNonNumericResults. keepZeroValues does not apply there, since it already
+ * keeps 0, and neither does resolveExpressionChains, since it is a single pass.
  */
 export interface FhirPathCalculationOptions {
   /**
@@ -46,8 +48,9 @@ export interface FhirPathCalculationOptions {
    * calculated expression while evaluateAllExpressions prefers the copy - so
    * the result depends on which path produced it.
    *
-   * 'copy-first' / 'calculated-first': the same rule in both paths.
-   * 'copy-first' matches how the initial QuestionnaireResponse is generated.
+   * 'copy-first' / 'calculated-first': the same rule in both paths, and when
+   * the initial QuestionnaireResponse is generated.
+   * 'copy-first' matches how the initial QuestionnaireResponse has always been generated.
    */
   expressionPriority?: 'legacy' | 'copy-first' | 'calculated-first';
 
@@ -64,8 +67,9 @@ export interface FhirPathCalculationOptions {
   /**
    * Upper bound on the number of passes made when resolveExpressionChains is
    * on. Reaching it means the expressions never settled - usually two items
-   * depending on each other - and is reported through the FHIRPath error
-   * handler. Defaults to 10.
+   * depending on each other - and is logged on the console. The calculation
+   * runs in the fhirpath web worker, so the FHIRPath error handler is not
+   * called. Values below 1 are treated as 1. Defaults to 10.
    */
   maxChainIterations?: number;
 }
@@ -76,13 +80,13 @@ export type ResolvedFhirPathCalculationOptions = Required<FhirPathCalculationOpt
  * How refero behaved before the options existed. This is the default, so an
  * application that sets nothing keeps its current answers to the letter.
  */
-export const LEGACY_FHIRPATH_CALCULATION_OPTIONS: ResolvedFhirPathCalculationOptions = {
+export const LEGACY_FHIRPATH_CALCULATION_OPTIONS: Readonly<ResolvedFhirPathCalculationOptions> = Object.freeze({
   keepZeroValues: false,
   omitNonNumericResults: false,
   expressionPriority: 'legacy',
   resolveExpressionChains: false,
   maxChainIterations: 10,
-};
+});
 
 let applicationOptions: FhirPathCalculationOptions = {};
 
@@ -100,6 +104,17 @@ export function setFhirPathCalculationOptions(options?: FhirPathCalculationOptio
 
 export function getFhirPathCalculationOptions(): FhirPathCalculationOptions {
   return { ...applicationOptions };
+}
+
+/**
+ * True when the raw result of an expression is a number refero can turn into
+ * an answer. null, undefined, the empty string, NaN and Infinity are not.
+ */
+export function isNumericResult(value: unknown): boolean {
+  if (value === null || value === undefined || value === '') {
+    return false;
+  }
+  return Number.isFinite(Number(value));
 }
 
 function definedOnly(options: FhirPathCalculationOptions): FhirPathCalculationOptions {

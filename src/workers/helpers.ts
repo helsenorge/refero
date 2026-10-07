@@ -22,8 +22,10 @@ function evaluateUntilStable(
 ): QuestionnaireResponse {
   let current = questionnaireResponse;
   let serialized = JSON.stringify(current);
+  const passes = Math.max(1, maxIterations);
 
-  for (let iteration = 0; iteration < maxIterations; iteration++) {
+  // One pass beyond the limit, so a chain exactly `passes` levels deep is seen to settle.
+  for (let iteration = 0; iteration <= passes; iteration++) {
     const next = engine.evaluateAllExpressions(current);
     const nextSerialized = JSON.stringify(next);
     if (nextSerialized === serialized) {
@@ -36,7 +38,7 @@ function evaluateUntilStable(
   reportFhirPathError({
     source: 'runCalculators',
     error: new Error(
-      `FHIRPath expressions did not settle within ${maxIterations} passes. This usually means two calculated items depend on each other.`
+      `FHIRPath expressions did not settle within ${passes} passes. This usually means two calculated items depend on each other.`
     ),
   });
   return current;

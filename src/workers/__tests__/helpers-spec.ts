@@ -129,6 +129,72 @@ describe('runCalculators', () => {
 
       expect(handler).not.toHaveBeenCalled();
     });
+
+    it('Should resolve, without reporting, a chain exactly maxChainIterations levels deep', () => {
+      const handler = vi.fn();
+      setFhirPathErrorHandler(handler);
+
+      const fhirScores = runCalculators({
+        questionnaire: chainedQuestionnaire,
+        questionnaireResponse: chainedResponse(),
+        options: { resolveExpressionChains: true, maxChainIterations: 3 },
+      });
+
+      expect(fhirScores.d).toEqual([{ valueInteger: 12 }]);
+      expect(handler).not.toHaveBeenCalled();
+    });
+
+    it.each([0, -1])('Should still evaluate at least once when maxChainIterations is %i', maxChainIterations => {
+      setFhirPathErrorHandler(vi.fn());
+
+      const fhirScores = runCalculators({
+        questionnaire: chainedQuestionnaire,
+        questionnaireResponse: chainedResponse(),
+        options: { resolveExpressionChains: true, maxChainIterations },
+      });
+
+      expect(fhirScores.c).toEqual([{ valueInteger: 11 }]);
+    });
+  });
+
+  describe('omitNonNumericResults', () => {
+    const questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [
+        { linkId: 'in', type: 'string' },
+        calculatedItem('a', "%resource.item.where(linkId='in').answer.valueString"),
+        calculatedItem('b', "%resource.item.where(linkId='a').answer.valueInteger * 2"),
+      ],
+    } as unknown as Questionnaire;
+
+    const questionnaireResponse = (): QuestionnaireResponse => ({
+      resourceType: 'QuestionnaireResponse',
+      status: 'in-progress',
+      item: [
+        { linkId: 'in', answer: [{ valueString: 'abc' }] },
+        { linkId: 'a', answer: [{ valueInteger: 5 }] },
+        { linkId: 'b', answer: [{ valueInteger: 10 }] },
+      ],
+    });
+
+    it('Legacy: Should turn the non numeric result into 0 and let dependent items read it', () => {
+      const fhirScores = runCalculators({ questionnaire, questionnaireResponse: questionnaireResponse() });
+
+      expect(fhirScores.a).toEqual([{ valueInteger: 0 }]);
+      expect(fhirScores.b).toEqual([{ valueInteger: 0 }]);
+    });
+
+    it('Should not let dependent items read the answer that was dropped', () => {
+      const fhirScores = runCalculators({
+        questionnaire,
+        questionnaireResponse: questionnaireResponse(),
+        options: { omitNonNumericResults: true },
+      });
+
+      expect(fhirScores.a).toBeNull();
+      expect(fhirScores.b ?? []).toEqual([]);
+    });
   });
 
   describe('application wide options', () => {

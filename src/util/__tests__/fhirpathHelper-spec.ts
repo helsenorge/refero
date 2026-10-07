@@ -9,6 +9,8 @@ import {
   descendantsHasAnswer,
   evaluateFhirpathExpressionToGetString,
   getCompiledFhirPathExpression,
+  getResonseItem,
+  getResponseItem,
   hasDescendants,
 } from '../fhirpathHelper';
 
@@ -230,6 +232,65 @@ describe('fhirpathHelper', () => {
       hasDescendants([{ linkId: '1', item: [{ linkId: '1.1' }] }]);
 
       expect(consoleLogSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe.each([
+    ['getResonseItem', getResonseItem],
+    ['getResponseItem', getResponseItem],
+  ])('%s', (_, lookup) => {
+    const repeatedResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'in-progress',
+      item: [
+        {
+          linkId: 'group',
+          item: [
+            { linkId: 'repeated', answer: [{ valueInteger: 1 }] },
+            { linkId: 'repeated', answer: [{ valueInteger: 2 }] },
+          ],
+        },
+        {
+          linkId: 'question',
+          answer: [{ valueBoolean: true, item: [{ linkId: 'nested', answer: [{ valueString: 'a' }] }] }],
+        },
+      ],
+    };
+
+    it('Should find every repetition of a repeated item', async () => {
+      const result = await lookup('repeated', repeatedResponse);
+
+      expect(result?.map(x => x.answer[0].valueInteger)).toEqual([1, 2]);
+    });
+
+    it('Should find items nested below an answer', async () => {
+      const result = await lookup('nested', repeatedResponse);
+
+      expect(result?.map(x => x.linkId)).toEqual(['nested']);
+    });
+
+    it('Should return an empty result for an unknown linkId', async () => {
+      expect(await lookup('unknown', repeatedResponse)).toEqual([]);
+    });
+
+    it('Should compile the lookup once, whatever the linkId', async () => {
+      await lookup('repeated', repeatedResponse);
+      await lookup('nested', repeatedResponse);
+      await lookup('unknown', repeatedResponse);
+
+      expect(fhirpath.compile).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should treat the linkId as a value, not as part of the expression', async () => {
+      const response: QuestionnaireResponse = {
+        resourceType: 'QuestionnaireResponse',
+        status: 'in-progress',
+        item: [{ linkId: 'group', item: [{ linkId: "it's", answer: [{ valueInteger: 1 }] }] }],
+      };
+
+      const result = await lookup("it's", response);
+
+      expect(result?.map(x => x.linkId)).toEqual(["it's"]);
     });
   });
 
