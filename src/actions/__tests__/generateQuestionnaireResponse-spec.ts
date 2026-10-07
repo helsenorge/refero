@@ -1,5 +1,78 @@
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+
 import { evaluateCalculatedExpressions } from '../generateQuestionnaireResponse';
 import { q as questionnaire, qr as questionnaireResponse } from './__data__/genereateQuestionnaireResponse';
+
+import { Extensions } from '@/constants/extensions';
+import { setFhirPathCalculationOptions } from '@/util/fhirPathOptions';
+
+describe('evaluateCalculatedExpressions with calculation options', () => {
+  afterEach(() => {
+    setFhirPathCalculationOptions(undefined);
+  });
+
+  const questionnaireWith = (type: string, extension: { url: string; valueString: string }[]): Questionnaire =>
+    ({
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [{ linkId: 'calculated', type, extension }],
+    }) as unknown as Questionnaire;
+
+  const emptyResponse = (): QuestionnaireResponse => ({
+    resourceType: 'QuestionnaireResponse',
+    status: 'in-progress',
+    item: [{ linkId: 'calculated' }],
+  });
+
+  const bothExtensions = [
+    { url: Extensions.CALCULATED_EXPRESSION_URL, valueString: '2' },
+    { url: Extensions.COPY_EXPRESSION_URL, valueString: '1' },
+  ];
+
+  it('Legacy: Should prefer the copy expression when an item has both', () => {
+    const result = evaluateCalculatedExpressions(questionnaireWith('integer', bothExtensions), emptyResponse());
+
+    expect(result.item?.[0].answer).toEqual([{ valueInteger: 1 }]);
+  });
+
+  it('Should prefer the copy expression with expressionPriority copy-first', () => {
+    setFhirPathCalculationOptions({ expressionPriority: 'copy-first' });
+    const result = evaluateCalculatedExpressions(questionnaireWith('integer', bothExtensions), emptyResponse());
+
+    expect(result.item?.[0].answer).toEqual([{ valueInteger: 1 }]);
+  });
+
+  it('Should prefer the calculated expression with expressionPriority calculated-first', () => {
+    setFhirPathCalculationOptions({ expressionPriority: 'calculated-first' });
+    const result = evaluateCalculatedExpressions(questionnaireWith('integer', bothExtensions), emptyResponse());
+
+    expect(result.item?.[0].answer).toEqual([{ valueInteger: 2 }]);
+  });
+
+  it.each(['integer', 'decimal'])('Legacy: Should produce NaN for a non numeric %s result', type => {
+    const extension = [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: "'abc'" }];
+    const result = evaluateCalculatedExpressions(questionnaireWith(type, extension), emptyResponse());
+
+    const answer = result.item?.[0].answer?.[0];
+    expect(Number.isNaN(type === 'integer' ? answer?.valueInteger : answer?.valueDecimal)).toBe(true);
+  });
+
+  it.each(['integer', 'decimal'])('Should produce no answer for a non numeric %s result with omitNonNumericResults', type => {
+    setFhirPathCalculationOptions({ omitNonNumericResults: true });
+    const extension = [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: "'abc'" }];
+    const result = evaluateCalculatedExpressions(questionnaireWith(type, extension), emptyResponse());
+
+    expect(result.item?.[0].answer).toBeUndefined();
+  });
+
+  it('Should keep numeric results with omitNonNumericResults', () => {
+    setFhirPathCalculationOptions({ omitNonNumericResults: true });
+    const extension = [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: '0' }];
+    const result = evaluateCalculatedExpressions(questionnaireWith('decimal', extension), emptyResponse());
+
+    expect(result.item?.[0].answer).toEqual([{ valueDecimal: 0 }]);
+  });
+});
 
 describe('evaluateCalculatedExpressions', () => {
   it('should update the calculated boolean field (linkId "1.4")', () => {

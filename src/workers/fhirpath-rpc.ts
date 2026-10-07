@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { AnyRpcResponse, Methods } from './fhirpath-rpc-worker';
+import type { FhirPathCalculationOptions } from '@/util/fhirPathOptions';
 import type { QuestionnaireItem, Extension, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import type { Path } from 'fhirpath';
 
@@ -171,7 +172,7 @@ const handlers = {
   evaluateFhirpathExpression: ({ expression, context }) => evaluateFhirpathExpressionCore(expression, context),
   evaluateExtension: ({ path, questionnaire, context }) => evaluateExtensionCore(path, questionnaire, context),
   isGroupAndDescendantsHasAnswer: ({ responseItem }) => isGroupAndDescendantsHasAnswerCore(responseItem),
-  runCalculators: ({ questionnaireResponse, questionnaire }) => runCalculators({ questionnaireResponse, questionnaire }),
+  runCalculators: ({ questionnaireResponse, questionnaire, options }) => runCalculators({ questionnaireResponse, questionnaire, options }),
   runEnableWhen: ({ questionnaireResponse, questionnaire }) => runEnableWhenNew({ questionnaireResponse, questionnaire }),
 } satisfies {
   [K in keyof Methods]: (params: Methods[K]['params']) => Awaitable<Methods[K]['result']>;
@@ -353,10 +354,12 @@ export const isGroupAndDescendantsHasAnswer = (responseItem?: QuestionnaireRespo
 export const postTaskToFhirPathWorker = ({
   questionnaire,
   questionnaireResponse,
+  options,
 }: {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
-}) => call('runCalculators', { questionnaire, questionnaireResponse });
+  options?: FhirPathCalculationOptions;
+}) => call('runCalculators', { questionnaire, questionnaireResponse, options });
 
 export const calculateEnableWhen = ({
   questionnaire,

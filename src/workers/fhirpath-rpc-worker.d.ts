@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import type { AnswerPad } from '../util/FhirPathExtensions';
+import type { FhirPathCalculationOptions } from '../util/fhirPathOptions';
 import type { Extension, Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type { Path } from 'fhirpath';
 
@@ -85,6 +86,7 @@ export type IsGroupAndDescendantsHasAnswerResult = Promise<boolean>;
 export interface RunCalculatorsParams {
   questionnaireResponse: QuestionnaireResponse;
   questionnaire: Questionnaire;
+  options?: FhirPathCalculationOptions;
 }
 export type RunCalculatorsResult = AnswerPad;
 

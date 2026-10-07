@@ -11,9 +11,14 @@ import type {
 } from 'fhir/r4';
 
 import { getCalculatedExpressionExtension, getCopyExtension, getQuestionnaireUnitExtensionValue } from './extension';
-import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
+import { evaluateFhirpathExpressionToGetString, type FhirPathEnvVars } from './fhirpathHelper';
+import {
+  isNumericResult,
+  resolveFhirPathCalculationOptions,
+  type FhirPathCalculationOptions,
+  type ResolvedFhirPathCalculationOptions,
+} from './fhirPathOptions';
 import { getAllResponseitemsByLinkIdAndQuestionnaireResponse } from './refero-core';
-import { createDummySectionScoreItem } from './scoring';
 import { isQuantity } from './typeguards';
 import itemType from '../constants/itemType';
 
@@ -46,10 +51,13 @@ export function fhirPathItemType(item: QuestionnaireItem): FhirPathItemType {
 }
 export class FhirPathExtensions {
   private questionnaire: Questionnaire;
+  private questionnaireForExpressions?: Questionnaire;
+  private options: ResolvedFhirPathCalculationOptions;
   private fhirScoreCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
 
-  constructor(questionnaire: Questionnaire) {
+  constructor(questionnaire: Questionnaire, options?: FhirPathCalculationOptions) {
     this.questionnaire = questionnaire;
+    this.options = resolveFhirPathCalculationOptions(options);
     this.initializeCaches(questionnaire);
   }
 
@@ -57,16 +65,11 @@ export class FhirPathExtensions {
     this.traverseQuestionnaire(questionnaire);
   }
 
-  private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem, level: number = 0): void {
+  private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem): void {
     if (qItem.item) {
       for (const subItem of qItem.item) {
-        this.traverseQuestionnaire(subItem, level + 1);
+        this.traverseQuestionnaire(subItem);
       }
-    }
-
-    if (level === 0) {
-      const itm = createDummySectionScoreItem();
-      this.traverseQuestionnaire(itm, level + 1);
     }
 
     return this.processItem(qItem);
@@ -92,6 +95,63 @@ export class FhirPathExtensions {
   private isOfTypeQuestionnaireItem(item: Questionnaire | QuestionnaireItem): item is QuestionnaireItem {
     return 'type' in item;
   }
+
+  /**
+   * Environment variables made available to every expression in this
+   * questionnaire. %questionnaire lets an expression reach the definition side
+   * of the form - answerOption, ordinalValue, item.code and so on - instead of
+   * only the answers. %resource is bound to the QuestionnaireResponse by
+   * evaluateFhirpathExpressionToGetString.
+   *
+   * %questionnaire is a private copy: fhirpath.js attaches a __path__ property
+   * to objects it returns, which would mutate, or throw on, a frozen original.
+   */
+  private getEnvVars(): FhirPathEnvVars {
+    this.questionnaireForExpressions ??= structuredClone(this.questionnaire);
+    return { questionnaire: this.questionnaireForExpressions };
+  }
+
+  /**
+   * Picks the expression to evaluate for an item that may carry both a copy
+   * expression and a calculated expression.
+   *
+   * legacyPreference is the extension that this particular code path has always
+   * preferred. The two paths disagree, which is why 'legacy' has to be told
+   * where it is being called from.
+   */
+  private getExpressionExtension(qItem: QuestionnaireItem, legacyPreference: 'copy' | 'calculated'): Extension | undefined {
+    const calculatedExtension = getCalculatedExpressionExtension(qItem);
+    const copyExtension = getCopyExtension(qItem);
+
+    switch (this.options.expressionPriority) {
+      case 'copy-first':
+        return copyExtension ?? calculatedExtension;
+      case 'calculated-first':
+        return calculatedExtension ?? copyExtension;
+      default:
+        return legacyPreference === 'copy' ? (copyExtension ?? calculatedExtension) : (calculatedExtension ?? copyExtension);
+    }
+  }
+
+  private toDecimalAnswer(qItem: QuestionnaireItem, value: string | number | undefined): QuestionnaireResponseItemAnswer | undefined {
+    if (this.options.omitNonNumericResults && !isNumericResult(value)) {
+      return undefined;
+    }
+    if (this.options.keepZeroValues) {
+      return {
+        valueDecimal: value === null || value === undefined ? undefined : getDecimalValue(qItem, Number(value)),
+      };
+    }
+    return { valueDecimal: getDecimalValue(qItem, value !== 0 && value !== null ? Number(value) : undefined) };
+  }
+
+  private toIntegerAnswer(value: string | number): QuestionnaireResponseItemAnswer | undefined {
+    const isNumeric = isNumericResult(value);
+    if (this.options.omitNonNumericResults && !isNumeric) {
+      return undefined;
+    }
+    return { valueInteger: isNumeric ? Math.round(Number(value)) : 0 };
+  }
   public evaluateAllExpressions(questionnaireResponse: QuestionnaireResponse): QuestionnaireResponse {
     return this.evaluateCalculatedExpressions(questionnaireResponse);
   }
@@ -99,7 +159,7 @@ export class FhirPathExtensions {
   public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
     const answerPad: AnswerPad = {};
     for (const [key, value] of this.fhirScoreCache) {
-      const expressionExtension = getCalculatedExpressionExtension(value) || getCopyExtension(value);
+      const expressionExtension = this.getExpressionExtension(value, 'calculated');
       if (!expressionExtension) continue;
       answerPad[key] = this.evaluateExpression(value, expressionExtension, questionnaireResponse);
     }
@@ -132,10 +192,17 @@ export class FhirPathExtensions {
     qItem: QuestionnaireItem,
     expressionExtension: Extension,
     response: QuestionnaireResponse
-  ): QuestionnaireResponseItemAnswer[] | null => {
+  ): QuestionnaireResponseItemAnswer[] | null => this.evaluateExpressionDetailed(qItem, expressionExtension, response).answers;
+
+  /** omitted is true when omitNonNumericResults dropped every result of the expression. */
+  private evaluateExpressionDetailed = (
+    qItem: QuestionnaireItem,
+    expressionExtension: Extension,
+    response: QuestionnaireResponse
+  ): { answers: QuestionnaireResponseItemAnswer[] | null; omitted: boolean } => {
     if (expressionExtension.valueString) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any[] = evaluateFhirpathExpressionToGetString(expressionExtension, response);
+      const result: any[] = evaluateFhirpathExpressionToGetString(expressionExtension, response, true, this.getEnvVars(), qItem.linkId);
       const qrItem = getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
       const itemAnswer: QuestionnaireResponseItemAnswer[] = [];
       switch (qItem.type) {
@@ -147,30 +214,24 @@ export class FhirPathExtensions {
 
         case itemType.DECIMAL:
           itemAnswer.push(
-            ...result.map(
-              (x: string | number | undefined): QuestionnaireResponseItemAnswer => ({
-                valueDecimal: getDecimalValue(qItem, x !== 0 && x !== null ? Number(x) : undefined),
-              })
-            )
+            ...result
+              .map((x: string | number | undefined) => this.toDecimalAnswer(qItem, x))
+              .filter((x): x is QuestionnaireResponseItemAnswer => x !== undefined)
           );
           break;
 
         case itemType.INTEGER:
           itemAnswer.push(
-            ...result.map(
-              (x: string | number): QuestionnaireResponseItemAnswer => ({
-                valueInteger: isNaN(Number(x)) || !isFinite(Number(x)) ? 0 : Math.round(Number(x)),
-              })
-            )
+            ...result
+              .map((x: string | number) => this.toIntegerAnswer(x))
+              .filter((x): x is QuestionnaireResponseItemAnswer => x !== undefined)
           );
           break;
         case itemType.QUANTITY:
           itemAnswer.push(
-            ...result.map(
-              (x: string | number | Quantity): QuestionnaireResponseItemAnswer => ({
-                valueQuantity: isQuantity(x) ? x : this.createQuantity(qItem, getQuestionnaireUnitExtensionValue(qItem), x),
-              })
-            )
+            ...result.map((x: string | number | Quantity): QuestionnaireResponseItemAnswer => ({
+              valueQuantity: isQuantity(x) ? x : this.createQuantity(qItem, getQuestionnaireUnitExtensionValue(qItem), x),
+            }))
           );
           break;
         case itemType.DATE:
@@ -204,17 +265,18 @@ export class FhirPathExtensions {
         ...(qrItem?.[0]?.answer?.[index]?.item && { item: qrItem?.[0]?.answer?.[index]?.item }),
       }));
       if (qrItemAnswer.length === 0) {
+        const omitted = result.length > 0 && (qItem.type === itemType.DECIMAL || qItem.type === itemType.INTEGER);
         if (!qrItem?.[0]?.answer) {
-          return null;
+          return { answers: null, omitted };
         }
         const fallback = qrItem[0].answer
           .map((y: QuestionnaireResponseItemAnswer) => (y.item ? ({ item: y.item } as QuestionnaireResponseItemAnswer) : undefined))
           .filter((a): a is QuestionnaireResponseItemAnswer => a !== undefined);
-        return fallback;
+        return { answers: fallback, omitted };
       }
-      return qrItemAnswer;
+      return { answers: qrItemAnswer, omitted: false };
     }
-    return null;
+    return { answers: null, omitted: false };
   };
 
   private evaluateCalculatedExpressions(qr: QuestionnaireResponse): QuestionnaireResponse {
@@ -231,21 +293,21 @@ export class FhirPathExtensions {
         for (const qrItem of matches) {
           let newQrItem: QuestionnaireResponseItem = { ...qrItem };
 
-          const calcExt = getCalculatedExpressionExtension(qItem);
-          const copyExt = getCopyExtension(qItem);
-          let newAnswer: QuestionnaireResponseItemAnswer[] | null = null;
-
-          if (calcExt && !copyExt) {
-            newAnswer = this.evaluateExpression(qItem, calcExt, response);
-          }
-          if (copyExt) {
-            newAnswer = this.evaluateExpression(qItem, copyExt, response);
-          }
+          const expressionExtension = this.getExpressionExtension(qItem, 'copy');
+          const evaluated = expressionExtension ? this.evaluateExpressionDetailed(qItem, expressionExtension, response) : undefined;
+          const newAnswer = evaluated?.answers ?? null;
 
           const origAnswers = qrItem.answer ?? [];
           const finalAnswers: QuestionnaireResponseItemAnswer[] = [];
 
-          if (!newAnswer || newAnswer.length === 0) {
+          if (evaluated?.omitted) {
+            // The value is dropped so dependent expressions cannot read it; nested items are kept.
+            for (const orig of origAnswers) {
+              if (orig.item) {
+                finalAnswers.push({ item: qItem.item ? traverseItems(qItem.item, orig.item, response) : orig.item });
+              }
+            }
+          } else if (!newAnswer || newAnswer.length === 0) {
             for (const orig of origAnswers) {
               const a = { ...orig };
               if (a.item && qItem.item) {
@@ -270,6 +332,8 @@ export class FhirPathExtensions {
 
           if (finalAnswers.length > 0) {
             newQrItem = { ...newQrItem, answer: finalAnswers };
+          } else if (evaluated?.omitted) {
+            delete newQrItem.answer;
           }
 
           if (qrItem.item && qItem.item) {

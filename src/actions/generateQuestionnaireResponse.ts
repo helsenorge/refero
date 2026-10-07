@@ -7,6 +7,7 @@ import Constants from '@/constants/';
 import ItemType from '@/constants/itemType';
 import StatusConstants from '@/constants/status';
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
+import { isNumericResult, resolveFhirPathCalculationOptions } from '@/util/fhirPathOptions';
 import { isHelpItem } from '@/util/help';
 
 const shouldNotAddItemToResponse = (item: QuestionnaireItem): boolean => {
@@ -118,6 +119,14 @@ export function evaluateCalculatedExpressions(
   response: QuestionnaireResponse,
   bundleIndex?: number
 ): QuestionnaireResponse {
+  const q =
+    questionnaire.resourceType === 'Bundle'
+      ? (questionnaire?.entry?.[bundleIndex ?? 0].resource as Questionnaire | undefined)
+      : questionnaire;
+  // Cloned because fhirpath.js attaches metadata to objects it returns, and q may be frozen.
+  const envVars = q ? { questionnaire: structuredClone(q) } : undefined;
+  const options = resolveFhirPathCalculationOptions();
+
   function traverseItems(qItems: QuestionnaireItem[], qrItems: QuestionnaireResponseItem[]): void {
     qItems
       .filter(x => !!x)
@@ -126,10 +135,15 @@ export function evaluateCalculatedExpressions(
         if (!qrItem) {
           return;
         }
-        const expressionToEvaluate = getCopyExtension(qItem) ?? getCalculatedExpressionExtension(qItem);
+        const expressionToEvaluate =
+          options.expressionPriority === 'calculated-first'
+            ? (getCalculatedExpressionExtension(qItem) ?? getCopyExtension(qItem))
+            : (getCopyExtension(qItem) ?? getCalculatedExpressionExtension(qItem));
         if (expressionToEvaluate && expressionToEvaluate.valueString) {
-          const result = evaluateFhirpathExpressionToGetString(expressionToEvaluate, response);
-          if (result.length > 0) {
+          const result = evaluateFhirpathExpressionToGetString(expressionToEvaluate, response, true, envVars, qItem.linkId);
+          const isNumericItem = qItem.type === ItemType.DECIMAL || qItem.type === ItemType.INTEGER;
+          const omitResult = options.omitNonNumericResults && isNumericItem && !isNumericResult(result[0]);
+          if (result.length > 0 && !omitResult) {
             const calculatedValue = result[0];
             const answer = qrItem.answer ? qrItem.answer[0] : {};
             switch (qItem.type) {
@@ -183,10 +197,6 @@ export function evaluateCalculatedExpressions(
         }
       });
   }
-  const q =
-    questionnaire.resourceType === 'Bundle'
-      ? (questionnaire?.entry?.[bundleIndex ?? 0].resource as Questionnaire | undefined)
-      : questionnaire;
   if (q && q?.item && response?.item) {
     traverseItems(q.item, response.item);
   }
