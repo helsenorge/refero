@@ -4,9 +4,8 @@ import type { QuestionnaireComponentItemProps } from '@/components/createQuestio
 import type { Options } from '@/types/formTypes/radioGroupOptions';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label from '@helsenorge/designsystem-react/components/Label';
-import Radio from '@helsenorge/designsystem-react/components/Radio';
 
+import { renderRadioOptions } from '../choice-common/renderRadioOptions';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -45,7 +44,7 @@ const RadioView = (props: Props): React.JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const registration = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -74,24 +73,7 @@ const RadioView = (props: Props): React.JSX.Element | null => {
           htmlFor={`${getId(id)}-hn-${index}`}
           formFieldTagId={`${getId(id)}-radio-formfieldtag`}
         />
-        {options?.map((option: Options, index: number) => (
-          <Radio
-            {...rest}
-            aria-describedby={`${getId(id)}-open-choice-label`}
-            key={option.id}
-            inputId={`${getId(id)}-hn-${index}`}
-            testId={`test-openchoice-radio-${getId(id)}-${index}`}
-            value={option.type}
-            onChange={(e): void => {
-              handleChange(option.type);
-              onChange(e);
-            }}
-            label={
-              <Label testId={`${getId(id)}-${index}-radio-open-choice-label`} labelTexts={[{ text: option.label, type: 'subdued' }]} />
-            }
-            checked={selectedValue === option?.type}
-          />
-        ))}
+        {renderRadioOptions({ variant: 'open-choice', id, options, selectedValue, handleChange, registration })}
       </FormGroup>
       {shouldShowExtraChoice(answer) ? <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div> : null}
       <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
