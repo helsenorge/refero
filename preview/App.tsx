@@ -1,3 +1,4 @@
+import '@helsenorge/designsystem-react/scss/supernova/index.css';
 import './styles/skjemautfyller.scss';
 
 import type React from 'react';

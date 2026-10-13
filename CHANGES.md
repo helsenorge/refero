@@ -1,3 +1,10 @@
+## 26.0.0
+
+- Breaking: requires `@helsenorge/designsystem-react` and `@helsenorge/datepicker` v16, and `@helsenorge/autosuggest` and
+  `@helsenorge/file-upload` v40 (peer dependencies). `@helsenorge/core-utils` is upgraded to v40.
+- Radio button choices now use the design system `Radio` component, which replaces `RadioButton`. Its internal CSS classes are renamed
+  (`radio-button-*` to `radio-*`), so custom styles that target those classes need updating.
+
 ## 25.1.0
 
 - Calculated and copy expressions (`sdf-calculatedExpression` and `cqf-expression`) can now use the `%questionnaire` and `%resource` context

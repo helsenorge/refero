@@ -5,7 +5,7 @@ import type { Options } from '@/types/formTypes/radioGroupOptions';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
-import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
+import Radio from '@helsenorge/designsystem-react/components/Radio';
 
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
@@ -75,7 +75,7 @@ const RadioView = (props: Props): React.JSX.Element | null => {
           formFieldTagId={`${getId(id)}-radio-formfieldtag`}
         />
         {options?.map((option: Options, index: number) => (
-          <RadioButton
+          <Radio
             {...rest}
             aria-describedby={`${getId(id)}-open-choice-label`}
             key={option.id}
