@@ -333,6 +333,35 @@ describe('Radio-view - choice', () => {
       });
     });
   });
+  describe('Radio markup', () => {
+    const nonRepeating: Questionnaire = { ...q, item: q.item?.map(x => ({ ...x, repeats: false, required: true })) };
+
+    it('Should render each option as a radio wired to the item label', async () => {
+      await createWrapper(nonRepeating);
+      const radios = screen.getAllByRole('radio');
+      const wrappers = screen.getAllByTestId(/^test-openchoice-radio-.+-\d+$/);
+
+      expect(radios.length).toBeGreaterThan(1);
+      expect(wrappers).toHaveLength(radios.length);
+      radios.forEach((radio, i) => {
+        expect(radio.id).toMatch(new RegExp(`-hn-${i}$`));
+        expect(radio.getAttribute('aria-describedby')).toMatch(/-open-choice-label(\s|$)/);
+        expect(radio).toHaveAttribute('name', radios[0].getAttribute('name'));
+        expect(wrappers[i]).toContainElement(radio);
+      });
+      expect(screen.getByLabelText(/Ja/i)).toHaveAttribute('value', 'ja');
+    });
+
+    it('Should mark radios invalid via FormGroup after failed submit', async () => {
+      await createWrapper(nonRepeating);
+      const radio = screen.getByLabelText(/Ja/i);
+      expect(radio.closest('label')).not.toHaveClass('radio-label--invalid');
+
+      await submitForm();
+
+      expect(radio.closest('label')).toHaveClass('radio-label--invalid');
+    });
+  });
 });
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = async (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {

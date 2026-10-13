@@ -1,7 +1,5 @@
 import type React from 'react';
 
-import { v4 as uuid } from 'uuid';
-
 import type { Resources } from './resources';
 import type { Options } from '../types/formTypes/radioGroupOptions';
 import type {
@@ -71,18 +69,9 @@ export function getOptions(
   }
 
   if (item.type === ItemType.OPENCHOICE) {
-    if (!options) {
-      options = [];
-    }
-    options.push({
-      id: uuid(),
-      label: resources?.openChoiceOption || '',
-      type: OPEN_CHOICE_ID,
-    });
-    return options;
+    options = [...(options ?? []), { label: resources?.openChoiceOption || '', type: OPEN_CHOICE_ID }];
   }
-  const optionsWithIds = generateOptionsWithIds(options);
-  return optionsWithIds;
+  return generateOptionsWithIds(options);
 }
 
 function getValueSet(answerValueSet: QuestionnaireItem['answerValueSet'], containedResources?: Resource[]): string | undefined {

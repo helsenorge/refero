@@ -4,9 +4,8 @@ import type { QuestionnaireComponentItemProps } from '@/components/createQuestio
 import type { Options } from '@/types/formTypes/radioGroupOptions';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label from '@helsenorge/designsystem-react/components/Label';
-import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
+import { renderRadioOptions } from '../choice-common/renderRadioOptions';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -42,7 +41,7 @@ const RadioView = (props: Props): React.JSX.Element => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const registration = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -71,23 +70,7 @@ const RadioView = (props: Props): React.JSX.Element => {
           sublabelId={`${getId(id)}-choice-sublabel`}
           formFieldTagId={`${getId(id)}-radio-formfieldtag`}
         />
-        {options?.map((option: Options, index: number) => (
-          <RadioButton
-            {...rest}
-            aria-describedby={`${getId(id)}-choice-label`}
-            onChange={(e): void => {
-              handleChange(option.type);
-              onChange(e);
-            }}
-            value={option.type}
-            key={option.id}
-            inputId={`${getId(id)}-hn-${index}`}
-            testId={`test-choice-radio-${getId(id)}-${index}`}
-            onColor="ongrey"
-            label={<Label testId={`${getId(id)}-${index}-radio-choice-label`} labelTexts={[{ text: option.label, type: 'subdued' }]} />}
-            checked={selectedValue === option?.type}
-          />
-        ))}
+        {renderRadioOptions({ variant: 'choice', id, options, selectedValue, handleChange, registration })}
       </FormGroup>
       <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton path={path} item={item} index={index} />
