@@ -1,3 +1,9 @@
+## 26.0.1
+
+- Fix: after a submit or next step with validation errors, the focused field is scrolled into view when it is off screen. iOS WebKit (Safari
+  and Chrome on iPhone) does not scroll to a form control that is focused by script, so the user stayed at the bottom of the form without
+  seeing the error. This also applies when submitting through `renderCustomActionButtons`.
+
 ## 26.0.0
 
 - Breaking: requires `@helsenorge/designsystem-react` and `@helsenorge/datepicker` v16, and `@helsenorge/autosuggest` and

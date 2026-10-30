@@ -37,6 +37,18 @@ interface RenderFormProps {
   setStepIndex?: (index: number) => void;
 }
 
+// iOS WebKit does not scroll to a form control focused by script, so react-hook-form's error focus can land off screen.
+const scrollFocusedFieldIntoView = (form: HTMLFormElement | null): void => {
+  const focused = document.activeElement;
+  if (!form || !(focused instanceof HTMLElement) || !form.contains(focused)) {
+    return;
+  }
+  const { top, bottom } = focused.getBoundingClientRect();
+  if (top < 0 || bottom > window.innerHeight) {
+    focused.scrollIntoView({ block: 'center' });
+  }
+};
+
 const RenderForm = ({
   isStepView,
   referoProps,
@@ -58,6 +70,15 @@ const RenderForm = ({
   const { level, errorLevelResources } = useAppSelector(state => RequiredLevelSelector(state, undefined, resources));
 
   const { formState } = useFormContext();
+  const formRef = React.useRef<HTMLFormElement>(null);
+  const { submitCount, isSubmitSuccessful } = formState;
+  // Also covers renderCustomActionButtons; react-hook-form focuses the error before submitCount updates.
+  React.useEffect(() => {
+    if (submitCount > 0 && !isSubmitSuccessful) {
+      scrollFocusedFieldIntoView(formRef.current);
+    }
+  }, [submitCount, isSubmitSuccessful]);
+
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} color="black" />;
   }
@@ -96,7 +117,7 @@ const RenderForm = ({
   const onPauseButtonClicked = isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView;
   return (
     <React.Fragment>
-      <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
+      <form ref={formRef} onSubmit={methods.handleSubmit(onSubmitReactHookForm, onErrorReactHookForm)}>
         {displayValidationSummaryOnTop && !referoProps.hideValidationSummary && errorsExist && (
           <ValidationSummary
             testId={'validation-summary'}
