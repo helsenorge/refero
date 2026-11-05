@@ -1,3 +1,7 @@
+## 26.0.2
+
+- Fix: normalize `onRenderMarkdown` callback results to strings so `TrustedHTML` values are not passed through as objects.
+
 ## 26.0.1
 
 - Fix: after a submit or next step with validation errors, the focused field is scrolled into view when it is off screen. iOS WebKit (Safari

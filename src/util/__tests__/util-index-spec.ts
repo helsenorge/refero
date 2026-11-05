@@ -84,6 +84,29 @@ describe('utils-index', () => {
       expect(result).toBe('<custom>**bold**</custom>');
     });
 
+    it('should convert TrustedHTML returned by onRenderMarkdown to a string', () => {
+      const item: QuestionnaireItem = {
+        linkId: '1',
+        type: 'string',
+        extension: [
+          {
+            url: Extensions.SUBLABEL_URL,
+            valueMarkdown: '**bold**',
+          },
+        ],
+      };
+      const trustedHtml = {
+        toString: () => '<custom>**bold**</custom>',
+        [Symbol.toStringTag]: 'TrustedHTML',
+      } as unknown as string;
+      const onRenderMarkdown = (): string => trustedHtml;
+
+      const result = getSublabelText(item, onRenderMarkdown);
+
+      expect(typeof result).toBe('string');
+      expect(result).toBe('<custom>**bold**</custom>');
+    });
+
     it('should not use onRenderMarkdown callback when only plain text sublabel is present', () => {
       const item: QuestionnaireItem = {
         linkId: '1',

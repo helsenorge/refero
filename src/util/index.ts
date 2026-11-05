@@ -181,7 +181,7 @@ function getMarkdownValue(
   };
 
   if (onRenderMarkdown) {
-    return onRenderMarkdown(item, markdownText.toString());
+    return String(onRenderMarkdown(item, markdownText.toString()));
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
     return marked(markdownText.toString(), { async: false, renderer: rendererSameWindow });
