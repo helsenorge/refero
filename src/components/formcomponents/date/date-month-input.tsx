@@ -44,6 +44,7 @@ export const DateYearMonthInput = ({
   onDateValueChange,
   children,
   path,
+  language,
 }: DateMonthProps): React.JSX.Element | null => {
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
   const answer = useGetAnswer(linkId, path);
@@ -77,7 +78,7 @@ export const DateYearMonthInput = ({
   const monthOptions = getMonthOptions(resources);
   const year = getYearAndMonth()?.year.toString() || '';
   const month = getYearAndMonth()?.month || '';
-  const pdfValue = getPDFValueForDate(dateValue, resources?.ikkeBesvart, DateFormat.yyyyMM, DateFormat.MMMMyyyy);
+  const pdfValue = getPDFValueForDate(dateValue, resources?.ikkeBesvart, DateFormat.yyyyMM, DateFormat.MMMMyyyy, language);
   useResetFormField(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
   useResetFormField(`${idWithLinkIdAndItemIndex}-yearmonth-month`, month);
 

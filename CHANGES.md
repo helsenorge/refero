@@ -1,3 +1,7 @@
+## 26.0.2
+
+- Fix: Prefilled dates now displays on the correct language format.
+
 ## 26.0.1
 
 - Fix: after a submit or next step with validation errors, the focused field is scrolled into view when it is off screen. iOS WebKit (Safari
