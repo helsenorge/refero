@@ -94,7 +94,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const [dateValueContainer, setDateValueContainer] = useState<Date | string | undefined>(dateAnswerValueParsed);
   const [hours, setHours] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Hours));
   const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Minutes));
-  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
+  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm, language);
 
   useResetFormField(`${idWithLinkIdAndItemIndex}-date`, dateAnswerValue);
   useResetFormField(`${idWithLinkIdAndItemIndex}-hours`, hours);

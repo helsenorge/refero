@@ -74,7 +74,7 @@ export const DateDayInput = ({
   const dateAnswerValue = getDateAnswerValue(answer);
   const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
   const [dateValue, setDateValue] = useState<Date | undefined>(dateAnswerValueParsed);
-  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMdd, DateFormat.dMMyyyy);
+  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMdd, DateFormat.dMMyyyy, language);
   useResetFormField(idWithLinkIdAndItemIndex, dateAnswerValue);
 
   useEffect(() => {

@@ -456,8 +456,10 @@ export const getPDFValueForDate = (
   value: string | string[] | undefined,
   notAnsweredText: string | undefined,
   formatToParseTo?: DateFormat,
-  formatToFormatTo?: DateFormat
+  formatToFormatTo?: DateFormat,
+  language?: string
 ): string | number => {
+  const locale = getDateFnsLocale(language);
   if (value === undefined || value === null || value === '') {
     let text = '';
     if (notAnsweredText) {
@@ -471,7 +473,7 @@ export const getPDFValueForDate = (
         .map(d => {
           const valueParsed = parse(d, formatToParseTo, new Date());
           if (isValid(valueParsed)) {
-            return format(valueParsed, formatToFormatTo);
+            return format(valueParsed, formatToFormatTo, { locale });
           } else {
             return value;
           }
@@ -480,7 +482,7 @@ export const getPDFValueForDate = (
     }
     const valueParsed = parse(value, formatToParseTo, new Date());
     if (isValid(valueParsed)) {
-      return format(valueParsed, formatToFormatTo);
+      return format(valueParsed, formatToFormatTo, { locale });
     }
   }
   if (Array.isArray(value)) {
