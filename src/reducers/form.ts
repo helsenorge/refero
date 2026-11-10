@@ -357,7 +357,14 @@ function copyItem(
       copyItem(answer.item[j], newResponseItem, questionnairestate, questionnaire);
     }
 
-    target.answer = [...target.answer, targetAnswer];
+    // The initial value (or boolean answer) for this source answer is already in target.answer[i].
+    // Put the copied children under it instead of adding a second answer for the same question.
+    const answerWithInitial = target.answer[i];
+    if (answerWithInitial) {
+      target.answer = target.answer.map((a, index) => (index === i ? { ...answerWithInitial, item: targetAnswer.item } : a));
+    } else {
+      target.answer = [...target.answer, targetAnswer];
+    }
   }
   target.answer = pruneEmptyAnswers(target.answer);
   return target;
