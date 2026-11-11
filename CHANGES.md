@@ -1,3 +1,7 @@
+## 26.0.4
+
+- Fix: a display item with an expression (cqf-expression or sdf-calculatedExpression) no longer gets an answer in the QuestionnaireResponse. In FHIR R4 a display item cannot have an answer, so its expression is now ignored.
+
 ## 26.0.3
 
 - Fix: when a repeating group is repeated, a question with a prefilled value (`initial`) and a child question no longer gets two answers in the new repetition. The child question was shown twice with the same id, and typing in one field changed the other. The prefilled value and the child question now sit in the same answer.

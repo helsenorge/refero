@@ -139,7 +139,8 @@ export function evaluateCalculatedExpressions(
           options.expressionPriority === 'calculated-first'
             ? (getCalculatedExpressionExtension(qItem) ?? getCopyExtension(qItem))
             : (getCopyExtension(qItem) ?? getCalculatedExpressionExtension(qItem));
-        if (expressionToEvaluate && expressionToEvaluate.valueString) {
+        // FHIR R4: a display item cannot have an answer, so an expression on it is never evaluated.
+        if (qItem.type !== ItemType.DISPLAY && expressionToEvaluate && expressionToEvaluate.valueString) {
           const result = evaluateFhirpathExpressionToGetString(expressionToEvaluate, response, true, envVars, qItem.linkId);
           const isNumericItem = qItem.type === ItemType.DECIMAL || qItem.type === ItemType.INTEGER;
           const omitResult = options.omitNonNumericResults && isNumericItem && !isNumericResult(result[0]);
