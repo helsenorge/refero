@@ -120,6 +120,8 @@ export class FhirPathExtensions {
    * where it is being called from.
    */
   private getExpressionExtension(qItem: QuestionnaireItem, legacyPreference: 'copy' | 'calculated'): Extension | undefined {
+    // FHIR R4: a display item cannot have an answer, so an expression on it is never evaluated.
+    if (qItem.type === itemType.DISPLAY) return undefined;
     const calculatedExtension = getCalculatedExpressionExtension(qItem);
     const copyExtension = getCopyExtension(qItem);
 

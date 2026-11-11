@@ -123,3 +123,55 @@ describe('evaluateCalculatedExpressions', () => {
     }
   });
 });
+
+describe('evaluateCalculatedExpressions and expressions on display items', () => {
+  const COPY = Extensions.COPY_EXPRESSION_URL;
+  const CALCULATED = Extensions.CALCULATED_EXPRESSION_URL;
+  const coding = { system: 'urn:test', code: 'a', display: 'A' };
+
+  const SOURCE_STRING = "item.where(linkId='src').answer.valueString";
+  const SOURCE_CODING = "item.where(linkId='coded').answer.valueCoding";
+
+  const questionnaireWithTarget = (type: string, url: string, expression: string): Questionnaire =>
+    ({
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [
+        { linkId: 'src', type: 'string' },
+        { linkId: 'coded', type: 'choice' },
+        { linkId: 'target', type, extension: [{ url, valueString: expression }] },
+      ],
+    }) as unknown as Questionnaire;
+
+  const answeredResponse = (): QuestionnaireResponse => ({
+    resourceType: 'QuestionnaireResponse',
+    status: 'in-progress',
+    item: [
+      { linkId: 'src', answer: [{ valueString: 'Ola' }] },
+      { linkId: 'coded', answer: [{ valueCoding: coding }] },
+      { linkId: 'target' },
+    ],
+  });
+
+  describe.each([
+    ['cqf-expression', COPY],
+    ['sdf-calculatedExpression', CALCULATED],
+  ])('with %s', (_name, url) => {
+    it.each([
+      ['string', SOURCE_STRING, { valueString: 'Ola' }],
+      ['integer', `${SOURCE_STRING}.length()`, { valueInteger: 3 }],
+      ['boolean', `${SOURCE_STRING}.exists()`, { valueBoolean: true }],
+      ['choice', SOURCE_CODING, { valueCoding: coding }],
+    ])('Should still give a %s item an answer at startup', (type, expression, expected) => {
+      const result = evaluateCalculatedExpressions(questionnaireWithTarget(type, url, expression), answeredResponse());
+
+      expect(result.item?.[2].answer).toEqual([expected]);
+    });
+
+    it('Should not give a display item an answer at startup, since display items cannot have answers in FHIR R4', () => {
+      const result = evaluateCalculatedExpressions(questionnaireWithTarget('display', url, SOURCE_STRING), answeredResponse());
+
+      expect(result.item?.[2].answer).toBeUndefined();
+    });
+  });
+});
