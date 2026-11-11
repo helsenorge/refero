@@ -39,7 +39,8 @@ describe('which items the form renders', () => {
     expect(screen.getByLabelText('Visible')).toBeInTheDocument();
   });
 
-  it('does not render a help item as an item of its own', async () => {
+  it('does not render a help item that has a response item', async () => {
+    // Top-level help items get no response item, so the rule in ItemRenderer is only reached when one is present in the state.
     const help: QuestionnaireItem = {
       linkId: 'help',
       type: 'text',
@@ -51,10 +52,12 @@ describe('which items the form renders', () => {
         },
       ],
     };
-    await renderReferoWithStore({ questionnaire: questionnaireWith(help) });
+    const questionnaire = questionnaireWith(help);
+    await renderWithResponse(questionnaire, items => [...items, { linkId: 'help', answer: [{ valueString: 'Help answer' }] }]);
 
     expect(screen.getByLabelText('Visible')).toBeInTheDocument();
     expect(screen.queryByLabelText('Help text')).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue('Help answer')).not.toBeInTheDocument();
     expect(screen.queryByText('Help text')).not.toBeInTheDocument();
   });
 
