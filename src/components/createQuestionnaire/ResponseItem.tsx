@@ -8,7 +8,7 @@ import { createIdFormComponentIds } from './utils';
 
 import constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants';
 import ItemType from '@/constants/itemType';
-import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
+import { useCheckIfShown } from '@/hooks/useIsEnabled';
 import { getChildHeaderTag } from '@/util';
 import { createPathForItem, type Path } from '@/util/refero-core';
 
@@ -41,12 +41,12 @@ const ResponseItem = React.memo(function ResponseItem({
   headerTag,
   isFirstItem,
 }: ResponseItemProps) {
-  const checkIfEnabled = useCheckIfEnabled();
+  const checkIfShown = useCheckIfShown();
 
   // Memoize newPath
   const newPath = useMemo(() => createPathForItem(path, item, index), [path, item, index]);
 
-  if (!checkIfEnabled(item, newPath)) {
+  if (!checkIfShown(item, path, index)) {
     return null;
   }
 

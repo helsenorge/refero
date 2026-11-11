@@ -4,6 +4,7 @@ import { createSelector } from 'reselect';
 
 import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import type { FormData } from '@/reducers/form';
+import type { Path } from '@/util/refero-core';
 import type { RenderContext } from '@/util/renderContext';
 import type { QuestionnaireItem, Resource } from 'fhir/r4';
 
@@ -12,13 +13,11 @@ import { getComponentForItem } from './utils';
 
 import { PluginComponentWrapper } from '@/components/formcomponents/plugin/PluginComponentWrapper';
 import { useComponentPluginRegistry } from '@/context/componentPlugin';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { useCheckIfShown } from '@/hooks/useIsEnabled';
 import { useAppSelector } from '@/reducers';
 import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
 import { resolvePluginComponent } from '@/util/componentPluginResolver';
 import { isHelpItem } from '@/util/help';
-import { isHiddenItem } from '@/util/index';
-import { createPathForItem, type Path } from '@/util/refero-core';
 
 type ItemRendererProps = {
   item: QuestionnaireItem;
@@ -44,7 +43,9 @@ const ItemRenderer = memo(function ItemRenderer({
   isNavigatorEnabled,
   headerTag,
 }: ItemRendererProps) {
-  const isEnabled = useIsEnabled(item, createPathForItem(path, item, 0));
+  const checkIfShown = useCheckIfShown();
+  // Not hidden, and enabled at the first index. ResponseItem checks each repetition at its own index.
+  const isShown = checkIfShown(item, path);
   const responseItems = useAppSelector(state => responseItemsSelector(state, item.linkId, path));
   const pluginRegistry = useComponentPluginRegistry();
 
@@ -63,7 +64,7 @@ const ItemRenderer = memo(function ItemRenderer({
     );
   }, [pluginComponent, matchedCode]);
 
-  if (isHelpItem(item) || isHiddenItem(item)) {
+  if (isHelpItem(item) || !isShown) {
     return null;
   }
 
@@ -74,10 +75,6 @@ const ItemRenderer = memo(function ItemRenderer({
   }
 
   if (!responseItems || responseItems.length === 0) {
-    return null;
-  }
-
-  if (!isEnabled) {
     return null;
   }
 
