@@ -1,0 +1,259 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "copyitem-initial-children",
+  "status": "draft",
+  "item": [
+    {
+      "linkId": "grp",
+      "text": "Characterization group",
+      "type": "group",
+      "repeats": true,
+      "item": [
+        {
+          "linkId": "initOnly",
+          "text": "Initial only",
+          "type": "string",
+          "initial": [
+            {
+              "valueString": "init"
+            }
+          ]
+        },
+        {
+          "linkId": "childOnly",
+          "text": "Child, no initial",
+          "type": "string",
+          "item": [
+            {
+              "linkId": "childOnly.child",
+              "text": "Child",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "linkId": "bool",
+          "text": "Boolean",
+          "type": "boolean",
+          "initial": [
+            {
+              "valueBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "att",
+          "text": "Attachment",
+          "type": "attachment"
+        },
+        {
+          "linkId": "multi",
+          "text": "Repeating with children",
+          "type": "string",
+          "repeats": true,
+          "item": [
+            {
+              "linkId": "multi.child",
+              "text": "Child",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "linkId": "childInit",
+          "text": "Child with initial, no parent initial",
+          "type": "string",
+          "item": [
+            {
+              "linkId": "childInit.child",
+              "text": "Child",
+              "type": "string",
+              "initial": [
+                {
+                  "valueString": "childDefault"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "nested",
+          "text": "Nested group under answer",
+          "type": "string",
+          "item": [
+            {
+              "linkId": "nested.group",
+              "text": "Group",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "nested.group.text",
+                  "text": "Text",
+                  "type": "string",
+                  "initial": [
+                    {
+                      "valueString": "nestedDefault"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "parentInit",
+          "text": "Behandler",
+          "type": "string",
+          "initial": [
+            {
+              "valueString": "Dr. Hansen"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "parentInit.child",
+              "text": "Behandlerens rolle",
+              "type": "string",
+              "initial": [
+                {
+                  "valueString": "Fastlege"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "parentInitPlainChild",
+          "text": "Parent initial, child without initial",
+          "type": "string",
+          "initial": [
+            {
+              "valueString": "P"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "parentInitPlainChild.child",
+              "text": "Child",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "linkId": "multiInit",
+          "text": "Repeating, initial, children",
+          "type": "string",
+          "repeats": true,
+          "initial": [
+            {
+              "valueString": "i1"
+            },
+            {
+              "valueString": "i2"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "multiInit.child",
+              "text": "Child",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "linkId": "boolChild",
+          "text": "Boolean with child",
+          "type": "boolean",
+          "initial": [
+            {
+              "valueBoolean": true
+            }
+          ],
+          "item": [
+            {
+              "linkId": "boolChild.child",
+              "text": "Child",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "linkId": "fewSources",
+          "text": "Two initials, one source answer",
+          "type": "string",
+          "repeats": true,
+          "initial": [
+            {
+              "valueString": "i1"
+            },
+            {
+              "valueString": "i2"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "fewSources.child",
+              "text": "Child",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "linkId": "moreSources",
+          "text": "One initial, two source answers",
+          "type": "string",
+          "repeats": true,
+          "initial": [
+            {
+              "valueString": "x"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "moreSources.child",
+              "text": "Child",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "outer",
+      "text": "Enclosing group",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "grp2",
+          "text": "Repeating group inside enclosing group",
+          "type": "group",
+          "repeats": true,
+          "item": [
+            {
+              "linkId": "parentInit2",
+              "text": "Behandler",
+              "type": "string",
+              "initial": [
+                {
+                  "valueString": "Dr. Hansen"
+                }
+              ],
+              "item": [
+                {
+                  "linkId": "parentInit2.child",
+                  "text": "Behandlerens rolle",
+                  "type": "string",
+                  "initial": [
+                    {
+                      "valueString": "Fastlege"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

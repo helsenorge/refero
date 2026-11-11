@@ -1,0 +1,289 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "grp",
+      "item": [
+        {
+          "linkId": "initOnly",
+          "answer": [
+            {
+              "valueString": "typed"
+            }
+          ]
+        },
+        {
+          "linkId": "childOnly",
+          "answer": [
+            {
+              "valueString": "p",
+              "item": [
+                {
+                  "linkId": "childOnly.child",
+                  "answer": [
+                    {
+                      "valueString": "c"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "bool",
+          "answer": [
+            {
+              "valueBoolean": false
+            }
+          ]
+        },
+        {
+          "linkId": "att",
+          "answer": [
+            {
+              "valueAttachment": {
+                "title": "file.txt"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "multi",
+          "answer": [
+            {
+              "valueString": "m1",
+              "item": [
+                {
+                  "linkId": "multi.child",
+                  "answer": [
+                    {
+                      "valueString": "c1"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "valueString": "m2",
+              "item": [
+                {
+                  "linkId": "multi.child",
+                  "answer": [
+                    {
+                      "valueString": "c2"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "childInit",
+          "answer": [
+            {
+              "valueString": "p",
+              "item": [
+                {
+                  "linkId": "childInit.child",
+                  "answer": [
+                    {
+                      "valueString": "typed"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "nested",
+          "answer": [
+            {
+              "valueString": "p",
+              "item": [
+                {
+                  "linkId": "nested.group",
+                  "item": [
+                    {
+                      "linkId": "nested.group.text",
+                      "answer": [
+                        {
+                          "valueString": "typed"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "parentInit",
+          "answer": [
+            {
+              "valueString": "Dr. Hansen",
+              "item": [
+                {
+                  "linkId": "parentInit.child",
+                  "answer": [
+                    {
+                      "valueString": "Fastlege"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "parentInitPlainChild",
+          "answer": [
+            {
+              "valueString": "P",
+              "item": [
+                {
+                  "linkId": "parentInitPlainChild.child",
+                  "answer": [
+                    {
+                      "valueString": "typed"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "multiInit",
+          "answer": [
+            {
+              "valueString": "i1",
+              "item": [
+                {
+                  "linkId": "multiInit.child",
+                  "answer": [
+                    {
+                      "valueString": "c1"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "valueString": "i2",
+              "item": [
+                {
+                  "linkId": "multiInit.child",
+                  "answer": [
+                    {
+                      "valueString": "c2"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "boolChild",
+          "answer": [
+            {
+              "valueBoolean": false,
+              "item": [
+                {
+                  "linkId": "boolChild.child",
+                  "answer": [
+                    {
+                      "valueString": "typed"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "fewSources",
+          "answer": [
+            {
+              "valueString": "i1",
+              "item": [
+                {
+                  "linkId": "fewSources.child",
+                  "answer": [
+                    {
+                      "valueString": "c1"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "moreSources",
+          "answer": [
+            {
+              "valueString": "x",
+              "item": [
+                {
+                  "linkId": "moreSources.child",
+                  "answer": [
+                    {
+                      "valueString": "c1"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "valueString": "y",
+              "item": [
+                {
+                  "linkId": "moreSources.child",
+                  "answer": [
+                    {
+                      "valueString": "c2"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "outer",
+      "item": [
+        {
+          "linkId": "grp2",
+          "item": [
+            {
+              "linkId": "parentInit2",
+              "answer": [
+                {
+                  "valueString": "Dr. Hansen",
+                  "item": [
+                    {
+                      "linkId": "parentInit2.child",
+                      "answer": [
+                        {
+                          "valueString": "Fastlege"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
