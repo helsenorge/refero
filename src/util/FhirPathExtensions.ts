@@ -10,8 +10,16 @@ import type {
   Attachment,
 } from 'fhir/r4';
 
+import {
+  ALL_DEPENDENCIES,
+  analyzeExpression,
+  resolveLinkIdFilters,
+  ResponseIndex,
+  type ExpressionAnalysis,
+  type ExpressionDependencies,
+} from './expressionDependencies';
 import { getCalculatedExpressionExtension, getCopyExtension, getQuestionnaireUnitExtensionValue } from './extension';
-import { evaluateFhirpathExpressionToGetString, type FhirPathEnvVars } from './fhirpathHelper';
+import { evaluateOnPrivateCopy, type FhirPathEnvVars } from './fhirpathHelper';
 import {
   isNumericResult,
   resolveFhirPathCalculationOptions,
@@ -29,6 +37,19 @@ import { Extensions } from '@/constants/extensions';
 export interface AnswerPad {
   [linkId: string]: number | undefined | string | Coding | boolean | Coding[] | Quantity | QuestionnaireResponseItemAnswer[] | null;
 }
+const MEMO_ENTRIES_PER_ITEM = 3;
+
+interface MemoEntry {
+  extension: Extension;
+  signature: string;
+  result: EvaluatedExpression;
+}
+
+interface EvaluatedExpression {
+  answers: QuestionnaireResponseItemAnswer[] | null;
+  omitted: boolean;
+}
+
 export enum FhirPathItemType {
   QUESTION_FHIRPATH_SCORE = 'QUESTION_FHIRPATH_SCORE',
   QUESTION_FHIRPATH_COPY = 'QUESTION_FHIRPATH_COPY',
@@ -54,6 +75,16 @@ export class FhirPathExtensions {
   private questionnaireForExpressions?: Questionnaire;
   private options: ResolvedFhirPathCalculationOptions;
   private fhirScoreCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
+  /**
+   * Recent results per linkId, with the expression and the signature of the response parts they were computed
+   * from. A result is reused when the signature matches; see expressionDependencies.
+   */
+  private memo = new Map<string, MemoEntry[]>();
+  private analyses = new Map<Extension, { analysis: ExpressionAnalysis; dependencies?: string[] }>();
+  private questionnaireLinkIds?: Set<string>;
+  private responseIndex?: { response: QuestionnaireResponse; index: ResponseIndex };
+  /** The private copy expressions are evaluated against, made once per response instead of once per expression. */
+  private evaluationCopy?: { source: QuestionnaireResponse; copy: QuestionnaireResponse };
 
   constructor(questionnaire: Questionnaire, options?: FhirPathCalculationOptions) {
     this.questionnaire = questionnaire;
@@ -155,15 +186,36 @@ export class FhirPathExtensions {
     return { valueInteger: isNumeric ? Math.round(Number(value)) : 0 };
   }
   public evaluateAllExpressions(questionnaireResponse: QuestionnaireResponse): QuestionnaireResponse {
-    return this.evaluateCalculatedExpressions(questionnaireResponse);
+    try {
+      return this.evaluateCalculatedExpressions(questionnaireResponse);
+    } finally {
+      this.evaluationCopy = undefined;
+      this.responseIndex = undefined;
+    }
+  }
+
+  /**
+   * Dropped at the end of every public call, so a response that is changed in place between calls is never
+   * evaluated from a stale copy.
+   */
+  private getEvaluationCopy(response: QuestionnaireResponse): QuestionnaireResponse {
+    if (this.evaluationCopy?.source !== response) {
+      this.evaluationCopy = { source: response, copy: structuredClone(response) };
+    }
+    return this.evaluationCopy.copy;
   }
 
   public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
     const answerPad: AnswerPad = {};
-    for (const [key, value] of this.fhirScoreCache) {
-      const expressionExtension = this.getExpressionExtension(value, 'calculated');
-      if (!expressionExtension) continue;
-      answerPad[key] = this.evaluateExpression(value, expressionExtension, questionnaireResponse);
+    try {
+      for (const [key, value] of this.fhirScoreCache) {
+        const expressionExtension = this.getExpressionExtension(value, 'calculated');
+        if (!expressionExtension) continue;
+        answerPad[key] = this.evaluateExpressionDetailed(value, expressionExtension, questionnaireResponse).answers;
+      }
+    } finally {
+      this.evaluationCopy = undefined;
+      this.responseIndex = undefined;
     }
     return answerPad;
   }
@@ -190,21 +242,95 @@ export class FhirPathExtensions {
     };
   }
 
-  private evaluateExpression = (
+  private getResponseIndex(response: QuestionnaireResponse): ResponseIndex {
+    if (this.responseIndex?.response !== response) {
+      this.responseIndex = { response, index: new ResponseIndex(response) };
+    }
+    return this.responseIndex.index;
+  }
+
+  private getQuestionnaireLinkIds(): Set<string> {
+    if (!this.questionnaireLinkIds) {
+      const linkIds = new Set<string>();
+      const walk = (items: QuestionnaireItem[] | undefined): void => {
+        for (const item of items ?? []) {
+          linkIds.add(item.linkId);
+          walk(item.item);
+        }
+      };
+      walk(this.questionnaire.item);
+      this.questionnaireLinkIds = linkIds;
+    }
+    return this.questionnaireLinkIds;
+  }
+
+  /**
+   * The linkIds an expression reads. Filters are resolved once against the questionnaire's linkIds; a response
+   * that holds linkIds the questionnaire does not have gets those checked as well.
+   */
+  private getDependencies(expressionExtension: Extension, index: ResponseIndex): ExpressionDependencies {
+    let entry = this.analyses.get(expressionExtension);
+    if (!entry) {
+      entry = { analysis: expressionExtension.valueString ? analyzeExpression(expressionExtension.valueString) : ALL_DEPENDENCIES };
+      this.analyses.set(expressionExtension, entry);
+    }
+    const { analysis } = entry;
+    if (analysis === ALL_DEPENDENCIES) {
+      return ALL_DEPENDENCIES;
+    }
+    const known = this.getQuestionnaireLinkIds();
+    entry.dependencies ??= resolveLinkIdFilters(analysis, known);
+    const unknown = index.unknownLinkIds(known);
+    return unknown.length === 0
+      ? entry.dependencies
+      : [...new Set([...entry.dependencies, ...resolveLinkIdFilters(analysis, unknown)])].sort();
+  }
+
+  /**
+   * The result of an expression, reused when the parts of the response it depends on are the same as for an
+   * earlier result. The result does not depend on which occurrence of the item is calculated, so items that
+   * occur many times are computed once.
+   *
+   * A few results are kept per item: a calculation evaluates the response and then the updated response, and
+   * when an expression only reads answers (not other calculations) both see the same parts, so the second pass
+   * reuses the first. Expressions that read other calculations see different parts in the two passes; keeping
+   * more than one result stops the passes from evicting each other.
+   */
+  private evaluateExpressionDetailed(
     qItem: QuestionnaireItem,
     expressionExtension: Extension,
     response: QuestionnaireResponse
-  ): QuestionnaireResponseItemAnswer[] | null => this.evaluateExpressionDetailed(qItem, expressionExtension, response).answers;
+  ): EvaluatedExpression {
+    const index = this.getResponseIndex(response);
+    const dependencies = this.getDependencies(expressionExtension, index);
+    if (dependencies === ALL_DEPENDENCIES) {
+      return this.computeExpression(qItem, expressionExtension, response);
+    }
+    const signature = index.signature(dependencies, qItem.linkId);
+    const entries = this.memo.get(qItem.linkId) ?? [];
+    const remembered = entries.find(entry => entry.extension === expressionExtension && entry.signature === signature);
+    if (remembered) {
+      return remembered.result;
+    }
+    const result = this.computeExpression(qItem, expressionExtension, response);
+    this.memo.set(qItem.linkId, [{ extension: expressionExtension, signature, result }, ...entries].slice(0, MEMO_ENTRIES_PER_ITEM));
+    return result;
+  }
 
   /** omitted is true when omitNonNumericResults dropped every result of the expression. */
-  private evaluateExpressionDetailed = (
+  private computeExpression = (
     qItem: QuestionnaireItem,
     expressionExtension: Extension,
     response: QuestionnaireResponse
-  ): { answers: QuestionnaireResponseItemAnswer[] | null; omitted: boolean } => {
+  ): EvaluatedExpression => {
     if (expressionExtension.valueString) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any[] = evaluateFhirpathExpressionToGetString(expressionExtension, response, true, this.getEnvVars(), qItem.linkId);
+      const result: any[] = evaluateOnPrivateCopy(
+        expressionExtension.valueString,
+        this.getEvaluationCopy(response),
+        this.getEnvVars(),
+        qItem.linkId
+      );
       const qrItem = getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
       const itemAnswer: QuestionnaireResponseItemAnswer[] = [];
       switch (qItem.type) {

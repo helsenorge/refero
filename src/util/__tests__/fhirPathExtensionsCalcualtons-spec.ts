@@ -15,9 +15,12 @@ import type {
 
 // 1) fhirpath resolver: vi styrer output pr test
 import { FhirPathExtensions } from '../FhirPathExtensions';
-vi.mock('../fhirpathHelper', () => ({
-  evaluateFhirpathExpressionToGetString: vi.fn(),
-}));
+vi.mock('../fhirpathHelper', () => {
+  // FhirPathExtensions evaluates through evaluateOnPrivateCopy; one mock behind both names keeps the tests
+  // controlling the result through evaluateFhirpathExpressionToGetString.
+  const evaluate = vi.fn();
+  return { evaluateFhirpathExpressionToGetString: evaluate, evaluateOnPrivateCopy: evaluate };
+});
 import { evaluateFhirpathExpressionToGetString } from '../fhirpathHelper';
 
 // 2) Extensions: vi trenger bare URL konstanten
