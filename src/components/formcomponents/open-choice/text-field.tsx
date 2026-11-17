@@ -52,12 +52,13 @@ const ExtraTextField = (props: Props): React.JSX.Element | null => {
   };
   const { onChange, onBlur, ...rest } = register(
     `${idWithLinkIdAndItemIndex}-extra-field`,
-    shouldValidate(item, pdf) ? validationRules : undefined
+    shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined
   );
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, props.renderContext)) {
     return (
       <ReadOnly
+        renderContext={props.renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -73,6 +74,7 @@ const ExtraTextField = (props: Props): React.JSX.Element | null => {
   return (
     <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
+        renderContext={props.renderContext}
         item={item}
         resources={resources}
         htmlFor={`${getId(id)}-extra-field`}
@@ -85,14 +87,14 @@ const ExtraTextField = (props: Props): React.JSX.Element | null => {
       <Input
         {...rest}
         aria-describedby={`${getId(id)}-extra-field-label`}
-        disabled={isReadOnly(item)}
+        disabled={isReadOnly(item, props.renderContext)}
         type="text"
         onColor="ongrey"
         inputId={`${getId(id)}-extra-field`}
         testId={`${getId(id)}-extra-field`}
         value={value}
         placeholder={getPlaceholder(item)}
-        readOnly={isReadOnly(item)}
+        readOnly={isReadOnly(item, props.renderContext)}
         onChange={(e): void => {
           onChange(e);
           handleChange(e.target.value);

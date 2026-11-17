@@ -1,7 +1,23 @@
+## 26.2.0
+
+- A group with `itemControl` `gtable` that repeats is shown as a table: one row per occurrence, one column per question. The rows can be
+  copied (a group with a row source, see 26.1.0), which are read-only and can be sorted, or filled in by the person, with a button to add a
+  row and a delete button per row. Each cell is the question's own component, so `hidden`, `enableWhen`, validation and value formatting
+  work as in the rest of the form. A question with `hidden` is not a column, and a question turned off by a condition on a question outside
+  the group is left out as a column. A table without rows is not shown.
+- In a table a question leaves out its title, since the column header is the title, and keeps its label for screen readers with the row
+  number ("Navn, rad 2"). The table is named after the group and scrolls sideways when it is too wide. New optional resources: `tableRow`
+  ("rad") and `tableActions` ("Handlinger"). `shouldValidate` takes an optional render context.
+- Behaviour change: a gtable without a sort code is no longer sorted on screen. The rows keep the order of the response, as in the PDF. A
+  sort code (`TableOrderingColum`, `TableOrderingFunctions`) still sorts, and the person can sort by clicking a column header. Dates, times
+  and numbers are sorted as such in the new table.
+- Old gtables (no row source on the group, columns that copy flat lists from the whole response) are drawn as before, apart from the
+  sorting.
+
 ## 26.1.0
 
-- Item copying: a group, or a repeating question, with a copy expression (`cqf-expression`) that selects response items gets one
-  occurrence per selected item. The questions in the group read their value from their own occurrence with `%row` (or the name in
+- Item copying: a group, or a repeating question, with a copy expression (`cqf-expression`) that selects response items gets one occurrence
+  per selected item. The questions in the group read their value from their own occurrence with `%row` (or the name in
   `valueExpression.name`), for example `%row.descendants().where(linkId='dose').answer.value`. A missing answer leaves an empty question in
   that occurrence, so answers no longer end up in another row, as they can when each question copies a flat list from the whole response.
   Copied occurrences cannot be added or deleted by the user, and a copied question that `enableWhen` turns off gets no answer. Copy
@@ -9,11 +25,14 @@
 
 ## 26.0.4
 
-- Fix: a display item with an expression (cqf-expression or sdf-calculatedExpression) no longer gets an answer in the QuestionnaireResponse. In FHIR R4 a display item cannot have an answer, so its expression is now ignored.
+- Fix: a display item with an expression (cqf-expression or sdf-calculatedExpression) no longer gets an answer in the QuestionnaireResponse.
+  In FHIR R4 a display item cannot have an answer, so its expression is now ignored.
 
 ## 26.0.3
 
-- Fix: when a repeating group is repeated, a question with a prefilled value (`initial`) and a child question no longer gets two answers in the new repetition. The child question was shown twice with the same id, and typing in one field changed the other. The prefilled value and the child question now sit in the same answer.
+- Fix: when a repeating group is repeated, a question with a prefilled value (`initial`) and a child question no longer gets two answers in
+  the new repetition. The child question was shown twice with the same id, and typing in one field changed the other. The prefilled value
+  and the child question now sit in the same answer.
 
 ## 26.0.2
 

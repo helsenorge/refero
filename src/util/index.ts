@@ -1,6 +1,7 @@
 import { marked } from 'marked';
 import * as uuid from 'uuid';
 
+import type { RenderContext } from '@/util/renderContext';
 import type { Resources } from '@/util/resources';
 import type { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
@@ -52,11 +53,12 @@ export function isStringEmpty(string: string | undefined): boolean {
   return string === '' || string === null || string === undefined;
 }
 
-export function isReadOnly(item?: QuestionnaireItem): boolean {
+/** Whether an item is read-only: in the questionnaire, or because the context it is rendered in is read-only. */
+export function isReadOnly(item?: QuestionnaireItem, renderContext?: RenderContext): boolean {
   if (item && item.readOnly) {
     return item.readOnly;
   }
-  return false;
+  return !!renderContext?.ReadOnly;
 }
 
 export function shouldValidateReadOnly(item?: QuestionnaireItem): boolean {

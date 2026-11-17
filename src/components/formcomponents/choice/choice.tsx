@@ -190,7 +190,7 @@ export const Choice = (props: ChoiceProps): React.JSX.Element | null => {
         return <SliderView {...commonProps} />;
       case itemControlConstants.DATARECEIVER:
         return (
-          <ReadOnly item={item} id={props.idWithLinkIdAndItemIndex} pdfValue={pdfValue}>
+          <ReadOnly renderContext={props.renderContext} item={item} id={props.idWithLinkIdAndItemIndex} pdfValue={pdfValue}>
             {children}
           </ReadOnly>
         );

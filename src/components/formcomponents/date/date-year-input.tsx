@@ -71,11 +71,15 @@ export const DateYearInput = (props: Props): React.JSX.Element | null => {
     },
     shouldUnregister: true,
   };
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const { onChange, ...rest } = register(
+    idWithLinkIdAndItemIndex,
+    shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined
+  );
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, props.renderContext)) {
     return (
       <ReadOnly
+        renderContext={props.renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -91,6 +95,7 @@ export const DateYearInput = (props: Props): React.JSX.Element | null => {
   return (
     <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
+        renderContext={props.renderContext}
         item={item}
         resources={resources}
         htmlFor={`${getId(id)}-input`}

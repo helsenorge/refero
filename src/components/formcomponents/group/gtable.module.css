@@ -1,0 +1,18 @@
+/* The question's own box (padding, background and spacing) is not needed inside a cell. */
+.cell :global(.page_refero__component) {
+  padding: 0;
+  background: transparent;
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.cell {
+  vertical-align: top;
+  min-width: 9rem;
+}
+
+.rowButtons {
+  vertical-align: top;
+  white-space: nowrap;
+}

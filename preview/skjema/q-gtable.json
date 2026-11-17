@@ -1,0 +1,1212 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "gtable-view",
+  "language": "nb-NO",
+  "name": "Gtable_som_visning",
+  "title": "Gtable som visning",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ]
+  },
+  "subjectType": ["Patient"],
+  "item": [
+    {
+      "linkId": "kilde",
+      "text": "K. Kilde",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "medisin",
+          "text": "Medisin",
+          "type": "group",
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+              "valueString": "Legg til medisin"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "medisin.navn",
+              "text": "Navn",
+              "type": "string"
+            },
+            {
+              "linkId": "medisin.type",
+              "text": "Type",
+              "type": "choice",
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                    "code": "tablett",
+                    "display": "Tablett"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                    "code": "mikstur",
+                    "display": "Mikstur"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "medisin.styrke",
+              "text": "Styrke (bare mikstur)",
+              "type": "string",
+              "enableWhen": [
+                {
+                  "question": "medisin.type",
+                  "operator": "=",
+                  "answerCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                    "code": "mikstur"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "medisin.dose",
+              "text": "Dose",
+              "type": "string"
+            },
+            {
+              "linkId": "medisin.fast",
+              "text": "Fast medisin",
+              "type": "boolean"
+            },
+            {
+              "linkId": "medisin.tid",
+              "text": "Tidspunkt",
+              "type": "string",
+              "repeats": true,
+              "extension": [
+                {
+                  "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+                  "valueString": "Legg til tidspunkt"
+                }
+              ]
+            },
+            {
+              "linkId": "medisin.naar",
+              "text": "Når på dagen",
+              "type": "choice",
+              "repeats": true,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                        "code": "check-box"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                    "code": "morgen",
+                    "display": "Morgen"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                    "code": "kveld",
+                    "display": "Kveld"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "vis-dose",
+          "text": "Vis dose i kopiene",
+          "type": "boolean"
+        },
+        {
+          "linkId": "vis-tabell",
+          "text": "Vis tabell F",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "linkId": "egen",
+      "text": "A. Egen tabell (fylles ut, gtable)",
+      "type": "group",
+      "repeats": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til rad"
+        }
+      ],
+      "item": [
+        {
+          "linkId": "egen.navn",
+          "text": "Navn",
+          "type": "string"
+        },
+        {
+          "linkId": "egen.type",
+          "text": "Type",
+          "type": "choice",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "tablett",
+                "display": "Tablett"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "mikstur",
+                "display": "Mikstur"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "drop-down"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "egen.styrke",
+          "text": "Styrke (bare mikstur)",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "egen.type",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "mikstur"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "egen.dose",
+          "text": "Dose",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "vis-dose",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "egen.intern",
+          "text": "Intern (skjult)",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+              "valueBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "egen.bekreftet",
+          "text": "Bekreftet",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "linkId": "kopi-grupper",
+      "text": "B. Kopi som grupper",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='medisin')"
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "kopi-grupper.navn",
+          "text": "Navn",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.navn').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-grupper.type",
+          "text": "Type",
+          "type": "choice",
+          "readOnly": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "tablett",
+                "display": "Tablett"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "mikstur",
+                "display": "Mikstur"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.type').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-grupper.styrke",
+          "text": "Styrke",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.styrke').answer.value"
+              }
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "kopi-grupper.type",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "mikstur"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-grupper.dose",
+          "text": "Dose",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.dose').answer.value"
+              }
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "vis-dose",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-grupper.intern",
+          "text": "Intern (skjult)",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.navn').answer.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+              "valueBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "kopi-tabell",
+      "text": "C. Kopi som tabell",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='medisin')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "kopi-tabell.navn",
+          "text": "Navn",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.navn').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-tabell.type",
+          "text": "Type",
+          "type": "choice",
+          "readOnly": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "tablett",
+                "display": "Tablett"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "mikstur",
+                "display": "Mikstur"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.type').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-tabell.styrke",
+          "text": "Styrke",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.styrke').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-tabell.dose",
+          "text": "Dose",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.dose').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-tabell.fast",
+          "text": "Fast medisin",
+          "type": "boolean",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.fast').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "kopi-vis",
+      "text": "D. Kopi som tabell med vis/skjul",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='medisin')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "kopi-vis.navn",
+          "text": "Navn",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.navn').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-vis.type",
+          "text": "Type",
+          "type": "choice",
+          "readOnly": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "tablett",
+                "display": "Tablett"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "mikstur",
+                "display": "Mikstur"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.type').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-vis.styrke",
+          "text": "Styrke",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.styrke').answer.value"
+              }
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "kopi-vis.type",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "mikstur"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-vis.dose",
+          "text": "Dose",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.dose').answer.value"
+              }
+            }
+          ],
+          "enableWhen": [
+            {
+              "question": "vis-dose",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-vis.intern",
+          "text": "Intern (skjult)",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.navn').answer.value"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+              "valueBoolean": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "kopi-filter",
+      "text": "E. Kopi som tabell, bare mikstur",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='medisin').where(item.where(linkId='medisin.type').answer.value.code = 'mikstur')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "kopi-filter.navn",
+          "text": "Navn",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.navn').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-filter.type",
+          "text": "Type",
+          "type": "choice",
+          "readOnly": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "tablett",
+                "display": "Tablett"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "mikstur",
+                "display": "Mikstur"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.type').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-filter.styrke",
+          "text": "Styrke",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.styrke').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-filter.dose",
+          "text": "Dose",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.dose').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "kopi-skjult",
+      "text": "F. Kopi som tabell, vises med enableWhen",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='medisin')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "enableWhen": [
+        {
+          "question": "vis-tabell",
+          "operator": "=",
+          "answerBoolean": true
+        }
+      ],
+      "item": [
+        {
+          "linkId": "kopi-skjult.navn",
+          "text": "Navn",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.navn').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-skjult.type",
+          "text": "Type",
+          "type": "choice",
+          "readOnly": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "tablett",
+                "display": "Tablett"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "mikstur",
+                "display": "Mikstur"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.type').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-skjult.styrke",
+          "text": "Styrke",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.styrke').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "kopi-skjult.dose",
+          "text": "Dose",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.dose').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "multi-en",
+      "text": "H. Flere svar i en celle (kolonne repeterer ikke) – ⚠ bryter FHIR: kolonnene repeterer ikke, men får flere svar",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='medisin')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "multi-en.navn",
+          "text": "Navn",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.navn').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "multi-en.tid",
+          "text": "Tidspunkt",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.tid').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "multi-en.naar",
+          "text": "Når på dagen",
+          "type": "choice",
+          "readOnly": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "morgen",
+                "display": "Morgen"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "kveld",
+                "display": "Kveld"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.naar').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "multi-rep",
+      "text": "I. Flere svar i en celle (kolonne repeterer)",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='medisin')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "multi-rep.navn",
+          "text": "Navn",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.navn').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "multi-rep.tid",
+          "text": "Tidspunkt",
+          "type": "string",
+          "readOnly": true,
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.tid').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "multi-rep.naar",
+          "text": "Når på dagen",
+          "type": "choice",
+          "readOnly": true,
+          "repeats": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "morgen",
+                "display": "Morgen"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "kveld",
+                "display": "Kveld"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='medisin.naar').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "gammel",
+      "text": "G. Gammel gtable – ⚠ bryter FHIR: kolonnene repeterer ikke, men får ett svar per rad",
+      "type": "group",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "gammel.navn",
+          "text": "Navn",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='medisin.navn').answer.value"
+            }
+          ]
+        },
+        {
+          "linkId": "gammel.dose",
+          "text": "Dose",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='medisin.dose').answer.value"
+            }
+          ]
+        },
+        {
+          "linkId": "gammel.tid",
+          "text": "Tidspunkt",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='medisin.tid').answer.value"
+            }
+          ]
+        },
+        {
+          "linkId": "gammel.naar",
+          "text": "Når på dagen",
+          "type": "choice",
+          "readOnly": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "morgen",
+                "display": "Morgen"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "urn:oid:2.16.578.1.12.4.1.9999",
+                "code": "kveld",
+                "display": "Kveld"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='medisin.naar').answer.value"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

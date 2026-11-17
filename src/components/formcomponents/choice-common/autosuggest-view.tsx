@@ -198,10 +198,11 @@ const AutosuggestView = (props: AutosuggestProps): React.JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
-  const rest = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
-  if (pdf || isReadOnly(item)) {
+  const rest = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined);
+  if (pdf || isReadOnly(item, props.renderContext)) {
     return (
       <ReadOnly
+        renderContext={props.renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -219,6 +220,7 @@ const AutosuggestView = (props: AutosuggestProps): React.JSX.Element | null => {
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup error={errorMessage} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
+          renderContext={props.renderContext}
           item={item}
           resources={resources}
           htmlFor={getId(id)}

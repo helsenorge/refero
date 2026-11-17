@@ -59,7 +59,7 @@ export const PluginComponentWrapper = (props: PluginComponentWrapperProps): Reac
   // Reset form field when answer changes
   useResetFormField(idWithLinkIdAndItemIndex, answer);
 
-  const readOnly = isReadOnly(item);
+  const readOnly = isReadOnly(item, props.renderContext);
 
   // Plugin props - provides everything plugins need to render and handle value changes
   // Note: children is excluded from memoization since JSX children are new objects every render.
