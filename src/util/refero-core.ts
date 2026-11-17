@@ -13,7 +13,7 @@ import type {
   Questionnaire,
 } from 'fhir/r4';
 
-import { getMinOccursExtensionValue } from './extension';
+import { getMinOccursExtensionValue, isItemCopyTarget } from './extension';
 import { isOfTypeQuestionnaireResponseItem } from './typeguards';
 import ItemType from '../constants/itemType';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
@@ -621,7 +621,7 @@ export function createPathForItem(path?: Path[] | undefined, item?: Questionnair
 }
 
 export function shouldRenderDeleteButton(item?: QuestionnaireItem, index?: number): boolean {
-  if (!isRepeat(item)) {
+  if (!isRepeat(item) || isItemCopyTarget(item)) {
     return false;
   }
   if (index === 0) {

@@ -1,16 +1,16 @@
 /* eslint-disable no-console */
 import type { AppDispatch } from '@/reducers';
 import type { ActionRequester } from '@/util/actionRequester';
-import type { AnswerPad } from '@/util/FhirPathExtensions';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import { type AnswerValuesItemPayload, newAnswerValuesAction } from '@/actions/newValue';
+import { type AnswerValuesItemPayload, newAnswerValuesAction, replaceItemCopiesAction } from '@/actions/newValue';
 import { isEnableWhenEnabled } from '@/hooks/useIsEnabled';
+import { getChildResponseItems } from '@/util/FhirPathExtensions';
 import { resolveFhirPathCalculationOptions } from '@/util/fhirPathOptions';
-import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
+import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId, getResponseItemWithPath } from '@/util/refero-core';
 import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
 import { postTaskToFhirPathWorker } from '@/workers/fhirpath-rpc';
-import { runCalculators } from '@/workers/helpers';
+import { runCalculators, type CalculatorResult } from '@/workers/helpers';
 
 type InputParams = {
   questionnaire: Questionnaire | null;
@@ -30,11 +30,23 @@ export const runFhirPathQrUpdater = async ({
     // Resolved here rather than inside the worker: the worker has its own
     // module scope and cannot see the options set on the main thread.
     const options = resolveFhirPathCalculationOptions();
-    let fhirScores: AnswerPad;
+    let calculated: CalculatorResult;
     if (typeof window !== 'undefined' && window.Worker) {
-      fhirScores = await postTaskToFhirPathWorker({ questionnaireResponse, questionnaire, options });
+      calculated = await postTaskToFhirPathWorker({ questionnaireResponse, questionnaire, options });
     } else {
-      fhirScores = runCalculators({ questionnaireResponse, questionnaire, options });
+      calculated = runCalculators({ questionnaireResponse, questionnaire, options });
+    }
+    const fhirScores = calculated.answerPad;
+    const changedItemCopies = calculated.itemCopies.filter(copy => {
+      const parent =
+        copy.parentPath.length === 0 ? undefined : getResponseItemWithPath(copy.parentPath, { Content: questionnaireResponse });
+      const siblings = copy.parentPath.length === 0 ? questionnaireResponse.item : parent && getChildResponseItems(parent);
+      const currentOccurrences = (siblings ?? []).filter(sibling => sibling.linkId === copy.linkId);
+      return JSON.stringify(currentOccurrences) !== JSON.stringify(copy.items);
+    });
+    if (changedItemCopies.length > 0) {
+      // Occurrences are created and removed here, which the per-linkId answers below cannot express.
+      dispatch(replaceItemCopiesAction(changedItemCopies));
     }
     const answerValues: AnswerValuesItemPayload = [];
     for (const linkId in fhirScores) {

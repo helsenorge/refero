@@ -60,7 +60,7 @@ describe('runCalculators', () => {
 
   describe('resolveExpressionChains', () => {
     it('Legacy: Should resolve two levels of a chain, but leave the third unresolved', () => {
-      const fhirScores = runCalculators({ questionnaire: chainedQuestionnaire, questionnaireResponse: chainedResponse() });
+      const fhirScores = runCalculators({ questionnaire: chainedQuestionnaire, questionnaireResponse: chainedResponse() }).answerPad;
 
       expect(fhirScores.b).toEqual([{ valueInteger: 10 }]);
       expect(fhirScores.c).toEqual([{ valueInteger: 11 }]);
@@ -72,7 +72,7 @@ describe('runCalculators', () => {
         questionnaire: chainedQuestionnaire,
         questionnaireResponse: chainedResponse(),
         options: { resolveExpressionChains: true },
-      });
+      }).answerPad;
 
       expect(fhirScores.b).toEqual([{ valueInteger: 10 }]);
       expect(fhirScores.c).toEqual([{ valueInteger: 11 }]);
@@ -91,12 +91,12 @@ describe('runCalculators', () => {
         item: [{ linkId: 'a', answer: [{ valueInteger: 5 }] }, { linkId: 'b' }],
       });
 
-      expect(runCalculators({ questionnaire, questionnaireResponse: questionnaireResponse() })).toEqual(
+      expect(runCalculators({ questionnaire, questionnaireResponse: questionnaireResponse() }).answerPad).toEqual(
         runCalculators({
           questionnaire,
           questionnaireResponse: questionnaireResponse(),
           options: { resolveExpressionChains: true },
-        })
+        }).answerPad
       );
     });
 
@@ -108,7 +108,7 @@ describe('runCalculators', () => {
         questionnaire: cyclicQuestionnaire,
         questionnaireResponse: cyclicResponse(),
         options: { resolveExpressionChains: true, maxChainIterations: 3 },
-      });
+      }).answerPad;
 
       expect(handler).toHaveBeenCalledTimes(1);
       const [reported] = handler.mock.calls[0] as [FhirPathEvaluationError];
@@ -138,7 +138,7 @@ describe('runCalculators', () => {
         questionnaire: chainedQuestionnaire,
         questionnaireResponse: chainedResponse(),
         options: { resolveExpressionChains: true, maxChainIterations: 3 },
-      });
+      }).answerPad;
 
       expect(fhirScores.d).toEqual([{ valueInteger: 12 }]);
       expect(handler).not.toHaveBeenCalled();
@@ -151,7 +151,7 @@ describe('runCalculators', () => {
         questionnaire: chainedQuestionnaire,
         questionnaireResponse: chainedResponse(),
         options: { resolveExpressionChains: true, maxChainIterations },
-      });
+      }).answerPad;
 
       expect(fhirScores.c).toEqual([{ valueInteger: 11 }]);
     });
@@ -179,7 +179,7 @@ describe('runCalculators', () => {
     });
 
     it('Legacy: Should turn the non numeric result into 0 and let dependent items read it', () => {
-      const fhirScores = runCalculators({ questionnaire, questionnaireResponse: questionnaireResponse() });
+      const fhirScores = runCalculators({ questionnaire, questionnaireResponse: questionnaireResponse() }).answerPad;
 
       expect(fhirScores.a).toEqual([{ valueInteger: 0 }]);
       expect(fhirScores.b).toEqual([{ valueInteger: 0 }]);
@@ -190,7 +190,7 @@ describe('runCalculators', () => {
         questionnaire,
         questionnaireResponse: questionnaireResponse(),
         options: { omitNonNumericResults: true },
-      });
+      }).answerPad;
 
       expect(fhirScores.a).toBeNull();
       expect(fhirScores.b ?? []).toEqual([]);
@@ -201,7 +201,7 @@ describe('runCalculators', () => {
     it('Should be used when runCalculators is called without options', () => {
       setFhirPathCalculationOptions({ resolveExpressionChains: true });
 
-      const fhirScores = runCalculators({ questionnaire: chainedQuestionnaire, questionnaireResponse: chainedResponse() });
+      const fhirScores = runCalculators({ questionnaire: chainedQuestionnaire, questionnaireResponse: chainedResponse() }).answerPad;
 
       expect(fhirScores.d).toEqual([{ valueInteger: 12 }]);
     });

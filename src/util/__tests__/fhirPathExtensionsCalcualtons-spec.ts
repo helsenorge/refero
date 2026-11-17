@@ -41,6 +41,12 @@ vi.mock('../extension', () => {
     // ⬇️ returner calculatedExpression-extension fra itemet
     getCalculatedExpressionExtension: vi.fn((item: QuestionnaireItem) => item.extension?.find(e => e.url === CQF)),
     getCopyExtension: vi.fn(() => undefined),
+    // No copy expressions in these tests, so no item copies either.
+    getAnyCopyExtension: vi.fn(() => undefined),
+    getCopyExpressionText: (extension?: Extension): string | undefined => extension?.valueString,
+    getItemCopyVariableName: (): string => 'row',
+    isItemCopyGroup: (): boolean => false,
+    isItemCopyTarget: (): boolean => false,
   };
 });
 

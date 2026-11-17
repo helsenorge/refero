@@ -271,6 +271,39 @@ export function getCopyExtension(item?: QuestionnaireItem, useLegacyValueString:
   return extension;
 }
 
+/** The copy extension in either form: valueString (legacy) or valueExpression. */
+export function getAnyCopyExtension(item?: QuestionnaireItem): Extension | undefined {
+  return getCopyExtension(item) ?? getCopyExtension(item, false);
+}
+
+export function getCopyExpressionText(extension?: Extension): string | undefined {
+  return extension?.valueString ?? extension?.valueExpression?.expression;
+}
+
+/** Variable each selected item is bound to while the copied occurrence is evaluated: %row unless the expression names it. */
+const DEFAULT_ITEM_COPY_VARIABLE = 'row';
+
+export function getItemCopyVariableName(extension?: Extension): string {
+  return extension?.valueExpression?.name ?? DEFAULT_ITEM_COPY_VARIABLE;
+}
+
+/**
+ * A group with a copy expression copies items: its expression selects QR items, and the group gets one
+ * occurrence per selected item.
+ */
+export function isItemCopyGroup(item?: QuestionnaireItem): boolean {
+  return item?.type === 'group' && !!getAnyCopyExtension(item);
+}
+
+/**
+ * Items whose occurrences are created by copying, so the user cannot add or remove them: copied groups, and
+ * repeating questions with a copy expression.
+ */
+export function isItemCopyTarget(item?: QuestionnaireItem): boolean {
+  if (!item || !getAnyCopyExtension(item)) return false;
+  return item.type === 'group' || !!item.repeats;
+}
+
 export function getHyperlinkExtensionValue(item?: QuestionnaireItem | Element | Questionnaire): number | undefined {
   const hyperlinkExtension = getExtension(Extensions.HYPERLINK_URL, item);
   if (hyperlinkExtension && hyperlinkExtension.valueCoding && hyperlinkExtension.valueCoding.code) {
