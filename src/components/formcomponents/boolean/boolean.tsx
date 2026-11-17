@@ -54,7 +54,8 @@ const Boolean = (props: Props): React.JSX.Element | null => {
   const inTable = isInTable(props.renderContext);
   const tableRowSuffix = inTable && props.renderContext.Row ? `, ${resources?.tableRow ?? 'rad'} ${props.renderContext.Row}` : '';
   // The design system Checkbox only renders labelTexts and passes no aria-label to the input, so in a table the label
-  // text stays (it names the checkbox) and is hidden visually by the wrapper class.
+  // text stays (it names the checkbox) and is hidden visually with a class on the <label> (labelClassName).
+  const tableLabelClassName = inTable ? styles.checkboxLabelHidden : undefined;
   const labelTextsInContext = [{ text: `${item?.text || ''}${tableRowSuffix}`, type: 'subdued' as const }];
   const { level, errorLevelResources } = useAppSelector(state => RequiredLevelSelector(state, item, resources));
 
@@ -104,7 +105,7 @@ const Boolean = (props: Props): React.JSX.Element | null => {
     return <Pdf item={item} checked={getValue()} />;
   } else if (isReadOnly(item, props.renderContext)) {
     return (
-      <FormGroup error={getErrorMessage(item, error)} className={inTable ? styles.checkboxLabelHidden : undefined}>
+      <FormGroup error={getErrorMessage(item, error)}>
         <Checkbox
           testId={`${getId(id)}-readonly`}
           label={
@@ -112,6 +113,7 @@ const Boolean = (props: Props): React.JSX.Element | null => {
               labelId={labelIdReadOnly}
               testId={`${getId(id)}-label-readonly`}
               labelTexts={labelTextsInContext}
+              labelClassName={tableLabelClassName}
               afterLabelChildren={
                 <RenderHelpButton
                   item={item}
@@ -133,9 +135,13 @@ const Boolean = (props: Props): React.JSX.Element | null => {
     );
   }
   return (
-    <div className={`page_refero__component page_refero__component_boolean${inTable ? ` ${styles.checkboxLabelHidden}` : ''}`}>
+    <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
-        {level && <FormFieldTag id={getId(id) + '-boolean-formfieldtag'} level={level} resources={errorLevelResources} />}
+        {level && (
+          <span className={inTable ? styles.visuallyHidden : undefined}>
+            <FormFieldTag id={getId(id) + '-boolean-formfieldtag'} level={level} resources={errorLevelResources} />
+          </span>
+        )}
         <Checkbox
           {...rest}
           testId={`test-boolean-${getId(id)}`}
@@ -146,6 +152,7 @@ const Boolean = (props: Props): React.JSX.Element | null => {
               labelId={labelId}
               testId={`${getId(id)}-label-boolean`}
               labelTexts={labelTextsInContext}
+              labelClassName={tableLabelClassName}
               htmlFor={getId(id)}
               className="page_refero__label label_helpButton_align"
               afterLabelChildren={
