@@ -1,3 +1,8 @@
+## 26.0.7
+
+- Fix: Focusable element found within presentational children
+- Added flex styling to the helpbutton
+
 ## 26.0.6
 
 - Fix: a date limit (`sdf-minvalue` or `sdf-maxvalue`) whose FHIRPath expression gives no date no longer crashes the whole form with
@@ -7,15 +12,20 @@
 
 ## 26.0.5
 
-- Fix: forms with many calculated or copy expressions no longer get slow as they are filled in. The result of an expression is reused when the answers it reads have not changed, and the FHIRPath setup for a form is made once instead of on every calculation. The answers are the same as before.
+- Fix: forms with many calculated or copy expressions no longer get slow as they are filled in. The result of an expression is reused when
+  the answers it reads have not changed, and the FHIRPath setup for a form is made once instead of on every calculation. The answers are the
+  same as before.
 
 ## 26.0.4
 
-- Fix: a display item with an expression (cqf-expression or sdf-calculatedExpression) no longer gets an answer in the QuestionnaireResponse. In FHIR R4 a display item cannot have an answer, so its expression is now ignored.
+- Fix: a display item with an expression (cqf-expression or sdf-calculatedExpression) no longer gets an answer in the QuestionnaireResponse.
+  In FHIR R4 a display item cannot have an answer, so its expression is now ignored.
 
 ## 26.0.3
 
-- Fix: when a repeating group is repeated, a question with a prefilled value (`initial`) and a child question no longer gets two answers in the new repetition. The child question was shown twice with the same id, and typing in one field changed the other. The prefilled value and the child question now sit in the same answer.
+- Fix: when a repeating group is repeated, a question with a prefilled value (`initial`) and a child question no longer gets two answers in
+  the new repetition. The child question was shown twice with the same id, and typing in one field changed the other. The prefilled value
+  and the child question now sit in the same answer.
 
 ## 26.0.2
 
