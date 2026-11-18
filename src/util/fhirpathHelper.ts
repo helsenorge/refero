@@ -47,18 +47,34 @@ export function clearCompiledFhirPathExpressionCache(): void {
 // linkId is passed as %linkId so every lookup shares one cache entry and a linkId can never alter the expression.
 const RESPONSE_ITEMS_BY_LINK_ID = 'item.descendants().where(linkId=%linkId) | answer.item.descendants().where(linkId=%linkId)';
 
+/**
+ * The date a date limit expression (sdf-minvalue / sdf-maxvalue) gives, or undefined when it gives none: then the field
+ * has no limit. Only a valid date is returned, since the date picker formats the limit while rendering and an invalid
+ * Date there takes the whole form down. A result that is not a date, and an expression that fails, are reported.
+ */
 export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireItem, fhirExpression?: string): Promise<Date | undefined> {
   if (!item || !fhirExpression) {
     return undefined;
   }
-  const iCopy = structuredClone(item);
-  const result = await evaluate(iCopy, fhirExpression, undefined, fhirpath_r4_model);
-
-  if (Array.isArray(result)) {
-    return new Date(result[0]);
+  const source = 'evaluateFhirpathExpressionToGetDate';
+  let result: unknown;
+  try {
+    result = await evaluate(structuredClone(item), fhirExpression, undefined, fhirpath_r4_model);
+  } catch (error) {
+    reportFhirPathError({ source, expression: fhirExpression, linkId: item.linkId, error });
+    return undefined;
   }
 
-  return undefined;
+  const value = Array.isArray(result) ? result[0] : undefined;
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    reportFhirPathError({ source, expression: fhirExpression, linkId: item.linkId, error: new Error(`Not a date: ${String(value)}`) });
+    return undefined;
+  }
+  return date;
 }
 export async function getAnswerFromResponseItem(responseItem?: QuestionnaireResponseItem): Promise<any> {
   try {
