@@ -43,6 +43,7 @@
     "test:watch": "vitest dev",
     "test:ui": "vitest --ui",
     "test:preview": "vite preview --outDir html",
+    "test:forms": "node test/form-comparison/run.mjs",
     "dev": "vite",
     "start": "vite",
     "dev:preview": "vite -- --host",

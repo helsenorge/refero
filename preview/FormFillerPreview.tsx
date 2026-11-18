@@ -28,6 +28,7 @@ import { ImageChoicePlugin } from './external-components/ImageChoicePlugin';
 import { PillChoicePlugin } from './external-components/PillChoicePlugin';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
+import { buildPerfQuestionnaire } from './skjema/perfForm';
 import skjemaGtable from './skjema/q-gtable.json';
 import ReferoContainer from '../src/components/index';
 import qr from './skjema/responses/qr.json';
@@ -199,11 +200,15 @@ const FormFillerPreview = (): React.JSX.Element => {
     (window as unknown as { __referoStore?: unknown }).__referoStore = store;
   }, [store]);
   // The default form shows gtable and item copying. ?file=<name> loads preview/skjema/local/<name>.json instead
-  // (a local folder, excluded from git, for forms that must not be committed).
+  // (a local folder, excluded from git, for forms that must not be committed). ?q=perf&n=200 loads a performance
+  // test form with n calculations (&rows=1 adds an item copy gtable).
   const previewParams = new URLSearchParams(window.location.search);
   const localForms = import.meta.glob('./skjema/local/*.json', { eager: true, import: 'default' });
   const localForm = previewParams.get('file') ? localForms[`./skjema/local/${previewParams.get('file')}.json`] : undefined;
-  const skjema = localForm ?? skjemaGtable;
+  const skjema =
+    previewParams.get('q') === 'perf'
+      ? buildPerfQuestionnaire(Number(previewParams.get('n') ?? 100), previewParams.get('rows') === '1')
+      : (localForm ?? skjemaGtable);
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle | Questionnaire;
   const mainQuestionnaire = getQuestionnaireFromBubndle(parsedQuestionnaire, 0);
 
