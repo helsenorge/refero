@@ -61,7 +61,12 @@ const handlers = {
   isGroupAndDescendantsHasAnswer: (p: IsGroupAndDescendantsHasAnswerParams): IsGroupAndDescendantsHasAnswerResult =>
     isGroupAndDescendantsHasAnswer(p.responseItem),
   runCalculators: (p: RunCalculatorsParams): RunCalculatorsResult =>
-    runCalculators({ questionnaireResponse: p.questionnaireResponse, questionnaire: p.questionnaire, options: p.options }),
+    runCalculators({
+      questionnaireResponse: p.questionnaireResponse,
+      questionnaire: p.questionnaire,
+      options: p.options,
+      questionnaireKey: p.questionnaireKey,
+    }),
   runEnableWhen: (p: RunEnableWhenInput): RunEnableWhenResult =>
     runEnableWhen({ questionnaire: p.questionnaire, questionnaireResponse: p.questionnaireResponse }),
 } satisfies { [K in keyof Methods]: (p: Methods[K]['params']) => Promise<Methods[K]['result']> | Methods[K]['result'] };

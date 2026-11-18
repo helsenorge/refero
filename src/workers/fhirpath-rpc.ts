@@ -7,7 +7,7 @@ import type { FhirPathCalculationOptions } from '@/util/fhirPathOptions';
 import type { QuestionnaireItem, Extension, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import type { Path } from 'fhirpath';
 
-import { runCalculators } from './helpers';
+import { getQuestionnaireKey, runCalculators } from './helpers';
 import { WorkaroundWorkerRpc } from './WorkaroundWorkerRpc';
 
 import { runEnableWhenNew } from '@/calculators/runEnableWhen_new';
@@ -172,7 +172,8 @@ const handlers = {
   evaluateFhirpathExpression: ({ expression, context }) => evaluateFhirpathExpressionCore(expression, context),
   evaluateExtension: ({ path, questionnaire, context }) => evaluateExtensionCore(path, questionnaire, context),
   isGroupAndDescendantsHasAnswer: ({ responseItem }) => isGroupAndDescendantsHasAnswerCore(responseItem),
-  runCalculators: ({ questionnaireResponse, questionnaire, options }) => runCalculators({ questionnaireResponse, questionnaire, options }),
+  runCalculators: ({ questionnaireResponse, questionnaire, options, questionnaireKey }) =>
+    runCalculators({ questionnaireResponse, questionnaire, options, questionnaireKey }),
   runEnableWhen: ({ questionnaireResponse, questionnaire }) => runEnableWhenNew({ questionnaireResponse, questionnaire }),
 } satisfies {
   [K in keyof Methods]: (params: Methods[K]['params']) => Awaitable<Methods[K]['result']>;
@@ -359,7 +360,7 @@ export const postTaskToFhirPathWorker = ({
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
   options?: FhirPathCalculationOptions;
-}) => call('runCalculators', { questionnaire, questionnaireResponse, options });
+}) => call('runCalculators', { questionnaire, questionnaireResponse, options, questionnaireKey: getQuestionnaireKey(questionnaire) });
 
 export const calculateEnableWhen = ({
   questionnaire,

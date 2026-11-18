@@ -10,6 +10,7 @@ import RenderForm from './renderForm';
 import StepView from './stepView';
 
 import { setSkjemaDefinitionAction } from '@/actions/form';
+import { warmUpFhirPathCalculations } from '@/calculators/runFhirPathUpdater';
 import { AttachmentProvider } from '@/context/attachment/AttachmentContextProvider';
 import { ComponentPluginProvider } from '@/context/componentPlugin';
 import { ExternalRenderProvider } from '@/context/externalRender/ExternalRenderContextProvider';
@@ -80,6 +81,15 @@ const Refero = (props: ReferoProps): React.JSX.Element | null => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.language, props.syncQuestionnaireResponse]);
+
+  // Once per loaded questionnaire: lets the worker prepare, so the first change is not slower than the rest.
+  const questionnaireResponse = formData?.Content;
+  React.useEffect(() => {
+    if (questionnaire && questionnaireResponse) {
+      warmUpFhirPathCalculations(questionnaire, questionnaireResponse);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questionnaire]);
 
   React.useEffect(() => {
     if (Object.keys(methods.formState.errors).length > 0) {
