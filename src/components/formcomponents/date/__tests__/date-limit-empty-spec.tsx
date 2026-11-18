@@ -27,11 +27,11 @@ const renderForm = async (item: QuestionnaireItem): Promise<void> => {
 
 describe('Date limit with an empty FHIRPath result', () => {
   it.each([
-    ['sdf-minvalue', Extensions.DATE_MIN_VALUE_URL, '{}'],
-    ['sdf-maxvalue', Extensions.DATE_MAX_VALUE_URL, '{}'],
-    ['sdf-minvalue', Extensions.DATE_MIN_VALUE_URL, "QuestionnaireResponse.descendants().where(linkId='fra-dato').answer.valueDate"],
-    ['sdf-minvalue', Extensions.DATE_MIN_VALUE_URL, "'ikke en dato'"],
-  ])('%s = %s renders the date field without a limit', async (_name, url, expression) => {
+    ['sdf-minvalue', '{}', Extensions.DATE_MIN_VALUE_URL],
+    ['sdf-maxvalue', '{}', Extensions.DATE_MAX_VALUE_URL],
+    ['sdf-minvalue', "QuestionnaireResponse.descendants().where(linkId='fra-dato').answer.valueDate", Extensions.DATE_MIN_VALUE_URL],
+    ['sdf-minvalue', "'ikke en dato'", Extensions.DATE_MIN_VALUE_URL],
+  ])('%s = %s renders the date field without a limit', async (_name, expression, url) => {
     await renderForm(dateItem(url, expression));
     expect(await screen.findByText('Til dato')).toBeInTheDocument();
     // Let the limit's effect resolve and the date picker re-render with it.
@@ -39,7 +39,7 @@ describe('Date limit with an empty FHIRPath result', () => {
     expect(screen.getByText('Til dato')).toBeInTheDocument();
   });
 
-  it('still uses a limit that gives a date', async () => {
+  it('renders with a limit that gives a date', async () => {
     await renderForm(dateItem(Extensions.DATE_MIN_VALUE_URL, 'today()'));
     expect(await screen.findByText('Til dato')).toBeInTheDocument();
   });

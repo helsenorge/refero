@@ -17,7 +17,9 @@ describe('evaluateFhirpathExpressionToGetDate', () => {
     const handler = vi.fn();
     setFhirPathErrorHandler(handler);
     expect(await evaluateFhirpathExpressionToGetDate(item, '{}')).toBeUndefined();
-    expect(await evaluateFhirpathExpressionToGetDate(item, "QuestionnaireResponse.descendants().where(linkId='fra-dato').answer.valueDate")).toBeUndefined();
+    expect(
+      await evaluateFhirpathExpressionToGetDate(item, "QuestionnaireResponse.descendants().where(linkId='fra-dato').answer.valueDate")
+    ).toBeUndefined();
     expect(handler).not.toHaveBeenCalled();
   });
 
@@ -38,7 +40,7 @@ describe('evaluateFhirpathExpressionToGetDate', () => {
   });
 
   it('gives the date for an expression that gives one', async () => {
-    const date = await evaluateFhirpathExpressionToGetDate(item, "@2026-01-31");
+    const date = await evaluateFhirpathExpressionToGetDate(item, '@2026-01-31');
     expect(date).toBeInstanceOf(Date);
     expect(date?.toISOString().slice(0, 10)).toBe('2026-01-31');
     const today = await evaluateFhirpathExpressionToGetDate(item, 'today()');
