@@ -1,3 +1,12 @@
+## 26.1.0
+
+- Item copying: a group, or a repeating question, with a copy expression (`cqf-expression`) that selects response items gets one
+  occurrence per selected item. The questions in the group read their value from their own occurrence with `%row` (or the name in
+  `valueExpression.name`), for example `%row.descendants().where(linkId='dose').answer.value`. A missing answer leaves an empty question in
+  that occurrence, so answers no longer end up in another row, as they can when each question copies a flat list from the whole response.
+  Copied occurrences cannot be added or deleted by the user, and a copied question that `enableWhen` turns off gets no answer. Copy
+  expressions that return values instead of response items work as before.
+
 ## 26.0.6
 
 - Fix: a date limit (`sdf-minvalue` or `sdf-maxvalue`) whose FHIRPath expression gives no date no longer crashes the whole form with

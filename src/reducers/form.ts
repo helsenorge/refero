@@ -43,6 +43,7 @@ import {
   type AnswerValuesItemPayload,
   type ResetAnswerValuePayload,
   resetAnswerValueAction,
+  replaceItemCopiesAction,
 } from '@/actions/newValue';
 import { syncQuestionnaireResponse } from '@/actions/syncQuestionnaireResponse';
 // import { runEnableWhen } from '@/calculators/runEnableWhen';
@@ -50,6 +51,7 @@ import { pruneEmptyAnswers, resetAnswerValuePure, nullAnswerValue as nullAnswerV
 import itemType from '@/constants/itemType';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '@/util/extension';
+import { applyItemCopies, type ItemCopy } from '@/util/FhirPathExtensions';
 import { isStringEmpty } from '@/util/index';
 
 export interface FormData {
@@ -142,6 +144,9 @@ const formSlice = createSlice({
       })
       .addCase(resetAnswerValueAction, (state, action: PayloadAction<ResetAnswerValuePayload>) => {
         processResetAnswerValue(action.payload, state);
+      })
+      .addCase(replaceItemCopiesAction, (state, action: PayloadAction<ItemCopy[]>) => {
+        processReplaceItemCopies(action.payload, state);
       });
   },
 });
@@ -167,6 +172,13 @@ function processResetAnswerValue(action: ResetAnswerValuePayload, state: Form): 
   }
 
   responseItem.answer = pruneEmptyAnswers(newAnswer);
+  return state;
+}
+
+function processReplaceItemCopies(copies: ItemCopy[], state: Form): Form {
+  if (state.FormData.Content) {
+    applyItemCopies(state.FormData.Content, state.FormDefinition.Content, copies);
+  }
   return state;
 }
 

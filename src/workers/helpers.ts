@@ -3,7 +3,7 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { runEnableWhenNew } from '@/calculators/runEnableWhen_new';
 import { reportFhirPathError } from '@/util/fhirpathErrors';
-import { FhirPathExtensions, type AnswerPad } from '@/util/FhirPathExtensions';
+import { FhirPathExtensions, type AnswerPad, type ItemCopy } from '@/util/FhirPathExtensions';
 import {
   resolveFhirPathCalculationOptions,
   type FhirPathCalculationOptions,
@@ -48,16 +48,25 @@ function evaluateUntilStable(
   return current;
 }
 
+/**
+ * answerPad holds one answer list per linkId, written to every occurrence of it. itemCopies holds the
+ * occurrences produced by item copies, which differ per occurrence and replace the existing ones.
+ */
+export interface CalculatorResult {
+  answerPad: AnswerPad;
+  itemCopies: ItemCopy[];
+}
+
 /** One calculation with the given engine. */
 export function calculateWithEngine(
   engine: FhirPathExtensions,
   questionnaireResponse: QuestionnaireResponse,
   options: ResolvedFhirPathCalculationOptions
-): AnswerPad {
+): CalculatorResult {
   const updated = options.resolveExpressionChains
     ? evaluateUntilStable(engine, questionnaireResponse, options.maxChainIterations)
     : engine.evaluateAllExpressions(questionnaireResponse);
-  return engine.calculateFhirScore(updated);
+  return { answerPad: engine.calculateFhirScore(updated), itemCopies: engine.collectItemCopies(updated) };
 }
 
 /**
@@ -110,7 +119,7 @@ export function runCalculators(args: {
   options?: FhirPathCalculationOptions;
   /** From getQuestionnaireKey on the main thread; lets the worker keep the engine between messages. */
   questionnaireKey?: number;
-}): AnswerPad {
+}): CalculatorResult {
   const options = resolveFhirPathCalculationOptions(args.options);
   return calculateWithEngine(getEngine(args.questionnaire, options, args.questionnaireKey), args.questionnaireResponse, options);
 }

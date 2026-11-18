@@ -17,6 +17,7 @@ import {
   getHyperlinkExtensionValue,
   getCopyExtension,
   getSublabelTextExtensionValue,
+  isItemCopyTarget,
 } from './extension';
 import codeSystems from '../constants/codingsystems';
 import { Extensions } from '../constants/extensions';
@@ -256,7 +257,7 @@ export function shouldRenderRepeatButton(
   response?: Array<QuestionnaireResponseItem> | undefined,
   index?: number
 ): boolean {
-  if (!repeats(item)) {
+  if (!repeats(item) || isItemCopyTarget(item)) {
     return false;
   }
 

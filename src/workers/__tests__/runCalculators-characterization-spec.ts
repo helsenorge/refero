@@ -185,8 +185,8 @@ describe('runCalculators characterisation', () => {
       questionnaireResponse: structuredClone(qr),
       questionnaireKey,
     });
-    expect(first['copyA1']).toEqual([{ valueInteger: 3 }]);
-    expect(second['copyA1']).toEqual([{ valueInteger: 5 }]);
+    expect(first.answerPad['copyA1']).toEqual([{ valueInteger: 3 }]);
+    expect(second.answerPad['copyA1']).toEqual([{ valueInteger: 5 }]);
   });
 
   it('works on a frozen response and questionnaire, as the main thread fallback passes them', () => {
@@ -294,7 +294,7 @@ describe('runCalculators characterisation', () => {
       questionnaireResponse: structuredClone(qr),
       options: { omitNonNumericResults: true },
     });
-    expect(legacy['decimalFromText']).not.toEqual(omitting['decimalFromText']);
+    expect(legacy.answerPad['decimalFromText']).not.toEqual(omitting.answerPad['decimalFromText']);
     expect(runCalculators({ questionnaire, questionnaireResponse: structuredClone(qr) })).toEqual(legacy);
   });
 
@@ -306,8 +306,14 @@ describe('runCalculators characterisation', () => {
     const qr = generateQuestionnaireResponse(questionnaire) as QuestionnaireResponse;
     occurrences(qr, 'a1')[0].answer = [{ valueInteger: 1 }];
     occurrences(qr, 'a2')[0].answer = [{ valueInteger: 2 }];
-    expect(runCalculators({ questionnaire, questionnaireResponse: structuredClone(qr) })['copyA1']).toEqual([{ valueInteger: 1 }]);
-    expect(runCalculators({ questionnaire: other, questionnaireResponse: structuredClone(qr) })['copyA1']).toEqual([{ valueInteger: 2 }]);
-    expect(runCalculators({ questionnaire, questionnaireResponse: structuredClone(qr) })['copyA1']).toEqual([{ valueInteger: 1 }]);
+    expect(runCalculators({ questionnaire, questionnaireResponse: structuredClone(qr) }).answerPad['copyA1']).toEqual([
+      { valueInteger: 1 },
+    ]);
+    expect(runCalculators({ questionnaire: other, questionnaireResponse: structuredClone(qr) }).answerPad['copyA1']).toEqual([
+      { valueInteger: 2 },
+    ]);
+    expect(runCalculators({ questionnaire, questionnaireResponse: structuredClone(qr) }).answerPad['copyA1']).toEqual([
+      { valueInteger: 1 },
+    ]);
   });
 });

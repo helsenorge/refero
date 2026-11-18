@@ -18,15 +18,30 @@ import {
   type ExpressionAnalysis,
   type ExpressionDependencies,
 } from './expressionDependencies';
-import { getCalculatedExpressionExtension, getCopyExtension, getQuestionnaireUnitExtensionValue } from './extension';
-import { evaluateOnPrivateCopy, type FhirPathEnvVars } from './fhirpathHelper';
+import {
+  getAnyCopyExtension,
+  getCalculatedExpressionExtension,
+  getCopyExpressionText,
+  getItemCopyVariableName,
+  getQuestionnaireUnitExtensionValue,
+  isItemCopyGroup,
+  isItemCopyTarget,
+} from './extension';
+import { evaluateFhirpathExpressionToGetString, evaluateOnPrivateCopy, type FhirPathEnvVars } from './fhirpathHelper';
 import {
   isNumericResult,
   resolveFhirPathCalculationOptions,
   type FhirPathCalculationOptions,
   type ResolvedFhirPathCalculationOptions,
 } from './fhirPathOptions';
-import { getAllResponseitemsByLinkIdAndQuestionnaireResponse } from './refero-core';
+import {
+  enableWhenMatchesAnswer,
+  getAllResponseitemsByLinkIdAndQuestionnaireResponse,
+  getQuestionnaireDefinitionItem,
+  getResponseItemsWithLinkId,
+  getResponseItemWithPath,
+  type Path,
+} from './refero-core';
 import { isQuantity } from './typeguards';
 import itemType from '../constants/itemType';
 
@@ -37,6 +52,161 @@ import { Extensions } from '@/constants/extensions';
 export interface AnswerPad {
   [linkId: string]: number | undefined | string | Coding | boolean | Coding[] | Quantity | QuestionnaireResponseItemAnswer[] | null;
 }
+
+/**
+ * The occurrences an item copy produced under one parent. The AnswerPad cannot carry these: it maps a linkId
+ * to one answer list and writes that list to every occurrence.
+ */
+export interface ItemCopy {
+  /** Path to the parent item; empty for top level items. */
+  parentPath: Path[];
+  linkId: string;
+  items: QuestionnaireResponseItem[];
+  /** The parent's children in questionnaire order, so a first occurrence can be inserted in the right place. */
+  siblingOrder: string[];
+}
+
+function isResponseItemList(result: unknown[]): result is QuestionnaireResponseItem[] {
+  return (
+    result.length > 0 &&
+    result.every(r => typeof r === 'object' && r !== null && typeof (r as QuestionnaireResponseItem).linkId === 'string')
+  );
+}
+
+/**
+ * items are plain copies for the response. rowValues are the same items as fhirpath.js returned them: they
+ * carry its type information, without which %row.item finds nothing, so they are what %row is bound to.
+ */
+interface SelectedItems {
+  items: QuestionnaireResponseItem[];
+  rowValues: unknown[];
+  extension: Extension;
+}
+
+/** fhirpath.js may attach bookkeeping properties to the objects it returns; a JSON round trip keeps plain FHIR. */
+function toPlainItems(items: QuestionnaireResponseItem[]): QuestionnaireResponseItem[] {
+  return JSON.parse(JSON.stringify(items));
+}
+
+function answersWithoutNestedItems(item: QuestionnaireResponseItem): QuestionnaireResponseItemAnswer[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return (item.answer ?? []).map(({ item: _nested, ...answer }) => answer);
+}
+
+/** An unanswered response item; like generateQuestionnaireResponse, a question's children go under answer[0].item. */
+function emptyResponseItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+  const responseItem: QuestionnaireResponseItem = { linkId: qItem.linkId, ...(qItem.text && { text: qItem.text }) };
+  if (!qItem.item?.length) return responseItem;
+  const children = qItem.item.map(emptyResponseItem);
+  return qItem.type === itemType.GROUP ? { ...responseItem, item: children } : { ...responseItem, answer: [{ item: children }] };
+}
+
+/**
+ * Removes the answers of a copy's questions that their enableWhen turns off, so a question that is turned off has no
+ * answer, as elsewhere in the form. A condition's question is looked up in the same copy first, then in the whole
+ * response. The questions are checked in order, so a condition sees the answers already removed before it.
+ */
+export function withoutDisabledAnswers(
+  qItems: QuestionnaireItem[],
+  children: QuestionnaireResponseItem[],
+  response: QuestionnaireResponse
+): QuestionnaireResponseItem[] {
+  const result = [...children];
+  const answersOf = (linkId: string): QuestionnaireResponseItemAnswer[] | undefined => {
+    const inCopy = getResponseItemsWithLinkId(linkId, result);
+    const found = inCopy.length > 0 ? inCopy : getResponseItemsWithLinkId(linkId, response.item);
+    return found.length > 0 ? found.flatMap(item => item.answer ?? []) : undefined;
+  };
+  result.forEach((child, index) => {
+    const qChild = qItems.find(q => q.linkId === child.linkId);
+    if (!qChild?.enableWhen?.length || !child.answer) return;
+    const matches = qChild.enableWhen.map(condition => enableWhenMatchesAnswer(condition, answersOf(condition.question)));
+    const enabled = qChild.enableBehavior === 'all' ? matches.every(Boolean) : matches.some(Boolean);
+    if (!enabled) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { answer: _removed, ...withoutAnswer } = child;
+      result[index] = withoutAnswer;
+    }
+  });
+  return result;
+}
+
+/** A response item's children: answer[0].item for a question with nested items, item otherwise. */
+export function getChildResponseItems(responseItem: QuestionnaireResponseItem): QuestionnaireResponseItem[] {
+  return [...(responseItem.item ?? []), ...(responseItem.answer ?? []).flatMap(answer => answer.item ?? [])];
+}
+/**
+ * Replaces the occurrences of each copied item under its parent, in place. The first occurrence's position is
+ * kept; when there were none, the new ones go before the first sibling that comes later in the questionnaire.
+ */
+export function applyItemCopies(
+  response: QuestionnaireResponse,
+  questionnaire: Questionnaire | null | undefined,
+  copies: ItemCopy[]
+): void {
+  for (const copy of copies) {
+    const siblings = getOrCreateSiblingsForItemCopy(response, questionnaire, copy);
+    if (!siblings) continue;
+
+    const current = siblings.filter(sibling => sibling.linkId === copy.linkId);
+    if (JSON.stringify(current) === JSON.stringify(copy.items)) continue;
+
+    let insertAt = siblings.findIndex(sibling => sibling.linkId === copy.linkId);
+    if (insertAt === -1) {
+      const ownPosition = copy.siblingOrder.indexOf(copy.linkId);
+      insertAt = siblings.findIndex(sibling => copy.siblingOrder.indexOf(sibling.linkId) > ownPosition);
+      if (insertAt === -1) insertAt = siblings.length;
+    }
+    for (let i = siblings.length - 1; i >= 0; i--) {
+      if (siblings[i].linkId === copy.linkId) siblings.splice(i, 1);
+    }
+    siblings.splice(insertAt, 0, ...copy.items);
+  }
+}
+
+/**
+ * The array the copied occurrences live in: the top level items, a group's item, or for a question with nested
+ * items its answer[0].item, which is created (with an empty answer if needed) the first time a copy lands there.
+ */
+function getOrCreateSiblingsForItemCopy(
+  response: QuestionnaireResponse,
+  questionnaire: Questionnaire | null | undefined,
+  copy: ItemCopy
+): QuestionnaireResponseItem[] | undefined {
+  if (copy.parentPath.length === 0) {
+    response.item ??= [];
+    return response.item;
+  }
+  const parent = getResponseItemWithPath(copy.parentPath, { Content: response });
+  if (!parent) return undefined;
+  const parentLinkId = copy.parentPath[copy.parentPath.length - 1].linkId;
+  if (getQuestionnaireDefinitionItem(parentLinkId, questionnaire?.item)?.type === itemType.GROUP) {
+    parent.item ??= [];
+    return parent.item;
+  }
+  parent.answer ??= [];
+  if (parent.answer.length === 0) parent.answer.push({});
+  parent.answer[0].item ??= [];
+  return parent.answer[0].item;
+}
+
+function containsItemCopyTarget(items: QuestionnaireItem[] | undefined): boolean {
+  return (items ?? []).some(item => isItemCopyTarget(item) || containsItemCopyTarget(item.item));
+}
+
+/**
+ * A response with the item copies already applied, for a newly generated response: the calculations otherwise
+ * only run when an answer changes, so until then each copied group would show its single template occurrence.
+ */
+export function withItemCopiesApplied(questionnaire: Questionnaire, response: QuestionnaireResponse): QuestionnaireResponse {
+  if (!containsItemCopyTarget(questionnaire.item)) return response;
+  const engine = new FhirPathExtensions(questionnaire);
+  const copies = engine.collectItemCopies(engine.evaluateAllExpressions(response));
+  const result = structuredClone(response);
+  applyItemCopies(result, questionnaire, copies);
+  return result;
+}
+
 const MEMO_ENTRIES_PER_ITEM = 3;
 
 interface MemoEntry {
@@ -76,6 +246,13 @@ export class FhirPathExtensions {
   private options: ResolvedFhirPathCalculationOptions;
   private fhirScoreCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
   /**
+   * linkIds whose occurrences are produced by an item copy: copied groups (known from the questionnaire) and
+   * repeating questions whose copy expression turned out to select items (known after evaluation).
+   */
+  private itemCopyTargets: Set<string> = new Set<string>();
+  /** The copied groups, known from the questionnaire; itemCopyTargets starts from these on every evaluation. */
+  private questionnaireItemCopyTargets: Set<string> = new Set<string>();
+  /**
    * Recent results per linkId, with the expression and the signature of the response parts they were computed
    * from. A result is reused when the signature matches; see expressionDependencies.
    */
@@ -90,19 +267,36 @@ export class FhirPathExtensions {
     this.questionnaire = questionnaire;
     this.options = resolveFhirPathCalculationOptions(options);
     this.initializeCaches(questionnaire);
+    this.questionnaireItemCopyTargets = new Set(this.itemCopyTargets);
   }
 
   private initializeCaches(questionnaire: Questionnaire): void {
     this.traverseQuestionnaire(questionnaire);
   }
 
-  private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem): void {
+  /**
+   * Items inside a copied group are left out of fhirScoreCache: their expressions read the copied row (%row)
+   * and only make sense when evaluated per occurrence, which evaluateCalculatedExpressions does.
+   */
+  private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem, insideItemCopy = false): void {
+    const isQuestionnaireItem = this.isOfTypeQuestionnaireItem(qItem);
+    const isCopyGroup = isQuestionnaireItem && isItemCopyGroup(qItem);
+    if (isCopyGroup) {
+      this.itemCopyTargets.add(qItem.linkId);
+    }
+    // A repeating question's copy is only known to select items once it is evaluated, but its children can only
+    // be evaluated per copied occurrence either way, so they are treated as inside the copy.
+    const childrenInsideItemCopy = insideItemCopy || (isQuestionnaireItem && isItemCopyTarget(qItem));
+
     if (qItem.item) {
       for (const subItem of qItem.item) {
-        this.traverseQuestionnaire(subItem);
+        this.traverseQuestionnaire(subItem, childrenInsideItemCopy);
       }
     }
 
+    if (insideItemCopy || isCopyGroup) {
+      return;
+    }
     return this.processItem(qItem);
   }
 
@@ -154,7 +348,7 @@ export class FhirPathExtensions {
     // FHIR R4: a display item cannot have an answer, so an expression on it is never evaluated.
     if (qItem.type === itemType.DISPLAY) return undefined;
     const calculatedExtension = getCalculatedExpressionExtension(qItem);
-    const copyExtension = getCopyExtension(qItem);
+    const copyExtension = getAnyCopyExtension(qItem);
 
     switch (this.options.expressionPriority) {
       case 'copy-first':
@@ -186,6 +380,9 @@ export class FhirPathExtensions {
     return { valueInteger: isNumeric ? Math.round(Number(value)) : 0 };
   }
   public evaluateAllExpressions(questionnaireResponse: QuestionnaireResponse): QuestionnaireResponse {
+    // The engine is kept between calculations, so a repeating question whose copy selected items last time but
+    // not now must not stay a copy target.
+    this.itemCopyTargets = new Set(this.questionnaireItemCopyTargets);
     try {
       return this.evaluateCalculatedExpressions(questionnaireResponse);
     } finally {
@@ -211,6 +408,7 @@ export class FhirPathExtensions {
       for (const [key, value] of this.fhirScoreCache) {
         const expressionExtension = this.getExpressionExtension(value, 'calculated');
         if (!expressionExtension) continue;
+        if (this.itemCopyTargets.has(key)) continue; // its occurrences are returned by collectItemCopies
         answerPad[key] = this.evaluateExpressionDetailed(value, expressionExtension, questionnaireResponse).answers;
       }
     } finally {
@@ -218,6 +416,108 @@ export class FhirPathExtensions {
       this.responseIndex = undefined;
     }
     return answerPad;
+  }
+
+  /**
+   * The occurrences of every item copy target in a response produced by evaluateAllExpressions, grouped by
+   * parent. Item copies inside a copied group are part of the outer copy and are not listed separately.
+   */
+  public collectItemCopies(questionnaireResponse: QuestionnaireResponse): ItemCopy[] {
+    const copies: ItemCopy[] = [];
+    const walk = (qItems: QuestionnaireItem[], qrItems: QuestionnaireResponseItem[], parentPath: Path[]): void => {
+      const siblingOrder = qItems.map(q => q.linkId);
+      for (const qItem of qItems) {
+        const occurrences = qrItems.filter(qrItem => qrItem.linkId === qItem.linkId);
+        if (this.itemCopyTargets.has(qItem.linkId)) {
+          copies.push({ parentPath, linkId: qItem.linkId, items: occurrences, siblingOrder });
+          continue;
+        }
+        if (!qItem.item?.length) continue;
+        occurrences.forEach((occurrence, index) => {
+          const path: Path[] = [...parentPath, { linkId: qItem.linkId, ...(qItem.repeats && { index }) }];
+          walk(qItem.item ?? [], getChildResponseItems(occurrence), path);
+        });
+      }
+    };
+    walk(this.questionnaire.item ?? [], questionnaireResponse.item ?? [], []);
+    return copies;
+  }
+
+  /** Copy expressions may use valueExpression; other expressions are still read from valueString only. */
+  private getExpressionText(expressionExtension: Extension): string | undefined {
+    return expressionExtension.url === Extensions.COPY_EXPRESSION_URL
+      ? getCopyExpressionText(expressionExtension)
+      : expressionExtension.valueString;
+  }
+
+  private evaluateRaw(
+    qItem: QuestionnaireItem,
+    expressionExtension: Extension,
+    response: QuestionnaireResponse,
+    envVars: FhirPathEnvVars
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ): any[] {
+    return evaluateFhirpathExpressionToGetString(
+      expressionExtension,
+      response,
+      !!expressionExtension.valueString,
+      { ...this.getEnvVars(), ...envVars },
+      qItem.linkId
+    );
+  }
+
+  /**
+   * The items an item copy selects, or undefined when this is not an item copy. A copied group with an
+   * empty result has zero occurrences; for a repeating question an empty result cannot be told apart from
+   * a value copy, so it is left to the value copy.
+   */
+  private selectItemsToCopy(
+    qItem: QuestionnaireItem,
+    response: QuestionnaireResponse,
+    envVars: FhirPathEnvVars
+  ): SelectedItems | undefined {
+    const extension = getAnyCopyExtension(qItem);
+    if (!extension || !(qItem.type === itemType.GROUP || qItem.repeats)) return undefined;
+    const result = this.evaluateRaw(qItem, extension, response, envVars);
+    if (isResponseItemList(result)) return { items: toPlainItems(result), rowValues: result, extension };
+    if (qItem.type === itemType.GROUP && result.length === 0) return { items: [], rowValues: [], extension };
+    return undefined;
+  }
+
+  /**
+   * One occurrence per selected item. A copied question takes the item's answers; a copied group gets fresh
+   * children whose expressions are evaluated with the selected item bound to %row (or the expression's name).
+   */
+  private buildCopiedOccurrences(
+    qItem: QuestionnaireItem,
+    selected: SelectedItems,
+    envVars: FhirPathEnvVars,
+    response: QuestionnaireResponse,
+    traverseItems: (
+      qItems: QuestionnaireItem[],
+      qrItems: QuestionnaireResponseItem[],
+      envVars: FhirPathEnvVars
+    ) => QuestionnaireResponseItem[]
+  ): QuestionnaireResponseItem[] {
+    const variableName = getItemCopyVariableName(selected.extension);
+    return selected.items.map((row, index) => {
+      const occurrence: QuestionnaireResponseItem = { linkId: qItem.linkId, ...(qItem.text && { text: qItem.text }) };
+      const rowEnvVars = { ...envVars, [variableName]: selected.rowValues[index] };
+      const children = qItem.item?.length
+        ? withoutDisabledAnswers(qItem.item, traverseItems(qItem.item, qItem.item.map(emptyResponseItem), rowEnvVars), response)
+        : undefined;
+      if (qItem.type === itemType.GROUP) {
+        return { ...occurrence, ...(children && { item: children }) };
+      }
+      // A copied question takes the selected item's answers. Its own children, if any, are evaluated per row and
+      // placed under the first answer, which is an empty answer when the selected item has no value.
+      const answers = answersWithoutNestedItems(row);
+      if (!children) {
+        return answers.length > 0 ? { ...occurrence, answer: answers } : occurrence;
+      }
+      const [first, ...rest] = answers.length > 0 ? answers : [{}];
+      return { ...occurrence, answer: [{ ...first, item: children }, ...rest] };
+    });
   }
 
   public hasFhirPaths(): boolean {
@@ -299,8 +599,14 @@ export class FhirPathExtensions {
   private evaluateExpressionDetailed(
     qItem: QuestionnaireItem,
     expressionExtension: Extension,
-    response: QuestionnaireResponse
+    response: QuestionnaireResponse,
+    envVars: FhirPathEnvVars = {}
   ): EvaluatedExpression {
+    // Not remembered inside a copied row: there the answers keep the nested items of the occurrence being evaluated,
+    // not those of the first occurrence in the response, so a result from outside the row does not fit.
+    if (Object.keys(envVars).length > 0) {
+      return this.computeExpression(qItem, expressionExtension, response, envVars);
+    }
     const index = this.getResponseIndex(response);
     const dependencies = this.getDependencies(expressionExtension, index);
     if (dependencies === ALL_DEPENDENCIES) {
@@ -317,21 +623,33 @@ export class FhirPathExtensions {
     return result;
   }
 
-  /** omitted is true when omitNonNumericResults dropped every result of the expression. */
+  /**
+   * omitted is true when omitNonNumericResults dropped every result of the expression.
+   * When the expression selects QR items rather than values, the answers are the selected items' answers.
+   */
   private computeExpression = (
     qItem: QuestionnaireItem,
     expressionExtension: Extension,
-    response: QuestionnaireResponse
+    response: QuestionnaireResponse,
+    envVars: FhirPathEnvVars = {}
   ): EvaluatedExpression => {
-    if (expressionExtension.valueString) {
+    const expression = this.getExpressionText(expressionExtension);
+    if (expression) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result: any[] = evaluateOnPrivateCopy(
-        expressionExtension.valueString,
+        expression,
         this.getEvaluationCopy(response),
-        this.getEnvVars(),
+        { ...this.getEnvVars(), ...envVars },
         qItem.linkId
       );
-      const qrItem = getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
+      if (isResponseItemList(result)) {
+        const answers = toPlainItems(result).flatMap(answersWithoutNestedItems);
+        return { answers: answers.length > 0 ? answers : null, omitted: false };
+      }
+      // Inside a copied row the first occurrence in the whole response belongs to another row, so nested items
+      // are left to the caller, which keeps the ones of the occurrence being evaluated.
+      const insideItemCopy = Object.keys(envVars).length > 0;
+      const qrItem = insideItemCopy ? undefined : getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
       const itemAnswer: QuestionnaireResponseItemAnswer[] = [];
       switch (qItem.type) {
         case itemType.BOOLEAN: {
@@ -411,18 +729,32 @@ export class FhirPathExtensions {
     const traverseItems = (
       qItems: QuestionnaireItem[],
       qrItems: QuestionnaireResponseItem[],
-      response: QuestionnaireResponse
+      response: QuestionnaireResponse,
+      envVars: FhirPathEnvVars = {}
     ): QuestionnaireResponseItem[] => {
       const result: QuestionnaireResponseItem[] = [];
 
       for (const qItem of qItems) {
+        const selected = this.selectItemsToCopy(qItem, response, envVars);
+        if (selected) {
+          this.itemCopyTargets.add(qItem.linkId);
+          result.push(
+            ...this.buildCopiedOccurrences(qItem, selected, envVars, response, (childQItems, childQrItems, childEnvVars) =>
+              traverseItems(childQItems, childQrItems, response, childEnvVars)
+            )
+          );
+          continue;
+        }
+
         const matches = qrItems.filter(x => x.linkId === qItem.linkId);
 
         for (const qrItem of matches) {
           let newQrItem: QuestionnaireResponseItem = { ...qrItem };
 
           const expressionExtension = this.getExpressionExtension(qItem, 'copy');
-          const evaluated = expressionExtension ? this.evaluateExpressionDetailed(qItem, expressionExtension, response) : undefined;
+          const evaluated = expressionExtension
+            ? this.evaluateExpressionDetailed(qItem, expressionExtension, response, envVars)
+            : undefined;
           const newAnswer = evaluated?.answers ?? null;
 
           const origAnswers = qrItem.answer ?? [];
@@ -432,14 +764,14 @@ export class FhirPathExtensions {
             // The value is dropped so dependent expressions cannot read it; nested items are kept.
             for (const orig of origAnswers) {
               if (orig.item) {
-                finalAnswers.push({ item: qItem.item ? traverseItems(qItem.item, orig.item, response) : orig.item });
+                finalAnswers.push({ item: qItem.item ? traverseItems(qItem.item, orig.item, response, envVars) : orig.item });
               }
             }
           } else if (!newAnswer || newAnswer.length === 0) {
             for (const orig of origAnswers) {
               const a = { ...orig };
               if (a.item && qItem.item) {
-                a.item = traverseItems(qItem.item, a.item, response);
+                a.item = traverseItems(qItem.item, a.item, response, envVars);
               }
               finalAnswers.push(a);
             }
@@ -451,7 +783,7 @@ export class FhirPathExtensions {
                 comp.item = origAnswers[i].item;
               }
               if (comp.item && qItem.item) {
-                comp.item = traverseItems(qItem.item, comp.item, response);
+                comp.item = traverseItems(qItem.item, comp.item, response, envVars);
               }
 
               finalAnswers.push(comp);
@@ -467,7 +799,7 @@ export class FhirPathExtensions {
           if (qrItem.item && qItem.item) {
             newQrItem = {
               ...newQrItem,
-              item: traverseItems(qItem.item, qrItem.item, response),
+              item: traverseItems(qItem.item, qrItem.item, response, envVars),
             };
           }
 

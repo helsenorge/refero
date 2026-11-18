@@ -6,6 +6,7 @@ import { getCalculatedExpressionExtension, getCopyExtension, getMinOccursExtensi
 import Constants from '@/constants/';
 import ItemType from '@/constants/itemType';
 import StatusConstants from '@/constants/status';
+import { withItemCopiesApplied } from '@/util/FhirPathExtensions';
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
 import { isNumericResult, resolveFhirPathCalculationOptions } from '@/util/fhirPathOptions';
 import { isHelpItem } from '@/util/help';
@@ -42,7 +43,7 @@ export function generateQuestionnaireResponse(questionnaire: Questionnaire | und
       response.item.push(responseItem);
     }
   });
-  return evaluateCalculatedExpressions(questionnaire, response);
+  return withItemCopiesApplied(questionnaire, evaluateCalculatedExpressions(questionnaire, response));
 }
 
 function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: QuestionnaireResponseItem): void {
