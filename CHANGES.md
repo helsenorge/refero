@@ -1,3 +1,10 @@
+## 26.0.5
+
+- Fix: a date limit (`sdf-minvalue` or `sdf-maxvalue`) whose FHIRPath expression gives no date no longer crashes the whole form with
+  «RangeError: Invalid time value». An empty result, or a result that is not a date, now means that the field has no limit. A result that is
+  not a date, and an expression that fails, are reported through the FHIRPath error handler (`setFhirPathErrorHandler`). Note that the
+  expression is evaluated against the question, not the response, so an expression that points at another answer gives no limit.
+
 ## 26.0.4
 
 - Fix: a display item with an expression (cqf-expression or sdf-calculatedExpression) no longer gets an answer in the QuestionnaireResponse. In FHIR R4 a display item cannot have an answer, so its expression is now ignored.
