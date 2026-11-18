@@ -3,16 +3,19 @@
 Answers the question "does this change alter what refero does with real forms?" by filling in a folder of forms the same way on two versions
 of the code and comparing the QuestionnaireResponse after every step.
 
-It is not part of `npm test`: it needs a folder of forms that lives outside the repository, and a full run takes a while.
+It is not part of `npm test`: a full run takes a while.
+
+The forms are the Questionnaire and Bundle json files in `test/form-comparison/forms/`, in any folder structure. Checked in is the newest
+version of each production form that has calculated or copy expressions, unchanged. Add a form by copying its file there.
 
 ## Use
 
 ```sh
 # 1. Record what the code you are working on does
-npm run test:forms -- record --label working --forms C:/code/nhn/Skjemadefinisjoner/Produksjon
+npm run test:forms -- record --label working
 
 # 2. Record what another version does (any commit, branch or tag)
-npm run test:forms -- record --label head --ref HEAD --forms C:/code/nhn/Skjemadefinisjoner/Produksjon
+npm run test:forms -- record --label head --ref HEAD
 
 # 3. Compare
 npm run test:forms -- compare head working
@@ -27,12 +30,13 @@ is done, and `--filter` and `--only-expressions` make it shorter.
 `compare` lists, for every form that differs, the first step where the two part ways, the edit that was made and the items whose answers
 differ. It also shows the time each side spent, per form. The exit code is 1 when there are differences.
 
-Set `REFERO_FORMS_DIR` to leave out `--forms`.
+To use another folder of forms, give `--forms <folder>` or set `REFERO_FORMS_DIR`.
 
 | Option               | What it does                                                                |
 | -------------------- | --------------------------------------------------------------------------- |
 | `--label <name>`     | Name of the recording, `results/<name>.json`                                |
 | `--ref <git ref>`    | Record that version instead of the working tree                             |
+| `--forms <folder>`   | Another folder of forms than `test/form-comparison/forms/`                  |
 | `--filter <text>`    | Only files whose path contains the text, for example `2026/` or a form name |
 | `--seeds 1,2,3`      | One run per seed; each seed fills the form in differently (default `1`)     |
 | `--steps <n>`        | Edits per run (default 25)                                                  |

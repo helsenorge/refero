@@ -1,0 +1,2817 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 2,
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Questionnaire",
+        "language": "nb-NO",
+        "id": "8b0658ec-c411-4d95-a4c0-97c0e0e86d43",
+        "name": "NHN_Helsenorge_MSK",
+        "title": "Søk om fullmakt til Helsenorge på vegne av personer med manglende helserettslig samtykkekompetanse",
+        "version": "1.6",
+        "status": "active",
+        "publisher": "NHN",
+        "meta": {
+          "profile": [
+            "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
+          ],
+          "tag": [
+            {
+              "system": "urn:ietf:bcp:47",
+              "code": "nb-NO",
+              "display": "Norsk Bokmål"
+            }
+          ],
+          "security": [
+            {
+              "code": "3",
+              "display": "Helsehjelp (Full)",
+              "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+            },
+            {
+              "code": "1",
+              "display": "Kun innbygger selv",
+              "system": "http://helsenorge.no/fhir/KanUtforesAv"
+            }
+          ]
+        },
+        "useContext": [
+          {
+            "code": {
+              "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+              "code": "focus",
+              "display": "Clinical Focus"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.8655",
+                  "display": "Søk om fullmakt til Helsenorge på vegne av personer med manglende helserettslig samtykkekompetanse"
+                }
+              ]
+            }
+          }
+        ],
+        "contact": [{ "name": "http://www.nhn.no" }],
+        "subjectType": ["Patient"],
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
+            "valueCoding": {
+              "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement",
+              "code": "3"
+            }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf",
+            "valueBoolean": true
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
+            "valueCoding": {
+              "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons",
+              "code": "static"
+            }
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-save-capabilities",
+            "valueCoding": {
+              "system": "http://helsenorge.no/fhir/ValueSet/sdf-save-capabilities",
+              "code": "1"
+            }
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+                  "code": "hide-help",
+                  "display": "Hide help texts"
+                }
+              ]
+            }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+            "valueReference": { "reference": "Endpoint/50" }
+          }
+        ],
+        "date": "2025-02-27T00:00:00+01:00",
+        "item": [
+          {
+            "linkId": "7c7b3a5a-8c88-4cc4-84b5-241ca09fbbbb",
+            "type": "display",
+            "text": "Dette skjemaet kan du bruke hvis du ønsker fullmakt på vegne av en person med manglende helserettslig samtykkekompetanse. Skjemaet skal sendes inn av den som er nærmeste pårørende. Hvis dere er mer enn én nærmeste pårørende, må dere sende inn hvert deres skjema. Før du fyller ut skjemaet må du ha: en bekreftelse fra legen som behandler personen med manglende samtykkekompetanse. eller en stadfestet fremtidsfullmakt for personen med manglende samtykkekompetanse. Det er viktig at du bruker Helsenorge sitt skjema for bekreftelse fra lege Tidligere utstedte legeerklæringer eller vergemål kan ikke brukes til denne typen fullmakt. For at fremtidsfullmakten skal kunne brukes, må den omfatte personlige forhold og/eller helse. I skjemaet må du laste opp enten bekreftelsen fra legen som behandler personen eller fremtidsfullmakten.  Pass på at du fyller ut alle feltene i skjemaet og at opplysningene er riktige. Hvis felter i skjemaet mangler eller har feil opplysninger, vil du få avslag med en begrunnelse.  Les mer om fullmakt på vegne av noen med manglende helserettslig samtykkekompetanse.",
+            "required": false,
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Dette skjemaet kan du bruke hvis du ønsker fullmakt på vegne av en person med manglende helserettslig samtykkekompetanse. Skjemaet skal sendes inn av den som er nærmeste pårørende. Hvis dere er mer enn én nærmeste pårørende, må dere sende inn hvert deres skjema.\n\nFør du fyller ut skjemaet må du ha:\n\n*   en bekreftelse fra legen som behandler personen med manglende samtykkekompetanse.\n\neller\n\n*   en stadfestet fremtidsfullmakt for personen med manglende samtykkekompetanse.\n\nDet er viktig at du bruker [Helsenorge sitt skjema for bekreftelse fra lege](https://www.helsenorge.no/4a28c2/globalassets/skjema/samtykkekompetanse/hn-skjema-legeerklaering-manglende-helserettslig-samtykkekompetanse.pdf) Tidligere utstedte legeerklæringer eller vergemål kan ikke brukes til denne typen fullmakt.\n\nFor at fremtidsfullmakten skal kunne brukes, må den omfatte personlige forhold og/eller helse.\n\nI skjemaet må du laste opp enten bekreftelsen fra legen som behandler personen eller fremtidsfullmakten. \n\nPass på at du fyller ut alle feltene i skjemaet og at opplysningene er riktige. Hvis felter i skjemaet mangler eller har feil opplysninger, vil du få avslag med en begrunnelse. \n\n[Les mer om fullmakt på vegne av noen med manglende helserettslig samtykkekompetanse.](https://www.helsenorge.no/fullmakt/om/fullmakt-pa-vegne-av-personer-med-manglende-samtykkekompetanse/)"
+                }
+              ]
+            },
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "highlight"
+                    }
+                  ]
+                }
+              }
+            ],
+            "code": [
+              {
+                "code": "3",
+                "display": "KunSkjemautfyller",
+                "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                "id": "697645c5-e63c-4831-868d-e01d881b1a48"
+              }
+            ]
+          },
+          {
+            "linkId": "15e4e15e-aa05-4cc5-9c44-56fea18c3ee5",
+            "type": "group",
+            "text": "Opplysninger om personen du søker fullmakt for",
+            "required": false,
+            "item": [
+              {
+                "linkId": "cd87d663-c574-49e6-ac7c-eba16ab38c6a",
+                "type": "string",
+                "text": "Fødselsnummer",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Fødselsnummer",
+                    "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+                    "id": "9d86d130-0a0f-478e-95e9-9ca007018592"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "aeb737a3-e53a-453f-ec76-07e48bfebd75"
+                  }
+                ],
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^((((0[1-9]|[12]\\d|3[01])([04][13578]|[15][02]))|((0[1-9]|[12]\\d|30)([04][469]|[15]1))|((0[1-9]|[12]\\d)([04]2)))|((([0-7][1-9]|[12]\\d|3[01])(0[13578]|1[02]))|(([0-7][1-9]|[12]\\d|30)(0[469]|11))|(([0-7][1-9]|[12]\\d)(02))))\\d{7}$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Skriv inn riktig fødselsnummer (11 siffer)"
+                  }
+                ]
+              },
+              {
+                "linkId": "fab67988-a353-45cc-f850-2bb44d2b47c8",
+                "type": "string",
+                "text": "Fornavn",
+                "code": [
+                  {
+                    "code": "GIV",
+                    "display": "Fornavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "30036771-fc4b-40db-9faf-875d5a94d385"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "5b61f97d-9df1-4793-8461-179f0b55fa76"
+                  }
+                ],
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’* ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrevet inn ett eller flere tegn som ikke er tillatt."
+                  }
+                ],
+                "maxLength": 250
+              },
+              {
+                "linkId": "b60b0e77-1273-4780-f127-4c8221cdcf86",
+                "type": "string",
+                "text": "Mellomnavn",
+                "code": [
+                  {
+                    "code": "MID",
+                    "display": "Mellomnavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "a6252cd4-3367-45fc-e766-af1b3ece4f03"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "8eccec8b-1848-48f7-8d90-7247132ea4b6"
+                  }
+                ],
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’* ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrevet inn ett eller flere tegn som ikke er tillatt."
+                  }
+                ],
+                "maxLength": 250
+              },
+              {
+                "linkId": "dc751643-4027-4861-889b-d017001a90dc",
+                "type": "string",
+                "text": "Etternavn",
+                "code": [
+                  {
+                    "code": "FAM",
+                    "display": "Etternavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "23f0fb39-d746-4f75-a5bd-8ea8613e4a2f"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "f52889ff-229a-4f79-c444-5038e211800f"
+                  }
+                ],
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’* ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrevet inn ett eller flere tegn som ikke er tillatt."
+                  }
+                ],
+                "maxLength": 250
+              },
+              {
+                "linkId": "867e1fad-7f59-4c82-eecb-1afbe94b4799",
+                "type": "string",
+                "text": "Adresse",
+                "required": true,
+                "code": [
+                  {
+                    "code": "STR",
+                    "display": "Gatenavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "bdd331a4-88fa-4953-f17d-c8a3b6fd127d"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "fe504ef9-d8c1-4660-876a-d55fd4b564b3"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "e080223b-4010-4629-96d5-8608fa969a40"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’*0-9 ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrevet inn ett eller flere tegn som ikke er tillatt."
+                  }
+                ],
+                "maxLength": 250
+              },
+              {
+                "linkId": "4bb31753-333b-44dc-f012-56ee2c43de52",
+                "type": "string",
+                "text": "Postnummer",
+                "required": true,
+                "code": [
+                  {
+                    "code": "ZIP",
+                    "display": "Postnummer",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "31ff5c8f-a045-491a-8265-e3edd4ee650a"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "ebc0a2b9-7a63-4c1f-fa05-64b6dcce55a0"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "b20b107e-e581-4dd5-b7e3-bf7a9533802e"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Skriv inn riktig postnummer (4 siffer)"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^([0-9]){4}$"
+                  }
+                ]
+              },
+              {
+                "linkId": "e42d8714-99b0-4bd7-f46d-8d7e6f07f765",
+                "type": "string",
+                "text": "Poststed",
+                "required": true,
+                "code": [
+                  {
+                    "code": "POP",
+                    "display": "Poststed",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "92182110-2200-4d53-c30a-817f8a9fe0e0"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "225fd36d-39d8-4005-91bc-e40e3c949692"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "9274dc41-92ce-479e-caeb-5d7bc3e24a2a"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’*0-9 ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrevet inn ett eller flere tegn som ikke er tillatt."
+                  }
+                ],
+                "maxLength": 250
+              }
+            ]
+          },
+          {
+            "linkId": "99739f9a-07cc-4dac-c41c-c026691b7969",
+            "type": "group",
+            "text": "Opplysninger om deg",
+            "required": false,
+            "code": [
+              {
+                "code": "TD",
+                "display": "Tildelt fullmakt",
+                "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                "id": "d1fcffd0-1a58-42fc-858e-52f17135e44f"
+              }
+            ],
+            "item": [
+              {
+                "linkId": "c6347bbe-2f09-4e14-98e8-8a559c9752dc",
+                "type": "string",
+                "text": "Fødselsnummer",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+                  }
+                ],
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Fødselsnummer",
+                    "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+                    "id": "9d86d130-0a0f-478e-95e9-9ca007018592"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "51b496e8-95d0-4f2a-9b41-4a6c1ccf88c6"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "linkId": "21c567d0-2efe-4db3-d77d-2710ae3052ae",
+                "type": "string",
+                "text": "Navn",
+                "code": [
+                  {
+                    "code": "3",
+                    "display": "KunSkjemautfyller",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "4fce0f33-2198-46c6-9337-61f2311300a6"
+                  }
+                ],
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                  }
+                ],
+                "readOnly": true
+              },
+              {
+                "linkId": "05f1f2c7-276c-462c-8015-ba831a9fbea9",
+                "type": "string",
+                "text": "Fornavn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').given.first()"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "GIV",
+                    "display": "Fornavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "565485cf-f959-441f-8a61-ec3f6ae30f9c"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "718d1a3f-5ce2-446f-8d29-4aa467b384b4"
+                  }
+                ]
+              },
+              {
+                "linkId": "39080fa3-ec7d-4c21-f880-5a7cf61f7d6d",
+                "type": "string",
+                "text": "Mellomnavn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').select(iif(given.count() > 1, given.last(), ''))"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "MID",
+                    "display": "Mellomnvan",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "d949dbc9-4c6c-487e-80ca-88c02070892d"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "8093b000-fa45-40b4-daaf-1b99be96294d"
+                  }
+                ]
+              },
+              {
+                "linkId": "5008c61c-43aa-4ece-84e0-85c24730ca64",
+                "type": "string",
+                "text": "Etternavn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').family"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "FAM",
+                    "display": "Etternavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "cbdca037-a709-437c-8945-88a461ed5cba"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "7ae3420e-08c1-43dd-8dcd-8cab1262df2c"
+                  }
+                ]
+              },
+              {
+                "linkId": "e9fbd74b-031d-4f0e-b995-d3cc3ef024bc",
+                "type": "string",
+                "text": "Mobiltelefon",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.telecom.where(use = 'mobile' and system = 'phone').value"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "MC",
+                    "display": "Mobiltelefon",
+                    "system": "urn:oid:2.16.578.1.12.4.1.8110",
+                    "id": "c6507222-f83c-465a-e204-fe4a295bf6c6"
+                  }
+                ]
+              },
+              {
+                "linkId": "0688a804-bfcc-4dfc-8b13-121a0d27510f",
+                "type": "string",
+                "text": "Adresse",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').line.first()"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "STR",
+                    "display": "Gatenavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "bdd331a4-88fa-4953-f17d-c8a3b6fd127d"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "fe504ef9-d8c1-4660-876a-d55fd4b564b3"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "6a5cb4bf-5250-4c73-837c-1077e2bc9a50"
+                  }
+                ]
+              },
+              {
+                "linkId": "11840615-66dc-4189-8fc8-5de9636be8d7",
+                "type": "string",
+                "text": "Postnummer",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').postalCode"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "ZIP",
+                    "display": "Postnummer",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "31ff5c8f-a045-491a-8265-e3edd4ee650a"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "ebc0a2b9-7a63-4c1f-fa05-64b6dcce55a0"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "6f53f6f6-18e1-4ad6-88ea-f6012faf8eb6"
+                  }
+                ]
+              },
+              {
+                "linkId": "ba82d7ba-8fec-4f78-e1ef-4d911dbde784",
+                "type": "string",
+                "text": "Poststed",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').city"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "POP",
+                    "display": "Poststed",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "92182110-2200-4d53-c30a-817f8a9fe0e0"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "225fd36d-39d8-4005-91bc-e40e3c949692"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "e28ccafa-393f-42fc-8baa-4e9e22ba1368"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "114647b3-1a8c-4831-8608-988a9ae25e73",
+            "type": "group",
+            "text": "Bekreftelse fra behandler eller kopi av fremtidsfullmakten",
+            "required": false,
+            "item": [
+              {
+                "linkId": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                "type": "choice",
+                "text": "Hvilken type dokumentasjon legger du ved?",
+                "required": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "id": "f0ec2313-b45c-4958-d3d6-019cbeb54e75",
+                      "code": "1",
+                      "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                      "display": "Bekreftelse fra lege"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "49cb57a3-1447-4157-8842-992037b5aafa",
+                      "code": "2",
+                      "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                      "display": "Kopi av stadfestet fremtidsfullmakt"
+                    }
+                  }
+                ],
+                "item": [
+                  {
+                    "linkId": "78aedf73-35ac-43ea-844b-5d65deebb859",
+                    "type": "group",
+                    "text": "Bekreftelse fra lege",
+                    "required": false,
+                    "enableWhen": [
+                      {
+                        "question": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                          "code": "1"
+                        }
+                      }
+                    ],
+                    "item": [
+                      {
+                        "linkId": "3fc753bb-1316-47f3-9c49-738523bd732b",
+                        "type": "display",
+                        "text": "Vi godtar kun Helsenorge sitt skjema for legebekreftelse",
+                        "required": false,
+                        "_text": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                              "valueMarkdown": "Vi godtar kun [Helsenorge sitt skjema for legebekreftelse](https://www.helsenorge.no/4a28c2/globalassets/skjema/samtykkekompetanse/hn-skjema-legeerklaering-manglende-helserettslig-samtykkekompetanse.pdf)"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "linkId": "df307d44-7842-46e0-90be-318010e981fa",
+                        "type": "attachment",
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+                            "valueDecimal": 5
+                          },
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+                            "valueInteger": 3
+                          }
+                        ],
+                        "required": true,
+                        "code": [
+                          {
+                            "code": "1",
+                            "display": "Bekreftelse fra lege",
+                            "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                            "id": "f5cf78dd-fcb0-4e31-8ce7-db6adcdd6c0b"
+                          }
+                        ],
+                        "repeats": true,
+                        "text": "Skann eller ta bilde av bekreftelsen fra lege og last opp. (Inntil 3 filer)"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "8daddf64-0814-4486-80c0-c143f26d1fd9",
+                    "type": "group",
+                    "text": "Fremtidsfullmakt",
+                    "required": false,
+                    "enableWhen": [
+                      {
+                        "question": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                          "code": "2"
+                        }
+                      }
+                    ],
+                    "item": [
+                      {
+                        "linkId": "5585b355-7a6f-4be6-869c-5bd3d0bd9a9c",
+                        "type": "attachment",
+                        "text": "Skann eller ta bilde av kopi av fremtidsfullmakten og last opp. (Inntil 3 filer)",
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+                            "valueDecimal": 5
+                          },
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+                            "valueInteger": 3
+                          }
+                        ],
+                        "required": true,
+                        "code": [
+                          {
+                            "code": "2",
+                            "display": "Kopi av fremtidsfullmakten",
+                            "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                            "id": "44083fdf-0d6f-4c8a-d80c-c9e483a60924"
+                          }
+                        ],
+                        "repeats": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "b740f8ac-9fbf-4190-dcc7-4693e2e999f8",
+            "type": "group",
+            "text": "Innsending",
+            "required": false,
+            "enableWhen": [
+              {
+                "question": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                "operator": "exists",
+                "answerBoolean": true
+              }
+            ],
+            "enableBehavior": "any",
+            "item": [
+              {
+                "linkId": "a31ed96e-b5e6-4101-b051-108ca5bcdd77",
+                "type": "display",
+                "text": "Din henvendelse sendes til Norsk helsenett. Du som sender inn skjemaet vil få svar i posten på folkeregistrert bostedsadresse eller i digital postkasse.  Den du søker fullmakt for, vil få svar i posten på folkeregistrert bostedsadresse eller i digital postkasse.",
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-save-capabilities",
+                    "valueCoding": {
+                      "system": "http://helsenorge.no/fhir/ValueSet/sdf-save-capabilities",
+                      "code": "1"
+                    }
+                  }
+                ],
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Din henvendelse sendes til Norsk helsenett.\n\nDu som sender inn skjemaet vil få svar i posten på folkeregistrert bostedsadresse eller i digital postkasse. \n\nDen du søker fullmakt for, vil få svar i posten på folkeregistrert bostedsadresse eller i digital postkasse."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "902886ac-fa84-4e4e-9a17-f5142aa25094",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-2",
+                "display": "SOT-2"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Det er mulig å få tilgang til tjenester på Helsenorge på vegne av personer over 12 år som mangler helserettslig samtykkekompetanse. \n\nDet er kun nærmeste pårørende som kan få fullmakt på vegne av personen. Med nærmeste pårørende menes de som i størst grad har varig og løpende kontakt med personen som mangler helserettslig samtykkekompetanse. \n\nNorsk helsenett er ansvarlig for innholdet i dette skjemaet."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          },
+          {
+            "linkId": "1ec04386-4fca-4070-869a-bc55f09385fa",
+            "type": "group",
+            "text": "Oppsummering",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "table-hn1"
+                    },
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "summary"
+                    },
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "summary-container"
+                    }
+                  ]
+                }
+              }
+            ],
+            "code": [
+              {
+                "code": "2",
+                "display": "KunPdf",
+                "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                "id": "85f81179-8119-4645-fb43-0a0d8da0af66"
+              }
+            ],
+            "required": false,
+            "item": [
+              {
+                "linkId": "00801247-e8c1-4b5c-ad27-9d3f5c516c61",
+                "type": "choice",
+                "text": "Type dokumentasjon som er vedlagt",
+                "required": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "id": "f0ec2313-b45c-4958-d3d6-019cbeb54e75",
+                      "code": "1",
+                      "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                      "display": "Bekreftelse fra lege"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "09eddfcd-99da-4573-c163-148267fccdc8",
+                      "code": "2",
+                      "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                      "display": "Kopi av fremtidsfullmakten"
+                    }
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='c2b8f498-7629-4434-e71b-7e1514ac0f70').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                    "operator": "exists"
+                  }
+                ],
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "**Type dokumentasjon som er vedlagt**"
+                    }
+                  ]
+                }
+              },
+              {
+                "linkId": "1548e9c3-51b1-4c09-f06e-73386ff97438",
+                "type": "group",
+                "text": "Opplysninger om personen med manglende helserettslig samtykkekompetanse",
+                "required": false
+              },
+              {
+                "linkId": "4be2794d-a41f-4345-83ee-d1bf68b54dfc",
+                "type": "string",
+                "text": "Fødselsnummer",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='cd87d663-c574-49e6-ac7c-eba16ab38c6a').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "cd87d663-c574-49e6-ac7c-eba16ab38c6a",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "6ead1aba-6206-4378-8814-6f9331dc6ae7",
+                "type": "string",
+                "text": "Fornavn",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "5b61f97d-9df1-4793-8461-179f0b55fa76"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='fab67988-a353-45cc-f850-2bb44d2b47c8').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "fab67988-a353-45cc-f850-2bb44d2b47c8",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "e9a1dfc6-c1fb-4b5e-d66d-34ae286efcea",
+                "type": "string",
+                "text": "Mellomnavn",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "8eccec8b-1848-48f7-8d90-7247132ea4b6"
+                  }
+                ],
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='b60b0e77-1273-4780-f127-4c8221cdcf86').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "b60b0e77-1273-4780-f127-4c8221cdcf86",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "0455912b-7989-4d5a-984f-1406ca1dd7ae",
+                "type": "string",
+                "text": "Etternavn",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "f52889ff-229a-4f79-c444-5038e211800f"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='dc751643-4027-4861-889b-d017001a90dc').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "dc751643-4027-4861-889b-d017001a90dc",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "ee626729-e190-4f4d-d0de-a4f5ce3dc7f0",
+                "type": "string",
+                "text": "Adresse",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='867e1fad-7f59-4c82-eecb-1afbe94b4799').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "867e1fad-7f59-4c82-eecb-1afbe94b4799",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "95032c81-7b2a-46d9-8e8a-31455b70acf6",
+                "type": "string",
+                "text": "Postnummer",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "b20b107e-e581-4dd5-b7e3-bf7a9533802e"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='4bb31753-333b-44dc-f012-56ee2c43de52').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "4bb31753-333b-44dc-f012-56ee2c43de52",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "aa42f16d-6615-4805-8e50-f60b355daee2",
+                "type": "string",
+                "text": "Poststed",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "9274dc41-92ce-479e-caeb-5d7bc3e24a2a"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='e42d8714-99b0-4bd7-f46d-8d7e6f07f765').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "e42d8714-99b0-4bd7-f46d-8d7e6f07f765",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "4046d881-9d57-4497-bdfb-122b10375d3a",
+                "type": "group",
+                "text": "Personopplysninger til den som ber om fullmakten",
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "summary"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "code": [
+                  {
+                    "code": "TD",
+                    "display": "Tildelt fullmakt",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "d1fcffd0-1a58-42fc-858e-52f17135e44f"
+                  }
+                ]
+              },
+              {
+                "linkId": "4fd86602-254e-4a94-c88e-8241cdaf1eeb",
+                "type": "string",
+                "text": "Fødselsnummer",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "linkId": "910f4389-c03c-4c01-cfb2-921630a363cf",
+                "type": "string",
+                "text": "Fornavn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').given.first()"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "89c43598-98d1-402d-979c-294cf11c13b9"
+                  }
+                ]
+              },
+              {
+                "linkId": "5d50411f-0fd1-4f0f-9b16-e81c28bc5501",
+                "type": "string",
+                "text": "Mellomnavn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').select(iif(given.count() > 1, given.last(), ''))"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "22e93420-6ae9-4bf3-e2fa-e31ce258c8e4"
+                  }
+                ]
+              },
+              {
+                "linkId": "385c9d7d-995c-4c3f-8997-d873c4e336e1",
+                "type": "string",
+                "text": "Etternavn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').family"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "3f244d05-d7e3-4339-82d8-d2c818c7c46b"
+                  }
+                ]
+              },
+              {
+                "linkId": "e4646635-bb95-4366-e930-96a602411687",
+                "type": "string",
+                "text": "Mobiltelefon",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.telecom.where(use = 'mobile' and system = 'phone').value"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "MC",
+                    "display": "Mobiltelefon",
+                    "system": "urn:oid:2.16.578.1.12.4.1.8110",
+                    "id": "c6507222-f83c-465a-e204-fe4a295bf6c6"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "16136a39-6dc0-48ed-84ca-2a179ccd4e9b"
+                  }
+                ]
+              },
+              {
+                "linkId": "5a9d94c1-6762-4195-8571-4817fdb23f19",
+                "type": "string",
+                "text": "Adresse",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').line.first()"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "linkId": "7646391b-4f0c-477e-e226-67124dd2ee5b",
+                "type": "string",
+                "text": "Postnummer",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').postalCode"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "linkId": "72c93f07-9777-4b86-8434-be2d49ccc7bd",
+                "type": "string",
+                "text": "Poststed",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').city"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              }
+            ]
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "433dc662-f452-45cd-84c5-45fce92a8cb0",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-3",
+                "display": "SOT-3"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "[Les mer om hvordan Norsk helsenett behandler dine personopplysninger.](https://www.nhn.no/personvernerklaering-og-informasjonskapsler)"
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Questionnaire",
+        "language": "nn-NO",
+        "id": "76ca8e2e-aa73-47ab-8e84-0ee85c2c1251",
+        "name": "NHN_Helsenorge_MSK",
+        "title": "Søk om fullmakt til Helsenorge på vegner av personar med manglande helserettsleg samtykkekompetanse",
+        "version": "1.6",
+        "status": "active",
+        "publisher": "NHN",
+        "meta": {
+          "profile": [
+            "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
+          ],
+          "tag": [
+            {
+              "system": "urn:ietf:bcp:47",
+              "code": "nn-NO",
+              "display": "Nynorsk"
+            }
+          ],
+          "security": [
+            {
+              "code": "3",
+              "display": "Helsehjelp (Full)",
+              "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+            },
+            {
+              "code": "1",
+              "display": "Kun innbygger selv",
+              "system": "http://helsenorge.no/fhir/KanUtforesAv"
+            }
+          ]
+        },
+        "useContext": [
+          {
+            "code": {
+              "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+              "code": "focus",
+              "display": "Clinical Focus"
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "urn:oid:2.16.578.1.12.4.1.1.8655",
+                  "display": "Søk om fullmakt til Helsenorge på vegne av personer med manglende helserettslig samtykkekompetanse"
+                }
+              ]
+            }
+          }
+        ],
+        "contact": [{ "name": "http://www.nhn.no" }],
+        "subjectType": ["Patient"],
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
+            "valueCoding": {
+              "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement",
+              "code": "3"
+            }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf",
+            "valueBoolean": true
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
+            "valueCoding": {
+              "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons",
+              "code": "static"
+            }
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-save-capabilities",
+            "valueCoding": {
+              "system": "http://helsenorge.no/fhir/ValueSet/sdf-save-capabilities",
+              "code": "1"
+            }
+          },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+                  "code": "hide-help",
+                  "display": "Hide help texts"
+                }
+              ]
+            }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+            "valueReference": { "reference": "Endpoint/50" }
+          }
+        ],
+        "date": "2025-02-27T00:00:00+01:00",
+        "item": [
+          {
+            "linkId": "7c7b3a5a-8c88-4cc4-84b5-241ca09fbbbb",
+            "type": "display",
+            "text": "Dette skjemaet kan du bruke om du ønsker fullmakt på vegner av ein person med manglande helserettsleg samtykkekompetanse. Skjemaet skal sendast inn av den som er nærmaste pårørande. Om de er meir enn éin nærmaste pårørande, må de sende inn kvart dykkar skjema.\n\nFør du fyller ut skjemaet må du ha:\n\n*   ei stadfesting frå legen som behandlar personen med manglande samtykkekompetanse.\n\neller\n\n*   ei stadfesta framtidsfullmakt for personen med manglande samtykkekompetanse.\n\nDet er viktig at du brukar [Helsenorge sitt skjema for stadfesting frå lege](https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.helsenorge.no%2F4a28c2%2Fglobalassets%2Fskjema%2Fsamtykkekompetanse%2Fhn-skjema-legeerklaering-manglende-helserettslig-samtykkekompetanse.pdf&data=05%7C02%7CKim.Hoel.Halvorsen%40nhn.no%7C51d6941a704746e59b1b08dd33c4ecbf%7Ce3dac4b39b0b4f4186239392d0d566dc%7C0%7C0%7C638723643048906352%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=RZNwXIllZ%2Bv5godvcFPLeNwRKeGCEfew%2FEZVbQOBl7k%3D&reserved=0) Tidlegare utferda legeerklæringar eller verjemål kan ikkje brukast til denne typen fullmakt.\n\nFor at framtidsfullmakta skal kunne brukast, må ho omfatte personlege forhold og/eller helse.\n\nI skjemaet må du laste opp enten stadfestinga frå legen som behandlar personen eller framtidsfullmakta. \n\nPass på at du fyller ut alle felta i skjemaet og at opplysningane er rette. Dersom felt i skjemaet manglar eller har feil opplysningar, vil du få avslag med ei grunngiving. \n\n[Les meir om fullmakt på vegner av nokon med manglande helserettsleg samtykkekompetanse.](https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.helsenorge.no%2Ffullmakt%2Fom%2Ffullmakt-pa-vegne-av-personer-med-manglende-samtykkekompetanse%2F&data=05%7C02%7CKim.Hoel.Halvorsen%40nhn.no%7C51d6941a704746e59b1b08dd33c4ecbf%7Ce3dac4b39b0b4f4186239392d0d566dc%7C0%7C0%7C638723643048927069%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=4BBPXwF8fzjPlm85mKU%2BYRZigUjnWueODqmfTyQZz78%3D&reserved=0)",
+            "required": false,
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Dette skjemaet kan du bruke om du ønsker fullmakt på vegner av ein person med manglande helserettsleg samtykkekompetanse. Skjemaet skal sendast inn av den som er nærmaste pårørande. Om de er meir enn éin nærmaste pårørande, må de sende inn kvart dykkar skjema.\n\nFør du fyller ut skjemaet må du ha:\n\n*   ei stadfesting frå legen som behandlar personen med manglande samtykkekompetanse.\n\neller\n\n*   ei stadfesta framtidsfullmakt for personen med manglande samtykkekompetanse.\n\nDet er viktig at du brukar [Helsenorge sitt skjema for stadfesting frå lege](https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.helsenorge.no%2F4a28c2%2Fglobalassets%2Fskjema%2Fsamtykkekompetanse%2Fhn-skjema-legeerklaering-manglende-helserettslig-samtykkekompetanse.pdf&data=05%7C02%7CKim.Hoel.Halvorsen%40nhn.no%7C51d6941a704746e59b1b08dd33c4ecbf%7Ce3dac4b39b0b4f4186239392d0d566dc%7C0%7C0%7C638723643048906352%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=RZNwXIllZ%2Bv5godvcFPLeNwRKeGCEfew%2FEZVbQOBl7k%3D&reserved=0) Tidlegare utferda legeerklæringar eller verjemål kan ikkje brukast til denne typen fullmakt.\n\nFor at framtidsfullmakta skal kunne brukast, må ho omfatte personlege forhold og/eller helse.\n\nI skjemaet må du laste opp enten stadfestinga frå legen som behandlar personen eller framtidsfullmakta. \n\nPass på at du fyller ut alle felta i skjemaet og at opplysningane er rette. Dersom felt i skjemaet manglar eller har feil opplysningar, vil du få avslag med ei grunngiving. \n\n[Les meir om fullmakt på vegner av nokon med manglande helserettsleg samtykkekompetanse.](https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.helsenorge.no%2Ffullmakt%2Fom%2Ffullmakt-pa-vegne-av-personer-med-manglende-samtykkekompetanse%2F&data=05%7C02%7CKim.Hoel.Halvorsen%40nhn.no%7C51d6941a704746e59b1b08dd33c4ecbf%7Ce3dac4b39b0b4f4186239392d0d566dc%7C0%7C0%7C638723643048927069%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=4BBPXwF8fzjPlm85mKU%2BYRZigUjnWueODqmfTyQZz78%3D&reserved=0)"
+                }
+              ]
+            },
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "highlight"
+                    }
+                  ]
+                }
+              }
+            ],
+            "code": [
+              {
+                "code": "3",
+                "display": "KunSkjemautfyller",
+                "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                "id": "697645c5-e63c-4831-868d-e01d881b1a48"
+              }
+            ]
+          },
+          {
+            "linkId": "15e4e15e-aa05-4cc5-9c44-56fea18c3ee5",
+            "type": "group",
+            "text": "Opplysningar om personen du søker fullmakt for",
+            "required": false,
+            "item": [
+              {
+                "linkId": "cd87d663-c574-49e6-ac7c-eba16ab38c6a",
+                "type": "string",
+                "text": "Fødselsnummer",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Fødselsnummer",
+                    "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+                    "id": "9d86d130-0a0f-478e-95e9-9ca007018592"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "aeb737a3-e53a-453f-ec76-07e48bfebd75"
+                  }
+                ],
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^((((0[1-9]|[12]\\d|3[01])([04][13578]|[15][02]))|((0[1-9]|[12]\\d|30)([04][469]|[15]1))|((0[1-9]|[12]\\d)([04]2)))|((([0-7][1-9]|[12]\\d|3[01])(0[13578]|1[02]))|(([0-7][1-9]|[12]\\d|30)(0[469]|11))|(([0-7][1-9]|[12]\\d)(02))))\\d{7}$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Skriv inn rett fødselsnummer (11 siffer)"
+                  }
+                ]
+              },
+              {
+                "linkId": "fab67988-a353-45cc-f850-2bb44d2b47c8",
+                "type": "string",
+                "text": "Fornamn",
+                "code": [
+                  {
+                    "code": "GIV",
+                    "display": "Fornavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "30036771-fc4b-40db-9faf-875d5a94d385"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "5b61f97d-9df1-4793-8461-179f0b55fa76"
+                  }
+                ],
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’* ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrive inn eitt eller fleire teikn som ikkje er tillate."
+                  }
+                ],
+                "maxLength": 250
+              },
+              {
+                "linkId": "b60b0e77-1273-4780-f127-4c8221cdcf86",
+                "type": "string",
+                "text": "Mellomnamn",
+                "code": [
+                  {
+                    "code": "MID",
+                    "display": "Mellomnavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "a6252cd4-3367-45fc-e766-af1b3ece4f03"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "8eccec8b-1848-48f7-8d90-7247132ea4b6"
+                  }
+                ],
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’* ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrive inn eitt eller fleire teikn som ikkje er tillate."
+                  }
+                ],
+                "maxLength": 250
+              },
+              {
+                "linkId": "dc751643-4027-4861-889b-d017001a90dc",
+                "type": "string",
+                "text": "Etternamn",
+                "code": [
+                  {
+                    "code": "FAM",
+                    "display": "Etternavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "23f0fb39-d746-4f75-a5bd-8ea8613e4a2f"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "f52889ff-229a-4f79-c444-5038e211800f"
+                  }
+                ],
+                "required": true,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’* ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrive inn eitt eller fleire teikn som ikkje er tillate."
+                  }
+                ],
+                "maxLength": 250
+              },
+              {
+                "linkId": "867e1fad-7f59-4c82-eecb-1afbe94b4799",
+                "type": "string",
+                "text": "Adresse",
+                "required": true,
+                "code": [
+                  {
+                    "code": "STR",
+                    "display": "Gatenavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "bdd331a4-88fa-4953-f17d-c8a3b6fd127d"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "fe504ef9-d8c1-4660-876a-d55fd4b564b3"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "e080223b-4010-4629-96d5-8608fa969a40"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’*0-9 ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrive inn eitt eller fleire teikn som ikkje er tillate."
+                  }
+                ],
+                "maxLength": 250
+              },
+              {
+                "linkId": "4bb31753-333b-44dc-f012-56ee2c43de52",
+                "type": "string",
+                "text": "Postnummer",
+                "required": true,
+                "code": [
+                  {
+                    "code": "ZIP",
+                    "display": "Postnummer",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "31ff5c8f-a045-491a-8265-e3edd4ee650a"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "ebc0a2b9-7a63-4c1f-fa05-64b6dcce55a0"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "b20b107e-e581-4dd5-b7e3-bf7a9533802e"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Skriv inn rett postnummer (4 siffer)"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^([0-9]){4}$"
+                  }
+                ]
+              },
+              {
+                "linkId": "e42d8714-99b0-4bd7-f46d-8d7e6f07f765",
+                "type": "string",
+                "text": "Poststad",
+                "required": true,
+                "code": [
+                  {
+                    "code": "POP",
+                    "display": "Poststed",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "92182110-2200-4d53-c30a-817f8a9fe0e0"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "225fd36d-39d8-4005-91bc-e40e3c949692"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "9274dc41-92ce-479e-caeb-5d7bc3e24a2a"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’*0-9 ]*$"
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Du har skrive inn eitt eller fleire teikn som ikkje er tillate."
+                  }
+                ],
+                "maxLength": 250
+              }
+            ]
+          },
+          {
+            "linkId": "99739f9a-07cc-4dac-c41c-c026691b7969",
+            "type": "group",
+            "text": "Opplysningar om deg",
+            "required": false,
+            "code": [
+              {
+                "code": "TD",
+                "display": "Tildelt fullmakt",
+                "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                "id": "d1fcffd0-1a58-42fc-858e-52f17135e44f"
+              }
+            ],
+            "item": [
+              {
+                "linkId": "c6347bbe-2f09-4e14-98e8-8a559c9752dc",
+                "type": "string",
+                "text": "Fødselsnummer",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+                  }
+                ],
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Fødselsnummer",
+                    "system": "urn:oid:2.16.578.1.12.4.1.4.1",
+                    "id": "9d86d130-0a0f-478e-95e9-9ca007018592"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "51b496e8-95d0-4f2a-9b41-4a6c1ccf88c6"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "linkId": "21c567d0-2efe-4db3-d77d-2710ae3052ae",
+                "type": "string",
+                "text": "Namn",
+                "code": [
+                  {
+                    "code": "3",
+                    "display": "KunSkjemautfyller",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "4fce0f33-2198-46c6-9337-61f2311300a6"
+                  }
+                ],
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                  }
+                ],
+                "readOnly": true
+              },
+              {
+                "linkId": "05f1f2c7-276c-462c-8015-ba831a9fbea9",
+                "type": "string",
+                "text": "Fornamn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').given.first()"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "GIV",
+                    "display": "Fornavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "565485cf-f959-441f-8a61-ec3f6ae30f9c"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "89c43598-98d1-402d-979c-294cf11c13b9"
+                  }
+                ]
+              },
+              {
+                "linkId": "39080fa3-ec7d-4c21-f880-5a7cf61f7d6d",
+                "type": "string",
+                "text": "Mellomnamn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').select(iif(given.count() > 1, given.last(), ''))"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "MID",
+                    "display": "Mellomnvan",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "d949dbc9-4c6c-487e-80ca-88c02070892d"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "22e93420-6ae9-4bf3-e2fa-e31ce258c8e4"
+                  }
+                ]
+              },
+              {
+                "linkId": "5008c61c-43aa-4ece-84e0-85c24730ca64",
+                "type": "string",
+                "text": "Etternamn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').family"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "FAM",
+                    "display": "Etternavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9031",
+                    "id": "cbdca037-a709-437c-8945-88a461ed5cba"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "3f244d05-d7e3-4339-82d8-d2c818c7c46b"
+                  }
+                ]
+              },
+              {
+                "linkId": "e9fbd74b-031d-4f0e-b995-d3cc3ef024bc",
+                "type": "string",
+                "text": "Mobiltelefon",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.telecom.where(use = 'mobile' and system = 'phone').value"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "MC",
+                    "display": "Mobiltelefon",
+                    "system": "urn:oid:2.16.578.1.12.4.1.8110",
+                    "id": "c6507222-f83c-465a-e204-fe4a295bf6c6"
+                  }
+                ]
+              },
+              {
+                "linkId": "0688a804-bfcc-4dfc-8b13-121a0d27510f",
+                "type": "string",
+                "text": "Adresse",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').line.first()"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "STR",
+                    "display": "Gatenavn",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "bdd331a4-88fa-4953-f17d-c8a3b6fd127d"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "fe504ef9-d8c1-4660-876a-d55fd4b564b3"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "6a5cb4bf-5250-4c73-837c-1077e2bc9a50"
+                  }
+                ]
+              },
+              {
+                "linkId": "11840615-66dc-4189-8fc8-5de9636be8d7",
+                "type": "string",
+                "text": "Postnummer",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').postalCode"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "ZIP",
+                    "display": "Postnummer",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "31ff5c8f-a045-491a-8265-e3edd4ee650a"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "ebc0a2b9-7a63-4c1f-fa05-64b6dcce55a0"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "6f53f6f6-18e1-4ad6-88ea-f6012faf8eb6"
+                  }
+                ]
+              },
+              {
+                "linkId": "ba82d7ba-8fec-4f78-e1ef-4d911dbde784",
+                "type": "string",
+                "text": "Poststad",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').city"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "POP",
+                    "display": "Poststed",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "92182110-2200-4d53-c30a-817f8a9fe0e0"
+                  },
+                  {
+                    "code": "H",
+                    "display": "Folkeregistert bostedsadresse",
+                    "system": "urn:oid:2.16.578.1.12.4.1.1.3401",
+                    "id": "225fd36d-39d8-4005-91bc-e40e3c949692"
+                  },
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "e28ccafa-393f-42fc-8baa-4e9e22ba1368"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "114647b3-1a8c-4831-8608-988a9ae25e73",
+            "type": "group",
+            "text": "Stadfesting frå behandlar eller kopi av framtidsfullmakta",
+            "required": false,
+            "item": [
+              {
+                "linkId": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                "type": "choice",
+                "text": "Kva type dokumentasjon legg du ved?",
+                "required": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "id": "f0ec2313-b45c-4958-d3d6-019cbeb54e75",
+                      "code": "1",
+                      "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                      "display": "Stadfesting frå lege"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "49cb57a3-1447-4157-8842-992037b5aafa",
+                      "code": "2",
+                      "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                      "display": "Kopi av stadfesta framtidsfullmakt"
+                    }
+                  }
+                ],
+                "item": [
+                  {
+                    "linkId": "78aedf73-35ac-43ea-844b-5d65deebb859",
+                    "type": "group",
+                    "text": "Stadfesting frå lege",
+                    "required": false,
+                    "enableWhen": [
+                      {
+                        "question": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                          "code": "1"
+                        }
+                      }
+                    ],
+                    "item": [
+                      {
+                        "linkId": "3fc753bb-1316-47f3-9c49-738523bd732b",
+                        "type": "display",
+                        "text": "Vi godtek berre [Helsenorge sitt skjema for stadfesting frå lege](https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.helsenorge.no%2F4a28c2%2Fglobalassets%2Fskjema%2Fsamtykkekompetanse%2Fhn-skjema-legeerklaering-manglende-helserettslig-samtykkekompetanse.pdf&data=05%7C02%7CKim.Hoel.Halvorsen%40nhn.no%7C51d6941a704746e59b1b08dd33c4ecbf%7Ce3dac4b39b0b4f4186239392d0d566dc%7C0%7C0%7C638723643048906352%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=RZNwXIllZ%2Bv5godvcFPLeNwRKeGCEfew%2FEZVbQOBl7k%3D&reserved=0)",
+                        "required": false,
+                        "_text": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                              "valueMarkdown": "Vi godtek berre [Helsenorge sitt skjema for stadfesting frå lege](https://eur03.safelinks.protection.outlook.com/?url=https%3A%2F%2Fwww.helsenorge.no%2F4a28c2%2Fglobalassets%2Fskjema%2Fsamtykkekompetanse%2Fhn-skjema-legeerklaering-manglende-helserettslig-samtykkekompetanse.pdf&data=05%7C02%7CKim.Hoel.Halvorsen%40nhn.no%7C51d6941a704746e59b1b08dd33c4ecbf%7Ce3dac4b39b0b4f4186239392d0d566dc%7C0%7C0%7C638723643048906352%7CUnknown%7CTWFpbGZsb3d8eyJFbXB0eU1hcGkiOnRydWUsIlYiOiIwLjAuMDAwMCIsIlAiOiJXaW4zMiIsIkFOIjoiTWFpbCIsIldUIjoyfQ%3D%3D%7C0%7C%7C%7C&sdata=RZNwXIllZ%2Bv5godvcFPLeNwRKeGCEfew%2FEZVbQOBl7k%3D&reserved=0)"
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "linkId": "df307d44-7842-46e0-90be-318010e981fa",
+                        "type": "attachment",
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+                            "valueDecimal": 5
+                          },
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+                            "valueInteger": 3
+                          }
+                        ],
+                        "required": true,
+                        "code": [
+                          {
+                            "code": "1",
+                            "display": "Bekreftelse fra lege",
+                            "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                            "id": "f5cf78dd-fcb0-4e31-8ce7-db6adcdd6c0b"
+                          }
+                        ],
+                        "repeats": true,
+                        "text": "Skann eller ta bilete av stadfestinga frå lege og last opp. (Inntil 3 filer)"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "8daddf64-0814-4486-80c0-c143f26d1fd9",
+                    "type": "group",
+                    "text": "Framtidsfullmakt",
+                    "required": false,
+                    "enableWhen": [
+                      {
+                        "question": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                        "operator": "=",
+                        "answerCoding": {
+                          "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                          "code": "2"
+                        }
+                      }
+                    ],
+                    "item": [
+                      {
+                        "linkId": "5585b355-7a6f-4be6-869c-5bd3d0bd9a9c",
+                        "type": "attachment",
+                        "text": "Skann eller ta bilete av kopi av framtidsfullmakta og last opp. (Inntil 3 filer)",
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+                            "valueDecimal": 5
+                          },
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+                            "valueInteger": 3
+                          }
+                        ],
+                        "required": true,
+                        "code": [
+                          {
+                            "code": "2",
+                            "display": "Stadfestelse fra Statsforvalteren",
+                            "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                            "id": "44083fdf-0d6f-4c8a-d80c-c9e483a60924"
+                          }
+                        ],
+                        "repeats": true
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "b740f8ac-9fbf-4190-dcc7-4693e2e999f8",
+            "type": "group",
+            "text": "Innsending",
+            "required": false,
+            "enableWhen": [
+              {
+                "question": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                "operator": "exists",
+                "answerBoolean": true
+              }
+            ],
+            "enableBehavior": "any",
+            "item": [
+              {
+                "linkId": "a31ed96e-b5e6-4101-b051-108ca5bcdd77",
+                "type": "display",
+                "text": "Førespurnaden din blir send til Norsk helsenett.\n\nDu som sender inn skjemaet, vil få svar i posten på folkeregistrert bustadadresse eller i digital postkasse. \n\nDen du søker fullmakt for, vil få svar i posten på folkeregistrert bustadadresse eller i digital postkasse.",
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-save-capabilities",
+                    "valueCoding": {
+                      "system": "http://helsenorge.no/fhir/ValueSet/sdf-save-capabilities",
+                      "code": "1"
+                    }
+                  }
+                ],
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Førespurnaden din blir send til Norsk helsenett.\n\nDu som sender inn skjemaet, vil få svar i posten på folkeregistrert bustadadresse eller i digital postkasse. \n\nDen du søker fullmakt for, vil få svar i posten på folkeregistrert bustadadresse eller i digital postkasse."
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "902886ac-fa84-4e4e-9a17-f5142aa25094",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-2",
+                "display": "SOT-2"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Det er mogleg å få tilgang til tenester på Helsenorge på vegner av personar over 12 år som manglar helserettsleg samtykkekompetanse. \n\nDet er berre dei nærmaste pårørande som kan få fullmakt på vegner av personen. Nærmaste pårørande er dei som i størst grad har varig og løpande kontakt med personen som manglar helserettsleg samtykkekompetanse. \n\nNorsk helsenett er ansvarleg for innhaldet i dette skjemaet."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          },
+          {
+            "linkId": "1ec04386-4fca-4070-869a-bc55f09385fa",
+            "type": "group",
+            "text": "Oppsummering",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "table-hn1"
+                    },
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "summary"
+                    },
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "summary-container"
+                    }
+                  ]
+                }
+              }
+            ],
+            "code": [
+              {
+                "code": "2",
+                "display": "KunPdf",
+                "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                "id": "85f81179-8119-4645-fb43-0a0d8da0af66"
+              }
+            ],
+            "required": false,
+            "item": [
+              {
+                "linkId": "00801247-e8c1-4b5c-ad27-9d3f5c516c61",
+                "type": "choice",
+                "text": "**Type dokumentasjon som er lagd ved**",
+                "required": true,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "id": "f0ec2313-b45c-4958-d3d6-019cbeb54e75",
+                      "code": "1",
+                      "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                      "display": "Stadfesting frå lege"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "id": "09eddfcd-99da-4573-c163-148267fccdc8",
+                      "code": "2",
+                      "system": "http://Helsenorge.no/fhir/Helsepost/MSKTypeBekreftelse",
+                      "display": "Kopi av framtidsfullmakta"
+                    }
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='c2b8f498-7629-4434-e71b-7e1514ac0f70').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "c2b8f498-7629-4434-e71b-7e1514ac0f70",
+                    "operator": "exists"
+                  }
+                ],
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "**Type dokumentasjon som er lagd ved**"
+                    }
+                  ]
+                }
+              },
+              {
+                "linkId": "1548e9c3-51b1-4c09-f06e-73386ff97438",
+                "type": "group",
+                "text": "Opplysningar om personen med manglande helserettsleg samtykkekompetanse",
+                "required": false
+              },
+              {
+                "linkId": "4be2794d-a41f-4345-83ee-d1bf68b54dfc",
+                "type": "string",
+                "text": "Fødselsnummer",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='cd87d663-c574-49e6-ac7c-eba16ab38c6a').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "cd87d663-c574-49e6-ac7c-eba16ab38c6a",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "6ead1aba-6206-4378-8814-6f9331dc6ae7",
+                "type": "string",
+                "text": "Fornamn",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "5b61f97d-9df1-4793-8461-179f0b55fa76"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='fab67988-a353-45cc-f850-2bb44d2b47c8').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "fab67988-a353-45cc-f850-2bb44d2b47c8",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "e9a1dfc6-c1fb-4b5e-d66d-34ae286efcea",
+                "type": "string",
+                "text": "Mellomnamn",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "8eccec8b-1848-48f7-8d90-7247132ea4b6"
+                  }
+                ],
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='b60b0e77-1273-4780-f127-4c8221cdcf86').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "b60b0e77-1273-4780-f127-4c8221cdcf86",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "0455912b-7989-4d5a-984f-1406ca1dd7ae",
+                "type": "string",
+                "text": "Etternamn",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "f52889ff-229a-4f79-c444-5038e211800f"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='dc751643-4027-4861-889b-d017001a90dc').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "dc751643-4027-4861-889b-d017001a90dc",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "ee626729-e190-4f4d-d0de-a4f5ce3dc7f0",
+                "type": "string",
+                "text": "Adresse",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='867e1fad-7f59-4c82-eecb-1afbe94b4799').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "867e1fad-7f59-4c82-eecb-1afbe94b4799",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "95032c81-7b2a-46d9-8e8a-31455b70acf6",
+                "type": "string",
+                "text": "Postnummer",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "b20b107e-e581-4dd5-b7e3-bf7a9533802e"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='4bb31753-333b-44dc-f012-56ee2c43de52').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "4bb31753-333b-44dc-f012-56ee2c43de52",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "aa42f16d-6615-4805-8e50-f60b355daee2",
+                "type": "string",
+                "text": "Poststad",
+                "code": [
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "9274dc41-92ce-479e-caeb-5d7bc3e24a2a"
+                  }
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "data-receiver"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                    "valueString": "QuestionnaireResponse.descendants().where(linkId='e42d8714-99b0-4bd7-f46d-8d7e6f07f765').answer.value"
+                  }
+                ],
+                "readOnly": true,
+                "enableWhen": [
+                  {
+                    "answerBoolean": true,
+                    "question": "e42d8714-99b0-4bd7-f46d-8d7e6f07f765",
+                    "operator": "exists"
+                  }
+                ]
+              },
+              {
+                "linkId": "4046d881-9d57-4497-bdfb-122b10375d3a",
+                "type": "group",
+                "text": "Personopplysningar til den som ber om fullmakta",
+                "required": false,
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [
+                        {
+                          "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                          "code": "summary"
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "code": [
+                  {
+                    "code": "TD",
+                    "display": "Tildelt fullmakt",
+                    "system": "urn:oid:2.16.578.1.12.4.1.9044",
+                    "id": "d1fcffd0-1a58-42fc-858e-52f17135e44f"
+                  }
+                ]
+              },
+              {
+                "linkId": "4fd86602-254e-4a94-c88e-8241cdaf1eeb",
+                "type": "string",
+                "text": "Fødselsnummer",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "linkId": "910f4389-c03c-4c01-cfb2-921630a363cf",
+                "type": "string",
+                "text": "Fornamn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').given.first()"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "89c43598-98d1-402d-979c-294cf11c13b9"
+                  }
+                ]
+              },
+              {
+                "linkId": "5d50411f-0fd1-4f0f-9b16-e81c28bc5501",
+                "type": "string",
+                "text": "Mellomnamn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').select(iif(given.count() > 1, given.last(), ''))"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "22e93420-6ae9-4bf3-e2fa-e31ce258c8e4"
+                  }
+                ]
+              },
+              {
+                "linkId": "385c9d7d-995c-4c3f-8997-d873c4e336e1",
+                "type": "string",
+                "text": "Etternamn",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.name.where(use = 'official').family"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "2",
+                    "display": "KunPdf",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "3f244d05-d7e3-4339-82d8-d2c818c7c46b"
+                  }
+                ]
+              },
+              {
+                "linkId": "e4646635-bb95-4366-e930-96a602411687",
+                "type": "string",
+                "text": "Mobiltelefon",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.telecom.where(use = 'mobile' and system = 'phone').value"
+                  }
+                ],
+                "required": false,
+                "readOnly": true,
+                "code": [
+                  {
+                    "code": "MC",
+                    "display": "Mobiltelefon",
+                    "system": "urn:oid:2.16.578.1.12.4.1.8110",
+                    "id": "c6507222-f83c-465a-e204-fe4a295bf6c6"
+                  },
+                  {
+                    "code": "1",
+                    "display": "Default",
+                    "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+                    "id": "16136a39-6dc0-48ed-84ca-2a179ccd4e9b"
+                  }
+                ]
+              },
+              {
+                "linkId": "5a9d94c1-6762-4195-8571-4817fdb23f19",
+                "type": "string",
+                "text": "Adresse",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').line.first()"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "linkId": "7646391b-4f0c-477e-e226-67124dd2ee5b",
+                "type": "string",
+                "text": "Postnummer",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').postalCode"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              },
+              {
+                "linkId": "72c93f07-9777-4b86-8434-be2d49ccc7bd",
+                "type": "string",
+                "text": "Poststad",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "Patient.address.where(use = 'home').city"
+                  }
+                ],
+                "required": false,
+                "readOnly": true
+              }
+            ]
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                      "code": "sidebar"
+                    }
+                  ]
+                }
+              }
+            ],
+            "linkId": "433dc662-f452-45cd-84c5-45fce92a8cb0",
+            "code": [
+              {
+                "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+                "code": "SOT-3",
+                "display": "SOT-3"
+              }
+            ],
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "[Les meir om korleis Norsk helsenett behandlar personopplysningane dine.](https://www.nhn.no/personvernerklaering-og-informasjonskapsler)"
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          }
+        ]
+      }
+    }
+  ]
+}

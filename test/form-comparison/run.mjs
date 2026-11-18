@@ -12,6 +12,7 @@ const here = fs.realpathSync.native(path.dirname(fileURLToPath(import.meta.url))
 // realpath gives the drive letter the casing vitest expects; a mismatch loads vitest twice.
 const repo = fs.realpathSync.native(path.resolve(here, '../..'));
 const resultsDir = path.join(here, 'results');
+const formsDir = path.join(here, 'forms');
 
 function parseArgs(argv) {
   const flags = {};
@@ -32,7 +33,7 @@ function usage() {
   node test/form-comparison/run.mjs compare <label> <label>
 
   --ref      record that commit, branch or tag instead of the working tree
-  --forms    folder with Questionnaire or Bundle json files (or set REFERO_FORMS_DIR)
+  --forms    folder with Questionnaire or Bundle json files (default: test/form-comparison/forms)
   --filter   only files whose path contains the text
   --seeds    one run per seed; each seed fills the form in differently
   --steps    edits per run
@@ -75,9 +76,10 @@ async function runVitest(cwd, env, jobs) {
 
 async function record(flags) {
   const label = flags.label ?? (flags.ref ? flags.ref.replace(/[^\w.-]+/g, '_') : 'working');
-  const forms = flags.forms ?? process.env.REFERO_FORMS_DIR;
-  if (!forms || !fs.existsSync(forms)) {
-    console.error(`No forms folder. Give --forms <folder> or set REFERO_FORMS_DIR. Got: ${forms}`);
+  // The forms of the working tree are used for a ref too, so both sides get the same ones.
+  const forms = flags.forms ?? process.env.REFERO_FORMS_DIR ?? formsDir;
+  if (!fs.existsSync(forms)) {
+    console.error(`The forms folder does not exist: ${forms}`);
     return 1;
   }
   const out = path.join(resultsDir, `${label}.json`);
