@@ -296,6 +296,29 @@ export function isItemCopyGroup(item?: QuestionnaireItem): boolean {
 }
 
 /**
+ * An old gtable: no row source on the group, and its columns read flat lists from the whole response with copy
+ * expressions. It is still rendered by the table components until the forms are migrated.
+ */
+export function isLegacyGTable(item?: QuestionnaireItem): boolean {
+  return (
+    getCodingTextTableValues(item).includes('gtable') && !isItemCopyGroup(item) && !!item?.item?.some(child => !!getAnyCopyExtension(child))
+  );
+}
+
+/**
+ * A group shown as a gtable: one row per occurrence of the group, its questions are the columns. The occurrences are
+ * either copied (row source on the group, read-only) or filled in by the person (a repeating group, editable cells).
+ */
+export function isGTableView(item?: QuestionnaireItem): boolean {
+  return (
+    item?.type === 'group' &&
+    getCodingTextTableValues(item).includes('gtable') &&
+    !isLegacyGTable(item) &&
+    (isItemCopyGroup(item) || !!item.repeats)
+  );
+}
+
+/**
  * Items whose occurrences are created by copying, so the user cannot add or remove them: copied groups, and
  * repeating questions with a copy expression.
  */

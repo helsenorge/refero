@@ -1,3 +1,35 @@
 .paddingBottom {
   padding-bottom: 1rem;
 }
+
+/* Text for screen readers only, for example a field's label in a table, where the column header is the title. */
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/*
+  A checkbox whose label text is for screen readers only, for example a boolean in a table where the column header is
+  the title. The design system Checkbox names the input with its label text and has no option to hide it, so this class
+  goes on the <label> (Label's labelClassName) and hides the text, which is the last element in the label's content
+  wrapper: <label><span><span>(the box)</span><span>(the text)</span></span></label>. The position is used, not the
+  design system's class names, since a host app's bundler may rename those. boolean-in-table-spec pins the structure.
+*/
+.checkboxLabelHidden > span > span:last-child {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}

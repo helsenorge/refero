@@ -50,7 +50,17 @@ import { getDateFnsLocale } from '@/util/date-utils';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, children, index, language }: Props): React.JSX.Element | null => {
+const DateTimeInput = ({
+  renderContext,
+  linkId,
+  path,
+  pdf,
+  id,
+  idWithLinkIdAndItemIndex,
+  children,
+  index,
+  language,
+}: Props): React.JSX.Element | null => {
   initialize();
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
@@ -94,7 +104,13 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const [dateValueContainer, setDateValueContainer] = useState<Date | string | undefined>(dateAnswerValueParsed);
   const [hours, setHours] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Hours));
   const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Minutes));
-  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm, language);
+  const pdfValue = getPDFValueForDate(
+    dateAnswerValue,
+    resources?.ikkeBesvart,
+    DateFormat.yyyyMMddHHmmssXXX,
+    DateFormat.ddMMyyyyHHmm,
+    language
+  );
 
   useResetFormField(`${idWithLinkIdAndItemIndex}-date`, dateAnswerValue);
   useResetFormField(`${idWithLinkIdAndItemIndex}-hours`, hours);
@@ -102,6 +118,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   useEffect(() => {
     if (isValid(dateAnswerValueParsed)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- on master before the gtable change; fixing it changes how the field keeps its value, so it belongs in its own change
       setDateValue(dateAnswerValueParsed);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -222,20 +239,21 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   const { onChange: onChangeDate, ...restDate } = register(
     `${idWithLinkIdAndItemIndex}-date`,
-    shouldValidate(item, pdf) ? validationRulesDate : undefined
+    shouldValidate(item, pdf, renderContext) ? validationRulesDate : undefined
   );
   const { onChange: onChangeHours, ...restHours } = register(
     `${idWithLinkIdAndItemIndex}-hours`,
-    shouldValidate(item, pdf) ? validationRulesHours : undefined
+    shouldValidate(item, pdf, renderContext) ? validationRulesHours : undefined
   );
   const { onChange: onChangeMinutes, ...restMinutes } = register(
     `${idWithLinkIdAndItemIndex}-minutes`,
-    shouldValidate(item, pdf) ? validationRulesMinutes : undefined
+    shouldValidate(item, pdf, renderContext) ? validationRulesMinutes : undefined
   );
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, renderContext)) {
     return (
       <ReadOnly
+        renderContext={renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -255,6 +273,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
         errorWrapperClassName={styles.paddingBottom}
       >
         <ReferoLabel
+          renderContext={renderContext}
           item={item}
           resources={resources}
           htmlFor={`${getId(id)}-datepicker`}

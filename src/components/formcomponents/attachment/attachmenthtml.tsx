@@ -159,9 +159,10 @@ const AttachmentHtml = (props: Props): React.JSX.Element | null => {
     },
     shouldUnregister: true,
   };
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, props.renderContext)) {
     return (
       <ReadOnly
+        renderContext={props.renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -179,6 +180,7 @@ const AttachmentHtml = (props: Props): React.JSX.Element | null => {
     <div className="page_refero__component page_refero__component_attachment" data-testid={getId(id)}>
       <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
+          renderContext={props.renderContext}
           item={item}
           resources={resources}
           htmlFor={`${getId(id)}-button`}
@@ -189,7 +191,7 @@ const AttachmentHtml = (props: Props): React.JSX.Element | null => {
         />
         <FileUpload
           aria-describedby={`${getId(id)}-attachment-label`}
-          {...register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined)}
+          {...register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined)}
           wrapperTestId={`${getId(id)}-attachment`}
           inputId={getId(id)}
           onChangeFile={handleUpload}

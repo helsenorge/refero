@@ -37,6 +37,7 @@ type DateMonthProps = QuestionnaireComponentItemProps & {
 };
 
 export const DateYearMonthInput = ({
+  renderContext,
   id,
   idWithLinkIdAndItemIndex,
   pdf,
@@ -148,16 +149,16 @@ export const DateYearMonthInput = ({
 
   const { onChange: onChangeYear, ...restYear } = register(
     `${idWithLinkIdAndItemIndex}-yearmonth-year`,
-    shouldValidate(item, pdf) ? validationRulesYear : undefined
+    shouldValidate(item, pdf, renderContext) ? validationRulesYear : undefined
   );
   const { onChange: onChangeMonth, ...restMonth } = register(
     `${idWithLinkIdAndItemIndex}-yearmonth-month`,
-    shouldValidate(item, pdf) ? validationRulesMonth : undefined
+    shouldValidate(item, pdf, renderContext) ? validationRulesMonth : undefined
   );
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, renderContext)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={getCombinedFieldError()}>
+      <ReadOnly renderContext={renderContext} pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={getCombinedFieldError()}>
         {children}
       </ReadOnly>
     );
@@ -165,6 +166,7 @@ export const DateYearMonthInput = ({
   return (
     <FormGroup error={getErrorMessage(item, getCombinedFieldError())} errorWrapperClassName={styles2.paddingBottom}>
       <ReferoLabel
+        renderContext={renderContext}
         item={item}
         resources={resources}
         htmlFor={`${getId(id)}-input`}

@@ -1,7 +1,7 @@
 // GTableHeader.tsx
 import type React from 'react';
 
-import type { Column } from './utils';
+import type { Column } from './sorting';
 
 import { HeaderCategory, type SortDirection, TableHead, TableHeadCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
 
@@ -10,9 +10,11 @@ type Props = {
   activeSortKey?: string;
   sortDir?: SortDirection;
   onSort?: (summaryLinkId: string) => void;
+  /** An extra header cell after the columns, for example a hidden header for a column of buttons. */
+  trailingHeader?: React.ReactNode;
 };
 
-export const GTableHeader: React.FC<Props> = ({ columns, activeSortKey, sortDir, onSort }) => {
+export const GTableHeader: React.FC<Props> = ({ columns, activeSortKey, sortDir, onSort, trailingHeader }) => {
   const isSortable = !!onSort;
 
   return (
@@ -32,6 +34,9 @@ export const GTableHeader: React.FC<Props> = ({ columns, activeSortKey, sortDir,
             </TableHeadCell>
           );
         })}
+        {trailingHeader !== undefined && (
+          <TableHeadCell className="page_refero__table__gtable__header__row__cell">{trailingHeader}</TableHeadCell>
+        )}
       </TableRow>
     </TableHead>
   );

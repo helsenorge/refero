@@ -9,7 +9,7 @@ import {
   makeQRFromOuterOccurrences,
   A,
 } from './test-fixures';
-import { getDefaultSortFromGTableItem, sortRowsByKey } from '../sorting';
+import { getDefaultSortFromGTableItem, sortRowsByKey } from '../../../../gtable/sorting';
 import { getColumnsFromGTableItem, inferSourceGroupLinkId, buildGTableRows } from '../utils';
 vi.mock('@/constants/dateTimeConstants', () => ({
   TIME_SEPARATOR: ':',
@@ -70,13 +70,16 @@ describe('Scenario B: DESC on time, 1 row, nested innerB does not affect gTable'
 
 describe('Scenario C: no sorting codes, empty row present', () => {
   it('produces two rows with blanks preserved', () => {
-    const { questionnaire, qr, ids, columns } = scenarioC();
+    const { questionnaire, qr, ids, columns, summaryItem } = scenarioC();
 
     const srcGroup = inferSourceGroupLinkId(questionnaire, columns);
     expect(srcGroup).toBe(ids.OUTER_ID);
 
     const rows = buildGTableRows(qr, srcGroup, columns);
     expect(rows).toHaveLength(2);
+
+    // Without sorting codes the rows keep the order of the response
+    expect(getDefaultSortFromGTableItem(summaryItem, columns)).toEqual({});
 
     // Row1 has answers, Row2 is empty
     expect(rows[0]['sum-date']).toBe('2025-12-24');

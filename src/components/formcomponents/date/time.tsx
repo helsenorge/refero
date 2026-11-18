@@ -41,7 +41,7 @@ import {
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children }: Props): React.JSX.Element | null => {
+const Time = ({ renderContext, id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children }: Props): React.JSX.Element | null => {
   initialize();
 
   const item = useAppSelector(state => findQuestionnaireItem(state, linkId));
@@ -170,16 +170,17 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
 
   const { onChange: onChangeHours, ...restHours } = register(
     `${idWithLinkIdAndItemIndex}-hours`,
-    shouldValidate(item, pdf) ? validationRulesHours : undefined
+    shouldValidate(item, pdf, renderContext) ? validationRulesHours : undefined
   );
   const { onChange: onChangeMinutes, ...restMinutes } = register(
     `${idWithLinkIdAndItemIndex}-minutes`,
-    shouldValidate(item, pdf) ? validationRulesMinutes : undefined
+    shouldValidate(item, pdf, renderContext) ? validationRulesMinutes : undefined
   );
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, renderContext)) {
     return (
       <ReadOnly
+        renderContext={renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -199,6 +200,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
         errorWrapperClassName={styles.paddingBottom}
       >
         <ReferoLabel
+          renderContext={renderContext}
           item={item}
           resources={resources}
           htmlFor={`${getId(id)}-datetime-hours`}

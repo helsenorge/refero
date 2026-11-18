@@ -1,4 +1,5 @@
 import type { FormData } from '@/reducers/form';
+import type { RenderContext } from '@/util/renderContext';
 import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type { FieldError, FieldErrors, FieldErrorsImpl, FieldValues, Merge } from 'react-hook-form';
 
@@ -210,6 +211,7 @@ export const getItemTextFromErrors = (
     .map(({ fieldName, item, message }) => ({ text: getText(item), fieldName, message }));
 };
 
-export const shouldValidate = (item: QuestionnaireItem | undefined, pdf: boolean | undefined): boolean => {
-  return (!pdf && !isReadOnly(item)) || (!pdf && isReadOnly(item) && shouldValidateReadOnly(item));
+export const shouldValidate = (item: QuestionnaireItem | undefined, pdf: boolean | undefined, renderContext?: RenderContext): boolean => {
+  const readOnly = isReadOnly(item, renderContext);
+  return (!pdf && !readOnly) || (!pdf && readOnly && shouldValidateReadOnly(item));
 };

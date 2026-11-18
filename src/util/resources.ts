@@ -348,4 +348,13 @@ export interface Resources {
    * Alle påkrevde radioknapplister
    */
   formRequiredRadiobuttonList: string;
+  /**
+   * rad. Read by screen readers after a field's name in a table, followed by the row number ("Navn, rad 2"),
+   * and in the name of a row's delete button.
+   */
+  tableRow?: string;
+  /**
+   * Handlinger. Header of the column with the delete buttons in a table, for screen readers only.
+   */
+  tableActions?: string;
 }
