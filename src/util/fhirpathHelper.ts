@@ -137,15 +137,27 @@ export function evaluateFhirpathExpressionToGetString(
   envVars?: FhirPathEnvVars,
   linkId?: string
 ): any {
-  const qCopy = structuredClone(questionnare);
   const expression = useLegacyValueString ? fhirExtension.valueString : fhirExtension.valueExpression?.expression;
   if (!expression) {
     return [];
   }
+  return evaluateOnPrivateCopy(expression, structuredClone(questionnare), envVars, linkId);
+}
+
+/**
+ * Evaluates an expression against a response the caller has already copied. fhirpath.js attaches metadata to
+ * the objects it visits, so the response must not be shared or frozen; a caller evaluating many expressions
+ * against the same response makes the copy once instead of once per expression.
+ */
+export function evaluateOnPrivateCopy(
+  expression: string,
+  privateCopy: QuestionnaireResponse | null | undefined,
+  envVars?: FhirPathEnvVars,
+  linkId?: string
+): any {
   try {
     const compiledExpression = getCompiledFhirPathExpression(expression);
-
-    return compiledExpression(qCopy, { resource: qCopy, ...envVars });
+    return compiledExpression(privateCopy, { resource: privateCopy, ...envVars });
   } catch (error) {
     reportFhirPathError({ source: 'evaluateFhirpathExpressionToGetString', expression, linkId, error });
     return [];

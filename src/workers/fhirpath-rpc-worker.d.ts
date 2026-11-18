@@ -87,6 +87,7 @@ export interface RunCalculatorsParams {
   questionnaireResponse: QuestionnaireResponse;
   questionnaire: Questionnaire;
   options?: FhirPathCalculationOptions;
+  questionnaireKey?: number;
 }
 export type RunCalculatorsResult = AnswerPad;
 
