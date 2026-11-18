@@ -23,6 +23,13 @@
   Copied occurrences cannot be added or deleted by the user, and a copied question that `enableWhen` turns off gets no answer. Copy
   expressions that return values instead of response items work as before.
 
+## 26.0.6
+
+- Fix: a date limit (`sdf-minvalue` or `sdf-maxvalue`) whose FHIRPath expression gives no date no longer crashes the whole form with
+  «RangeError: Invalid time value». An empty result, or a result that is not a date, now means that the field has no limit. A result that is
+  not a date, and an expression that fails, are reported through the FHIRPath error handler (`setFhirPathErrorHandler`). Note that the
+  expression is evaluated against the question, not the response, so an expression that points at another answer gives no limit.
+
 ## 26.0.5
 
 - Fix: forms with many calculated or copy expressions no longer get slow as they are filled in. The result of an expression is reused when

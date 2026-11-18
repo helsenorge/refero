@@ -602,7 +602,8 @@ export class FhirPathExtensions {
     response: QuestionnaireResponse,
     envVars: FhirPathEnvVars = {}
   ): EvaluatedExpression {
-    // Inside a copied row the result depends on the row (%row), which the signature does not cover.
+    // Not remembered inside a copied row: there the answers keep the nested items of the occurrence being evaluated,
+    // not those of the first occurrence in the response, so a result from outside the row does not fit.
     if (Object.keys(envVars).length > 0) {
       return this.computeExpression(qItem, expressionExtension, response, envVars);
     }
