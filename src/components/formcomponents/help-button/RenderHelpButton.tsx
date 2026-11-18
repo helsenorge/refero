@@ -29,7 +29,7 @@ export const RenderHelpButton = ({ item, setIsHelpVisible, isHelpVisible, ariaLa
 
   if (onRequestHelpButton) {
     return (
-      <HelpButton item={helpItem} padding={padding} callback={setIsHelpVisible} ariaLabeledBy={ariaLabeledBy}>
+      <HelpButton item={helpItem} padding={padding} callback={setIsHelpVisible} ariaLabeledBy={ariaLabeledBy} hasCustomChildren>
         {onRequestHelpButton(item, helpItem, helpItemType, getText(helpItem), isHelpVisible)}
       </HelpButton>
     );

@@ -4,8 +4,8 @@
 .referoLabel_label_wrapper {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
-  align-items: flex-end;
+  gap: 0.5rem;
+  align-items: center;
 }
 .referoLabel_safetext {
   font-size: 1.125rem;
@@ -17,13 +17,15 @@
 }
 .referoLabel_extraLabel_and_helpButton_wrapper {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  gap: 0.5rem;
 }
 .referoLabel_extraLabel {
   font-size: 1.125rem;
-  margin-right: 0.5rem;
   line-height: 1.75rem;
+  margin-inline-start: -0.25rem;
 }
 .referoLabel_helpButton {
-  margin-left: 0.5rem;
+  display: flex;
+  align-items: center;
 }
