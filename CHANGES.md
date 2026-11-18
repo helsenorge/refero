@@ -1,7 +1,3 @@
-## 26.0.7
-
-- Fix: a required slider that the user has set no longer shows «Du må fylle ut dette feltet» when the user moves on within 300 ms, for example by setting the next slider. The value was handed to validation as empty until the slider had registered as selected, 300 ms after the change; it now counts from the moment the user moves the slider.
-
 ## 26.0.6
 
 - Fix: a date limit (`sdf-minvalue` or `sdf-maxvalue`) whose FHIRPath expression gives no date no longer crashes the whole form with
