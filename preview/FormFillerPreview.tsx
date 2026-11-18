@@ -28,7 +28,8 @@ import { ImageChoicePlugin } from './external-components/ImageChoicePlugin';
 import { PillChoicePlugin } from './external-components/PillChoicePlugin';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/q.json';
+import defaultSkjema from './skjema/q.json';
+import { buildPerfQuestionnaire } from './skjema/perfForm';
 import ReferoContainer from '../src/components/index';
 import qr from './skjema/responses/qr.json';
 import valueSet from '../src/constants/valuesets';
@@ -194,6 +195,12 @@ function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | nu
 const FormFillerPreview = (): React.JSX.Element => {
   const [lang, setLang] = useState<number>(0);
   const [store] = useState(() => reduxStore());
+  // ?q=perf&n=200 loads a performance test form with n calculations (&rows=1 adds an item copy gtable).
+  const previewParams = new URLSearchParams(window.location.search);
+  const skjema =
+    previewParams.get('q') === 'perf'
+      ? buildPerfQuestionnaire(Number(previewParams.get('n') ?? 100), previewParams.get('rows') === '1')
+      : defaultSkjema;
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle | Questionnaire;
   const mainQuestionnaire = getQuestionnaireFromBubndle(parsedQuestionnaire, 0);
 

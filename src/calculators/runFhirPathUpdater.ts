@@ -19,6 +19,18 @@ type InputParams = {
   actionRequester?: ActionRequester;
 };
 
+/**
+ * Runs a calculation in the worker when a form is loaded and throws the result away. The worker keeps the
+ * engine and the results it can reuse, so the first change the user makes costs as little as the next ones
+ * instead of a full calculation. Skipped without a worker, where it would block the page.
+ */
+export function warmUpFhirPathCalculations(questionnaire: Questionnaire, questionnaireResponse: QuestionnaireResponse): void {
+  if (typeof window === 'undefined' || !window.Worker) return;
+  postTaskToFhirPathWorker({ questionnaire, questionnaireResponse, options: resolveFhirPathCalculationOptions() }).catch(() => {
+    // Only a head start; the calculation on the first change does the work if this fails.
+  });
+}
+
 export const runFhirPathQrUpdater = async ({
   questionnaire,
   questionnaireResponse,

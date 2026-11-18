@@ -7,6 +7,10 @@
   Copied occurrences cannot be added or deleted by the user, and a copied question that `enableWhen` turns off gets no answer. Copy
   expressions that return values instead of response items work as before.
 
+## 26.0.5
+
+- Fix: forms with many calculated or copy expressions no longer get slow as they are filled in. The result of an expression is reused when the answers it reads have not changed, and the FHIRPath setup for a form is made once instead of on every calculation. The answers are the same as before.
+
 ## 26.0.4
 
 - Fix: a display item with an expression (cqf-expression or sdf-calculatedExpression) no longer gets an answer in the QuestionnaireResponse. In FHIR R4 a display item cannot have an answer, so its expression is now ignored.

@@ -5,7 +5,9 @@ import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } 
 import questionnaireJson from './__data__/itemCopy/q.json';
 
 import { generateQuestionnaireResponse } from '@/actions/generateQuestionnaireResponse';
-import { runCalculators } from '@/workers/helpers';
+import { FhirPathExtensions } from '@/util/FhirPathExtensions';
+import { resolveFhirPathCalculationOptions } from '@/util/fhirPathOptions';
+import { calculateWithEngine, runCalculators } from '@/workers/helpers';
 
 const questionnaire = questionnaireJson as unknown as Questionnaire;
 
@@ -139,7 +141,20 @@ describe('Item copy (cqf-expression selecting items)', () => {
     expect(occurrences('s1')).toBe(1);
     expect(occurrences('s3')).toBe(0);
     // Order follows the questionnaire.
-    expect(generated?.item?.map(item => item.linkId)).toEqual(['kilde', 's1', 's2', 's4', 'kilde2', 's5', 's6', 's7', 'kilde3', 's8', 's9', 'vis']);
+    expect(generated?.item?.map(item => item.linkId)).toEqual([
+      'kilde',
+      's1',
+      's2',
+      's4',
+      'kilde2',
+      's5',
+      's6',
+      's7',
+      'kilde3',
+      's8',
+      's9',
+      'vis',
+    ]);
   });
 
   it('leaves value copies as they are today', () => {
@@ -147,5 +162,30 @@ describe('Item copy (cqf-expression selecting items)', () => {
     expect(answerPad['s4.text']).toEqual([{ valueString: 'a' }, { valueString: 'b' }, { valueString: 'c' }]);
     expect(answerPad['s4.age']).toEqual([{ valueInteger: 12 }, { valueInteger: 42 }]);
     expect(answerPad['s7']).toEqual([{ valueInteger: 1 }, { valueInteger: 3 }, { valueInteger: 4 }]);
+  });
+});
+
+// runCalculators keeps the engine for a questionnaire between calculations, and the engine reuses results. A kept
+// engine must give what a new one gives.
+describe('Item copy with the engine kept between calculations', () => {
+  const fresh = (response: QuestionnaireResponse): ReturnType<typeof runCalculators> => {
+    const options = resolveFhirPathCalculationOptions();
+    return calculateWithEngine(new FhirPathExtensions(structuredClone(questionnaire), options), response, options);
+  };
+
+  it('copies the rows again when the source rows change', () => {
+    runCalculators({ questionnaire, questionnaireResponse: responseWithGaps() });
+    const changed = responseWithGaps();
+    changed.item![0].item = [urin('a', 13), urin('x', 7)];
+    expect(runCalculators({ questionnaire, questionnaireResponse: structuredClone(changed) })).toEqual(fresh(structuredClone(changed)));
+  });
+
+  it('treats a repeating question as a value copy again when its expression no longer selects items', () => {
+    runCalculators({ questionnaire, questionnaireResponse: responseWithGaps() });
+    const changed = responseWithGaps();
+    changed.item![5] = { linkId: 'kilde2' };
+    const result = runCalculators({ questionnaire, questionnaireResponse: structuredClone(changed) });
+    expect(result.itemCopies.map(copy => copy.linkId)).not.toContain('s5');
+    expect(result).toEqual(fresh(structuredClone(changed)));
   });
 });

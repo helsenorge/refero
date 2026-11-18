@@ -11,6 +11,14 @@ import type {
 } from 'fhir/r4';
 
 import {
+  ALL_DEPENDENCIES,
+  analyzeExpression,
+  resolveLinkIdFilters,
+  ResponseIndex,
+  type ExpressionAnalysis,
+  type ExpressionDependencies,
+} from './expressionDependencies';
+import {
   getAnyCopyExtension,
   getCalculatedExpressionExtension,
   getCopyExpressionText,
@@ -19,7 +27,7 @@ import {
   isItemCopyGroup,
   isItemCopyTarget,
 } from './extension';
-import { evaluateFhirpathExpressionToGetString, type FhirPathEnvVars } from './fhirpathHelper';
+import { evaluateFhirpathExpressionToGetString, evaluateOnPrivateCopy, type FhirPathEnvVars } from './fhirpathHelper';
 import {
   isNumericResult,
   resolveFhirPathCalculationOptions,
@@ -199,6 +207,19 @@ export function withItemCopiesApplied(questionnaire: Questionnaire, response: Qu
   return result;
 }
 
+const MEMO_ENTRIES_PER_ITEM = 3;
+
+interface MemoEntry {
+  extension: Extension;
+  signature: string;
+  result: EvaluatedExpression;
+}
+
+interface EvaluatedExpression {
+  answers: QuestionnaireResponseItemAnswer[] | null;
+  omitted: boolean;
+}
+
 export enum FhirPathItemType {
   QUESTION_FHIRPATH_SCORE = 'QUESTION_FHIRPATH_SCORE',
   QUESTION_FHIRPATH_COPY = 'QUESTION_FHIRPATH_COPY',
@@ -229,11 +250,24 @@ export class FhirPathExtensions {
    * repeating questions whose copy expression turned out to select items (known after evaluation).
    */
   private itemCopyTargets: Set<string> = new Set<string>();
+  /** The copied groups, known from the questionnaire; itemCopyTargets starts from these on every evaluation. */
+  private questionnaireItemCopyTargets: Set<string> = new Set<string>();
+  /**
+   * Recent results per linkId, with the expression and the signature of the response parts they were computed
+   * from. A result is reused when the signature matches; see expressionDependencies.
+   */
+  private memo = new Map<string, MemoEntry[]>();
+  private analyses = new Map<Extension, { analysis: ExpressionAnalysis; dependencies?: string[] }>();
+  private questionnaireLinkIds?: Set<string>;
+  private responseIndex?: { response: QuestionnaireResponse; index: ResponseIndex };
+  /** The private copy expressions are evaluated against, made once per response instead of once per expression. */
+  private evaluationCopy?: { source: QuestionnaireResponse; copy: QuestionnaireResponse };
 
   constructor(questionnaire: Questionnaire, options?: FhirPathCalculationOptions) {
     this.questionnaire = questionnaire;
     this.options = resolveFhirPathCalculationOptions(options);
     this.initializeCaches(questionnaire);
+    this.questionnaireItemCopyTargets = new Set(this.itemCopyTargets);
   }
 
   private initializeCaches(questionnaire: Questionnaire): void {
@@ -346,16 +380,40 @@ export class FhirPathExtensions {
     return { valueInteger: isNumeric ? Math.round(Number(value)) : 0 };
   }
   public evaluateAllExpressions(questionnaireResponse: QuestionnaireResponse): QuestionnaireResponse {
-    return this.evaluateCalculatedExpressions(questionnaireResponse);
+    // The engine is kept between calculations, so a repeating question whose copy selected items last time but
+    // not now must not stay a copy target.
+    this.itemCopyTargets = new Set(this.questionnaireItemCopyTargets);
+    try {
+      return this.evaluateCalculatedExpressions(questionnaireResponse);
+    } finally {
+      this.evaluationCopy = undefined;
+      this.responseIndex = undefined;
+    }
+  }
+
+  /**
+   * Dropped at the end of every public call, so a response that is changed in place between calls is never
+   * evaluated from a stale copy.
+   */
+  private getEvaluationCopy(response: QuestionnaireResponse): QuestionnaireResponse {
+    if (this.evaluationCopy?.source !== response) {
+      this.evaluationCopy = { source: response, copy: structuredClone(response) };
+    }
+    return this.evaluationCopy.copy;
   }
 
   public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
     const answerPad: AnswerPad = {};
-    for (const [key, value] of this.fhirScoreCache) {
-      const expressionExtension = this.getExpressionExtension(value, 'calculated');
-      if (!expressionExtension) continue;
-      if (this.itemCopyTargets.has(key)) continue; // its occurrences are returned by collectItemCopies
-      answerPad[key] = this.evaluateExpression(value, expressionExtension, questionnaireResponse);
+    try {
+      for (const [key, value] of this.fhirScoreCache) {
+        const expressionExtension = this.getExpressionExtension(value, 'calculated');
+        if (!expressionExtension) continue;
+        if (this.itemCopyTargets.has(key)) continue; // its occurrences are returned by collectItemCopies
+        answerPad[key] = this.evaluateExpressionDetailed(value, expressionExtension, questionnaireResponse).answers;
+      }
+    } finally {
+      this.evaluationCopy = undefined;
+      this.responseIndex = undefined;
     }
     return answerPad;
   }
@@ -484,25 +542,105 @@ export class FhirPathExtensions {
     };
   }
 
-  private evaluateExpression = (
+  private getResponseIndex(response: QuestionnaireResponse): ResponseIndex {
+    if (this.responseIndex?.response !== response) {
+      this.responseIndex = { response, index: new ResponseIndex(response) };
+    }
+    return this.responseIndex.index;
+  }
+
+  private getQuestionnaireLinkIds(): Set<string> {
+    if (!this.questionnaireLinkIds) {
+      const linkIds = new Set<string>();
+      const walk = (items: QuestionnaireItem[] | undefined): void => {
+        for (const item of items ?? []) {
+          linkIds.add(item.linkId);
+          walk(item.item);
+        }
+      };
+      walk(this.questionnaire.item);
+      this.questionnaireLinkIds = linkIds;
+    }
+    return this.questionnaireLinkIds;
+  }
+
+  /**
+   * The linkIds an expression reads. Filters are resolved once against the questionnaire's linkIds; a response
+   * that holds linkIds the questionnaire does not have gets those checked as well.
+   */
+  private getDependencies(expressionExtension: Extension, index: ResponseIndex): ExpressionDependencies {
+    let entry = this.analyses.get(expressionExtension);
+    if (!entry) {
+      entry = { analysis: expressionExtension.valueString ? analyzeExpression(expressionExtension.valueString) : ALL_DEPENDENCIES };
+      this.analyses.set(expressionExtension, entry);
+    }
+    const { analysis } = entry;
+    if (analysis === ALL_DEPENDENCIES) {
+      return ALL_DEPENDENCIES;
+    }
+    const known = this.getQuestionnaireLinkIds();
+    entry.dependencies ??= resolveLinkIdFilters(analysis, known);
+    const unknown = index.unknownLinkIds(known);
+    return unknown.length === 0
+      ? entry.dependencies
+      : [...new Set([...entry.dependencies, ...resolveLinkIdFilters(analysis, unknown)])].sort();
+  }
+
+  /**
+   * The result of an expression, reused when the parts of the response it depends on are the same as for an
+   * earlier result. The result does not depend on which occurrence of the item is calculated, so items that
+   * occur many times are computed once.
+   *
+   * A few results are kept per item: a calculation evaluates the response and then the updated response, and
+   * when an expression only reads answers (not other calculations) both see the same parts, so the second pass
+   * reuses the first. Expressions that read other calculations see different parts in the two passes; keeping
+   * more than one result stops the passes from evicting each other.
+   */
+  private evaluateExpressionDetailed(
     qItem: QuestionnaireItem,
     expressionExtension: Extension,
-    response: QuestionnaireResponse
-  ): QuestionnaireResponseItemAnswer[] | null => this.evaluateExpressionDetailed(qItem, expressionExtension, response).answers;
+    response: QuestionnaireResponse,
+    envVars: FhirPathEnvVars = {}
+  ): EvaluatedExpression {
+    // Inside a copied row the result depends on the row (%row), which the signature does not cover.
+    if (Object.keys(envVars).length > 0) {
+      return this.computeExpression(qItem, expressionExtension, response, envVars);
+    }
+    const index = this.getResponseIndex(response);
+    const dependencies = this.getDependencies(expressionExtension, index);
+    if (dependencies === ALL_DEPENDENCIES) {
+      return this.computeExpression(qItem, expressionExtension, response);
+    }
+    const signature = index.signature(dependencies, qItem.linkId);
+    const entries = this.memo.get(qItem.linkId) ?? [];
+    const remembered = entries.find(entry => entry.extension === expressionExtension && entry.signature === signature);
+    if (remembered) {
+      return remembered.result;
+    }
+    const result = this.computeExpression(qItem, expressionExtension, response);
+    this.memo.set(qItem.linkId, [{ extension: expressionExtension, signature, result }, ...entries].slice(0, MEMO_ENTRIES_PER_ITEM));
+    return result;
+  }
 
   /**
    * omitted is true when omitNonNumericResults dropped every result of the expression.
    * When the expression selects QR items rather than values, the answers are the selected items' answers.
    */
-  private evaluateExpressionDetailed = (
+  private computeExpression = (
     qItem: QuestionnaireItem,
     expressionExtension: Extension,
     response: QuestionnaireResponse,
     envVars: FhirPathEnvVars = {}
-  ): { answers: QuestionnaireResponseItemAnswer[] | null; omitted: boolean } => {
-    if (this.getExpressionText(expressionExtension)) {
+  ): EvaluatedExpression => {
+    const expression = this.getExpressionText(expressionExtension);
+    if (expression) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result: any[] = this.evaluateRaw(qItem, expressionExtension, response, envVars);
+      const result: any[] = evaluateOnPrivateCopy(
+        expression,
+        this.getEvaluationCopy(response),
+        { ...this.getEnvVars(), ...envVars },
+        qItem.linkId
+      );
       if (isResponseItemList(result)) {
         const answers = toPlainItems(result).flatMap(answersWithoutNestedItems);
         return { answers: answers.length > 0 ? answers : null, omitted: false };
