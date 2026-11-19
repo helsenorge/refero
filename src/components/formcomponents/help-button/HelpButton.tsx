@@ -35,7 +35,7 @@ const HelpButton = ({ item, padding, ariaLabeledBy, hasCustomChildren, children,
     <button
       type="button"
       data-testid={testId}
-      className={`${styles.helpButton_default} ${padding && 'padding'}`}
+      className={`page_refero__helpButton ${styles.helpButton_default} ${padding && 'padding'}`}
       onClick={handleToggle}
       aria-labelledby={ariaLabeledBy}
       aria-expanded={isOpen}
