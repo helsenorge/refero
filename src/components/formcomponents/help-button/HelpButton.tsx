@@ -25,7 +25,7 @@ const HelpButton = ({ item, padding, ariaLabeledBy, hasCustomChildren, children,
 
   if (hasCustomChildren) {
     return (
-      <span data-testid={testId} className={`page_refero__helpButton ${padding && 'padding'}`} onClick={handleToggle}>
+      <span role="presentation" data-testid={testId} className={`page_refero__helpButton ${padding && 'padding'}`} onClick={handleToggle}>
         {children}
       </span>
     );
