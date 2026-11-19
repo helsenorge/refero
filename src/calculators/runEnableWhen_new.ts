@@ -1,18 +1,12 @@
 import type { RunEnableWhenInput, RunEnableWhenResult } from './types';
-import type {
-  QuestionnaireItem,
-  QuestionnaireItemEnableWhen,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-} from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { type ClearAction, deleteRepeatItemAction, resetAnswerValueAction } from '@/actions/newValue';
-import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { isRepeat } from '@/util';
 import { createQuestionnaireResponseAnswer } from '@/util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '@/util/extension';
-import { copyPath, enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, type Path } from '@/util/refero-core';
+import { isEnableWhenEnabled } from '@/util/isEnableWhenEnabled';
+import { copyPath, type Path } from '@/util/refero-core';
 import { calculateEnableWhen } from '@/workers/fhirpath-rpc';
 export async function startEnableWhenCalculation({
   questionnaire,
@@ -225,35 +219,6 @@ const getResponseItemsWithLinkId = (linkId: string, items: QuestionnaireResponse
   return result;
 };
 
-function isEnableWhenEnabled(
-  enableWhen: QuestionnaireItemEnableWhen[],
-  enableBehavior: string | undefined,
-  path: Path[],
-  responseItems: QuestionnaireResponseItem[] | undefined
-): boolean {
-  const enableMatches: boolean[] = [];
-  enableWhen.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
-    const enableWhenQuestion = enableWhen.question;
-    for (let i = 0; responseItems && i < responseItems.length; i++) {
-      let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
-      if (!isInGroupContext(path, responseItem, responseItems)) {
-        continue;
-      }
-      if (responseItem.linkId !== enableWhen.question) {
-        responseItem = getQuestionnaireResponseItemWithLinkid(enableWhenQuestion, responseItems[i], path);
-      }
-      if (!responseItem) {
-        continue;
-      }
-
-      const matchesAnswer = enableWhenMatchesAnswer(enableWhen, responseItem.answer);
-      enableMatches.push(matchesAnswer);
-    }
-  });
-  return enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL
-    ? enableMatches.every(x => x === true)
-    : enableMatches.some(x => x === true);
-}
 export function createPathForItem(path?: Path[] | undefined, item?: QuestionnaireItem, index?: number | undefined): Path[] {
   let newPath: Path[];
   if (path === null || path === undefined) {

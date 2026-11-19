@@ -1,13 +1,12 @@
 import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire, Bundle } from 'fhir/r4';
 
 import { createQuestionnaireResponseAnswers } from '../util/createQuestionnaireResponseAnswer';
-import { getCalculatedExpressionExtension, getCopyExtension, getMinOccursExtensionValue } from '../util/extension';
+import { getMinOccursExtensionValue } from '../util/extension';
 
+import { applyCalculatedAnswers } from '@/calculators/calculatedAnswers';
 import Constants from '@/constants/';
 import ItemType from '@/constants/itemType';
 import StatusConstants from '@/constants/status';
-import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
-import { isNumericResult, resolveFhirPathCalculationOptions } from '@/util/fhirPathOptions';
 import { isHelpItem } from '@/util/help';
 
 const shouldNotAddItemToResponse = (item: QuestionnaireItem): boolean => {
@@ -114,6 +113,10 @@ export function createQuestionnaireResponseItem(item: QuestionnaireItem): Questi
 
   return responseItem;
 }
+/**
+ * Calculates every copy and calculated expression in the response and writes the answers, the same way the form does
+ * after the user changes an answer. Changes and returns the given response.
+ */
 export function evaluateCalculatedExpressions(
   questionnaire: Questionnaire | Bundle,
   response: QuestionnaireResponse,
@@ -123,84 +126,5 @@ export function evaluateCalculatedExpressions(
     questionnaire.resourceType === 'Bundle'
       ? (questionnaire?.entry?.[bundleIndex ?? 0].resource as Questionnaire | undefined)
       : questionnaire;
-  // Cloned because fhirpath.js attaches metadata to objects it returns, and q may be frozen.
-  const envVars = q ? { questionnaire: structuredClone(q) } : undefined;
-  const options = resolveFhirPathCalculationOptions();
-
-  function traverseItems(qItems: QuestionnaireItem[], qrItems: QuestionnaireResponseItem[]): void {
-    qItems
-      .filter(x => !!x)
-      .forEach((qItem, index) => {
-        const qrItem = qrItems[index];
-        if (!qrItem) {
-          return;
-        }
-        const expressionToEvaluate =
-          options.expressionPriority === 'calculated-first'
-            ? (getCalculatedExpressionExtension(qItem) ?? getCopyExtension(qItem))
-            : (getCopyExtension(qItem) ?? getCalculatedExpressionExtension(qItem));
-        // FHIR R4: a display item cannot have an answer, so an expression on it is never evaluated.
-        if (qItem.type !== ItemType.DISPLAY && expressionToEvaluate && expressionToEvaluate.valueString) {
-          const result = evaluateFhirpathExpressionToGetString(expressionToEvaluate, response, true, envVars, qItem.linkId);
-          const isNumericItem = qItem.type === ItemType.DECIMAL || qItem.type === ItemType.INTEGER;
-          const omitResult = options.omitNonNumericResults && isNumericItem && !isNumericResult(result[0]);
-          if (result.length > 0 && !omitResult) {
-            const calculatedValue = result[0];
-            const answer = qrItem.answer ? qrItem.answer[0] : {};
-            switch (qItem.type) {
-              case ItemType.BOOLEAN:
-                answer.valueBoolean = Boolean(calculatedValue);
-                break;
-              case ItemType.DECIMAL:
-                answer.valueDecimal = Number(calculatedValue);
-                break;
-              case ItemType.INTEGER:
-                answer.valueInteger = Number(calculatedValue);
-                break;
-              case ItemType.QUANTITY:
-                answer.valueQuantity = calculatedValue;
-                break;
-              case ItemType.DATE:
-                answer.valueDate = String(calculatedValue);
-                break;
-              case ItemType.DATETIME:
-                answer.valueDateTime = String(calculatedValue);
-                break;
-              case ItemType.TIME:
-                answer.valueTime = String(calculatedValue);
-                break;
-              case ItemType.TEXT:
-              case ItemType.STRING:
-                answer.valueString = String(calculatedValue);
-                break;
-              case ItemType.ATTATCHMENT:
-                answer.valueAttachment = calculatedValue;
-                break;
-              case ItemType.CHOICE:
-              case ItemType.OPENCHOICE:
-                answer.valueCoding = calculatedValue;
-                break;
-              default:
-                if (typeof answer === 'string') {
-                  (answer as { valueString: string }).valueString = calculatedValue;
-                } else {
-                  answer.valueCoding = calculatedValue;
-                }
-                break;
-            }
-            qrItem.answer = [answer];
-          }
-        }
-
-        // Recursively process child items
-        if (qrItem && qItem.item && qrItem.item) {
-          traverseItems(qItem.item, qrItem.item);
-        }
-      });
-  }
-  if (q && q?.item && response?.item) {
-    traverseItems(q.item, response.item);
-  }
-
-  return response; // Return the updated response
+  return q ? applyCalculatedAnswers(q, response) : response;
 }
