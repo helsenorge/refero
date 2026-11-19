@@ -18,6 +18,8 @@
 .referoLabel_extraLabel_and_helpButton_wrapper {
   display: flex;
   align-items: center;
+  align-self: flex-start;
+  height: 1.75rem; /* same as the label text line-height, so it centers on the label text and not on the required/optional tag below it */
   gap: 0.5rem;
 }
 .referoLabel_extraLabel {
