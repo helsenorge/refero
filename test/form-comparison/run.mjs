@@ -1,12 +1,15 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-// Records what the calculations give for a folder of forms, on this working tree or on any git ref, and
-// compares two recordings. See README.md.
+// Records what refero does with a folder of forms, on this working tree or on any git ref, and compares two
+// recordings: `record`/`compare` through the store, `browser`/`compare-browser` in a real browser. See README.md.
 import { execFileSync, spawn } from 'node:child_process';
 import fs from 'node:fs';
+import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import { fillForm } from './browser/fill.mjs';
 
 const here = fs.realpathSync.native(path.dirname(fileURLToPath(import.meta.url)));
 // realpath gives the drive letter the casing vitest expects; a mismatch loads vitest twice.
@@ -20,7 +23,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (!arg.startsWith('--')) positional.push(arg);
-    else if (['only-expressions', 'all-languages', 'dump'].includes(arg.slice(2))) flags[arg.slice(2)] = true;
+    else if (['only-expressions', 'all-languages', 'dump', 'headed'].includes(arg.slice(2))) flags[arg.slice(2)] = true;
     else flags[arg.slice(2)] = argv[++i];
   }
   return { flags, positional };
@@ -31,6 +34,9 @@ function usage() {
   node test/form-comparison/run.mjs record --label <name> [--ref <git ref>] [--forms <folder>]
        [--filter <text>] [--seeds 1] [--steps 25] [--jobs <n>] [--only-expressions] [--all-languages] [--dump]
   node test/form-comparison/run.mjs compare <label> <label>
+  node test/form-comparison/run.mjs browser --label <name> [--ref <git ref>] [--forms <folder>] [--filter <text>]
+       [--runs 1] [--max-actions 150] [--headed]
+  node test/form-comparison/run.mjs compare-browser <label> <label>
 
   --ref      record that commit, branch or tag instead of the working tree
   --forms    folder with Questionnaire or Bundle json files (default: test/form-comparison/forms)
@@ -40,7 +46,10 @@ function usage() {
   --jobs     processes to share the forms between (default: half the cores, at most 8)
   --only-expressions  only forms with calculated or copy expressions
   --all-languages     every Questionnaire in a Bundle, not only the first
-  --dump     keep the whole response after every step in the recording (use with --filter)`);
+  --dump     keep the whole response after every step in the recording (use with --filter)
+  --runs     browser: times each form is filled in; the comparison uses the median
+  --max-actions  browser: actions per form at most
+  --headed   browser: show the browser window`);
 }
 
 const git = (args, cwd = repo) => execFileSync('git', args, { cwd, encoding: 'utf8' }).trim();
@@ -74,6 +83,64 @@ async function runVitest(cwd, env, jobs) {
   return Math.max(...statuses);
 }
 
+/**
+ * Runs `fn(dir, commit)` on the working tree, or on `ref` checked out next to the repository in a temporary
+ * worktree that borrows node_modules. This folder is copied in, so both sides are driven by exactly the same
+ * recorder and filler.
+ */
+async function withCheckout(ref, fn) {
+  if (!ref) {
+    const dirty = git(['status', '--porcelain']) ? ' + uncommitted changes' : '';
+    return fn(repo, git(['rev-parse', '--short', 'HEAD']) + dirty);
+  }
+  const worktree = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'refero-form-comparison-')));
+  const modulesLink = path.join(worktree, 'node_modules');
+  try {
+    git(['worktree', 'add', '--detach', worktree, ref]);
+    fs.symlinkSync(path.join(repo, 'node_modules'), modulesLink, 'junction');
+    const target = path.join(worktree, 'test', 'form-comparison');
+    // The recorder and the browser page, not the forms (read from here) or what was recorded or built.
+    fs.cpSync(here, target, { recursive: true, filter: source => !['forms', 'results', 'dist'].includes(path.basename(source)) });
+    return await fn(worktree, git(['rev-parse', '--short', 'HEAD'], worktree));
+  } finally {
+    // The link must go first: removing the worktree while it is there would delete the real node_modules.
+    if (fs.existsSync(modulesLink)) {
+      fs.rmdirSync(modulesLink);
+    }
+    if (fs.existsSync(modulesLink)) {
+      console.error(`Could not remove the node_modules link in ${worktree}; the worktree is left for you to remove by hand.`);
+    } else {
+      try {
+        git(['worktree', 'remove', '--force', worktree]);
+      } catch (error) {
+        console.error(`Could not remove the worktree ${worktree}: ${error.message}`);
+      }
+    }
+  }
+}
+
+function listForms(dir, filter) {
+  const list = folder =>
+    fs
+      .readdirSync(folder, { withFileTypes: true })
+      .flatMap(entry =>
+        entry.isDirectory()
+          ? list(path.join(folder, entry.name))
+          : entry.name.toLowerCase().endsWith('.json')
+            ? [path.join(folder, entry.name)]
+            : []
+      )
+      .sort();
+  return list(dir)
+    .map(file => ({ file, name: path.relative(dir, file).replace(/\\/g, '/') }))
+    .filter(({ name }) => !filter || name.toLowerCase().includes(filter.toLowerCase().replace(/\\/g, '/')));
+}
+
+function readJson(file) {
+  const text = fs.readFileSync(file, 'utf8');
+  return JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
+}
+
 async function record(flags) {
   const label = flags.label ?? (flags.ref ? flags.ref.replace(/[^\w.-]+/g, '_') : 'working');
   // The forms of the working tree are used for a ref too, so both sides get the same ones.
@@ -100,40 +167,7 @@ async function record(flags) {
   // Each process holds a form at a time in memory; half the cores leaves room for the rest of the machine.
   const jobs = Math.max(1, Number(flags.jobs ?? Math.min(8, Math.floor(os.availableParallelism() / 2))));
 
-  let status;
-  if (!flags.ref) {
-    const dirty = git(['status', '--porcelain']) ? ' + uncommitted changes' : '';
-    status = await runVitest(repo, { ...env, FORM_COMPARISON_COMMIT: git(['rev-parse', '--short', 'HEAD']) + dirty }, jobs);
-  } else {
-    // The ref is checked out next to the repository in a temporary worktree that borrows node_modules. The
-    // recorder is copied in, so both sides are driven by exactly the same edits.
-    const worktree = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'refero-form-comparison-')));
-    const modulesLink = path.join(worktree, 'node_modules');
-    try {
-      git(['worktree', 'add', '--detach', worktree, flags.ref]);
-      fs.symlinkSync(path.join(repo, 'node_modules'), modulesLink, 'junction');
-      const target = path.join(worktree, 'test', 'form-comparison');
-      fs.mkdirSync(target, { recursive: true });
-      for (const file of fs.readdirSync(here, { withFileTypes: true })) {
-        if (file.isFile()) fs.copyFileSync(path.join(here, file.name), path.join(target, file.name));
-      }
-      status = await runVitest(worktree, { ...env, FORM_COMPARISON_COMMIT: git(['rev-parse', '--short', 'HEAD'], worktree) }, jobs);
-    } finally {
-      // The link must go first: removing the worktree while it is there would delete the real node_modules.
-      if (fs.existsSync(modulesLink)) {
-        fs.rmdirSync(modulesLink);
-      }
-      if (fs.existsSync(modulesLink)) {
-        console.error(`Could not remove the node_modules link in ${worktree}; the worktree is left for you to remove by hand.`);
-      } else {
-        try {
-          git(['worktree', 'remove', '--force', worktree]);
-        } catch (error) {
-          console.error(`Could not remove the worktree ${worktree}: ${error.message}`);
-        }
-      }
-    }
-  }
+  const status = await withCheckout(flags.ref, (dir, commit) => runVitest(dir, { ...env, FORM_COMPARISON_COMMIT: commit }, jobs));
   if (fs.existsSync(out)) {
     const recorded = JSON.parse(fs.readFileSync(out, 'utf8'));
     console.log(`\nRecorded ${Object.keys(recorded.forms).length} forms as "${label}" (${recorded.meta.commit}): ${out}`);
@@ -267,10 +301,174 @@ function compare([labelA, labelB]) {
   return 0;
 }
 
+/** Serves a folder over http on a free port. */
+function serve(dir) {
+  const types = {
+    '.html': 'text/html',
+    '.js': 'application/javascript',
+    '.css': 'text/css',
+    '.json': 'application/json',
+    '.svg': 'image/svg+xml',
+  };
+  return new Promise(resolve => {
+    const server = http.createServer((request, response) => {
+      const url = decodeURIComponent((request.url ?? '/').split('?')[0]);
+      let file = path.join(dir, url === '/' ? 'index.html' : url);
+      if (!file.startsWith(dir) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(dir, 'index.html');
+      response.writeHead(200, { 'Content-Type': types[path.extname(file)] ?? 'application/octet-stream' });
+      fs.createReadStream(file).pipe(response);
+    });
+    server.listen(0, '127.0.0.1', () => resolve(server));
+  });
+}
+
+/** Playwright's own Chromium when it is installed (npx playwright-core install chromium), otherwise Chrome. */
+async function launchBrowser(headed) {
+  const { chromium } = await import('playwright-core');
+  const executablePath = process.env.BROWSER_BENCH_CHROME;
+  const own = !executablePath && fs.existsSync(chromium.executablePath());
+  return chromium.launch({ headless: !headed, ...(executablePath ? { executablePath } : own ? {} : { channel: 'chrome' }) });
+}
+
+/** Builds the page for production, fills in every form in a browser and writes results/<label>.browser.json. */
+async function browser(flags) {
+  const label = flags.label ?? (flags.ref ? flags.ref.replace(/[^\w.-]+/g, '_') : 'working');
+  const formsFolder = flags.forms ?? process.env.REFERO_FORMS_DIR ?? formsDir;
+  const forms = listForms(formsFolder, flags.filter);
+  if (forms.length === 0) {
+    console.error(`No forms in ${formsFolder}${flags.filter ? ` matching "${flags.filter}"` : ''}`);
+    return 1;
+  }
+  const runs = Number(flags.runs ?? 1);
+  const options = { maxActions: Number(flags['max-actions'] ?? 150), maxSteps: Number(flags['max-steps'] ?? 40) };
+  const out = path.join(resultsDir, `${label}.browser.json`);
+  const result = { meta: { label, ref: flags.ref ?? 'working tree', runs, ...options, filter: flags.filter ?? '' }, forms: {} };
+
+  const status = await withCheckout(flags.ref, async (dir, commit) => {
+    result.meta.commit = commit;
+    // A production build: React's development build makes the page several times slower than users get it.
+    const build = fs.realpathSync.native(fs.mkdtempSync(path.join(os.tmpdir(), 'refero-browser-bench-')));
+    try {
+      console.log(`Building the page (${commit}) …`);
+      const vite = path.join(dir, 'node_modules', 'vite', 'bin', 'vite.js');
+      execFileSync(process.execPath, [vite, 'build', '--config', 'test/form-comparison/browser/vite.config.ts', '--logLevel', 'warn'], {
+        cwd: dir,
+        env: { ...process.env, NODE_ENV: 'production', BROWSER_BENCH_OUT: build },
+        stdio: 'inherit',
+      });
+      const server = await serve(build);
+      const browserInstance = await launchBrowser(flags.headed);
+      try {
+        const url = `http://127.0.0.1:${server.address().port}/`;
+        for (const { file, name } of forms) {
+          const form = readJson(file);
+          result.forms[name] = [];
+          for (let run = 0; run < runs; run++) {
+            const started = Date.now();
+            try {
+              const measured = await fillForm(browserInstance, url, form, options);
+              result.forms[name].push(measured);
+              console.log(
+                `${name} run ${run + 1}: ${measured.actions} actions, input blocked ${measured.totalBlockingTimeMs} ms ` +
+                  `(longest ${measured.longestTaskMs} ms), response updated p90 ${measured.qrUpdatedMs.p90} ms, ` +
+                  `worker ${measured.worker.answered}/${measured.worker.posted} (${Math.round((Date.now() - started) / 1000)} s)` +
+                  (measured.stopReason === 'done' ? '' : `\n    stopped: ${measured.stopReason}`)
+              );
+            } catch (error) {
+              const message = String(error?.message ?? error);
+              result.forms[name].push({ error: message.slice(0, 300) });
+              console.log(`${name} run ${run + 1}: failed: ${message.split('\n')[0]}`);
+            }
+          }
+        }
+      } finally {
+        await browserInstance.close();
+        server.close();
+      }
+      return 0;
+    } finally {
+      fs.rmSync(build, { recursive: true, force: true });
+    }
+  });
+  fs.mkdirSync(resultsDir, { recursive: true });
+  fs.writeFileSync(out, JSON.stringify(result));
+  console.log(`\nRecorded ${Object.keys(result.forms).length} forms as "${label}" (${result.meta.commit}): ${out}`);
+  return status;
+}
+
+function compareBrowser([labelA, labelB]) {
+  if (!labelA || !labelB) {
+    usage();
+    return 1;
+  }
+  const loadBrowser = label => load(fs.existsSync(label) ? label : path.join(resultsDir, `${label}.browser.json`));
+  const a = loadBrowser(labelA);
+  const b = loadBrowser(labelB);
+  console.log(`${labelA}: ${a.meta.ref} (${a.meta.commit}), ${a.meta.runs} run(s) per form`);
+  console.log(`${labelB}: ${b.meta.ref} (${b.meta.commit}), ${b.meta.runs} run(s) per form\n`);
+  const median = list => {
+    const sorted = list.filter(value => typeof value === 'number').sort((x, y) => x - y);
+    return sorted.length ? sorted[Math.floor(sorted.length / 2)] : null;
+  };
+  const metrics = [
+    ['input blocked (ms)', run => run.totalBlockingTimeMs],
+    ['longest block (ms)', run => run.longestTaskMs],
+    ['interaction p90 (ms)', run => run.interactions?.p90],
+    ['response updated p90 (ms)', run => run.qrUpdatedMs?.p90],
+    ['blocked on load (ms)', run => run.blockedOnLoadMs],
+  ];
+  const problems = [];
+  const totals = metrics.map(() => [0, 0]);
+  const rows = [];
+  for (const name of Object.keys(a.forms)
+    .filter(form => b.forms[form])
+    .sort()) {
+    const runsA = a.forms[name].filter(run => !run.error);
+    const runsB = b.forms[name].filter(run => !run.error);
+    if (runsA.length === 0 || runsB.length === 0) {
+      problems.push(`${name}: no successful run in ${runsA.length === 0 ? labelA : labelB}`);
+      continue;
+    }
+    const values = metrics.map(([, pick]) => [median(runsA.map(pick)), median(runsB.map(pick))]);
+    values.forEach(([x, y], index) => {
+      totals[index][0] += x ?? 0;
+      totals[index][1] += y ?? 0;
+    });
+    rows.push({ name, values });
+    const hashes = new Set([...runsA, ...runsB].map(run => run.qrHash));
+    if (hashes.size > 1) problems.push(`${name}: the final response differs (${[...hashes].join(', ')})`);
+    for (const [label, list] of [
+      [labelA, runsA],
+      [labelB, runsB],
+    ]) {
+      const failing = list.filter(run => run.worker.errors > 0 || run.worker.terminated > 0 || run.worker.answered < run.worker.posted);
+      if (failing.length) problems.push(`${name}: the worker failed or did not answer in ${label} (${failing.length} run(s))`);
+    }
+  }
+  const cell = (x, y) => `${String(x ?? '-').padStart(7)} ${String(y ?? '-').padStart(7)}`;
+  console.log(`Totals over ${rows.length} forms (median per form), ${labelA} / ${labelB}:`);
+  metrics.forEach(([title], index) =>
+    console.log(`  ${title.padEnd(28)}${cell(Math.round(totals[index][0]), Math.round(totals[index][1]))}`)
+  );
+  console.log(`\nPer form: input blocked, then response updated p90 (ms), ${labelA} / ${labelB}:`);
+  for (const row of rows.sort((x, y) => (y.values[0][0] ?? 0) - (x.values[0][0] ?? 0))) {
+    console.log(`  ${cell(...row.values[0])}   ${cell(...row.values[3])}  ${row.name}`);
+  }
+  if (problems.length) {
+    console.log('\nProblems:');
+    problems.forEach(problem => console.log(`  ${problem}`));
+    return 1;
+  }
+  console.log('\nSame final response in every form, and the worker answered every request.');
+  return 0;
+}
+
 const [command, ...rest] = process.argv.slice(2);
 const { flags, positional } = parseArgs(rest);
 if (command === 'record') process.exit(await record(flags));
 else if (command === 'compare') process.exit(compare(positional));
+else if (command === 'browser') process.exit(await browser(flags));
+else if (command === 'compare-browser') process.exit(compareBrowser(positional));
 else {
   usage();
   process.exit(command ? 1 : 0);

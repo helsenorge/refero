@@ -67,16 +67,62 @@ same recorder there. Both sides are therefore driven by the same recorder, and t
 
 ## What it does not cover
 
-- Nothing is rendered: components, validation and what the user sees are not compared.
+- Nothing is rendered: components, validation and what the user sees are not compared. The browser recording below covers that.
 - The web worker: under vitest there is no `Worker`, so the calculations run on the main thread path.
 - Attachments, and choices whose options are not codings or come from an external value set, are not answered.
 - Forms that only make sense with prefilled data get whatever the scenario happens to give them.
 - If the two versions do not have the same dependencies, the borrowed `node_modules` is wrong for the ref.
+
+## In a browser: what the user experiences
+
+The recording above says whether the response is the same. `browser` says how the page behaves for the user while the form is filled in: how
+long input is blocked, and how long it takes before the response, with its calculations, is updated.
+
+```sh
+# The version before a change and the working tree, three runs per form
+npm run test:forms -- browser --label before --ref <git ref> --runs 3
+npm run test:forms -- browser --label after --runs 3
+
+npm run test:forms -- compare-browser before after
+```
+
+`browser` builds the page in `browser/` for production and serves it: refero with nothing else around it. Dev mode is never measured:
+React's development build makes the page several times slower than what users get, and it makes a slow page look like a refero problem. It
+then fills in every form in Chrome the way a user does: picks the first option in drop-downs and radio groups (often "Ja", which shows the
+follow-up questions), ticks checkboxes, sets sliders, types in text, number and date fields, and presses "Neste" through a step form. The
+choices are the same every run. A form stops early when "Neste" does not move on, for example because of a field the filler does not answer;
+the log says so.
+
+For every form it records:
+
+| Measure              | What it is                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| input blocked        | Total blocking time: the part of each long task (over 50 ms) on the main thread above 50 ms. The user cannot type or click meanwhile |
+| longest block        | The longest of those tasks                                                                                                           |
+| interaction p90      | Event Timing: time from a click or key press until the screen shows it (what INP is built on)                                        |
+| response updated p90 | Time from the end of an action until the last change of the QuestionnaireResponse, so calculations included                          |
+| blocked on load      | Long tasks while the form loads                                                                                                      |
+| worker               | Requests to the FHIRPath web worker, answers, errors, and whether refero fell back to the main thread                                |
+| final response       | A hash of the response when the form is done; both versions should end up with the same                                              |
+
+`compare-browser` shows the median per form of each measure, the totals, and problems: a final response that differs, or a worker that
+failed. The exit code is 1 when there are problems.
+
+`--filter`, `--forms` and `--ref` work as for `record`. Other options: `--runs <n>` (default 1; use 3 or more to compare, the timings vary
+from run to run), `--max-actions <n>` (default 150), `--headed` to watch the browser.
+
+It uses Playwright's own Chromium when it is installed (`npx playwright-core install chromium`), otherwise the installed Chrome;
+`BROWSER_BENCH_CHROME=<path>` picks another. The numbers depend on the machine and on what else runs on it: compare two recordings made on
+the same machine, one right after the other.
 
 ## Files
 
 - `scenario.ts` - decides the edits. Uses nothing from `src`, so both versions are asked to do the same.
 - `record.forms.ts` - drives the store and writes the recording. Its imports from `src` are the only things that must exist on every version
   that is compared.
-- `run.mjs` - the command line: `record` and `compare`.
+- `browser/index.html`, `browser/main.tsx`, `browser/vite.config.ts` - the page the browser recording fills in: the smallest page that shows
+  refero, built for production. `main.tsx` imports `@/components/index` and `@/reducers`, which must exist on every version that is
+  compared.
+- `browser/fill.mjs` - fills in one form in the browser and measures.
+- `run.mjs` - the command line: `record`, `compare`, `browser` and `compare-browser`.
 - `results/` - the recordings; not checked in.
