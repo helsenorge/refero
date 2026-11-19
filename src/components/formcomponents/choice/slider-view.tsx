@@ -41,6 +41,8 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
   const { error } = fieldState;
 
   const [isSelected, setIsSelected] = useState(selected && selected[0] ? true : false);
+  // Read by setValueAs when the user moves the slider, which is before the state above has been updated.
+  const isSelectedRef = useRef(isSelected);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const onValueChange = useCallback(
@@ -87,8 +89,10 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
     min: minValue({ item, resources }),
     max: maxValue({ item, resources }),
     shouldUnregister: true,
-    setValueAs: value => (isSelected ? value : undefined),
+    setValueAs: value => (isSelectedRef.current ? value : undefined),
   };
+  // setValueAs reads the ref when react-hook-form reads the value (on change and validation), not during render.
+  // eslint-disable-next-line react-hooks/refs
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
@@ -129,6 +133,7 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
           onChange={(e): void => {
             const val = e.target.value;
             if (isInteger(val)) {
+              isSelectedRef.current = true;
               onValueChange(Number(val));
               onChange(e);
             }

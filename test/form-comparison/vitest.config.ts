@@ -4,7 +4,7 @@ import { defineConfig, mergeConfig } from 'vitest/config';
 
 import viteConfig from '../../vite.config.ts';
 
-// Separate from the unit tests: these read forms from a folder outside the repository and are started by run.mjs.
+// Separate from the unit tests: these fill in every form in test/form-comparison/forms, take a while, and are started by run.mjs.
 export default defineConfig(configEnv =>
   mergeConfig(
     viteConfig(configEnv),
