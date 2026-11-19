@@ -46,3 +46,13 @@ $padding-none: 0;
     transition: none;
   }
 }
+
+.helpButton_default {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
