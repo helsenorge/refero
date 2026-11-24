@@ -36,7 +36,7 @@ describe('checkbox-view - openchoice', () => {
     });
     it('Should render open-choice field', async () => {
       await createWrapper(q);
-      expect(screen.getByLabelText(/Annet/i)).toBeInTheDocument();
+      expect(screen.getByRole('checkbox', { name: /Annet/i })).toBeInTheDocument();
     });
   });
   describe('help button', () => {
@@ -146,7 +146,7 @@ describe('checkbox-view - openchoice', () => {
         await selectCheckboxOption(/Annet/i);
 
         expect(screen.getByTestId(/-extra-field/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/Annet/i)).toBeChecked();
+        expect(screen.getByRole('checkbox', { name: /Annet/i })).toBeChecked();
       });
       it('Should not render extra text field when open-choice extra value is not selected', async () => {
         const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
