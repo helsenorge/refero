@@ -1,3 +1,7 @@
+# 26.0.9
+
+- Fix: single-line text inputs and textareas no longer render inside a fieldset without a legend.
+
 ## 26.0.8
 
 - Fix: a new QuestionnaireResponse now gets the same calculated answers as the form gives after the user changes an answer. The first

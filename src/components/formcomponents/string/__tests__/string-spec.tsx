@@ -29,6 +29,18 @@ const getStringInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLE
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 describe('string', () => {
   describe('Render', () => {
+    it.each([false, true])('Should render a labelled input without a fieldset (help: %s)', async withHelp => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(item => ({ ...item, repeats: false, item: withHelp ? item.item : undefined })),
+      };
+
+      await createWrapper(questionnaire);
+
+      const input = screen.getByRole('textbox', { name: /String markdown/i });
+      expect(input.closest('fieldset')).toBeNull();
+    });
+
     it('Should render as text if props.pdf', async () => {
       const questionnaire: Questionnaire = {
         ...q,

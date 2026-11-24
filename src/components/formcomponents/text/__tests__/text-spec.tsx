@@ -31,6 +31,18 @@ const getTextInput = (questionnaire: Questionnaire, labelText: Matcher, index: n
 
 describe('Text', () => {
   describe('render', () => {
+    it.each([false, true])('Should render a labelled textarea without a fieldset (help: %s)', async withHelp => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(item => ({ ...item, repeats: false, item: withHelp ? item.item : undefined })),
+      };
+
+      await createWrapper(questionnaire);
+
+      const input = screen.getByRole('textbox', { name: /String markdown/i });
+      expect(input.closest('fieldset')).toBeNull();
+    });
+
     it('should render correct tag', async () => {
       renderRefero({ questionnaire: qinline, resources: getResources('') });
       expect(screen.queryByText(/Her er teksten som skal åpnes av knappen over, med markDown/i)).not.toBeInTheDocument();

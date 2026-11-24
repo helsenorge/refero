@@ -1,6 +1,8 @@
 {
+  "title": "Skjema med tekstfelt",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "name": "Skjema_med_tekstfelt",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -59,89 +61,51 @@
       }
     }
   ],
-  "id": "0d871585-079e-4005-90e9-52646c259188",
-  "url": "Questionnaire/0d871585-079e-4005-90e9-52646c259188",
+  "id": "f1dd0a7c-493a-4552-acc3-c8fe04e1809b",
+  "url": "Questionnaire/f1dd0a7c-493a-4552-acc3-c8fe04e1809b",
   "item": [
     {
-      "linkId": "71831e96-d30c-4ae6-8d0e-848e30d3af5d",
+      "linkId": "6386e2aa-1cc4-4be1-84a3-6abc4828e6e3",
       "type": "group",
-      "text": "Gruppe 1",
+      "text": "Gruppe med tekstfelt",
       "item": [
         {
-          "linkId": "18cbe2b6-3355-4a95-8d42-d7343a77c6f3",
+          "linkId": "bd17e4ac-c788-4067-840a-1451149c41ee",
           "type": "string",
-          "text": "Tekstsvar",
-          "item": [
-            {
-              "linkId": "dfacb231-221b-4d84-9974-f9ffff387747",
-              "type": "text",
-              "required": false,
-              "repeats": false,
-              "readOnly": true,
-              "maxLength": 250,
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                    "valueMarkdown": "Her kan du skrive tekst"
-                  }
-                ]
-              },
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "help"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "text": "Her kan du skrive tekst"
-            }
-          ],
-          "required": false
+          "required": false,
+          "text": "Skriv noe i dette tekstfeltet"
         },
         {
-          "linkId": "07a8db35-81e5-4c4a-9dfe-e55d0956ff1b",
-          "type": "date",
-          "text": "Skriv en dato",
-          "item": [
+          "linkId": "ca562985-392a-4344-c2ea-98a341207a8c",
+          "type": "open-choice",
+          "text": "Alternativer med teksfelt for åpent svar",
+          "required": false,
+          "answerOption": [
             {
-              "linkId": "0e358ba7-c2bb-42a8-8232-fd04a3ee3122",
-              "type": "text",
-              "required": false,
-              "repeats": false,
-              "readOnly": true,
-              "maxLength": 250,
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                    "valueMarkdown": "Her kan du skrive en dato"
-                  }
-                ]
-              },
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "help"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "text": "Her kan du skrive en dato"
+              "valueCoding": {
+                "id": "3517e298-712b-4767-9f3d-cc0f041473ce",
+                "code": "valg-1",
+                "system": "urn:uuid:2194518f-2626-4558-8467-6e48210d2235",
+                "display": "Valg 1"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "3d83f69f-835c-48c1-9a23-a1b498ccb44e",
+                "code": "valg-2",
+                "system": "urn:uuid:2194518f-2626-4558-8467-6e48210d2235",
+                "display": "Valg 2"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "42a87374-f193-4bfe-8457-29a48e6e57e6",
+                "code": "valg-3",
+                "system": "urn:uuid:2194518f-2626-4558-8467-6e48210d2235",
+                "display": "Valg 3"
+              }
             }
-          ],
-          "required": false
+          ]
         }
       ],
       "required": false
