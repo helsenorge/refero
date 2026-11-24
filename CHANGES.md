@@ -1,6 +1,8 @@
 # 26.0.9
 
 - Fix: single-line text inputs and textareas no longer render inside a fieldset without a legend.
+- Fix: the open-choice text-field now includes its option label, so that it's accessible name is distinct from the radio or checkbox option
+  and no longer triggers duplicate-label accessibility errors.
 
 ## 26.0.8
 
