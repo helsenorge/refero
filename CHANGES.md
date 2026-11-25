@@ -20,7 +20,8 @@
   expression decides the repetitions, one per element in the result, and `Expression.name` names the variable each repetition sees, for
   example `%row.item.where(linkId='dose').answer.value`. A missing answer leaves an empty question in that repetition, so answers no longer
   end up in another row. The person cannot add or delete the repetitions. On a repeating question, its own `calculatedExpression` gives each
-  answer's value. Without `readOnly` the extension is ignored. See `docs/sdf-item-repetition-context.md`.
+  answer's value. Without `readOnly` the extension is ignored. Every question under it gets its value from an expression; a question the
+  person answers inside a repetition is not supported, since the repetitions are rebuilt. See `docs/sdf-item-repetition-context.md`.
 - SDC `calculatedExpression` (`http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression`, `valueExpression`) is
   read everywhere, next to `sdf-calculatedExpression`. When an item has both, the SDC one is used.
 - A `cqf-expression` on a group no longer does anything; groups have no answer. `cqf-expression` value copy on questions works as before.

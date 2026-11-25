@@ -58,6 +58,10 @@ Decisions (Reuben Ringdal, 2026-11-25):
 - The unreleased `cqf-expression` row source on groups is dropped.
 - A gtable group goes to the new table when it has the extension, or repeats without copy expressions on its children; otherwise to the old
   table.
+- The content of a repetition is calculated: every question under the item gets its value from an expression. Answers the person gives
+  inside a repetition are not supported; such a question is asked where the data is entered. Questions with a `calculatedExpression` should
+  be `readOnly` (SDC); refero does not force it, since R4 sets `readOnly` per item. Skjemabygger checks both. Keeping per-row answers tied
+  to the source element is a possible later task (Reuben Ringdal, 2026-11-25).
 
 ## Concept budget
 

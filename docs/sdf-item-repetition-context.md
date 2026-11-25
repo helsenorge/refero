@@ -18,6 +18,15 @@ descendant items (and to `calculatedExpression` on the item itself), as with SDC
 
 Values are set with SDC `calculatedExpression` or `sdf-calculatedExpression`. If both are on one item, SDC wins.
 
+## Content of a repetition is calculated
+
+Every question under the item gets its value from an expression. A question the person answers in a repetition, without an expression, is
+not supported: the repetitions are rebuilt when the response changes, so such an answer is not kept. Ask the question where the data is
+entered and copy the answer instead. Display items and groups are allowed.
+
+Questions with a `calculatedExpression` should have `readOnly` true, as SDC recommends ("In most cases, 'calculated' answers will be marked
+as 'readOnly'"). refero does not make them read-only on its own: `readOnly` is set per item, as in FHIR R4. Skjemabygger checks both rules.
+
 ## Example
 
 ```json
