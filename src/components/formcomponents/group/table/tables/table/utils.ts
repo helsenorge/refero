@@ -1,5 +1,5 @@
-import type { IStandardTable, IStandardTableColumn, IStandardTableRow } from './interface';
 import type { QuestionnaireItemWithAnswers } from '../interface';
+import type { IStandardTable, IStandardTableColumn, IStandardTableRow } from './interface';
 import type { Options } from '@/types/formTypes/radioGroupOptions';
 import type { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 

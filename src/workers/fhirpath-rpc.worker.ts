@@ -30,7 +30,6 @@ import type {
   RunEnableWhenResult,
 } from './fhirpath-rpc-worker';
 
-import { runCalculators, runEnableWhen } from './helpers';
 import {
   evaluateFhirpathExpressionToGetDate,
   getAnswerFromResponseItem,
@@ -42,6 +41,7 @@ import {
   evaluateExtension,
   isGroupAndDescendantsHasAnswer,
 } from '../util/fhirpathHelper';
+import { runCalculators, runEnableWhen } from './helpers';
 
 // ---- dispatcher -------------------
 

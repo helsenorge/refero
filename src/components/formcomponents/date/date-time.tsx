@@ -13,7 +13,6 @@ import Label from '@helsenorge/designsystem-react/components/Label';
 
 import { DatePicker } from '@helsenorge/datepicker/components/DatePicker';
 
-import { useMinMaxDate } from './useMinMaxDate';
 import { newDateTimeValueAsync } from '../../../actions/newValue';
 import { initialize } from '../../../util/date-fns-utils';
 import {
@@ -33,6 +32,7 @@ import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { useMinMaxDate } from './useMinMaxDate';
 
 import dateStyles from './date.module.css';
 
@@ -94,7 +94,13 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const [dateValueContainer, setDateValueContainer] = useState<Date | string | undefined>(dateAnswerValueParsed);
   const [hours, setHours] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Hours));
   const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(dateValue, DateTimeUnit.Minutes));
-  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm, language);
+  const pdfValue = getPDFValueForDate(
+    dateAnswerValue,
+    resources?.ikkeBesvart,
+    DateFormat.yyyyMMddHHmmssXXX,
+    DateFormat.ddMMyyyyHHmm,
+    language
+  );
 
   useResetFormField(`${idWithLinkIdAndItemIndex}-date`, dateAnswerValue);
   useResetFormField(`${idWithLinkIdAndItemIndex}-hours`, hours);

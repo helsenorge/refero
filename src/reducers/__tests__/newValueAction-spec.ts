@@ -6,6 +6,7 @@ import { type Assertion, type Mocked, vi } from 'vitest';
 import type { Form } from '../form';
 import type { Attachment, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
+import { getDefinitionItems, getQuestionnaireDefinitionItem, type Path } from '../../util/refero-core';
 import state from './__data__/newValueAction';
 import {
   getResponseItem,
@@ -28,7 +29,6 @@ import {
   enterOpenChoiceText,
   removeOpenChoiceText,
 } from './utils';
-import { getDefinitionItems, getQuestionnaireDefinitionItem, type Path } from '../../util/refero-core';
 
 vi.mock('uuid');
 
@@ -280,7 +280,7 @@ function verifyAnswer(
   linkId: string,
   state: Form,
   path: Array<Path>,
-  test: (it: Assertion<QuestionnaireResponseItemAnswer[] | undefined | void>) => unknown
+  test: (it: Assertion<void, QuestionnaireResponseItemAnswer[] | undefined | void>) => unknown
 ) {
   const r = getResponseItem(linkId, state, path);
   if (!r) return fail();

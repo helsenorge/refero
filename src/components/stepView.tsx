@@ -5,10 +5,10 @@ import type { Resources } from '../util/resources';
 import type { DefaultValues } from '@/validation/defaultFormValues';
 import type { UseFormReturn } from 'react-hook-form';
 
-import RenderForm from './renderForm';
 import { getFormData, getFormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
 import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnaireComponents';
+import RenderForm from './renderForm';
 
 import {
   QUESTIONNAIRERESPONSE_UISTATE_STEP_INDEX_URL,

@@ -15,8 +15,8 @@ import {
 } from 'date-fns';
 import { nb, nn, enGB, se } from 'date-fns/locale';
 
-import type { Resources } from './resources';
 import { DateFormat, DatePickerFormat, DateTimeUnit, TimeUnit, type TimeValues } from '../types/dateTypes';
+import type { Resources } from './resources';
 import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';

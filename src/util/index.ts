@@ -6,6 +6,12 @@ import type { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, Quest
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 
+import codeSystems from '../constants/codingsystems';
+import { Extensions } from '../constants/extensions';
+import { HyperlinkTarget } from '../constants/hyperlinkTarget';
+import Constants from '../constants/index';
+import { RenderOptionCode } from '../constants/renderOptionCode';
+import { TableCodes } from '../constants/tableTypes';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import {
   getMaxOccursExtensionValue,
@@ -18,12 +24,6 @@ import {
   getCopyExtension,
   getSublabelTextExtensionValue,
 } from './extension';
-import codeSystems from '../constants/codingsystems';
-import { Extensions } from '../constants/extensions';
-import { HyperlinkTarget } from '../constants/hyperlinkTarget';
-import Constants from '../constants/index';
-import { RenderOptionCode } from '../constants/renderOptionCode';
-import { TableCodes } from '../constants/tableTypes';
 
 import { VALIDATE_READONLY_CODE } from '@/constants/codes';
 

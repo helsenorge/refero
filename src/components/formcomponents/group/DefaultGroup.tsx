@@ -4,10 +4,10 @@ import type { QuestionnaireComponentItemProps } from '@/components/createQuestio
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
-import GroupHeader from './GroupHeader';
-import { getClassNames, getHeaderText } from './helpers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import GroupHeader from './GroupHeader';
+import { getClassNames, getHeaderText } from './helpers';
 
 import styles from './group.module.css';
 

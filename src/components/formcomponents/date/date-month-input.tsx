@@ -8,11 +8,11 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { useMinMaxDate } from './useMinMaxDate';
 import styles from '../../../styles/date-year-month.module.css';
 import { getId, isReadOnly } from '../../../util';
 import styles2 from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
+import { useMinMaxDate } from './useMinMaxDate';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';

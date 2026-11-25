@@ -3,9 +3,9 @@ import { fail } from 'assert';
 import type { Form } from '../form';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
+import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 import dataModel from './__data__/nestedInitialValues';
 import { pathify, clickRepeat } from './utils';
-import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 
 describe('copy item - initial values', () => {
   let newState: Form;

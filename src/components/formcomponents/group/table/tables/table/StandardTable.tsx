@@ -13,10 +13,10 @@ import {
   TableRow,
 } from '@helsenorge/designsystem-react/components/Table';
 
-import { StandardTableHeader } from './StandardTableHeader';
-import { getDisplayToSortBy, getStandardTableObject } from './utils';
 import { containedResourceSelector } from '../../tableSelector';
 import { transformCodingToSortDirection } from '../utils';
+import { StandardTableHeader } from './StandardTableHeader';
+import { getDisplayToSortBy, getStandardTableObject } from './utils';
 
 import { useAppSelector } from '@/reducers';
 

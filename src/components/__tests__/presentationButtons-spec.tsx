@@ -1,11 +1,11 @@
 import '../../util/__tests__/defineFetch';
 import type { Questionnaire, Extension } from 'fhir/r4';
 
-import questionnaire from './__data__/common/';
 import { renderRefero, waitFor } from '../../../test/test-utils';
 import { Extensions } from '../../constants/extensions';
 import { PresentationButtonsType } from '../../constants/presentationButtonsType';
 import valueSet from '../../constants/valuesets';
+import questionnaire from './__data__/common/';
 
 const createExtension = (code: PresentationButtonsType): Extension => {
   return {

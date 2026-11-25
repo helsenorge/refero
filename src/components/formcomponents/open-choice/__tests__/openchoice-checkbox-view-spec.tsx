@@ -4,11 +4,11 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
 
-import { checkboxView as q } from './__data__/index';
-import { typeExtraField } from './utils';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { clickButtonTimes, repeatCheckboxNTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
+import { checkboxView as q } from './__data__/index';
+import { typeExtraField } from './utils';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer: QuestionnaireItemAnswerOption = {

@@ -10,10 +10,10 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
-import { useMinMaxDate } from './useMinMaxDate';
 import { getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
+import { useMinMaxDate } from './useMinMaxDate';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';

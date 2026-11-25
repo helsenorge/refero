@@ -5,9 +5,9 @@ import { type FieldValues, useFormContext } from 'react-hook-form';
 import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import type { PluginComponentProps } from '@/types/componentPlugin';
 
-import { PluginErrorBoundary } from './PluginErrorBoundary';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { PluginErrorBoundary } from './PluginErrorBoundary';
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import { useGetAnswer } from '@/hooks/useGetAnswer';

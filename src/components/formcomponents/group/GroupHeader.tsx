@@ -3,9 +3,9 @@ import type { Dispatch } from 'react';
 import type { Resources } from '@/util/resources';
 import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
-import { getHeaderText } from './helpers';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
+import { getHeaderText } from './helpers';
 
 import SafeText from '@/components/referoLabel/SafeText';
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';

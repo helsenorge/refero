@@ -9,10 +9,10 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider } from '@helsenorge/designsystem-react/components/Slider';
 
 import styles from '../common-styles.module.css';
-import { getCodes, getLeftRightLabels, mapToSliderStep, SliderDisplayTypes } from './sliderUtils';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { getCodes, getLeftRightLabels, mapToSliderStep, SliderDisplayTypes } from './sliderUtils';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, isInteger, maxValue, minValue, required } from '@/components/validation/rules';
