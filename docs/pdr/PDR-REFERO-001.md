@@ -51,7 +51,9 @@ Decisions (Reuben Ringdal, 2026-11-25):
 - Name `sdf-item-repetition-context`, after SDC's `itemPopulationContext` and `itemExtractionContext`.
 - The expression may return any collection.
 - Allowed on repeating groups and repeating questions. On a question, its own `calculatedExpression` gives each answer's value, evaluated
-  once per element.
+  once per element. Items nested under the answers of such a question are not supported, since refero renders every answer's nested items as
+  the first answer's; a repeating group is used for details. Fixing refero's paths for nested items per answer is a later task (Reuben
+  Ringdal, 2026-11-25).
 - The variable is visible to all expressions on descendant items.
 - Without `readOnly` the extension is ignored.
 - refero reads SDC `calculatedExpression` everywhere. If an item has both SDC and sdf `calculatedExpression`, SDC wins.

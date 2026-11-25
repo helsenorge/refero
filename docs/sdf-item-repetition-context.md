@@ -14,7 +14,7 @@ descendant items (and to `calculatedExpression` on the item itself), as with SDC
 - **Repeating group:** one group occurrence per element. The children get their values from their own expressions.
 - **Repeating question:** one answer per element. The value comes from the question's own `calculatedExpression`, evaluated once per
   element; without one, an element that is a value or an answered question item is used as it is, and other elements are skipped. Items
-  nested under each answer see that answer's element.
+  nested under the answers are not supported: refero cannot yet show them per answer. Use a repeating group for repetitions with details.
 
 Values are set with SDC `calculatedExpression` or `sdf-calculatedExpression`. If both are on one item, SDC wins.
 

@@ -27,8 +27,8 @@
 - A `cqf-expression` on a group no longer does anything; groups have no answer. `cqf-expression` value copy on questions works as before.
 - The date limits `sdf-minvalue` and `sdf-maxvalue` are evaluated against the question, not the response, so they cannot use the repetition
   variable.
-- Known gap: a repeating question with the extension and items nested under its answers gets the right response, but the form shows the
-  nested items of the first answer under every answer. Use a repeating group for rows with details until this is fixed.
+- Items nested under the answers of a repeating question with the extension are not supported, since refero shows the first answer's nested
+  items under every answer. Use a repeating group for rows with details.
 
 # 26.0.9
 
