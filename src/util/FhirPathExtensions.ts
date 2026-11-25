@@ -10,6 +10,7 @@ import type {
   Attachment,
 } from 'fhir/r4';
 
+import itemType from '../constants/itemType';
 import {
   ALL_DEPENDENCIES,
   analyzeExpression,
@@ -28,7 +29,6 @@ import {
 } from './fhirPathOptions';
 import { getAllResponseitemsByLinkIdAndQuestionnaireResponse } from './refero-core';
 import { isQuantity } from './typeguards';
-import itemType from '../constants/itemType';
 
 import { getDecimalValue } from '.';
 

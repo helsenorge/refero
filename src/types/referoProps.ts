@@ -1,12 +1,12 @@
 import type React from 'react';
 
-import type { AutoSuggestProps } from './autoSuggestProps';
-import type { ComponentPlugin } from './componentPlugin';
-import type { OrgenhetHierarki } from './orgenhetHierarki';
 import type { IActionRequester } from '../util/actionRequester';
 import type { IQuestionnaireInspector } from '../util/questionnaireInspector';
 import type { Resources } from '../util/resources';
+import type { AutoSuggestProps } from './autoSuggestProps';
+import type { ComponentPlugin } from './componentPlugin';
 import type { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
+import type { OrgenhetHierarki } from './orgenhetHierarki';
 import type { TextMessage } from './text-message';
 import type { PresentationButtonsType } from '@/constants/presentationButtonsType';
 import type { DefaultValues } from '@/validation/defaultFormValues';

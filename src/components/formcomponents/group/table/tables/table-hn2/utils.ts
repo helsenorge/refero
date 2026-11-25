@@ -1,5 +1,5 @@
-import type { HeaderColumn, ITableH2Column, ITableH2Row } from './interface';
 import type { QuestionnaireItemWithAnswers } from '../interface';
+import type { HeaderColumn, ITableH2Column, ITableH2Row } from './interface';
 import type { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import type { SortDirection } from '@helsenorge/designsystem-react/components/Table';

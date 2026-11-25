@@ -1,9 +1,9 @@
 import '../../util/__tests__/defineFetch';
 import type { Questionnaire } from 'fhir/r4';
 
-import { q as questionnaireWithEnableWhen, prr, q2, q3 } from './__data__/enableWhen';
 import { selectCheckboxOption } from '../../../test/selectors';
 import { renderReferoWithStore, screen, userEvent, waitFor, within } from '../../../test/test-utils';
+import { q as questionnaireWithEnableWhen, prr, q2, q3 } from './__data__/enableWhen';
 
 describe('enableWhen with checkboxes and multiple answers', () => {
   it('enableWhen should trigger when correct answer is selected', async () => {

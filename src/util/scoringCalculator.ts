@@ -6,11 +6,11 @@ import type {
   QuestionnaireItemAnswerOption,
 } from 'fhir/r4';
 
+import { Extensions } from '../constants/extensions';
+import { ScoringItemType } from '../constants/scoringItemType';
 import { getExtension } from './extension';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
-import { Extensions } from '../constants/extensions';
-import { ScoringItemType } from '../constants/scoringItemType';
 
 export interface AnswerPad {
   [linkId: string]: number | undefined;

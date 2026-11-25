@@ -1,6 +1,5 @@
 import type { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItem } from 'fhir/r4';
 
-import { dataModel } from './__data__/testDataModel';
 import { pathify } from '../../reducers/__tests__/utils';
 import {
   getRootQuestionnaireResponseItemFromData,
@@ -12,6 +11,7 @@ import {
   createPathForItem,
   type Path,
 } from '../refero-core';
+import { dataModel } from './__data__/testDataModel';
 
 describe('getQuestionnaireResponseItemFromData', () => {
   it('should not fail on empty form', () => {

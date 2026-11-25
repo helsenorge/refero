@@ -17,8 +17,9 @@ import {
   validateTotalFileSize,
 } from '@helsenorge/file-upload/components/file-upload/validate-utils';
 
-import { getNumberOfFilesValidationText, getValidationTextForAttachment } from './attachment-validation';
 import styles from '../common-styles.module.css';
+import { ReadOnly } from '../read-only/readOnly';
+import { getNumberOfFilesValidationText, getValidationTextForAttachment } from './attachment-validation';
 import {
   convertBytesToMBString,
   getAttachmentMaxSizeBytesToUse,
@@ -26,7 +27,6 @@ import {
   validateRequired,
 } from './attachmentUtil';
 import { useAttachmentSync } from './useAttachmentSync';
-import { ReadOnly } from '../read-only/readOnly';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage } from '@/components/validation/rules';

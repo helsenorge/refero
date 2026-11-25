@@ -4,6 +4,8 @@ import { renderRefero, screen, waitFor } from '@test/test-utils';
 import type { ReferoProps } from '@/types/referoProps';
 import type { Questionnaire } from 'fhir/r4';
 
+import { getResources } from '../../../preview/resources/referoResources';
+import { createIntitialFormValues } from '../defaultFormValues';
 import {
   qString,
   qInteger,
@@ -41,8 +43,6 @@ import {
   qString_prefilled,
   qBoolean_prefilled,
 } from './__data__';
-import { getResources } from '../../../preview/resources/referoResources';
-import { createIntitialFormValues } from '../defaultFormValues';
 
 const resources = {
   ...getResources(''),

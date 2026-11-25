@@ -9,11 +9,11 @@ import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
-import styles from '../common-styles.module.css';
-import Pdf from './pdf';
 import SafeText from '../../referoLabel/SafeText';
+import styles from '../common-styles.module.css';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import Pdf from './pdf';
 
 import { newBooleanValueAsync } from '@/actions/newValue';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';

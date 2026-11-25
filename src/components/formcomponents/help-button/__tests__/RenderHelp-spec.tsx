@@ -4,8 +4,8 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
-import { q } from './__data__/';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { q } from './__data__/';
 
 import ItemType from '@/constants/itemType';
 

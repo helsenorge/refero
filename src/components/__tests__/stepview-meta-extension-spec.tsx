@@ -4,10 +4,10 @@ import { vi } from 'vitest';
 import type { GlobalState } from '@/reducers';
 import type { Extension, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import StepViewQuestionnaire from './__data__/stepview';
 import { getResources } from '../../../preview/resources/referoResources';
 import { submitForm } from '../../../test/selectors';
 import { renderReferoWithStore, screen, waitFor } from '../../../test/test-utils';
+import StepViewQuestionnaire from './__data__/stepview';
 
 import { setSkjemaDefinitionAction } from '@/actions/form';
 import { generateQuestionnaireResponse } from '@/actions/generateQuestionnaireResponse';

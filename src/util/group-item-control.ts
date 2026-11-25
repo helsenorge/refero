@@ -1,8 +1,8 @@
 import type { QuestionnaireItem, Coding } from 'fhir/r4';
 
-import { getItemControlExtensionValue } from './extension';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
+import { getItemControlExtensionValue } from './extension';
 
 type GroupKeys = keyof typeof itemControlConstants.Group;
 type GroupValues = (typeof itemControlConstants.Group)[GroupKeys];

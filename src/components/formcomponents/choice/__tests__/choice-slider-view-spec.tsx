@@ -4,11 +4,11 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire } from 'fhir/r4';
 
-import { sliderView as q, sliderViewValueSet as q2 } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
 import { convertToEmoji, getCodePoint, getStepLabel, isValidDecimal, isValidHex, isValidHtmlCode, isValidUnicodeHex } from '../sliderUtils';
+import { sliderView as q, sliderViewValueSet as q2 } from './__data__/index';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {

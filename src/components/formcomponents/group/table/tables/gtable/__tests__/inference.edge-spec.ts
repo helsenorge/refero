@@ -2,8 +2,8 @@ import { describe, it, expect } from 'vitest';
 
 import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
-import { makeBigQuestionnaire, gTableCell, gTableSummary, aQItem } from './test-fixures';
 import { inferSourceGroupLinkId, getColumnsFromGTableItem } from '../utils';
+import { makeBigQuestionnaire, gTableCell, gTableSummary, aQItem } from './test-fixures';
 
 describe('Inference when first column is nested deeper than others', () => {
   it('picks the deepest common ancestor among columns (prefers repeats)', () => {
