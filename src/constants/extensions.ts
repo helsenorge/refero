@@ -17,6 +17,9 @@ export const REPEATSTEXT_URL = 'http://ehelse.no/fhir/StructureDefinition/repeat
 export const OPTION_REFERENCE_URL = 'http://ehelse.no/fhir/StructureDefinition/sdf-optionReference' as const;
 export const CALCULATED_EXPRESSION_URL = 'http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression' as const;
 export const COPY_EXPRESSION_URL = 'http://hl7.org/fhir/StructureDefinition/cqf-expression' as const;
+export const SDC_CALCULATED_EXPRESSION_URL =
+  'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' as const;
+export const ITEM_REPETITION_CONTEXT_URL = 'http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context' as const;
 export const DATE_MAX_VALUE_URL = 'http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue' as const;
 export const DATE_MIN_VALUE_URL = 'http://ehelse.no/fhir/StructureDefinition/sdf-minvalue' as const;
 export const GUIDANCE_PARAMETER_URL = 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceparameter' as const;
@@ -63,6 +66,8 @@ const extensionUrls = {
   OPTION_REFERENCE_URL,
   CALCULATED_EXPRESSION_URL,
   COPY_EXPRESSION_URL,
+  SDC_CALCULATED_EXPRESSION_URL,
+  ITEM_REPETITION_CONTEXT_URL,
   DATE_MAX_VALUE_URL,
   DATE_MIN_VALUE_URL,
   GUIDANCE_PARAMETER_URL,

@@ -48,6 +48,7 @@ vi.mock('../extension', () => {
     getAnyCopyExtension: vi.fn(() => undefined),
     getCopyExpressionText: (extension?: Extension): string | undefined => extension?.valueString,
     getItemCopyVariableName: (): string => 'row',
+    getRepetitionContextExtension: (): undefined => undefined,
     isItemCopyGroup: (): boolean => false,
     isItemCopyTarget: (): boolean => false,
   };

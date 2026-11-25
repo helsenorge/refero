@@ -16,12 +16,16 @@
 
 ## 26.1.0
 
-- Item copying: a group, or a repeating question, with a copy expression (`cqf-expression`) that selects response items gets one occurrence
-  per selected item. The questions in the group read their value from their own occurrence with `%row` (or the name in
-  `valueExpression.name`), for example `%row.descendants().where(linkId='dose').answer.value`. A missing answer leaves an empty question in
-  that occurrence, so answers no longer end up in another row, as they can when each question copies a flat list from the whole response.
-  Copied occurrences cannot be added or deleted by the user, and a copied question that `enableWhen` turns off gets no answer. Copy
-  expressions that return values instead of response items work as before.
+- New extension `http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context` on a repeating, read-only group or question: its
+  expression decides the repetitions, one per element in the result, and `Expression.name` names the variable each repetition sees, for
+  example `%row.item.where(linkId='dose').answer.value`. A missing answer leaves an empty question in that repetition, so answers no longer
+  end up in another row. The person cannot add or delete the repetitions. On a repeating question, its own `calculatedExpression` gives each
+  answer's value. Without `readOnly` the extension is ignored. See `docs/sdf-item-repetition-context.md`.
+- SDC `calculatedExpression` (`http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression`, `valueExpression`) is
+  read everywhere, next to `sdf-calculatedExpression`. When an item has both, the SDC one is used.
+- A `cqf-expression` on a group no longer does anything; groups have no answer. `cqf-expression` value copy on questions works as before.
+- The date limits `sdf-minvalue` and `sdf-maxvalue` are evaluated against the question, not the response, so they cannot use the repetition
+  variable.
 
 # 26.0.9
 

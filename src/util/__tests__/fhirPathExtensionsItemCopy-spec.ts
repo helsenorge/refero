@@ -62,7 +62,7 @@ const rowsOf = (linkId: string): unknown[][] => {
   );
 };
 
-describe('Item copy (cqf-expression selecting items)', () => {
+describe('Item copy (sdf-item-repetition-context)', () => {
   it('copies a repeating group row by row, keeping the empty answer in its row', () => {
     expect(rowsOf('s1')).toEqual([
       ['a', 12],
@@ -86,8 +86,10 @@ describe('Item copy (cqf-expression selecting items)', () => {
     ]);
   });
 
-  it('copies a repeating question to one occurrence per repetition', () => {
-    expect(rowsOf('s5')).toEqual([[1], [undefined], [3], [4]]);
+  it('gives a repeating question one answer per answered element, in one item', () => {
+    const copy = run().itemCopies.find(c => c.linkId === 's5');
+    expect(copy?.items).toHaveLength(1);
+    expect(copy?.items[0].answer?.map(a => a.valueInteger)).toEqual([1, 3, 4]);
   });
 
   it('uses a repeating question as row source for a copied group', () => {
@@ -102,12 +104,12 @@ describe('Item copy (cqf-expression selecting items)', () => {
     ]);
   });
 
-  it('gives a copied question its own answer-nested children, evaluated per row', () => {
+  it('gives each answer of a repeating question its own nested children, and skips an element without a value', () => {
     const copy = run().itemCopies.find(c => c.linkId === 's9');
-    expect(copy?.items.map(o => [o.answer?.[0]?.valueString, o.answer?.[0]?.item?.[0]?.answer?.[0]?.valueInteger])).toEqual([
+    expect(copy?.items).toHaveLength(1);
+    expect(copy?.items[0].answer?.map(a => [a.valueString, a.item?.[0]?.answer?.[0]?.valueInteger])).toEqual([
       ['Paracet', 500],
       ['Ibux', undefined],
-      [undefined, 10],
     ]);
   });
 
@@ -180,12 +182,12 @@ describe('Item copy with the engine kept between calculations', () => {
     expect(runCalculators({ questionnaire, questionnaireResponse: structuredClone(changed) })).toEqual(fresh(structuredClone(changed)));
   });
 
-  it('treats a repeating question as a value copy again when its expression no longer selects items', () => {
+  it('leaves a repeating question without answers when its source empties, and stays in step with a fresh engine', () => {
     runCalculators({ questionnaire, questionnaireResponse: responseWithGaps() });
     const changed = responseWithGaps();
     changed.item![5] = { linkId: 'kilde2' };
     const result = runCalculators({ questionnaire, questionnaireResponse: structuredClone(changed) });
-    expect(result.itemCopies.map(copy => copy.linkId)).not.toContain('s5');
+    expect(result.itemCopies.find(copy => copy.linkId === 's5')?.items).toEqual([{ linkId: 's5', text: expect.any(String) }]);
     expect(result).toEqual(fresh(structuredClone(changed)));
   });
 });

@@ -57,7 +57,7 @@
       "readOnly": true,
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
           "valueExpression": {
             "name": "row",
             "language": "text/fhirpath",
@@ -117,7 +117,7 @@
       "readOnly": true,
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
           "valueExpression": {
             "name": "urin",
             "language": "text/fhirpath",
@@ -166,8 +166,9 @@
       "readOnly": true,
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
           "valueExpression": {
+            "name": "row",
             "language": "text/fhirpath",
             "expression": "%resource.descendants().where(linkId='urin').where(item.where(linkId='urin.age').answer.exists())"
           }
@@ -303,8 +304,9 @@
       "readOnly": true,
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
           "valueExpression": {
+            "name": "row",
             "language": "text/fhirpath",
             "expression": "%resource.descendants().where(linkId='tall')"
           }
@@ -320,8 +322,9 @@
       "readOnly": true,
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
           "valueExpression": {
+            "name": "row",
             "language": "text/fhirpath",
             "expression": "%resource.descendants().where(linkId='tall')"
           }
@@ -396,8 +399,9 @@
       "readOnly": true,
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
           "valueExpression": {
+            "name": "row",
             "language": "text/fhirpath",
             "expression": "%resource.descendants().where(linkId='medisin')"
           }
@@ -455,8 +459,9 @@
       "readOnly": true,
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
           "valueExpression": {
+            "name": "row",
             "language": "text/fhirpath",
             "expression": "%resource.descendants().where(linkId='medisin')"
           }
@@ -493,8 +498,9 @@
           "readOnly": true,
           "extension": [
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
               "valueExpression": {
+                "name": "row",
                 "language": "text/fhirpath",
                 "expression": "%resource.descendants().where(linkId='urin')"
               }

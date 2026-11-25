@@ -11,6 +11,12 @@ const copy = (expression: string, name?: string): QuestionnaireItem['extension']
   { url: CQF, valueExpression: { ...(name && { name }), language: 'text/fhirpath', expression } },
 ];
 const fromRow = (linkId: string): string => `%row.descendants().where(linkId='${linkId}').answer.value`;
+const repetitionContext = (expression: string): QuestionnaireItem['extension'] => [
+  {
+    url: 'http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context',
+    valueExpression: { name: 'row', language: 'text/fhirpath', expression },
+  },
+];
 
 // Medisin (navn, type, dose) is copied to Kopi. Dose is shown when "vis-dose" is ticked; Styrke only for a mikstur.
 const questionnaire: Questionnaire = {
@@ -33,7 +39,7 @@ const questionnaire: Questionnaire = {
       type: 'group',
       repeats: true,
       readOnly: true,
-      extension: copy("%resource.descendants().where(linkId='medisin')", 'row'),
+      extension: repetitionContext("%resource.descendants().where(linkId='medisin')"),
       item: [
         { linkId: 'kopi.navn', type: 'string', readOnly: true, extension: copy(fromRow('medisin.navn')) },
         { linkId: 'kopi.type', type: 'string', readOnly: true, extension: copy(fromRow('medisin.type')) },

@@ -2,19 +2,20 @@
 
 ## Item copying
 
-A group (or a repeating question) with a copy expression (`cqf-expression`) that selects response items gets one occurrence per selected
-item. This is the row source:
+A repeating, read-only group or question with [`sdf-item-repetition-context`](sdf-item-repetition-context.md) gets one occurrence per
+element its expression returns. This is the row source:
 
 ```json
 {
-  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-  "valueExpression": { "name": "row", "language": "text/fhirpath", "expression": "%resource.descendants().where(linkId='medisin')" }
+  "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
+  "valueExpression": { "name": "row", "language": "text/fhirpath", "expression": "%resource.repeat(item).where(linkId='medisin')" }
 }
 ```
 
-The questions in the group read their value from their own row with `%row` (or the name given in the expression):
-`%row.descendants().where(linkId='medisin.dose').answer.value`. A missing answer gives an empty question in that row, so answers never move
-to another row. Rows can be filtered in the row source with `where(...)`.
+The questions in the group get their value with `calculatedExpression` (SDC or sdf) from their own row, through the variable the expression
+names: `%row.item.where(linkId='medisin.dose').answer.value`. A missing answer gives an empty question in that row, so answers never move to
+another row. Rows can be filtered in the row source with `where(...)`. Every expression the calculator evaluates under the item sees the
+variable; the date limits (`sdf-minvalue`, `sdf-maxvalue`) do not, since they are evaluated against the question.
 
 - `FhirPathExtensions` builds the occurrences (`collectItemCopies`); `runCalculators` returns them as `itemCopies` next to the `answerPad`,
   and `runFhirPathUpdater` dispatches `replaceItemCopiesAction` when they change. The reducer replaces the occurrences under each parent

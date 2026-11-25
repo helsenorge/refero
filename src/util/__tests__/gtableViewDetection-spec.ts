@@ -21,7 +21,14 @@ const copied: QuestionnaireItem = {
   linkId: 'kopi',
   type: 'group',
   repeats: true,
-  extension: [...(copy("%resource.descendants().where(linkId='medisin')") ?? []), gtable],
+  readOnly: true,
+  extension: [
+    {
+      url: 'http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context',
+      valueExpression: { name: 'row', language: 'text/fhirpath', expression: "%resource.descendants().where(linkId='medisin')" },
+    },
+    gtable,
+  ],
   item: [question('kopi.navn', copy("%row.descendants().where(linkId='medisin.navn').answer.value"))],
 };
 const filledIn: QuestionnaireItem = { linkId: 'egen', type: 'group', repeats: true, extension: [gtable], item: [question('egen.navn')] };

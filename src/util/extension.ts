@@ -245,7 +245,12 @@ export function getQuestionnaireHiddenExtensionValue(item?: QuestionnaireItem): 
   return questionnaireHiddenExtension.valueBoolean;
 }
 
+/** SDC calculatedExpression (valueExpression) when present, otherwise sdf-calculatedExpression (valueString). */
 export function getCalculatedExpressionExtension(item?: QuestionnaireItem): Extension | undefined {
+  const sdcExtension = getExtension(Extensions.SDC_CALCULATED_EXPRESSION_URL, item);
+  if (sdcExtension?.valueExpression?.expression) {
+    return sdcExtension;
+  }
   const calculatedExpressionExtension = getExtension(Extensions.CALCULATED_EXPRESSION_URL, item);
   if (
     !calculatedExpressionExtension ||
@@ -276,23 +281,29 @@ export function getAnyCopyExtension(item?: QuestionnaireItem): Extension | undef
   return getCopyExtension(item) ?? getCopyExtension(item, false);
 }
 
+/** The expression text of a copy or calculated expression, in either form: valueString (legacy) or valueExpression. */
 export function getCopyExpressionText(extension?: Extension): string | undefined {
   return extension?.valueString ?? extension?.valueExpression?.expression;
 }
 
-/** Variable each selected item is bound to while the copied occurrence is evaluated: %row unless the expression names it. */
-const DEFAULT_ITEM_COPY_VARIABLE = 'row';
-
-export function getItemCopyVariableName(extension?: Extension): string {
-  return extension?.valueExpression?.name ?? DEFAULT_ITEM_COPY_VARIABLE;
+/**
+ * sdf-item-repetition-context, when it applies: on a repeating, read-only item, with an expression and a name.
+ * Without readOnly or name the extension is ignored.
+ */
+export function getRepetitionContextExtension(item?: QuestionnaireItem): Extension | undefined {
+  if (!item?.repeats || !item.readOnly) return undefined;
+  const extension = getExtension(Extensions.ITEM_REPETITION_CONTEXT_URL, item);
+  return extension?.valueExpression?.expression && extension.valueExpression.name ? extension : undefined;
 }
 
-/**
- * A group with a copy expression copies items: its expression selects QR items, and the group gets one
- * occurrence per selected item.
- */
+/** The variable each repetition's element is bound to, from Expression.name. */
+export function getItemCopyVariableName(extension?: Extension): string {
+  return extension?.valueExpression?.name ?? 'row';
+}
+
+/** A group whose repetitions come from sdf-item-repetition-context: one occurrence per element of its expression. */
 export function isItemCopyGroup(item?: QuestionnaireItem): boolean {
-  return item?.type === 'group' && !!getAnyCopyExtension(item);
+  return item?.type === 'group' && !!getRepetitionContextExtension(item);
 }
 
 /**
@@ -319,12 +330,11 @@ export function isGTableView(item?: QuestionnaireItem): boolean {
 }
 
 /**
- * Items whose occurrences are created by copying, so the user cannot add or remove them: copied groups, and
- * repeating questions with a copy expression.
+ * Items whose repetitions come from sdf-item-repetition-context, so the user cannot add or remove them: groups get one
+ * occurrence, questions one answer, per element.
  */
 export function isItemCopyTarget(item?: QuestionnaireItem): boolean {
-  if (!item || !getAnyCopyExtension(item)) return false;
-  return item.type === 'group' || !!item.repeats;
+  return !!getRepetitionContextExtension(item);
 }
 
 export function getHyperlinkExtensionValue(item?: QuestionnaireItem | Element | Questionnaire): number | undefined {
