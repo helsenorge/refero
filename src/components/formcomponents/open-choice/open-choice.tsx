@@ -3,12 +3,12 @@ import { type FocusEvent, useCallback, useMemo } from 'react';
 import type { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import type { QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 
+import SliderView from '../choice/slider-view';
+import AutosuggestView from '../choice-common/autosuggest-view';
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import TextField from './text-field';
-import SliderView from '../choice/slider-view';
-import AutosuggestView from '../choice-common/autosuggest-view';
 
 import { removeCodingValueAsync, newCodingValueAsync, newCodingStringValueAsync, removeCodingStringValueAsync } from '@/actions/newValue';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';

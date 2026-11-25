@@ -33,6 +33,7 @@ export type ReceiverComponentProps = QuestionnaireComponentItemProps & {
 };
 
 const ReceiverComponent = ({
+  renderContext,
   item,
   selected,
   id,
@@ -50,13 +51,6 @@ const ReceiverComponent = ({
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
   const { fetchReceivers, resources } = useExternalRenderContext();
-  React.useEffect(() => {
-    if (fetchReceivers) {
-      fetchReceivers(loadSuccessCallback, loadErrorCallback);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const loadSuccessCallback = (receiverTreeNodes: Array<OrgenhetHierarki>): void => {
     const pathsToEndPoint = selected ? findPathToEndpointNode(receiverTreeNodes, selected[0] || '') : [];
     const selectedPath = pathsToEndPoint.length === 1 ? pathsToEndPoint[0] : [];
@@ -199,12 +193,13 @@ const ReceiverComponent = ({
     };
     const { onChange, ...rest } = register(
       `${idWithLinkIdAndItemIndex}-${selectKey}`,
-      shouldValidate(item, pdf) ? validationRules : undefined
+      shouldValidate(item, pdf, renderContext) ? validationRules : undefined
     );
 
-    if (pdf || isReadOnly(item)) {
+    if (pdf || isReadOnly(item, renderContext)) {
       return (
         <ReadOnly
+          renderContext={renderContext}
           pdf={pdf}
           id={id}
           idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -220,6 +215,7 @@ const ReceiverComponent = ({
     return (
       <FormGroup error={errorMessage} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
+          renderContext={renderContext}
           item={item}
           resources={resources}
           htmlFor={`${getId(id)}-${selectKey}`}
@@ -272,6 +268,14 @@ const ReceiverComponent = ({
       </>
     );
   };
+
+  // Declared after the callbacks it uses. It runs once, after the first render.
+  React.useEffect(() => {
+    if (fetchReceivers) {
+      fetchReceivers(loadSuccessCallback, loadErrorCallback);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div>

@@ -4,10 +4,10 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { q, qScriptInjection, qCustomErrorMessage } from './__data__/';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
+import { q, qScriptInjection, qCustomErrorMessage } from './__data__/';
 
 vi.mock('@helsenorge/designsystem-react/utils/debounce', () => ({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type, @typescript-eslint/explicit-function-return-type

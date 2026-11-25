@@ -3,9 +3,9 @@ import { fail } from 'assert';
 import type { Form } from '../form';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
+import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 import dataModel from './__data__/nestedRepeats';
 import { pathify, clickRepeat, uploadAttachment, createAttachment } from './utils';
-import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 
 describe('update enable when action', () => {
   let newState: Form;

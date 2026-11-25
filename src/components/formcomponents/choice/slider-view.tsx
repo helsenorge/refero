@@ -9,10 +9,10 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider } from '@helsenorge/designsystem-react/components/Slider';
 
 import styles from '../common-styles.module.css';
-import { getCodes, getLeftRightLabels, mapToSliderStep, SliderDisplayTypes } from './sliderUtils';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { getCodes, getLeftRightLabels, mapToSliderStep, SliderDisplayTypes } from './sliderUtils';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, isInteger, maxValue, minValue, required } from '@/components/validation/rules';
@@ -91,13 +91,17 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
     shouldUnregister: true,
     setValueAs: value => (isSelectedRef.current ? value : undefined),
   };
-  // setValueAs reads the ref when react-hook-form reads the value (on change and validation), not during render.
-  // eslint-disable-next-line react-hooks/refs
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const { onChange, ...rest } = register(
+    idWithLinkIdAndItemIndex,
+    // setValueAs reads the ref when react-hook-form reads the value (on change and validation), not during render.
+    // eslint-disable-next-line react-hooks/refs
+    shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined
+  );
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, props.renderContext)) {
     return (
       <ReadOnly
+        renderContext={props.renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -114,6 +118,7 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <FormGroup onColor="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
+          renderContext={props.renderContext}
           htmlFor={getId(id)}
           item={item}
           labelId={`${getId(id)}-slider-choice-label`}

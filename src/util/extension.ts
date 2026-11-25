@@ -2,12 +2,12 @@ import type { TABLE_CODES_VALUES } from '../constants/tableTypes';
 import type { SidebarItem } from '../types/sidebar';
 import type { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from 'fhir/r4';
 
-import { hasCode, isTableCode } from './typeguards';
 import { Extensions } from '../constants/extensions';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { getText } from '../util/index';
+import { hasCode, isTableCode } from './typeguards';
 
 export function getValidationTextExtension(item?: QuestionnaireItem): string | undefined {
   const validationTextExtension = getExtension(Extensions.VALIDATIONTEXT_URL, item);
@@ -245,7 +245,12 @@ export function getQuestionnaireHiddenExtensionValue(item?: QuestionnaireItem): 
   return questionnaireHiddenExtension.valueBoolean;
 }
 
+/** SDC calculatedExpression (valueExpression) when present, otherwise sdf-calculatedExpression (valueString). */
 export function getCalculatedExpressionExtension(item?: QuestionnaireItem): Extension | undefined {
+  const sdcExtension = getExtension(Extensions.SDC_CALCULATED_EXPRESSION_URL, item);
+  if (sdcExtension?.valueExpression?.expression) {
+    return sdcExtension;
+  }
   const calculatedExpressionExtension = getExtension(Extensions.CALCULATED_EXPRESSION_URL, item);
   if (
     !calculatedExpressionExtension ||
@@ -269,6 +274,62 @@ export function getCopyExtension(item?: QuestionnaireItem, useLegacyValueString:
     }
   }
   return extension;
+}
+
+/** The copy extension in either form: valueString (legacy) or valueExpression. */
+export function getAnyCopyExtension(item?: QuestionnaireItem): Extension | undefined {
+  return getCopyExtension(item) ?? getCopyExtension(item, false);
+}
+
+/** The expression text of a copy or calculated expression, in either form: valueString (legacy) or valueExpression. */
+export function getCopyExpressionText(extension?: Extension): string | undefined {
+  return extension?.valueString ?? extension?.valueExpression?.expression;
+}
+
+/**
+ * sdf-item-repetition-context, when it applies: on a repeating, read-only item, with an expression and a name.
+ * Without readOnly or name the extension is ignored.
+ */
+export function getRepetitionContextExtension(item?: QuestionnaireItem): Extension | undefined {
+  if (!item?.repeats || !item.readOnly) return undefined;
+  const extension = getExtension(Extensions.ITEM_REPETITION_CONTEXT_URL, item);
+  return extension?.valueExpression?.expression && extension.valueExpression.name ? extension : undefined;
+}
+
+/** The variable each repetition's element is bound to, from Expression.name. */
+export function getItemCopyVariableName(extension?: Extension): string {
+  return extension?.valueExpression?.name ?? 'row';
+}
+
+/** A group whose repetitions come from sdf-item-repetition-context: one occurrence per element of its expression. */
+export function isItemCopyGroup(item?: QuestionnaireItem): boolean {
+  return item?.type === 'group' && !!getRepetitionContextExtension(item);
+}
+
+/**
+ * An old gtable: no row source on the group, and its columns read flat lists from the whole response with copy
+ * expressions. It is still rendered by the table components until the forms are migrated.
+ */
+export function isLegacyGTable(item?: QuestionnaireItem): boolean {
+  return (
+    getCodingTextTableValues(item).includes('gtable') && !isItemCopyGroup(item) && !!item?.item?.some(child => !!getAnyCopyExtension(child))
+  );
+}
+
+/**
+ * A repeating group shown as a gtable: one row per occurrence, its questions are the columns. The occurrences either
+ * come from sdf-item-repetition-context (read-only) or are filled in by the person (editable cells).
+ */
+export function isGTableView(item?: QuestionnaireItem): boolean {
+  return item?.type === 'group' && !!item.repeats && getCodingTextTableValues(item).includes('gtable') && !isLegacyGTable(item);
+}
+
+/**
+ * Items whose repetitions come from sdf-item-repetition-context, so the user cannot add or remove them: groups get one
+ * occurrence, questions one answer, per element.
+ */
+export function isItemCopyTarget(item?: QuestionnaireItem): boolean {
+  return !!getRepetitionContextExtension(item);
 }
 
 export function getHyperlinkExtensionValue(item?: QuestionnaireItem | Element | Questionnaire): number | undefined {

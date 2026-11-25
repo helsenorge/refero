@@ -46,6 +46,7 @@ export const String = (props: Props): React.JSX.Element | null => {
   const [localValue, setLocalValue] = React.useState(value ?? '');
 
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- on master before the gtable change; fixing it changes how the field keeps its value, so it belongs in its own change
     setLocalValue(value ?? '');
   }, [value]);
 
@@ -94,11 +95,15 @@ export const String = (props: Props): React.JSX.Element | null => {
     },
   };
 
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const { onChange, ...rest } = register(
+    idWithLinkIdAndItemIndex,
+    shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined
+  );
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, props.renderContext)) {
     return (
       <ReadOnly
+        renderContext={props.renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -116,6 +121,7 @@ export const String = (props: Props): React.JSX.Element | null => {
     <div className="page_refero__component page_refero__component_string">
       <FormGroup htmlMarkup="div" error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
+          renderContext={props.renderContext}
           item={item}
           resources={resources}
           htmlFor={getId(id)}

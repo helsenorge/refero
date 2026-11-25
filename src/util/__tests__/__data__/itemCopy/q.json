@@ -1,0 +1,556 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "item-copy-poc",
+  "language": "nb-NO",
+  "name": "POC_Item_Copy",
+  "title": "POC: kopiering av items (cqf-expression)",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ]
+  },
+  "subjectType": ["Patient"],
+  "item": [
+    {
+      "linkId": "kilde",
+      "text": "1. Kilde: repeterende gruppe",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "urin",
+          "text": "Urin",
+          "type": "group",
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+              "valueString": "Legg til registrering"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "urin.text",
+              "text": "Tekst",
+              "type": "string"
+            },
+            {
+              "linkId": "urin.age",
+              "text": "Alder",
+              "type": "integer"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "s1",
+      "text": "1a. NY: gtable som kopierer items (%row)",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='urin')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "s1.text",
+          "text": "Tekst",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='urin.text').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "s1.age",
+          "text": "Alder",
+          "type": "integer",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='urin.age').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "s2",
+      "text": "1b. NY: samme kopiering uten gtable (vanlig gruppe, variabel %urin)",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
+          "valueExpression": {
+            "name": "urin",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='urin')"
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "s2.text",
+          "text": "Tekst",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%urin.item.where(linkId='urin.text').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "s2.age",
+          "text": "Alder",
+          "type": "integer",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%urin.item.where(linkId='urin.age').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "s3",
+      "text": "1c. NY: gtable, bare rader med alder (filter i uttrykket)",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='urin').where(item.where(linkId='urin.age').answer.exists())"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "s3.text",
+          "text": "Tekst",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='urin.text').answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "s3.age",
+          "text": "Alder",
+          "type": "integer",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%row.item.where(linkId='urin.age').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "s4",
+      "text": "1d. GAMMEL: gtable med verdi-kopiering (valueString)",
+      "type": "group",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "s4.text",
+          "text": "Tekst",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='urin.text').answer.value"
+            }
+          ]
+        },
+        {
+          "linkId": "s4.age",
+          "text": "Alder",
+          "type": "integer",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='urin.age').answer.value"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "kilde2",
+      "text": "2. Kilde: repeterende spørsmål",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "tall",
+          "text": "Tall",
+          "type": "integer",
+          "repeats": true
+        }
+      ]
+    },
+    {
+      "linkId": "s5",
+      "text": "2a. NY: repeterende integer som kopierer items (én forekomst per repetisjon)",
+      "type": "integer",
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='tall')"
+          }
+        }
+      ],
+      "repeats": true
+    },
+    {
+      "linkId": "s6",
+      "text": "2b. NY: gtable med repeterende spørsmål som radkilde",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='tall')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "s6.tall",
+          "text": "Tall",
+          "type": "integer",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%row.answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "s7",
+      "text": "2c. GAMMEL: verdi-kopiering til ett felt (valueString)",
+      "type": "integer",
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueString": "QuestionnaireResponse.descendants().where(linkId='tall').answer.value"
+        }
+      ]
+    },
+    {
+      "linkId": "kilde3",
+      "text": "3. Kilde: repeterende spørsmål med svar-nestet underspørsmål",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "medisin",
+          "text": "Medisin",
+          "type": "string",
+          "repeats": true,
+          "item": [
+            {
+              "linkId": "medisin.dose",
+              "text": "Dose (mg)",
+              "type": "integer"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "s8",
+      "text": "3a. NY: gtable som leser svar-nestede barn (%row.answer.item)",
+      "type": "group",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='medisin')"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "gtable"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "s8.navn",
+          "text": "Medisin",
+          "type": "string",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%row.answer.value"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "s8.dose",
+          "text": "Dose",
+          "type": "integer",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%row.answer.item.where(linkId='medisin.dose').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "s9",
+      "text": "3b. NY: kopiert spørsmål med egne svar-nestede barn",
+      "type": "string",
+      "repeats": true,
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
+          "valueExpression": {
+            "name": "row",
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='medisin')"
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "s9.dose",
+          "text": "Dose (kopi)",
+          "type": "integer",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/fhirpath",
+                "expression": "%row.answer.item.where(linkId='medisin.dose').answer.value"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "vis",
+      "text": "4. Spørsmål med svar-nestet kopimål: vis oppsummering?",
+      "type": "boolean",
+      "item": [
+        {
+          "linkId": "s10",
+          "text": "4a. NY: gtable under et spørsmål (svar-nestet mål)",
+          "type": "group",
+          "repeats": true,
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context",
+              "valueExpression": {
+                "name": "row",
+                "language": "text/fhirpath",
+                "expression": "%resource.descendants().where(linkId='urin')"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "gtable"
+                  }
+                ]
+              }
+            }
+          ],
+          "item": [
+            {
+              "linkId": "s10.text",
+              "text": "Tekst",
+              "type": "string",
+              "readOnly": true,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%row.item.where(linkId='urin.text').answer.value"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "s10.age",
+              "text": "Alder",
+              "type": "integer",
+              "readOnly": true,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%row.item.where(linkId='urin.age').answer.value"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

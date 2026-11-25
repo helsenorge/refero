@@ -2,10 +2,11 @@ import { memo } from 'react';
 
 import type { QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
 import type { Path } from '@/util/refero-core';
-import type { RenderContext } from '@/util/renderContext';
 import type { Resource, QuestionnaireItem } from 'fhir/r4';
 
 import ResponseItem from './ResponseItem';
+
+import { isTableRowOf, type RenderContext } from '@/util/renderContext';
 
 type RenderResponseItemsProps = {
   item: QuestionnaireItem;
@@ -32,8 +33,13 @@ export const RenderResponseItems = memo(function RenderResponseItems({
   isNavigatorEnabled,
   headerTag,
 }: RenderResponseItemsProps): React.JSX.Element[] | null {
-  return responseItems
-    .map((linkId, index) => (
+  // The rows of a sorted table: the owner's occurrences in the table's order. Indexes stay the occurrence's own.
+  const order = isTableRowOf(renderContext, item.linkId) ? renderContext.Order : undefined;
+  const indexes = order ?? responseItems.map((_, index) => index);
+  return indexes
+    .filter(index => index < responseItems.length)
+    .map(index => [responseItems[index], index] as const)
+    .map(([linkId, index]) => (
       <ResponseItem
         key={`${linkId}-${index}`}
         linkId={linkId}

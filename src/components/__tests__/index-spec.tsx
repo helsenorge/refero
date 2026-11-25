@@ -5,12 +5,12 @@ import userEvent from '@testing-library/user-event';
 import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import '../../util/__tests__/defineFetch';
-import ChoiceCopyFrom from './__data__/copyFrom/choice';
-import RenderingOptionsData from './__data__/renderingOptions';
 import { selectCheckboxOption } from '../../../test/selectors';
 import { renderRefero, screen, waitFor } from '../../../test/test-utils';
 import itemcontrol from '../../constants/itemcontrol';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
+import ChoiceCopyFrom from './__data__/copyFrom/choice';
+import RenderingOptionsData from './__data__/renderingOptions';
 
 describe('Component renders help items', () => {
   it('help button should be visible and control the help element', async () => {

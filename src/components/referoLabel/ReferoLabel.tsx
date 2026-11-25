@@ -6,10 +6,11 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag';
 import Label, { type LabelText } from '@helsenorge/designsystem-react/components/Label';
 
-import SafeText from './SafeText';
-import SubLabel from './sublabel';
+import commonStyles from '../formcomponents/common-styles.module.css';
 import RenderHelpButton from '../formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
+import SafeText from './SafeText';
+import SubLabel from './sublabel';
 
 import styles from './referoLabel.module.css';
 
@@ -18,6 +19,7 @@ import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { RequiredLevelSelector } from '@/reducers/selectors';
 import { getId, getLabelText, getSublabelText } from '@/util';
+import { isInTable, type RenderContext } from '@/util/renderContext';
 
 type Props = {
   item?: QuestionnaireItem;
@@ -35,6 +37,8 @@ type Props = {
   afterLabelChildren?: React.JSX.Element | null;
   children?: React.ReactNode;
   formFieldTagId: string;
+  /** In a table the column header is the title: the label is kept for screen readers only. */
+  renderContext?: RenderContext;
 };
 
 export const ReferoLabel = ({
@@ -53,6 +57,7 @@ export const ReferoLabel = ({
   afterLabelChildren,
   children,
   formFieldTagId,
+  renderContext,
 }: Props): React.JSX.Element => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const questionnaire = useAppSelector(state => getFormDefinition(state))?.Content;
@@ -63,9 +68,11 @@ export const ReferoLabel = ({
   const id = getId(item?.id);
   const { level, errorLevelResources } = useAppSelector(state => RequiredLevelSelector(state, item, resources));
 
+  const inTable = isInTable(renderContext);
+
   return (
     <>
-      <div className={styles.referoLabel_label_wrapper}>
+      <div className={inTable ? commonStyles.visuallyHidden : styles.referoLabel_label_wrapper}>
         <div>
           <Label
             formFieldTag={level ? <FormFieldTag id={formFieldTagId} level={level} resources={errorLevelResources} /> : null}
@@ -84,6 +91,7 @@ export const ReferoLabel = ({
             afterLabelChildren={afterLabelChildren}
           >
             <SafeText as="span" text={lblText} className={styles.referoLabel_safetext}></SafeText>
+            {inTable && renderContext?.Row && <span>{`, ${resources?.tableRow ?? 'rad'} ${renderContext.Row}`}</span>}
           </Label>
         </div>
         <div className={styles.referoLabel_extraLabel_and_helpButton_wrapper}>
@@ -94,7 +102,7 @@ export const ReferoLabel = ({
         </div>
       </div>
       {children}
-      {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
+      {subLabelText && !inTable && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
       {attachmentLabel && <SubLabel subLabelText={attachmentLabel} testId={`${id}-attachment-sublabel`} />}
       {quantityUnitSubLabel && <SubLabel subLabelText={quantityUnitSubLabel} testId={`${id}-quantity-unit-sublabel`} />}
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />

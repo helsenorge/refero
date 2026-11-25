@@ -10,10 +10,10 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
-import { useMinMaxDate } from './useMinMaxDate';
 import { getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReadOnly } from '../read-only/readOnly';
+import { useMinMaxDate } from './useMinMaxDate';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, required } from '@/components/validation/rules';
@@ -31,6 +31,7 @@ type DateDayInputProps = QuestionnaireComponentItemProps & {
 };
 
 export const DateDayInput = ({
+  renderContext,
   id,
   idWithLinkIdAndItemIndex,
   pdf,
@@ -79,6 +80,7 @@ export const DateDayInput = ({
 
   useEffect(() => {
     if (isValid(dateAnswerValueParsed)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- on master before the gtable change; fixing it changes how the field keeps its value, so it belongs in its own change
       setDateValue(dateAnswerValueParsed);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,11 +123,12 @@ export const DateDayInput = ({
     },
     shouldUnregister: true,
   };
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf, renderContext) ? validationRules : undefined);
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, renderContext)) {
     return (
       <ReadOnly
+        renderContext={renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -141,6 +144,7 @@ export const DateDayInput = ({
   return (
     <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
+        renderContext={renderContext}
         item={item}
         resources={resources}
         htmlFor={`${getId(id)}-datepicker`}

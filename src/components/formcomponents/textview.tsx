@@ -16,9 +16,11 @@ interface Props {
   value?: string | number;
   textClass?: string;
   children?: ReactNode;
+  /** Leave out the title, for example in a table where the column header is the title. */
+  hideTitle?: boolean;
 }
 
-const TextView = ({ id, testId, item, value, textClass, children }: Props): React.JSX.Element | null => {
+const TextView = ({ id, testId, item, value, textClass, children, hideTitle }: Props): React.JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
@@ -26,18 +28,20 @@ const TextView = ({ id, testId, item, value, textClass, children }: Props): Reac
 
   return (
     <div data-testid={testId} id={getId(id)}>
-      <>
-        <SafeText safeTextId={safeTextId} as="b" text={getText(item, onRenderMarkdown)} />
+      {!hideTitle && (
+        <>
+          <SafeText safeTextId={safeTextId} as="b" text={getText(item, onRenderMarkdown)} />
 
-        <RenderHelpButton
-          isHelpVisible={isHelpVisible}
-          item={item}
-          setIsHelpVisible={setIsHelpVisible}
-          padding={true}
-          ariaLabeledBy={safeTextId}
-        />
-        <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
-      </>
+          <RenderHelpButton
+            isHelpVisible={isHelpVisible}
+            item={item}
+            setIsHelpVisible={setIsHelpVisible}
+            padding={true}
+            ariaLabeledBy={safeTextId}
+          />
+          <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
+        </>
+      )}
       <div className={textClass || ''}>{value}</div>
       {children ? (
         <span>
@@ -45,8 +49,12 @@ const TextView = ({ id, testId, item, value, textClass, children }: Props): Reac
           {children}
         </span>
       ) : null}
-      <br />
-      <br />
+      {!hideTitle && (
+        <>
+          <br />
+          <br />
+        </>
+      )}
     </div>
   );
 };

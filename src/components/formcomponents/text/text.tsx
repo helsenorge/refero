@@ -103,11 +103,15 @@ export const Text = (props: Props): React.JSX.Element | null => {
     },
   };
 
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const { onChange, ...rest } = register(
+    idWithLinkIdAndItemIndex,
+    shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined
+  );
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, props.renderContext)) {
     return (
       <ReadOnly
+        renderContext={props.renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -125,6 +129,7 @@ export const Text = (props: Props): React.JSX.Element | null => {
     <div className="page_refero__component page_refero__component_text">
       <FormGroup htmlMarkup="div" error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
+          renderContext={props.renderContext}
           testId={`${getId(id)}-text-label`}
           htmlFor={getId(id)}
           item={item}

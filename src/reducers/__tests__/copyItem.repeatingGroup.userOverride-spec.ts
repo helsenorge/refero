@@ -4,9 +4,9 @@ import { fail } from 'assert';
 import type { Form } from '../form';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
+import { getDefinitionItems, getQuestionnaireDefinitionItem, getResponseItemWithPath } from '../../util/refero-core';
 import dataModel from './__data__/repeatingInitialGroupUserOverride';
 import { pathify, clickRepeat } from './utils';
-import { getDefinitionItems, getQuestionnaireDefinitionItem, getResponseItemWithPath } from '../../util/refero-core';
 
 describe('copyItem - repeating group - user override', () => {
   let state: Form;

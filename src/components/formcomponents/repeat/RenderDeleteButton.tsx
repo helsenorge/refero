@@ -14,9 +14,17 @@ type Props = {
   index?: number;
   item?: QuestionnaireItem;
   path?: Path[];
+  /** Text after the button text for screen readers only, for example which row it deletes ("rad 2"). */
+  screenReaderSuffix?: string;
 };
 
-export const RenderDeleteButton = memo(function RenderDeleteButton({ className, item, path, index }: Props): React.JSX.Element | null {
+export const RenderDeleteButton = memo(function RenderDeleteButton({
+  className,
+  item,
+  path,
+  index,
+  screenReaderSuffix,
+}: Props): React.JSX.Element | null {
   const [decendentAnswer, setDecendentAnswer] = useState<boolean>(false);
   const responseItem = useAppSelector(state => getResponseItemWithPathSelector(state, path));
   useEffect(() => {
@@ -34,7 +42,13 @@ export const RenderDeleteButton = memo(function RenderDeleteButton({ className, 
 
   return (
     <div className="page_refero__deletebutton-wrapper">
-      <DeleteButton className={className} item={item} path={path} mustShowConfirm={mustShowConfirm} />
+      <DeleteButton
+        className={className}
+        item={item}
+        path={path}
+        mustShowConfirm={mustShowConfirm}
+        screenReaderSuffix={screenReaderSuffix}
+      />
     </div>
   );
 });

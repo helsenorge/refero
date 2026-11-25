@@ -9,6 +9,7 @@ import TrashCan from '@helsenorge/designsystem-react/components/Icons/TrashCan';
 import Modal from '@helsenorge/designsystem-react/components/Modal';
 
 import { deleteRepeatItemAsync } from '../../../actions/newValue';
+import commonStyles from '../common-styles.module.css';
 
 import { useExternalRenderContext } from '@/context/externalRender/useExternalRender';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
@@ -19,9 +20,11 @@ type Props = {
   item?: QuestionnaireItem;
   path?: Array<Path>;
   mustShowConfirm?: boolean;
+  /** Text after the button text for screen readers only, for example which row it deletes ("rad 2"). */
+  screenReaderSuffix?: string;
 };
 
-const DeleteButton = ({ item, path, mustShowConfirm }: Props): React.JSX.Element => {
+const DeleteButton = ({ item, path, mustShowConfirm, screenReaderSuffix }: Props): React.JSX.Element => {
   const dispatch = useAppDispatch();
   const { globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
@@ -52,6 +55,7 @@ const DeleteButton = ({ item, path, mustShowConfirm }: Props): React.JSX.Element
       <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem} testId={`${testId}-delete-button`} ariaLabel="slett">
         <Icon svgIcon={TrashCan} />
         {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
+        {screenReaderSuffix && <span className={commonStyles.visuallyHidden}>{` ${screenReaderSuffix}`}</span>}
       </Button>
       {showConfirm && !!resources ? (
         <Modal

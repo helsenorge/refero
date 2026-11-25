@@ -41,11 +41,12 @@ const RadioView = (props: Props): React.JSX.Element => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
-  const registration = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const registration = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined);
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, props.renderContext)) {
     return (
       <ReadOnly
+        renderContext={props.renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -62,6 +63,7 @@ const RadioView = (props: Props): React.JSX.Element => {
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <FormGroup htmlMarkup="div" onColor="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
+          renderContext={props.renderContext}
           item={item}
           resources={resources}
           labelId={`${getId(id)}-choice-label`}

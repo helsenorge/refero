@@ -1,10 +1,16 @@
 // sorting.ts
-import type { Column } from './utils';
 import type { QuestionnaireItem } from 'fhir/r4';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { TableOrderingColum, TableOrderingFunctions } from '@/constants/codingsystems';
+
+/** A column of a gtable: its header text and the linkId of its question. */
+export type Column = {
+  header: string;
+  sourceLinkId: string;
+  summaryLinkId: string;
+};
 
 // CodeSystems you use to configure sorting on the gTable group
 export const ORDER_COL_SYSTEM = TableOrderingColum;
@@ -28,10 +34,15 @@ export function getDefaultSortFromGTableItem(
   const colCode = codes.find(c => c.system === TableOrderingColum)?.code;
   const hasColumn = !!columns.find(c => c.summaryLinkId === colCode);
 
-  return {
-    sortKey: hasColumn ? colCode : columns[0]?.summaryLinkId,
-    sortDir: sortDir ?? SortDirection.asc,
-  };
+  // Rows keep the order of the response unless the questionnaire asks for sorting. A direction without a
+  // (valid) column still asks for it, and sorts by the first column.
+  if (hasColumn) {
+    return { sortKey: colCode, sortDir: sortDir ?? SortDirection.asc };
+  }
+  if (sortDir) {
+    return { sortKey: columns[0]?.summaryLinkId, sortDir };
+  }
+  return {};
 }
 
 export function sortRowsByKey<T extends Record<string, string | undefined>>(rows: T[], key: string, direction: SortDirection): T[] {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { AnswerPad } from '../util/FhirPathExtensions';
 import type { FhirPathCalculationOptions } from '../util/fhirPathOptions';
+import type { CalculatorResult } from './helpers';
 import type { Extension, Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type { Path } from 'fhirpath';
 
@@ -89,7 +89,7 @@ export interface RunCalculatorsParams {
   options?: FhirPathCalculationOptions;
   questionnaireKey?: number;
 }
-export type RunCalculatorsResult = AnswerPad;
+export type RunCalculatorsResult = CalculatorResult;
 
 /**
  * Mapped method → params/result (for strong typing of the RPC envelope)

@@ -63,7 +63,8 @@ export function getCalculatedAnswerUpdates(
  * something first. sdf-scoring is calculated separately, by runScoringCalculator.
  */
 export function applyCalculatedAnswers(questionnaire: Questionnaire, questionnaireResponse: QuestionnaireResponse): QuestionnaireResponse {
-  const answerPad = runCalculators({ questionnaire, questionnaireResponse });
+  // Item copies are applied separately, by withItemCopiesApplied in generateQuestionnaireResponse.
+  const { answerPad } = runCalculators({ questionnaire, questionnaireResponse });
   for (const update of getCalculatedAnswerUpdates(questionnaire, questionnaireResponse, answerPad)) {
     // The same as the reducer does with newAnswerValuesAction.
     update.responseItem.answer = pruneEmptyAnswers(update.newAnswer);

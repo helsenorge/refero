@@ -7,6 +7,7 @@ import { applyCalculatedAnswers } from '@/calculators/calculatedAnswers';
 import Constants from '@/constants/';
 import ItemType from '@/constants/itemType';
 import StatusConstants from '@/constants/status';
+import { withItemCopiesApplied } from '@/util/FhirPathExtensions';
 import { isHelpItem } from '@/util/help';
 
 const shouldNotAddItemToResponse = (item: QuestionnaireItem): boolean => {
@@ -41,7 +42,7 @@ export function generateQuestionnaireResponse(questionnaire: Questionnaire | und
       response.item.push(responseItem);
     }
   });
-  return evaluateCalculatedExpressions(questionnaire, response);
+  return withItemCopiesApplied(questionnaire, evaluateCalculatedExpressions(questionnaire, response));
 }
 
 function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: QuestionnaireResponseItem): void {

@@ -1,6 +1,7 @@
 import { createAction, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { AppDispatch, GlobalState } from '../reducers';
+import type { ItemCopy } from '../util/FhirPathExtensions';
 import type { Path } from '../util/refero-core';
 import type { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
@@ -15,6 +16,9 @@ export type NEW_ANSWER_VALUE = 'refero/NEW_ANSWER_VALUE';
 export const NEW_ANSWER_VALUE: NEW_ANSWER_VALUE = 'refero/NEW_ANSWER_VALUE';
 export type NEW_ANSWER_VALUES = 'refero/NEW_ANSWER_VALUES';
 export const NEW_ANSWER_VALUES: NEW_ANSWER_VALUES = 'refero/NEW_ANSWER_VALUES';
+
+export type REPLACE_ITEM_COPIES = 'refero/REPLACE_ITEM_COPIES';
+export const REPLACE_ITEM_COPIES: REPLACE_ITEM_COPIES = 'refero/REPLACE_ITEM_COPIES';
 
 export type ADD_REPEAT_ITEM = 'refero/ADD_REPEAT_ITEM';
 export const ADD_REPEAT_ITEM: ADD_REPEAT_ITEM = 'refero/ADD_REPEAT_ITEM';
@@ -128,6 +132,8 @@ export function newBooleanValueAsync(itemPath: Array<Path>, value: boolean, item
 }
 export const newAnswerValueAction = createAction<AnswerValueItemPayload>(NEW_ANSWER_VALUE);
 export const newAnswerValuesAction = createAction<AnswerValuesItemPayload>(NEW_ANSWER_VALUES);
+/** Replaces all occurrences of each copied item under its parent with the occurrences the item copy produced. */
+export const replaceItemCopiesAction = createAction<ItemCopy[]>(REPLACE_ITEM_COPIES);
 
 export const newCodingValueAction = createAction<CodingValueItemPayload>(NEW_VALUE);
 /*

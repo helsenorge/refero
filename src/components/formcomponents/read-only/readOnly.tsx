@@ -10,6 +10,7 @@ import TextView from '../textview';
 
 import { getErrorMessage } from '@/components/validation/rules';
 import { getId, shouldValidateReadOnly } from '@/util';
+import { isInTable, type RenderContext } from '@/util/renderContext';
 
 type Props = {
   pdf?: boolean;
@@ -21,6 +22,8 @@ type Props = {
   errors?: FieldError;
   textClass?: string;
   children?: React.ReactNode;
+  /** In a table the column header is the title, so the item's own title is left out. */
+  renderContext?: RenderContext;
 };
 
 export const ReadOnly = ({
@@ -33,6 +36,7 @@ export const ReadOnly = ({
   children,
   errors,
   textClass,
+  renderContext,
 }: Props): React.JSX.Element => {
   const { setValue } = useFormContext<FieldValues>();
 
@@ -45,21 +49,35 @@ export const ReadOnly = ({
 
   if (pdf) {
     return (
-      <TextView id={id} testId={`${getId(id)}-pdf`} item={item} value={pdfValue} textClass={textClass}>
+      <TextView id={id} testId={`${getId(id)}-pdf`} item={item} value={pdfValue} textClass={textClass} hideTitle={isInTable(renderContext)}>
         {children}
       </TextView>
     );
   } else if (shouldValidateReadOnly(item)) {
     return (
       <FormGroup error={getErrorMessage(item, errors)}>
-        <TextView id={id} testId={`${getId(id)}-readonly`} item={item} value={pdfValue} textClass={textClass}>
+        <TextView
+          id={id}
+          testId={`${getId(id)}-readonly`}
+          item={item}
+          value={pdfValue}
+          textClass={textClass}
+          hideTitle={isInTable(renderContext)}
+        >
           {children}
         </TextView>
       </FormGroup>
     );
   } else {
     return (
-      <TextView id={id} testId={`${getId(id)}-readonly`} item={item} value={pdfValue} textClass={textClass}>
+      <TextView
+        id={id}
+        testId={`${getId(id)}-readonly`}
+        item={item}
+        value={pdfValue}
+        textClass={textClass}
+        hideTitle={isInTable(renderContext)}
+      >
         {children}
       </TextView>
     );

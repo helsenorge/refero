@@ -4,10 +4,10 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire } from 'fhir/r4';
 
-import { radioView as q } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, repeatCheckboxNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
+import { radioView as q } from './__data__/index';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {

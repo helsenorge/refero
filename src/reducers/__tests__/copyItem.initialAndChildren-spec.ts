@@ -3,10 +3,10 @@ import * as fs from 'fs';
 import type { Form } from '../form';
 import type { Questionnaire, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import dataModel from './__data__/copyItemInitialChildren';
-import { clickRepeat, createGlobalStateWithQuestionnaire } from './utils';
 import { generateQuestionnaireResponse } from '../../actions/generateQuestionnaireResponse';
 import { getDefinitionItems, getQuestionnaireDefinitionItem } from '../../util/refero-core';
+import dataModel from './__data__/copyItemInitialChildren';
+import { clickRepeat, createGlobalStateWithQuestionnaire } from './utils';
 
 const loadQuestionnaire = (): Questionnaire =>
   JSON.parse(fs.readFileSync(__dirname + '/__data__/copyItemInitialChildren/q.json').toString()) as Questionnaire;

@@ -4,11 +4,11 @@ import { renderRefero, screen, userEvent, waitFor } from '@test/test-utils.tsx';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire } from 'fhir/r4';
 
-import { repeatQ, q, repeatQ2 } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, repeatGroupNTimes } from '../../../../../test/selectors';
 import Constants from '../../../../constants';
 import { Extensions } from '../../../../constants/extensions';
+import { repeatQ, q, repeatQ2 } from './__data__';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 

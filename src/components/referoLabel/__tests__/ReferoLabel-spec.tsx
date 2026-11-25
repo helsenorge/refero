@@ -3,8 +3,8 @@ import { renderRefero, screen, waitFor } from '@test/test-utils.tsx';
 import type { ReferoProps } from '@/types/referoProps.ts';
 import type { Questionnaire } from 'fhir/r4';
 
-import { q } from './__data__';
 import { getResources } from '../../../../preview/resources/referoResources.ts';
+import { q } from './__data__';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', formOptional: '(Valgfritt)' };
 

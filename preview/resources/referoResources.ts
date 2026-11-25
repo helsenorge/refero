@@ -9,6 +9,8 @@ export const getResources = (language: string): Resources => {
       formRequiredRadiobuttonList: 'Select one',
       openChoiceOption: 'Other',
       deleteButtonText: 'Delete',
+      tableRow: 'row',
+      tableActions: 'Actions',
       validationSummaryHeader: 'Check that the following are filled in correctly:',
       supportedFileFormats: 'Valid file formats are jpeg, png and pdf',
       selectDefaultPlaceholder: 'Select one of the options.',
@@ -93,6 +95,8 @@ export const getResources = (language: string): Resources => {
   return {
     openChoiceOption: 'Annet',
     deleteButtonText: 'Slett',
+    tableRow: 'rad',
+    tableActions: 'Handlinger',
     validationSummaryHeader: 'Sjekk at følgende er riktig utfylt:',
     supportedFileFormats: 'Gyldige filformater er jpeg, png og pdf',
     selectDefaultPlaceholder: 'Velg...',

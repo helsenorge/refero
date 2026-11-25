@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Provider } from 'react-redux';
 
@@ -28,8 +28,8 @@ import { ImageChoicePlugin } from './external-components/ImageChoicePlugin';
 import { PillChoicePlugin } from './external-components/PillChoicePlugin';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import defaultSkjema from './skjema/q.json';
 import { buildPerfQuestionnaire } from './skjema/perfForm';
+import skjemaGtable from './skjema/q-gtable.json';
 import ReferoContainer from '../src/components/index';
 import qr from './skjema/responses/qr.json';
 import valueSet from '../src/constants/valuesets';
@@ -195,12 +195,20 @@ function hasTooManyAttachments(questionnaireResponse: QuestionnaireResponse | nu
 const FormFillerPreview = (): React.JSX.Element => {
   const [lang, setLang] = useState<number>(0);
   const [store] = useState(() => reduxStore());
-  // ?q=perf&n=200 loads a performance test form with n calculations (&rows=1 adds an item copy gtable).
+  // Preview only: lets browser tests read the response without submitting.
+  useEffect(() => {
+    (window as unknown as { __referoStore?: unknown }).__referoStore = store;
+  }, [store]);
+  // The default form shows gtable and item copying. ?file=<name> loads preview/skjema/local/<name>.json instead
+  // (a local folder, excluded from git, for forms that must not be committed). ?q=perf&n=200 loads a performance
+  // test form with n calculations (&rows=1 adds an item copy gtable).
   const previewParams = new URLSearchParams(window.location.search);
+  const localForms = import.meta.glob('./skjema/local/*.json', { eager: true, import: 'default' });
+  const localForm = previewParams.get('file') ? localForms[`./skjema/local/${previewParams.get('file')}.json`] : undefined;
   const skjema =
     previewParams.get('q') === 'perf'
       ? buildPerfQuestionnaire(Number(previewParams.get('n') ?? 100), previewParams.get('rows') === '1')
-      : defaultSkjema;
+      : (localForm ?? skjemaGtable);
   const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle | Questionnaire;
   const mainQuestionnaire = getQuestionnaireFromBubndle(parsedQuestionnaire, 0);
 
@@ -209,6 +217,8 @@ const FormFillerPreview = (): React.JSX.Element => {
   const [questionnaire] = useState<Questionnaire>(mainQuestionnaire);
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(parsedQuestionnaireResponse);
   const [showResponse, setShowResponse] = useState<boolean>(false);
+  // Renders the filled-in form the way the PDF is made, to see summaries that are only shown there (KunPdf).
+  const [pdf, setPdf] = useState<boolean>(false);
   const handleSubmit = (questionnaireResponse: QuestionnaireResponse): void => {
     // eslint-disable-next-line no-console
     console.log(JSON.stringify(questionnaireResponse));
@@ -295,7 +305,8 @@ const FormFillerPreview = (): React.JSX.Element => {
             <h1>{'Preview'}</h1>
             <div style={{ display: 'inline-flex', gap: '2rem' }}>
               <Button onClick={(): void => setLang(lang === 0 ? 1 : 0)}>{`Endre språk ${lang === 0 ? 'til engelsk' : 'til norsk'}`}</Button>{' '}
-              <Button onClick={setQr}>{'Set QR'}</Button>
+              <Button onClick={setQr}>{'Set QR'}</Button>{' '}
+              <Button onClick={(): void => setPdf(!pdf)}>{pdf ? 'Skjermvisning' : 'PDF-visning'}</Button>
             </div>
           </div>
 
@@ -303,6 +314,7 @@ const FormFillerPreview = (): React.JSX.Element => {
             {!showResponse ? (
               <div className="page_refero">
                 <ReferoContainer
+                  pdf={pdf}
                   questionnaire={questionnaire}
                   onCancel={() => {}}
                   onChange={onChange}

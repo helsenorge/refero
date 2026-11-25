@@ -1,3 +1,35 @@
+## 26.2.0
+
+- A group with `itemControl` `gtable` that repeats is shown as a table: one row per occurrence, one column per question. The rows can be
+  copied (a group with a row source, see 26.1.0), which are read-only and can be sorted, or filled in by the person, with a button to add a
+  row and a delete button per row. Each cell is the question's own component, so `hidden`, `enableWhen`, validation and value formatting
+  work as in the rest of the form. A question with `hidden` is not a column, and a question turned off by a condition on a question outside
+  the group is left out as a column. A table without rows is not shown.
+- In a table a question leaves out its title, since the column header is the title, and keeps its label for screen readers with the row
+  number ("Navn, rad 2"). The table is named after the group and scrolls sideways when it is too wide. New optional resources: `tableRow`
+  ("rad") and `tableActions` ("Handlinger"). `shouldValidate` takes an optional render context.
+- Behaviour change: a gtable without a sort code is no longer sorted on screen. The rows keep the order of the response, as in the PDF. A
+  sort code (`TableOrderingColum`, `TableOrderingFunctions`) still sorts, and the person can sort by clicking a column header. Dates, times
+  and numbers are sorted as such in the new table.
+- Old gtables (no row source on the group, columns that copy flat lists from the whole response) are drawn as before, apart from the
+  sorting.
+
+## 26.1.0
+
+- New extension `http://helsenorge.no/fhir/StructureDefinition/sdf-item-repetition-context` on a repeating, read-only group or question: its
+  expression decides the repetitions, one per element in the result, and `Expression.name` names the variable each repetition sees, for
+  example `%row.item.where(linkId='dose').answer.value`. A missing answer leaves an empty question in that repetition, so answers no longer
+  end up in another row. The person cannot add or delete the repetitions. On a repeating question, its own `calculatedExpression` gives each
+  answer's value. Without `readOnly` the extension is ignored. Every question under it gets its value from an expression; a question the
+  person answers inside a repetition is not supported, since the repetitions are rebuilt. See `docs/sdf-item-repetition-context.md`.
+- SDC `calculatedExpression` (`http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression`, `valueExpression`) is
+  read everywhere, next to `sdf-calculatedExpression`. When an item has both, the SDC one is used.
+- A `cqf-expression` on a group no longer does anything; groups have no answer. `cqf-expression` value copy on questions works as before.
+- The date limits `sdf-minvalue` and `sdf-maxvalue` are evaluated against the question, not the response, so they cannot use the repetition
+  variable.
+- Items nested under the answers of a repeating question with the extension are not supported, since refero shows the first answer's nested
+  items under every answer. Use a repeating group for rows with details.
+
 # 26.0.9
 
 - Fix: single-line text inputs and textareas no longer render inside a fieldset without a legend.

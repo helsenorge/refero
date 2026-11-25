@@ -1,9 +1,9 @@
 import '../../util/__tests__/defineFetch';
 import type { Questionnaire } from 'fhir/r4';
 
-import GroupGridModel from './__data__/group-grid';
 import { act, renderRefero, screen } from '../../../test/test-utils';
 import { encodeString } from '../createQuestionnaire/utils';
+import GroupGridModel from './__data__/group-grid';
 
 describe('group-grid-spec', () => {
   it('renders table with reordered items', async () => {

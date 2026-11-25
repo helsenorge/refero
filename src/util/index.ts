@@ -1,11 +1,18 @@
 import { marked } from 'marked';
 import * as uuid from 'uuid';
 
+import type { RenderContext } from '@/util/renderContext';
 import type { Resources } from '@/util/resources';
 import type { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 
+import codeSystems from '../constants/codingsystems';
+import { Extensions } from '../constants/extensions';
+import { HyperlinkTarget } from '../constants/hyperlinkTarget';
+import Constants from '../constants/index';
+import { RenderOptionCode } from '../constants/renderOptionCode';
+import { TableCodes } from '../constants/tableTypes';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import {
   getMaxOccursExtensionValue,
@@ -17,13 +24,8 @@ import {
   getHyperlinkExtensionValue,
   getCopyExtension,
   getSublabelTextExtensionValue,
+  isItemCopyTarget,
 } from './extension';
-import codeSystems from '../constants/codingsystems';
-import { Extensions } from '../constants/extensions';
-import { HyperlinkTarget } from '../constants/hyperlinkTarget';
-import Constants from '../constants/index';
-import { RenderOptionCode } from '../constants/renderOptionCode';
-import { TableCodes } from '../constants/tableTypes';
 
 import { VALIDATE_READONLY_CODE } from '@/constants/codes';
 
@@ -51,11 +53,12 @@ export function isStringEmpty(string: string | undefined): boolean {
   return string === '' || string === null || string === undefined;
 }
 
-export function isReadOnly(item?: QuestionnaireItem): boolean {
+/** Whether an item is read-only: in the questionnaire, or because the context it is rendered in is read-only. */
+export function isReadOnly(item?: QuestionnaireItem, renderContext?: RenderContext): boolean {
   if (item && item.readOnly) {
     return item.readOnly;
   }
-  return false;
+  return !!renderContext?.ReadOnly;
 }
 
 export function shouldValidateReadOnly(item?: QuestionnaireItem): boolean {
@@ -256,7 +259,7 @@ export function shouldRenderRepeatButton(
   response?: Array<QuestionnaireResponseItem> | undefined,
   index?: number
 ): boolean {
-  if (!repeats(item)) {
+  if (!repeats(item) || isItemCopyTarget(item)) {
     return false;
   }
 

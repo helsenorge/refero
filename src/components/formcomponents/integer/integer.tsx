@@ -91,11 +91,15 @@ const Integer = (props: Props): React.JSX.Element | null => {
     },
     shouldUnregister: true,
   };
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+  const { onChange, ...rest } = register(
+    idWithLinkIdAndItemIndex,
+    shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined
+  );
 
-  if (pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item, props.renderContext)) {
     return (
       <ReadOnly
+        renderContext={props.renderContext}
         pdf={pdf}
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
@@ -112,6 +116,7 @@ const Integer = (props: Props): React.JSX.Element | null => {
     <div className="page_refero__component page_refero__component_integer">
       <FormGroup error={errorMessage} onColor="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
+          renderContext={props.renderContext}
           item={item}
           resources={resources}
           htmlFor={getId(id)}
