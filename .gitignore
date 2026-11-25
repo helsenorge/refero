@@ -10,5 +10,6 @@ vite.config.ts.timestamp*
 vitest.config.ts.timestamp*
 bundle-stats.html
 html/
+.vitest/
 *.tgz
 .claude
