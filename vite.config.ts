@@ -84,7 +84,7 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
         tsconfigPath: path.resolve(import.meta.dirname, 'tsconfig.dts.json'),
         entryRoot: path.resolve(import.meta.dirname, 'src'),
         include: ['src'],
-        exclude: ['**/__tests__/**', '**/__mocks__/**', '**/__data__/**'],
+        exclude: ['**/__tests__/**', '**/__blackbox__/**', '**/__mocks__/**', '**/__data__/**'],
         outDirs: [path.resolve(import.meta.dirname, OUTPUT_DIRECTORY, 'types')],
       }),
       react(),

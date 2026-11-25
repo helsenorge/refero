@@ -17,6 +17,10 @@ names: `%row.item.where(linkId='medisin.dose').answer.value`. A missing answer g
 another row. Rows can be filtered in the row source with `where(...)`. Every expression the calculator evaluates under the item sees the
 variable; the date limits (`sdf-minvalue`, `sdf-maxvalue`) do not, since they are evaluated against the question.
 
+Known gap: on a repeating question with the extension, the response has the right items nested under each answer, but the form renders the
+nested items of all answers as one list and resolves each to the first answer (`createPathForItem` gives a non-repeating child no index).
+Use a repeating group for rows with details until the renderer handles nested items per answer.
+
 - `FhirPathExtensions` builds the occurrences (`collectItemCopies`); `runCalculators` returns them as `itemCopies` next to the `answerPad`,
   and `runFhirPathUpdater` dispatches `replaceItemCopiesAction` when they change. The reducer replaces the occurrences under each parent
   (`applyItemCopies`). A new response gets them from the start (`withItemCopiesApplied`).

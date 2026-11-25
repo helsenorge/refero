@@ -317,16 +317,11 @@ export function isLegacyGTable(item?: QuestionnaireItem): boolean {
 }
 
 /**
- * A group shown as a gtable: one row per occurrence of the group, its questions are the columns. The occurrences are
- * either copied (row source on the group, read-only) or filled in by the person (a repeating group, editable cells).
+ * A repeating group shown as a gtable: one row per occurrence, its questions are the columns. The occurrences either
+ * come from sdf-item-repetition-context (read-only) or are filled in by the person (editable cells).
  */
 export function isGTableView(item?: QuestionnaireItem): boolean {
-  return (
-    item?.type === 'group' &&
-    getCodingTextTableValues(item).includes('gtable') &&
-    !isLegacyGTable(item) &&
-    (isItemCopyGroup(item) || !!item.repeats)
-  );
+  return item?.type === 'group' && !!item.repeats && getCodingTextTableValues(item).includes('gtable') && !isLegacyGTable(item);
 }
 
 /**

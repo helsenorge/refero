@@ -28,7 +28,7 @@ import {
   getRepetitionContextExtension,
   isItemCopyTarget,
 } from './extension';
-import { evaluateFhirpathExpressionToGetString, evaluateOnPrivateCopy, type FhirPathEnvVars } from './fhirpathHelper';
+import { evaluateOnPrivateCopy, type FhirPathEnvVars } from './fhirpathHelper';
 import {
   isNumericResult,
   resolveFhirPathCalculationOptions,
@@ -244,13 +244,8 @@ export class FhirPathExtensions {
   private questionnaireForExpressions?: Questionnaire;
   private options: ResolvedFhirPathCalculationOptions;
   private fhirScoreCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
-  /**
-   * linkIds whose occurrences are produced by an item copy: copied groups (known from the questionnaire) and
-   * repeating questions whose copy expression turned out to select items (known after evaluation).
-   */
+  /** linkIds of the items with sdf-item-repetition-context, known from the questionnaire. */
   private itemCopyTargets: Set<string> = new Set<string>();
-  /** The copied groups, known from the questionnaire; itemCopyTargets starts from these on every evaluation. */
-  private questionnaireItemCopyTargets: Set<string> = new Set<string>();
   /**
    * Recent results per linkId, with the expression and the signature of the response parts they were computed
    * from. A result is reused when the signature matches; see expressionDependencies.
@@ -266,7 +261,6 @@ export class FhirPathExtensions {
     this.questionnaire = questionnaire;
     this.options = resolveFhirPathCalculationOptions(options);
     this.initializeCaches(questionnaire);
-    this.questionnaireItemCopyTargets = new Set(this.itemCopyTargets);
   }
 
   private initializeCaches(questionnaire: Questionnaire): void {
@@ -274,8 +268,8 @@ export class FhirPathExtensions {
   }
 
   /**
-   * Items inside a copied group are left out of fhirScoreCache: their expressions read the copied row (%row)
-   * and only make sense when evaluated per occurrence, which evaluateCalculatedExpressions does.
+   * Repetition targets and the items under them are left out of fhirScoreCache: their expressions read the
+   * repetition's variable and only make sense per repetition, which evaluateCalculatedExpressions does.
    */
   private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem, insideItemCopy = false): void {
     const isTarget = this.isOfTypeQuestionnaireItem(qItem) && isItemCopyTarget(qItem);
@@ -322,7 +316,7 @@ export class FhirPathExtensions {
    * questionnaire. %questionnaire lets an expression reach the definition side
    * of the form - answerOption, ordinalValue, item.code and so on - instead of
    * only the answers. %resource is bound to the QuestionnaireResponse by
-   * evaluateFhirpathExpressionToGetString.
+   * evaluateOnPrivateCopy.
    *
    * %questionnaire is a private copy: fhirpath.js attaches a __path__ property
    * to objects it returns, which would mutate, or throw on, a frozen original.
@@ -376,9 +370,6 @@ export class FhirPathExtensions {
     return { valueInteger: isNumeric ? Math.round(Number(value)) : 0 };
   }
   public evaluateAllExpressions(questionnaireResponse: QuestionnaireResponse): QuestionnaireResponse {
-    // The engine is kept between calculations, so a repeating question whose copy selected items last time but
-    // not now must not stay a copy target.
-    this.itemCopyTargets = new Set(this.questionnaireItemCopyTargets);
     try {
       return this.evaluateCalculatedExpressions(questionnaireResponse);
     } finally {
@@ -447,31 +438,25 @@ export class FhirPathExtensions {
       : expressionExtension.valueString;
   }
 
-  private evaluateRaw(
-    qItem: QuestionnaireItem,
-    expressionExtension: Extension,
-    response: QuestionnaireResponse,
-    envVars: FhirPathEnvVars
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ): any[] {
-    return evaluateFhirpathExpressionToGetString(
-      expressionExtension,
-      response,
-      !!expressionExtension.valueString,
-      { ...this.getEnvVars(), ...envVars },
-      qItem.linkId
-    );
-  }
-
-  /** The elements of the item's sdf-item-repetition-context, or undefined when it has none. */
+  /**
+   * The elements of the item's sdf-item-repetition-context, or undefined when it has none. Evaluated against the
+   * shared private copy, so a target inside a repeating group does not clone the response once per outer row.
+   */
   private selectItemsToCopy(
     qItem: QuestionnaireItem,
     response: QuestionnaireResponse,
     envVars: FhirPathEnvVars
   ): SelectedItems | undefined {
     const extension = getRepetitionContextExtension(qItem);
-    if (!extension) return undefined;
-    return { rowValues: this.evaluateRaw(qItem, extension, response, envVars), extension };
+    const expression = extension?.valueExpression?.expression;
+    if (!extension || !expression) return undefined;
+    const rowValues = evaluateOnPrivateCopy(
+      expression,
+      this.getEvaluationCopy(response),
+      { ...this.getEnvVars(), ...envVars },
+      qItem.linkId
+    );
+    return { rowValues, extension };
   }
 
   /**
@@ -489,8 +474,10 @@ export class FhirPathExtensions {
       valueExpression: { language: 'text/fhirpath', expression: `%${variableName}` },
     };
     const answer = this.computeExpression(qItem, expressionExtension, response, rowEnvVars).answers?.[0];
-    // An answer that only carries nested items has no value: the element is not answered and is skipped.
-    return answer && Object.keys(answer).some(key => key.startsWith('value')) ? answer : undefined;
+    // An answer without a value (only nested items, or a value that is undefined) means the element is not
+    // answered, and it is skipped.
+    const hasValue = Object.entries(answer ?? {}).some(([key, value]) => key.startsWith('value') && value !== undefined);
+    return hasValue ? answer : undefined;
   }
 
   /**
@@ -660,7 +647,7 @@ export class FhirPathExtensions {
         const answers = toPlainItems(result).flatMap(answersWithoutNestedItems);
         return { answers: answers.length > 0 ? answers : null, omitted: false };
       }
-      // Inside a copied row the first occurrence in the whole response belongs to another row, so nested items
+      // Inside a repetition the first occurrence in the whole response belongs to another one, so nested items
       // are left to the caller, which keeps the ones of the occurrence being evaluated.
       const insideItemCopy = Object.keys(envVars).length > 0;
       const qrItem = insideItemCopy ? undefined : getAllResponseitemsByLinkIdAndQuestionnaireResponse(qItem.linkId, response);
@@ -751,7 +738,6 @@ export class FhirPathExtensions {
       for (const qItem of qItems) {
         const selected = this.selectItemsToCopy(qItem, response, envVars);
         if (selected) {
-          this.itemCopyTargets.add(qItem.linkId);
           result.push(
             ...this.buildCopiedOccurrences(qItem, selected, envVars, response, (childQItems, childQrItems, childEnvVars) =>
               traverseItems(childQItems, childQrItems, response, childEnvVars)
