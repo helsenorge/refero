@@ -4,10 +4,10 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { q, qScriptInjection, qCustomErrorMessage } from './__data__/';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
+import { q, qScriptInjection, qCustomErrorMessage } from './__data__/';
 
 vi.mock('@helsenorge/designsystem-react/utils/debounce', () => ({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type, @typescript-eslint/explicit-function-return-type
@@ -29,6 +29,18 @@ const getStringInput = (questionnaire: Questionnaire, labelText: Matcher): HTMLE
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 describe('string', () => {
   describe('Render', () => {
+    it.each([false, true])('Should render a labelled input without a fieldset (help: %s)', async withHelp => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(item => ({ ...item, repeats: false, item: withHelp ? item.item : undefined })),
+      };
+
+      await createWrapper(questionnaire);
+
+      const input = screen.getByRole('textbox', { name: /String markdown/i });
+      expect(input.closest('fieldset')).toBeNull();
+    });
+
     it('Should render as text if props.pdf', async () => {
       const questionnaire: Questionnaire = {
         ...q,

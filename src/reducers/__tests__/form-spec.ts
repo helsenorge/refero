@@ -9,8 +9,6 @@ import type { Form } from '../form';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Questionnaire, QuestionnaireResponseItem } from 'fhir/r4';
 
-import dataModel from './__data__/dummy-data-model';
-import { reduce } from './utils';
 import {
   newStringValueAction,
   newBooleanValueAction,
@@ -32,6 +30,8 @@ import {
   getQuestionnaireResponseItemWithLinkid,
   getItemWithIdFromResponseItemArray,
 } from '../../util/refero-core';
+import dataModel from './__data__/dummy-data-model';
+import { reduce } from './utils';
 
 describe('new value action', () => {
   it('should update string value', async () => {

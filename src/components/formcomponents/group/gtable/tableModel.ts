@@ -4,8 +4,8 @@ import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { sortRowsByKey } from './sorting';
 
-import { isEnableWhenEnabled } from '@/hooks/useIsEnabled';
 import { isHiddenItem } from '@/util';
+import { isEnableWhenEnabled } from '@/util/isEnableWhenEnabled';
 import { createPathForItem, getResponseItemsWithLinkId, type Path } from '@/util/refero-core';
 
 /**

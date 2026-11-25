@@ -4,8 +4,8 @@ import { renderRefero, screen, waitFor } from '@test/test-utils.tsx';
 import type { ReferoProps } from '@/types/referoProps';
 import type { Questionnaire } from 'fhir/r4';
 
-import { q, qHighlight } from './__data__/';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { q, qHighlight } from './__data__/';
 
 const resources = { ...getResources('') };
 describe('Display', () => {

@@ -29,10 +29,10 @@ describe('evaluateCalculatedExpressions with calculation options', () => {
     { url: Extensions.COPY_EXPRESSION_URL, valueString: '1' },
   ];
 
-  it('Legacy: Should prefer the copy expression when an item has both', () => {
+  it('Legacy: Should prefer the calculated expression when an item has both, the same as after a change', () => {
     const result = evaluateCalculatedExpressions(questionnaireWith('integer', bothExtensions), emptyResponse());
 
-    expect(result.item?.[0].answer).toEqual([{ valueInteger: 1 }]);
+    expect(result.item?.[0].answer).toEqual([{ valueInteger: 2 }]);
   });
 
   it('Should prefer the copy expression with expressionPriority copy-first', () => {
@@ -49,12 +49,33 @@ describe('evaluateCalculatedExpressions with calculation options', () => {
     expect(result.item?.[0].answer).toEqual([{ valueInteger: 2 }]);
   });
 
-  it.each(['integer', 'decimal'])('Legacy: Should produce NaN for a non numeric %s result', type => {
+  it('Legacy: Should produce 0 for a non numeric integer result, the same as after a change', () => {
     const extension = [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: "'abc'" }];
-    const result = evaluateCalculatedExpressions(questionnaireWith(type, extension), emptyResponse());
+    const result = evaluateCalculatedExpressions(questionnaireWith('integer', extension), emptyResponse());
 
-    const answer = result.item?.[0].answer?.[0];
-    expect(Number.isNaN(type === 'integer' ? answer?.valueInteger : answer?.valueDecimal)).toBe(true);
+    expect(result.item?.[0].answer).toEqual([{ valueInteger: 0 }]);
+  });
+
+  it('Legacy: Should produce NaN for a non numeric decimal result', () => {
+    const extension = [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: "'abc'" }];
+    const result = evaluateCalculatedExpressions(questionnaireWith('decimal', extension), emptyResponse());
+
+    expect(Number.isNaN(result.item?.[0].answer?.[0].valueDecimal)).toBe(true);
+  });
+
+  it('Legacy: Should drop a calculated decimal 0, the same as after a change', () => {
+    const extension = [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: '0' }];
+    const result = evaluateCalculatedExpressions(questionnaireWith('decimal', extension), emptyResponse());
+
+    expect(result.item?.[0].answer?.[0].valueDecimal).toBeUndefined();
+  });
+
+  it('Should keep a calculated decimal 0 with keepZeroValues', () => {
+    setFhirPathCalculationOptions({ keepZeroValues: true });
+    const extension = [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: '0' }];
+    const result = evaluateCalculatedExpressions(questionnaireWith('decimal', extension), emptyResponse());
+
+    expect(result.item?.[0].answer).toEqual([{ valueDecimal: 0 }]);
   });
 
   it.each(['integer', 'decimal'])('Should produce no answer for a non numeric %s result with omitNonNumericResults', type => {
@@ -67,10 +88,10 @@ describe('evaluateCalculatedExpressions with calculation options', () => {
 
   it('Should keep numeric results with omitNonNumericResults', () => {
     setFhirPathCalculationOptions({ omitNonNumericResults: true });
-    const extension = [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: '0' }];
+    const extension = [{ url: Extensions.CALCULATED_EXPRESSION_URL, valueString: '2' }];
     const result = evaluateCalculatedExpressions(questionnaireWith('decimal', extension), emptyResponse());
 
-    expect(result.item?.[0].answer).toEqual([{ valueDecimal: 0 }]);
+    expect(result.item?.[0].answer).toEqual([{ valueDecimal: 2 }]);
   });
 });
 

@@ -13,10 +13,10 @@ import type {
   Questionnaire,
 } from 'fhir/r4';
 
-import { getMinOccursExtensionValue, isItemCopyTarget } from './extension';
-import { isOfTypeQuestionnaireResponseItem } from './typeguards';
 import ItemType from '../constants/itemType';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
+import { getMinOccursExtensionValue, isItemCopyTarget } from './extension';
+import { isOfTypeQuestionnaireResponseItem } from './typeguards';
 
 import { isRepeat } from '.';
 

@@ -1,8 +1,8 @@
 import type { QuestionnaireItemWithAnswers } from '../interface';
 import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
-import { type ITableH1, type ITableH1Column, type ITableH1Row, TABLE_HN1_TABLE_TYPES } from './interface';
 import { getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
+import { type ITableH1, type ITableH1Column, type ITableH1Row, TABLE_HN1_TABLE_TYPES } from './interface';
 
 import ItemType from '@/constants/itemType';
 

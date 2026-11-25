@@ -5,9 +5,9 @@ import { vi } from 'vitest';
 import { EnhetType, type OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
 import type { Questionnaire } from 'fhir/r4';
 
-import { q } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { selectDropdownOptionByName, submitForm } from '../../../../../test/selectors';
+import { q } from './__data__';
 
 const receivers = [
   {

@@ -1,7 +1,7 @@
 import type React from 'react';
 
-import type { Resources } from './resources';
 import type { Options } from '../types/formTypes/radioGroupOptions';
+import type { Resources } from './resources';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,

@@ -6,10 +6,10 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { q, qMinMax, qMinMaxCustomError } from './__data__/time';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
+import { q, qMinMax, qMinMaxCustomError } from './__data__/time';
 
 const resources = {
   ...getResources(''),

@@ -250,7 +250,9 @@ effect.
 ### `onRequestHelpButton: (item: QuestionniareItem, itemHelp: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => React.JSX.Element`
 
 This callback is called when the form encounters an element with help. The callback should return a React.JSX.Element which is placed after
-the items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
+the items label. If this is not specified, a default implementation is provided. The returned element is wrapped in a non-interactive
+container that toggles the help on click, so it should itself be (or contain) a native interactive element such as a `<button>`
+to be keyboard accessible. The callback is called with the following arguments:
 
 - `item: QuestionnaireItem` This is the item for which the help button is about to be rendered.
 - `helpItem: QuestionnaireItem` This is the item containing the raw help text.

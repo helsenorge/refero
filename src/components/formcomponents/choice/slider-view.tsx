@@ -9,10 +9,10 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider } from '@helsenorge/designsystem-react/components/Slider';
 
 import styles from '../common-styles.module.css';
-import { getCodes, getLeftRightLabels, mapToSliderStep, SliderDisplayTypes } from './sliderUtils';
 import { ReadOnly } from '../read-only/readOnly';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { getCodes, getLeftRightLabels, mapToSliderStep, SliderDisplayTypes } from './sliderUtils';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { getErrorMessage, isInteger, maxValue, minValue, required } from '@/components/validation/rules';
@@ -41,6 +41,8 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
   const { error } = fieldState;
 
   const [isSelected, setIsSelected] = useState(selected && selected[0] ? true : false);
+  // Read by setValueAs when the user moves the slider, which is before the state above has been updated.
+  const isSelectedRef = useRef(isSelected);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const onValueChange = useCallback(
@@ -87,10 +89,12 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
     min: minValue({ item, resources }),
     max: maxValue({ item, resources }),
     shouldUnregister: true,
-    setValueAs: value => (isSelected ? value : undefined),
+    setValueAs: value => (isSelectedRef.current ? value : undefined),
   };
   const { onChange, ...rest } = register(
     idWithLinkIdAndItemIndex,
+    // setValueAs reads the ref when react-hook-form reads the value (on change and validation), not during render.
+    // eslint-disable-next-line react-hooks/refs
     shouldValidate(item, pdf, props.renderContext) ? validationRules : undefined
   );
 
@@ -134,6 +138,7 @@ const SliderView = (props: SliderProps): React.JSX.Element | null => {
           onChange={(e): void => {
             const val = e.target.value;
             if (isInteger(val)) {
+              isSelectedRef.current = true;
               onValueChange(Number(val));
               onChange(e);
             }

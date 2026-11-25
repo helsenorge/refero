@@ -7,13 +7,13 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '@/types/referoProps';
 import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
-import { q } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import { Extensions } from '../../../../constants/extensions';
 import valueSet from '../../../../constants/valuesets';
+import { q } from './__data__/index';
 
 vi.mock('@helsenorge/designsystem-react/utils/debounce', () => ({
   debounce: (fn: Function) => [fn, () => {}],

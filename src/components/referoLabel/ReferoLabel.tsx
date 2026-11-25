@@ -6,11 +6,11 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import FormFieldTag from '@helsenorge/designsystem-react/components/FormFieldTag';
 import Label, { type LabelText } from '@helsenorge/designsystem-react/components/Label';
 
-import SafeText from './SafeText';
-import SubLabel from './sublabel';
 import commonStyles from '../formcomponents/common-styles.module.css';
 import RenderHelpButton from '../formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
+import SafeText from './SafeText';
+import SubLabel from './sublabel';
 
 import styles from './referoLabel.module.css';
 

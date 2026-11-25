@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { CalculatorResult } from './helpers';
 import type { FhirPathCalculationOptions } from '../util/fhirPathOptions';
+import type { CalculatorResult } from './helpers';
 import type { Extension, Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type { Path } from 'fhirpath';
 

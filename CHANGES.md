@@ -23,6 +23,27 @@
   Copied occurrences cannot be added or deleted by the user, and a copied question that `enableWhen` turns off gets no answer. Copy
   expressions that return values instead of response items work as before.
 
+# 26.0.9
+
+- Fix: single-line text inputs and textareas no longer render inside a fieldset without a legend.
+- Fix: the open-choice text-field now includes its option label, so that it's accessible name is distinct from the radio or checkbox option
+  and no longer triggers duplicate-label accessibility errors.
+
+## 26.0.8
+
+- Fix: a new QuestionnaireResponse now gets the same calculated answers as the form gives after the user changes an answer. The first
+  calculation had its own code, so a form submitted without any change could differ from the same form after a change. A calculated quantity
+  was written as a plain number (`"valueQuantity": 0`) instead of a Quantity, which is not valid FHIR and made servers reject the response.
+  Decimals were not rounded to `maxDecimalPlaces`, integers were not rounded, only the first of several results was kept, an item with both
+  a copy and a calculated expression used the copy, and an item hidden by `enableWhen` got an answer. A calculated decimal 0 now follows
+  `keepZeroValues` from the start as well: without it the answer has no value, as it already had after a change. Answers in a form where the
+  user changed something before submitting are the same as before.
+
+## 26.0.7
+
+- Fix: Focusable element found within presentational children
+- Added flex styling to the helpbutton
+
 ## 26.0.6
 
 - Fix: a date limit (`sdf-minvalue` or `sdf-maxvalue`) whose FHIRPath expression gives no date no longer crashes the whole form with

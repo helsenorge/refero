@@ -4,10 +4,10 @@ import type { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import { TableBody, Table as HnTable, SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
-import { GTableRows } from './GTableRows';
-import { getColumnsFromGTableItem, inferSourceGroupLinkId, buildGTableRows } from './utils';
 import { GTableHeader } from '../../../gtable/GTableHeader';
 import { getDefaultSortFromGTableItem, sortRowsByKey } from '../../../gtable/sorting';
+import { GTableRows } from './GTableRows';
+import { getColumnsFromGTableItem, inferSourceGroupLinkId, buildGTableRows } from './utils';
 
 import { useAppSelector } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';

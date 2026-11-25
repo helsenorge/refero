@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
+import { getDefaultSortFromGTableItem, sortRowsByKey } from '../../../../gtable/sorting';
+import { getColumnsFromGTableItem, inferSourceGroupLinkId, buildGTableRows } from '../utils';
 import {
   scenarioA,
   scenarioB,
@@ -9,8 +11,6 @@ import {
   makeQRFromOuterOccurrences,
   A,
 } from './test-fixures';
-import { getDefaultSortFromGTableItem, sortRowsByKey } from '../../../../gtable/sorting';
-import { getColumnsFromGTableItem, inferSourceGroupLinkId, buildGTableRows } from '../utils';
 vi.mock('@/constants/dateTimeConstants', () => ({
   TIME_SEPARATOR: ':',
 }));

@@ -4,12 +4,12 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
 
-import { radioView as q } from './__data__/index';
-import { typeExtraField } from './utils';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { addManyPropertiesToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { clickButtonTimes, repeatCheckboxNTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
+import { radioView as q } from './__data__/index';
+import { typeExtraField } from './utils';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -37,7 +37,7 @@ describe('Radio-view - choice', () => {
     });
     it('Should render open-choice field', async () => {
       await createWrapper(q);
-      expect(screen.getByLabelText(/Annet/i)).toBeInTheDocument();
+      expect(screen.getByRole('radio', { name: /Annet/i })).toBeInTheDocument();
     });
   });
   describe('help button', () => {
@@ -165,9 +165,9 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       await createWrapper(questionnaire);
 
-      await userEvent.click(screen.getByLabelText(/Annet/i));
+      await userEvent.click(screen.getByRole('radio', { name: /Annet/i }));
       expect(screen.getByTestId(/-extra-field/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/Annet/i)).toBeChecked();
+      expect(screen.getByRole('radio', { name: /Annet/i })).toBeChecked();
     });
     it('Should update component with value from answer', async () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
@@ -259,7 +259,7 @@ describe('Radio-view - choice', () => {
         await selectCheckboxOption(/Annet/i);
 
         expect(screen.getByTestId(/-extra-field/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/Annet/i)).toBeChecked();
+        expect(screen.getByRole('radio', { name: /Annet/i })).toBeChecked();
       });
       it('Should not render extra text field when open-choice extra value is not selected', async () => {
         const questionnaire: Questionnaire = {

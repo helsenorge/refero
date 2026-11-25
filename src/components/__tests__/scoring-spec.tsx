@@ -6,6 +6,9 @@ import userEvent from '@testing-library/user-event';
 
 import type { Questionnaire } from 'fhir/r4';
 
+import { clickByLabelText, clickByTestId, typeByLabelText } from '../../../test/selectors';
+import { renderRefero, screen, waitFor } from '../../../test/test-utils';
+import { getCalculatedExpressionExtension } from '../../util/extension';
 import { encodeString } from '../createQuestionnaire/utils';
 import ChoiceCheckBoxDataModel from './__data__/scoring/choice-check-box';
 import ChoiceRadioButtonDataModel from './__data__/scoring/choice-radio-button';
@@ -14,9 +17,6 @@ import FhirpathScoreDataModel from './__data__/scoring/fhirpath-score';
 import OpenChoiceDataModel from './__data__/scoring/open-choice';
 import SectionScoreDataModel from './__data__/scoring/section-score';
 import { inputAnswer, findQuestionnaireItem, findItem } from './utils';
-import { clickByLabelText, clickByTestId, typeByLabelText } from '../../../test/selectors';
-import { renderRefero, screen, waitFor } from '../../../test/test-utils';
-import { getCalculatedExpressionExtension } from '../../util/extension';
 
 describe('Component renders and calculates score', () => {
   it('fhirpath score should be updated when decimal questions are answered', async () => {

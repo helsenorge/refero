@@ -4,10 +4,10 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire } from 'fhir/r4';
 
-import { dropdownView as q } from './__data__/index';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatDropDownTimes, submitForm } from '../../../../../test/selectors';
 import { Extensions } from '../../../../constants/extensions';
+import { dropdownView as q } from './__data__/index';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {

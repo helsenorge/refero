@@ -4,10 +4,10 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../types/referoProps';
 import type { Questionnaire } from 'fhir/r4';
 
-import StepViewQuestionnaire from './__data__/stepview';
 import { getResources } from '../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, selectCheckboxOption, submitForm, typeByLabelText } from '../../../test/selectors';
 import { type Matcher, renderRefero, screen, userEvent } from '../../../test/test-utils';
+import StepViewQuestionnaire from './__data__/stepview';
 
 const resources = {
   ...getResources(''),

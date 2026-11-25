@@ -77,6 +77,7 @@ const ExtraTextField = (props: Props): React.JSX.Element | null => {
         renderContext={props.renderContext}
         item={item}
         resources={resources}
+        labelTexts={[{ text: resources?.openChoiceOption ?? '', type: 'subdued' }]}
         htmlFor={`${getId(id)}-extra-field`}
         labelId={`${getId(id)}-extra-field-label`}
         testId={`${getId(id)}-label`}

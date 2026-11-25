@@ -5,11 +5,11 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { qinline, q, qScriptInjection, qCustomErrorMessage } from './__data__';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { clickButtonTimes, getByLabelTextInsideElement, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { type Matcher, renderRefero, screen, userEvent, waitFor } from '../../../../../test/test-utils';
 import { Extensions } from '../../../../constants/extensions';
+import { qinline, q, qScriptInjection, qCustomErrorMessage } from './__data__';
 
 vi.mock('@helsenorge/designsystem-react/utils/debounce', () => ({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type, @typescript-eslint/explicit-function-return-type
@@ -31,6 +31,18 @@ const getTextInput = (questionnaire: Questionnaire, labelText: Matcher, index: n
 
 describe('Text', () => {
   describe('render', () => {
+    it.each([false, true])('Should render a labelled textarea without a fieldset (help: %s)', async withHelp => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(item => ({ ...item, repeats: false, item: withHelp ? item.item : undefined })),
+      };
+
+      await createWrapper(questionnaire);
+
+      const input = screen.getByRole('textbox', { name: /String markdown/i });
+      expect(input.closest('fieldset')).toBeNull();
+    });
+
     it('should render correct tag', async () => {
       renderRefero({ questionnaire: qinline, resources: getResources('') });
       expect(screen.queryByText(/Her er teksten som skal åpnes av knappen over, med markDown/i)).not.toBeInTheDocument();

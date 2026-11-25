@@ -159,7 +159,7 @@ describe('runCalculators characterisation', () => {
         const resolved = resolveFhirPathCalculationOptions(options);
         const fresh = calculateWithEngine(new FhirPathExtensions(structuredClone(questionnaire), resolved), structuredClone(qr), resolved);
         expect(reused, `step ${step}`).toEqual(fresh);
-        applyCalculated(qr, reused as Record<string, unknown>);
+        applyCalculated(qr, reused.answerPad);
       }
     });
   });

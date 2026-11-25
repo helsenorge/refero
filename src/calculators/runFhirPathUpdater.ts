@@ -4,11 +4,10 @@ import type { ActionRequester } from '@/util/actionRequester';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { type AnswerValuesItemPayload, newAnswerValuesAction, replaceItemCopiesAction } from '@/actions/newValue';
-import { isEnableWhenEnabled } from '@/hooks/useIsEnabled';
+import { getCalculatedAnswerUpdates } from '@/calculators/calculatedAnswers';
 import { getChildResponseItems } from '@/util/FhirPathExtensions';
 import { resolveFhirPathCalculationOptions } from '@/util/fhirPathOptions';
-import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId, getResponseItemWithPath } from '@/util/refero-core';
-import { isQuestionnaireResponseItemAnswerArray } from '@/util/typeguards';
+import { getResponseItemWithPath } from '@/util/refero-core';
 import { postTaskToFhirPathWorker } from '@/workers/fhirpath-rpc';
 import { runCalculators, type CalculatorResult } from '@/workers/helpers';
 
@@ -61,32 +60,11 @@ export const runFhirPathQrUpdater = async ({
       dispatch(replaceItemCopiesAction(changedItemCopies));
     }
     const answerValues: AnswerValuesItemPayload = [];
-    for (const linkId in fhirScores) {
-      const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
-      if (!item) continue;
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
-      const value = fhirScores[linkId];
-      const newAnswer = isQuestionnaireResponseItemAnswerArray(value) ? value : undefined;
-      for (const itemAndPath of itemsAndPaths) {
-        let enabled = true;
-        if (item.enableWhen && item.enableWhen.length > 0 && itemAndPath.path) {
-          enabled = isEnableWhenEnabled(item?.enableWhen, item?.enableBehavior, itemAndPath.path, questionnaireResponse.item);
-        }
-        if (!enabled) {
-          continue;
-        }
-        if (JSON.stringify(itemAndPath.item.answer ?? undefined) === JSON.stringify(newAnswer ?? undefined)) {
-          continue;
-        }
-        if (actionRequester) {
-          actionRequester.setNewAnswer(linkId, newAnswer ?? [], itemAndPath.path[0]?.index);
-        } else {
-          answerValues.push({
-            itemPath: itemAndPath.path,
-            newAnswer,
-            item,
-          });
-        }
+    for (const { linkId, item, itemPath, newAnswer } of getCalculatedAnswerUpdates(questionnaire, questionnaireResponse, fhirScores)) {
+      if (actionRequester) {
+        actionRequester.setNewAnswer(linkId, newAnswer ?? [], itemPath[0]?.index);
+      } else {
+        answerValues.push({ itemPath, newAnswer, item });
       }
     }
     if (actionRequester) {

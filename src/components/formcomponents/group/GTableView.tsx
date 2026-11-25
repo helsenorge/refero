@@ -4,12 +4,12 @@ import { shallowEqual } from 'react-redux';
 
 import { TableBody, Table as HnTable, SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
-import GroupHeader from './GroupHeader';
 import commonStyles from '../common-styles.module.css';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import GroupHeader from './GroupHeader';
 import { GTableHeader } from './gtable/GTableHeader';
 import { getDefaultSortFromGTableItem } from './gtable/sorting';
 import { getSortedOrder, getSortValues, getVisibleColumns } from './gtable/tableModel';
-import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 import GenerateQuestionnaireComponents, {
   type QuestionnaireComponentItemProps,

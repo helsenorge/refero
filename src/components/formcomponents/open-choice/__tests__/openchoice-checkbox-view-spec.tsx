@@ -4,11 +4,11 @@ import { vi } from 'vitest';
 import type { ReferoProps } from '../../../../types/referoProps';
 import type { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
 
-import { checkboxView as q } from './__data__/index';
-import { typeExtraField } from './utils';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { clickButtonTimes, repeatCheckboxNTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
+import { checkboxView as q } from './__data__/index';
+import { typeExtraField } from './utils';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer: QuestionnaireItemAnswerOption = {
@@ -36,7 +36,7 @@ describe('checkbox-view - openchoice', () => {
     });
     it('Should render open-choice field', async () => {
       await createWrapper(q);
-      expect(screen.getByLabelText(/Annet/i)).toBeInTheDocument();
+      expect(screen.getByRole('checkbox', { name: /Annet/i })).toBeInTheDocument();
     });
   });
   describe('help button', () => {
@@ -146,7 +146,7 @@ describe('checkbox-view - openchoice', () => {
         await selectCheckboxOption(/Annet/i);
 
         expect(screen.getByTestId(/-extra-field/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/Annet/i)).toBeChecked();
+        expect(screen.getByRole('checkbox', { name: /Annet/i })).toBeChecked();
       });
       it('Should not render extra text field when open-choice extra value is not selected', async () => {
         const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);

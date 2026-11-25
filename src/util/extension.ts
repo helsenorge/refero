@@ -2,12 +2,12 @@ import type { TABLE_CODES_VALUES } from '../constants/tableTypes';
 import type { SidebarItem } from '../types/sidebar';
 import type { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from 'fhir/r4';
 
-import { hasCode, isTableCode } from './typeguards';
 import { Extensions } from '../constants/extensions';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { getText } from '../util/index';
+import { hasCode, isTableCode } from './typeguards';
 
 export function getValidationTextExtension(item?: QuestionnaireItem): string | undefined {
   const validationTextExtension = getExtension(Extensions.VALIDATIONTEXT_URL, item);

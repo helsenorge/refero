@@ -10,9 +10,10 @@
  * and apply to every form and every Refero instance on the page. Internally,
  * FhirPathExtensions also accepts options per engine, overriding them.
  *
- * The initial QuestionnaireResponse honours expressionPriority and
- * omitNonNumericResults. keepZeroValues does not apply there, since it already
- * keeps 0, and neither does resolveExpressionChains, since it is a single pass.
+ * The initial QuestionnaireResponse is calculated by the same code as the form
+ * uses after the user changes an answer, so every option applies there too, and
+ * a response has the same calculated answers whether or not the user changed
+ * something first.
  */
 export interface FhirPathCalculationOptions {
   /**
@@ -48,9 +49,7 @@ export interface FhirPathCalculationOptions {
    * calculated expression while evaluateAllExpressions prefers the copy - so
    * the result depends on which path produced it.
    *
-   * 'copy-first' / 'calculated-first': the same rule in both paths, and when
-   * the initial QuestionnaireResponse is generated.
-   * 'copy-first' matches how the initial QuestionnaireResponse has always been generated.
+   * 'copy-first' / 'calculated-first': the same rule in both paths.
    */
   expressionPriority?: 'legacy' | 'copy-first' | 'calculated-first';
 
